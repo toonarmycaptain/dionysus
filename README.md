@@ -1,1 +1,1 @@
-dionysus is a CLI app that projects student results on a graph using avatars instead of student names. 
+dionysus is a CLI app that graphs student results using avatars instead of student names. 
