@@ -1,15 +1,16 @@
 """
 Main script, menu.
 """
-from
+from dionysus_app.main_menu import run_main_menu
 
 
-def run_app()
+def run_app():
     """
     Env/system checks. Data setup. 
     
     :return: 
     """
+    run_main_menu()
 
 
 
@@ -17,7 +18,6 @@ def run_app()
 
 
 
-
-if __name__ = "__main__"
+if __name__ == "__main__":
 
     run_app()
