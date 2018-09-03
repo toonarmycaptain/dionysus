@@ -16,9 +16,9 @@ def data_folder_check()
     """
 
     data_folders = {
-        'relpath_app_data': r'./dionysus_app/apps_data',  # TODO: check these paths work on Windows
-        'relpath_class_data': r'./dionysus_app/apps_data/class_data',
-        'relpath_image_data': r'./dionysus_app/apps_data/image_data',
+        'relpath_app_data': r'./dionysus_app/app_data',  # TODO: check these paths work on Windows
+        'relpath_class_data': r'./dionysus_app/app_data/class_data',
+        'relpath_image_data': r'./dionysus_app/app_data/image_data',
     }
     for key in data_folders:
         if not os.path.exists(data_folders[key]):
