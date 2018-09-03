@@ -26,9 +26,10 @@ def take_main_menu_input():
 
     while True:
 
-        chosen_option = input('>>> ').upper()
+        chosen_option = input('>>> ')
 
-        if chosen_option == 'Q':
+
+        if chosen_option == 'Q' or chosen_option == 'q':
             break
         try:
             possible_options[chosen_option]
