@@ -2,6 +2,7 @@ import os
 
 CLASSLIST_PATH = 'dionysus_app/app_data/class_data/'
 
+
 def create_classlist():
 
     classlist_name = take_classlist_name_input()
@@ -13,10 +14,10 @@ def create_classlist():
             if student_name.join(student_name.split()) == '':  # Do not allow blank input TODO: include dash, underscore
                 print('Please enter a valid student name.')
                 continue
-            if student_name in student_names: # TODO search for it in class - if it exists, ask for more input
+            if student_name in student_names:  # TODO search for it in class - if it exists, ask for more input
                 print("This student is already a member of the class.")
                 continue
-            elif student_name.upper() =='END':
+            elif student_name.upper() == 'END':
                 break
             else:
                 student_names += (student_name+'\n')
@@ -41,13 +42,9 @@ def take_classlist_name_input():
     return classlist_name
 
 
-
-
 def classlist_exists(classlist_name):
-    if os.path.exists(CLASSLIST_PATH + classlist_name + '.cld'):  # TODO: Make path point at data folder. .cld meaning. ClassListData
-        return True
-
-
+    if os.path.exists(CLASSLIST_PATH + classlist_name + '.cld'):
+        return True  # TODO: Make path point at data folder. .cld meaning. ClassListData
 
 
 if __name__ == '__main__':
