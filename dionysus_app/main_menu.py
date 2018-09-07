@@ -6,6 +6,7 @@ import sys
 
 from dionysus_app.class_functions import create_classlist
 
+
 def welcome_blurb():
     print("Welcome to Dionysus - student avatar graph generator\n")
 
@@ -57,6 +58,7 @@ def run_main_menu():
         main_menu_options()
         take_main_menu_input()
     quit_app()
+
 
 if __name__ == "__main__":
     run_main_menu()
