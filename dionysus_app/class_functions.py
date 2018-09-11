@@ -112,7 +112,7 @@ def take_classlist_name_input():
 
 def classlist_exists(classlist_name):
     if os.path.exists(CLASSLIST_PATH + classlist_name + '.cld'):
-        return True  # TODO: Make path point at data folder. .cld meaning. ClassListData
+        return True  # TODO: Make path point at data folder. .cld meaning ClassListData
 
 
 if __name__ == '__main__':
