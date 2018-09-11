@@ -99,7 +99,7 @@ def take_classlist_name_input():
     while True:
         classlist_name = input('Please enter a name for the class: ')
 
-        if classlist_name == '':  # blank input
+        if input_is_essentially_blank(classlist_name):  # blank input
             continue
 
         classlist_name = clean_for_filename(classlist_name)
