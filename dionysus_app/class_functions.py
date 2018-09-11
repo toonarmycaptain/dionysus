@@ -98,11 +98,11 @@ def take_classlist_name_input():
 
     while True:
         classlist_name = input('Please enter a name for the class: ')
-        classlist_name = classlist_name.replace(' ', '_')
 
         if classlist_name == '':  # blank input
             continue
 
+        classlist_name = clean_for_filename(classlist_name)
         if classlist_exists(classlist_name):
             print('A class with this name already exists.')
             continue
