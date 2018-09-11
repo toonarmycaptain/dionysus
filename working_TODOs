@@ -1,0 +1,15 @@
+# Working TODO list
+
+
+Implement JSON or a dict for class data
+Write classlist editing dialogue
+Write score input dialogue
+Write graph creation script
+Write image saving/editing/conversion script
+
+
+
+
+Work on passing of filenames, consider implementing pathlib
+Write tests
+Implement logging
