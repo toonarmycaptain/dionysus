@@ -50,12 +50,15 @@ def clean_for_filename(some_string: str):
 
 def scrub_candidate_filename(dirty_string: str):
     """
-    Cleans string of non-alpha-numeric characters, but leaves spaces and
-    underscores, stripping trailing spaces.
+    Cleans string of non-alpha-numeric characters, but leaves spaces, dashes,
+    apostrophes, and underscores, stripping trailing spaces.
+
+    If apostrophe causes problems, will have to replace with dash or similar,
+    but they are frequently used in names, so allowing until a problem emerges.
 
     :param dirty_string: str
     :return: str
     """
-    allowed_special_characters = [' ', '_']
+    allowed_special_characters = [' ', '_', '-', "'"]  # TODO: test if apostrophe causes problems
     cleaned_string = "".join([c for c in dirty_string if c.isalnum() or c in allowed_special_characters]).rstrip()
     return cleaned_string

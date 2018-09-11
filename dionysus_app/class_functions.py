@@ -1,5 +1,6 @@
 import os
-import re
+
+from UI_functions import clean_for_filename, input_is_essentially_blank
 
 CLASSLIST_PATH = 'dionysus_app/app_data/class_data/'
 
@@ -57,29 +58,6 @@ def take_student_avatar(student_name):
     # process_student_avatar()
     # convert to jpg or whatever, copy image file to class_data avatar folder with filename that is student name
     return avatar_filename
-
-
-def input_is_essentially_blank(questionable_string):
-    if questionable_string == '':  # Why bother regex for the obvious
-        return True
-    meaningless_characters = r'/|\|#|_|{|}|[|]|(|)| |,'
-
-    questionable_string = questionable_string.replace('.', '')  # because period matches while string
-    cleaned_string = re.sub(meaningless_characters, '', questionable_string)  # TODO: currently errors
-    return cleaned_string == ''
-
-
-def clean_for_filename(some_string):
-    cleaner_filename = scrub_candidate_filename(some_string)
-    cleaned_filename = cleaner_filename.replace(' ', '_')  # no slashes either
-    return cleaned_filename
-
-
-def scrub_candidate_filename(dirty_string):
-    characters_to_scrub = r'/|\|#|?|{|}|'  # need to include *,[,],|,(,) ? these cause regex problems
-    cleaner_string = re.sub(characters_to_scrub, '', dirty_string)  # TODO: currently errors
-    clean_string = cleaner_string.replace('|', '')
-    return clean_string
 
 
 def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
