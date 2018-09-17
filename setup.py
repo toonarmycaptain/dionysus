@@ -10,5 +10,5 @@ setup(name='dionysus_app',
       url='https://github.com/toonarmycaptain/dionysus',
       packages=find_packages(),
       license='GNU Affero General Public License',
-      long_description=open('README.txt').read(),
+      long_description=open('README.md').read(),
      )
