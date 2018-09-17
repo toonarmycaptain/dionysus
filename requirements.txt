@@ -1,1 +1,2 @@
 pytest==3.8.0
+setuptools==40.3.0
