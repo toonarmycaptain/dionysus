@@ -1,0 +1,42 @@
+# config for pyup.io
+
+# configure updates globally
+update: all
+
+# configure dependency pinning globally
+pin: True
+
+# set the default branch
+# default: empty, the default branch on GitHub
+# branch: master
+
+# update schedule
+schedule: "every month"
+
+# search for requirement files
+search: True
+
+# Specify requirement files by hand, default is empty
+
+
+# add a label to pull requests, default is not set
+# requires private repo permissions, even on public repos
+# default: empty
+label_prs: update
+
+# assign users to pull requests, default is not set
+# requires private repo permissions, even on public repos
+# default: empty
+assignees:
+  - toonarmycaptain
+
+# configure the branch prefix the bot is using
+# default: pyup-
+
+
+# set a global prefix for PRs
+# default: empty
+
+
+# allow to close stale PRs
+close_prs: True
