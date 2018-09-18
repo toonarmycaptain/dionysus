@@ -4,7 +4,7 @@ Main script, menu.
 import os
 # import pathlib
 import sys
-from dionysus_app.main_menu import run_main_menu
+from main_menu import run_main_menu
 
 
 def data_folder_check():
