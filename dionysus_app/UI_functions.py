@@ -38,7 +38,7 @@ def clean_for_filename(some_string: str):
 
     Returns a string with only alphanumeric characters and underscores.
 
-    Possibly equivalent to:     "".join([c for c in text if re.match(r'\w', c)])
+    # Possibly equivalent to:     ''.join([c for c in text if re.match(r'\w', c)])
 
     :param some_string: str
     :return: str

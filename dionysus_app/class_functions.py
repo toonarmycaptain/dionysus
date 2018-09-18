@@ -1,6 +1,6 @@
 import os
 
-from UI_functions import clean_for_filename, input_is_essentially_blank
+from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 
 CLASSLIST_PATH = 'dionysus_app/app_data/class_data/'
 
