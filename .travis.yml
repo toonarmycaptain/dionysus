@@ -11,7 +11,7 @@ matrix:
 before_install:
     - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
     - "pip install -U pip"
-#    - "python setup.py install" or "develop"
+    - "python -m setup.py install"
 
 # command to install dependencies
 install:
