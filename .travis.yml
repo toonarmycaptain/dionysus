@@ -10,7 +10,7 @@ matrix:
 
 before_install:
   - "pip install -U pip"
-  - "python setup.py install"
+  - "python setup.py development"
 
 # command to install dependencies
 install:
