@@ -31,8 +31,7 @@ def run_app():
     Make sure cwd is directory of app_main script.
     Check for data folders, create if not present.
 
-    
-    :return: 
+    :return: None
     """
     os.chdir(sys.path[0])  # Make sure cwd is directory os script.
 
