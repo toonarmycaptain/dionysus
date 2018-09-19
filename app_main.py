@@ -10,10 +10,9 @@ from dionysus_app.main_menu import run_main_menu
 
 def data_folder_check():
     """
-    
     Check data folders exist, create them if they do not.
-    
-    :return: 
+
+    :return: None
     """
 
     data_folders = {
