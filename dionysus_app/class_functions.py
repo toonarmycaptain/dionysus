@@ -1,3 +1,7 @@
+"""
+Functions for creating, editing, dealing with classes.
+"""
+
 import os
 
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
@@ -7,7 +11,7 @@ CLASSLIST_PATH = 'dionysus_app/app_data/class_data/'
 
 def create_classlist():
 
-    classlist_name = take_classlist_name_input()
+    classlist_name = take_classlist_name_input()  # TODO: figure out how to cancel creation at name class name entry stage
 
     setup_class(classlist_name)
 
