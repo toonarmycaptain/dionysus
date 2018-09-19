@@ -21,6 +21,14 @@ def main_menu_options():
 
 
 def take_main_menu_input():
+    """
+    Takes input and runs chosen action.
+    Flag for unselected/no option chosen used to exit the loop when chosen
+    action finishes, returning to main menu run loop rather than option
+    selection, which will reprint the menu options.
+     
+    :return: None
+    """
     possible_options = {
         '1': create_classlist,
         '2': 'edit_classlist',
@@ -34,7 +42,7 @@ def take_main_menu_input():
 
         try:
             possible_options[chosen_option]()
-            unselected = False
+            unselected = False  # Exiting the loop when chosen action finishes.
         except KeyError:
             print("Invalid input.")
 
