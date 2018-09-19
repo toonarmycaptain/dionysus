@@ -1,6 +1,6 @@
 # score entry:
 
-def score_entry(min=0, max=100):
+def score_entry(minimum=0, maximum=100):
 
 
     while True:
@@ -15,7 +15,7 @@ def score_entry(min=0, max=100):
             print("InputError: please enter a number or '_' to exclude student.")
             continue
         # else:
-        if score_float < min or score_float > max:
+        if score_float < minimum or score_float > maximum:
             print(f'InputError: Please enter a number between {min} and {max}.')
             continue
         return score_float
