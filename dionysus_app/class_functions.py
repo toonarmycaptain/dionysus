@@ -3,6 +3,7 @@ Functions for creating, editing, dealing with classes.
 """
 
 import os
+import time
 
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 
@@ -39,6 +40,8 @@ def create_classlist_data(classlist_name):  # TODO: fix path composition
             print(class_data)
 
         classlist_file.write(class_data)  # consider using JSON?
+        time.sleep(2)
+
 
 def blank_class_dialogue():
     while True:
