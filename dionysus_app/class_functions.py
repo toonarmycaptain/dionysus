@@ -78,11 +78,18 @@ def take_student_name_input(class_data):
 
 
 def take_student_avatar(student_name):
+    print(f'Load avatar image for {student_name}.')
     while True:
-        avatar_file = input(r'Please paste complete filepath and name eg C:\my_folder\my_avatar.jpg')
+        avatar_file = input(r'Please paste complete filepath and name eg C:\my_folder\my_avatar.jpg or None to skip: ')
+        if avatar_file.upper() == 'NONE':
+            return None
         if avatar_file_exists(avatar_file):
             break
         # else:
+        print('Supplied filepath cannot be found.')
+
+    if avatar_file is None:
+        return None
     cleaned_student_name = clean_for_filename(student_name)
     avatar_filename = f'{cleaned_student_name}.jpg'
     # process_student_avatar()
