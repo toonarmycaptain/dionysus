@@ -18,24 +18,50 @@ def create_classlist():
     create_classlist_data(classlist_name)
 
 
-def create_classlist_data(classlist_name):
-    with open(CLASSLIST_PATH + classlist_name + '.cld', 'w+') as classlist_file:
-        class_data = ''
+def create_classlist_data(classlist_name):  # TODO: fix path composition
+    with open(CLASSLIST_PATH + classlist_name + r'/' + classlist_name + '.cld', 'w+') as classlist_file:
+        cancelled = False
         while True:
-            student_name = take_student_name_input(class_data)
-            if student_name.upper() == 'END':
-                break
+            class_data = take_class_data_input()
 
-            avatar_filename = take_student_avatar(student_name)
-            # else:
-            class_data += f'{student_name}, {avatar_filename}\n'  # consider using JSON? dictionaries?
+            if class_data == '':  # Test for empty class.
+                cancelled = blank_class_dialogue()
+                if cancelled:
+                    break
+                # else: ie if not cancelled:
+                continue
+            break  # class_data not empty
 
         print(f'\nClass: {classlist_name}')
-        print(class_data)
+        if cancelled:
+            print("No students entered.")
+        else:
+            print(class_data)
+
         classlist_file.write(class_data)  # consider using JSON?
 
-        # test for empty classlist - delete/don't create files if list is empty?
-        # if list is empty - warn list is empty before saving.
+def blank_class_dialogue():
+    while True:
+        choice = input("Do you want to create an empty class? y/n")
+        if choice.upper() == 'Y':
+            return True
+        if choice.upper() == 'N':
+            return False
+        print('Please enter y for yes to create empty class, or n to return to student input.')
+
+
+def take_class_data_input():
+    class_data = ''
+    while True:
+
+        student_name = take_student_name_input(class_data)
+        if student_name.upper() == 'END':
+            break
+
+        avatar_filename = take_student_avatar(student_name)
+        # else:
+        class_data += f'{student_name}, {avatar_filename}\n'  # consider using JSON? dictionaries?
+    return class_data
 
 
 def take_student_name_input(class_data):
