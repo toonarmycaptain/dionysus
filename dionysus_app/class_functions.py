@@ -101,7 +101,25 @@ def take_student_avatar(student_name):
 
 
 def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
-    os.makedirs(f'{CLASSLIST_PATH}{classlist_name}_avatars')
+    """
+    Setup data storage for new classes.
+
+
+    Form for data storage:
+    app_data/
+        class_data/
+            class_name/  # folder for each class
+                graph_data/  # store graph data sets
+                avatars/  # store avatars for class
+
+
+    :param classlist_name: str
+    :return: None
+    """
+    os.makedirs(f'{CLASSLIST_PATH}/{classlist_name}')  # class data folder
+    os.makedirs(f'{CLASSLIST_PATH}/{classlist_name}/avatars')  # avatar folder
+    os.makedirs(f'{CLASSLIST_PATH}/{classlist_name}/graph_data')  # graph data set folder
+    # os.path.join
 
 
 def avatar_file_exists(avatar_file):
