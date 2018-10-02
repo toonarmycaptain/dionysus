@@ -46,7 +46,7 @@ def run_app():
 
     data_folder_check()
 
-    run_main_menu()
+    run_main_menu() # startup checks sucessful, enter UI.
 
 
 if __name__ == "__main__":
