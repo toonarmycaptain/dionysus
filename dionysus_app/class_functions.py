@@ -20,7 +20,7 @@ def create_classlist():
 
 
 def create_classlist_data(classlist_name):  # TODO: fix path composition
-    with open(CLASSLIST_PATH + classlist_name + r'/' + classlist_name + '.cld', 'w+') as classlist_file:
+    with open(CLASSDATA_PATH + classlist_name + r'/' + classlist_name + '.cld', 'w+') as classlist_file:
         cancelled = False
         while True:
             class_data = take_class_data_input()
