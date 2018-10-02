@@ -36,17 +36,20 @@ Use [typehints](https://docs.python.org/3/library/typing.html). This can be inva
 
 ## Documentation
 
-So far documentation conforms roughly to a reST/Sphinx style
+So far documentation conforms roughly to a reST/Sphinx style, which happens to also be the default for PyCharm:
 
-"""
-This is a reST style. 
-Miss a line between docstring text and parameters/return/exceptions.
-If there are multiple parameters, multiple potential errors raise/handled, it can be clearer
-to separate the grouped 
+```python
+def myfunction(param0: type, param1: str, param2: dict):
+    """
+    This is a reST style. 
+    Miss a line between docstring text and parameters/return/exceptions.
+    If there are multiple parameters, multiple potential errors raise/handled, it can be clearer
+    to separate the grouped category, much like in Google's styleguide. 
 
-:param param0: type explantion
-:param param1: str this is explanation for first param
-:param param2: this is a second param
-:returns: this is a description of what is returned
-:raises keyError: raises an exception
-"""
+    :param param0: type explantion
+    :param param1: str this is explanation for first param
+    :param param2: dict this is a second param
+    :returns: this is a description of what is returned
+    :raises keyError: raises an exception
+    """
+```
