@@ -26,12 +26,7 @@ class TestAppMain(unittest.TestCase):
 
 
     def test_data_folder_check_default(self):
-        default_paths = [
-            r'/dionysus_app/app_data',
-            r'/dionysus_app/app_data/class_data',
-            r'dionysus_app/app_data/image_data'
-        ]
         data_folder_check()
-        for path in default_paths:
+        for path in self.default_paths:
             data_folder_path = generate_rel_path(path)
             assert os.path.exists(data_folder_path)
