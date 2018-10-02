@@ -7,7 +7,8 @@ import time
 
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 
-CLASSLIST_PATH = 'dionysus_app/app_data/class_data/'
+CLASSDATA_PATH = 'dionysus_app/app_data/class_data/'
+CLASS_REGISTRY_PATH = 'dionysus_app/app_data/class_registry.index'
 
 
 def create_classlist():
@@ -15,7 +16,6 @@ def create_classlist():
     classlist_name = take_classlist_name_input()  # TODO: figure out how to cancel creation at name class name entry stage
 
     setup_class(classlist_name)
-
     create_classlist_data(classlist_name)
 
 
@@ -102,10 +102,21 @@ def take_student_avatar(student_name):
 
 def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
     """
+    Setup class data storage file structure.
+    Register class in class_registry index
+
+    :param classlist_name:
+    :return:
+    """
+    setup_class_data_storage(classlist_name)
+    register_class(classlist_name)
+
+
+def setup_class_data_storage(classlist_name):
+    """
     Setup data storage for new classes.
 
-
-    Form for data storage:
+    Structure for data storage:
     app_data/
         class_data/
             class_name/  # folder for each class
@@ -116,10 +127,21 @@ def setup_class(classlist_name):  # TODO: change name because of class with pyth
     :param classlist_name: str
     :return: None
     """
-    os.makedirs(f'{CLASSLIST_PATH}/{classlist_name}')  # class data folder
-    os.makedirs(f'{CLASSLIST_PATH}/{classlist_name}/avatars')  # avatar folder
-    os.makedirs(f'{CLASSLIST_PATH}/{classlist_name}/graph_data')  # graph data set folder
-    # os.path.join
+    os.makedirs(f'{CLASSDATA_PATH}/{classlist_name}')  # class data folder
+    os.makedirs(f'{CLASSDATA_PATH}/{classlist_name}/avatars')  # avatar folder
+    os.makedirs(f'{CLASSDATA_PATH}/{classlist_name}/graph_data')  # graph data set folder
+
+
+def register_class(classlist_name):
+    """
+    Register class in class_registry file.
+    Create if registry non-existent.
+
+    :param classlist_name: str
+    :return: None
+    """
+    with open(CLASS_REGISTRY_PATH, 'a+') as class_registry:  # open class registry, create if does not exist.
+        class_registry.write(f'{classlist_name}\n')
 
 
 def avatar_file_exists(avatar_file):
@@ -147,8 +169,8 @@ def take_classlist_name_input():
 
 
 def classlist_exists(classlist_name):
-    if os.path.exists(CLASSLIST_PATH + classlist_name + '.cld'):
-        return True  # TODO: Make path point at data folder. .cld meaning ClassListData
+    if os.path.exists(CLASSDATA_PATH + classlist_name):
+        return True  # TODO: Search class_registry.index instead of filesystem query
 
 
 if __name__ == '__main__':
