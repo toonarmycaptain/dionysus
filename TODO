@@ -6,10 +6,10 @@ Write classlist editing dialogue
 Write score input dialogue
 Write graph creation script
 Write image saving/editing/conversion script
-
-
-
-
-Work on passing of filenames, consider implementing pathlib
+Implement class_registry.index
+Implement pathlib
 Write tests
 Implement logging
+
+
+GUI
