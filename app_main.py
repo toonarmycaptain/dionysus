@@ -30,7 +30,8 @@ def data_folder_check():
         # If list exists, compare with folders (? or .cld files ?) within class_data.
             # Use pathlib.iterdir() - https://docs.python.org/3.4/library/pathlib.html#basic-use
             #                       - https://stackoverflow.com/a/44228436/7942600
-        # If list and folders are inconsistent, update class_registry.
+            
+        # Else check for classes, create class_registry.
 
 
 def run_app():
