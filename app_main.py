@@ -17,12 +17,20 @@ def data_folder_check():
 
     data_folders = {
         'relpath_app_data': r'./dionysus_app/app_data',  # TODO: check these paths work on Windows
-        'relpath_class_data': r'./dionysus_app/app_data/class_data',
-        'relpath_image_data': r'./dionysus_app/app_data/image_data',
+        'relpath_class_data': r'./dionysus_app/app_data/class_data',  # data for classes
+        'relpath_image_data': r'./dionysus_app/app_data/image_data',  # created images
     }
     for key in data_folders:
         if not os.path.exists(data_folders[key]):
             os.makedirs(data_folders[key])
+
+
+# TODO: if the file structure already exists, check for previously created classes
+    # Check for a class_registry.index in app_data directory
+        # If list exists, compare with folders (? or .cld files ?) within class_data.
+            # Use pathlib.iterdir() - https://docs.python.org/3.4/library/pathlib.html#basic-use
+            #                       - https://stackoverflow.com/a/44228436/7942600
+        # If list and folders are inconsistent, update class_registry.
 
 
 def run_app():
