@@ -139,6 +139,7 @@ def setup_class_data_storage(classlist_name):
     avatar_path.mkdir(exist_ok=True, parents=True)
     graph_path.mkdir(exist_ok=True, parents=True)
 
+
 def register_class(classlist_name):
     """
     Register class in class_registry file.
