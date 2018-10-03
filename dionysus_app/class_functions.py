@@ -15,7 +15,7 @@ CLASSLIST_DATA_FILE_TYPE = '.cld'
 
 def create_classlist():
 
-    classlist_name = take_classlist_name_input()  # TODO: Option to cancel creation at name classname entry stage
+    classlist_name = take_classlist_name_input()  # TODO: Option to cancel creation at class name entry stage
 
     setup_class(classlist_name)
     create_classlist_data(classlist_name)
@@ -55,7 +55,7 @@ def blank_class_dialogue():
             return True
         if choice.upper() == 'N':
             return False
-        # TODO: Option to cancel creation here/after entering a class name (eg made type in class name)
+        # TODO: Option to cancel creation here/after entering a class name (eg made typo in class name)
         print('Please enter y for yes to create empty class, or n to return to student input.')
 
 
