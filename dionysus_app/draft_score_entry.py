@@ -1,13 +1,18 @@
 # score entry:
 
+
 def score_entry(minimum=0, maximum=100):
+    """
 
-
+    :param minimum: int minimum allowed score
+    :param maximum: int maximum allowed score
+    :return: float
+    """
     while True:
         score = input("Enter student score: ")
 
         if score == '_':
-            return None # do not include student in graph eg if absent
+            return None  # do not include student in graph eg if absent
 
         try:
             score_float = float(score)
@@ -30,7 +35,7 @@ def test_score_entry():
                  100: 100,
                  101: 'how to test loop?',
                  'i am bad data': 'how to test loop?',
-                }
+                 }
 
     for i in test_dict:
         pass
@@ -38,6 +43,3 @@ def test_score_entry():
 
 if __name__ == '__main__':
     print(score_entry())
-
-
-
