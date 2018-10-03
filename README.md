@@ -3,4 +3,4 @@
 
 **dionysus** is an open source CLI app primarily aimed at teachers that graphs student results using avatars instead of student names. 
 
-Excitely accepting contributions! 
+Excitedly accepting contributions! 
