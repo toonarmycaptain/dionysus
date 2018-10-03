@@ -5,9 +5,10 @@ from definitions import ROOT_DIR
 
 
 class DataFolder(Enum):
-    APP_DATA = './dionysus_app/app_data'
-    CLASS_DATA = './dionysus_app/app_data/class_data'
-    IMAGE_DATA = './dionysus_app/app_data/image_data'
+    APP_DATA = './dionysus_app/app_data/'
+    CLASS_DATA = APP_DATA + 'class_data'
+    CLASS_REGISTRY = APP_DATA + 'class_registry.index'
+    IMAGE_DATA = APP_DATA + 'image_data'
 
     @staticmethod
     def generate_rel_path(path):

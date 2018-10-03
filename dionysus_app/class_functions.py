@@ -10,21 +10,19 @@ from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_b
 from dionysus_app.data_folder import DataFolder
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
-
+CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
 CLASSLIST_DATA_FILE_TYPE = '.cld'
 
 
 def create_classlist():
 
-    classlist_name = take_classlist_name_input()  # TODO: figure out how to cancel creation at name class name entry stage
+    classlist_name = take_classlist_name_input()  # TODO: Option to cancel creation at name classname entry stage
 
     setup_class(classlist_name)
-
     create_classlist_data(classlist_name)
 
 
 def create_classlist_data(classlist_name):  # TODO: fix path composition
-
     data_file = classlist_name + CLASSLIST_DATA_FILE_TYPE
     classlist_data_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath(data_file)
 
@@ -58,6 +56,7 @@ def blank_class_dialogue():
             return True
         if choice.upper() == 'N':
             return False
+        # TODO: Option to cancel creation here/after entering a class name (eg made type in class name)
         print('Please enter y for yes to create empty class, or n to return to student input.')
 
 
@@ -110,10 +109,21 @@ def take_student_avatar(student_name):
 
 def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
     """
+    Setup class data storage file structure.
+    Register class in class_registry index
+
+    :param classlist_name:
+    :return:
+    """
+    setup_class_data_storage(classlist_name)
+    register_class(classlist_name)
+
+
+def setup_class_data_storage(classlist_name):
+    """
     Setup data storage for new classes.
 
-
-    Form for data storage:
+    Structure for data storage:
     app_data/
         class_data/
             class_name/  # folder for each class
@@ -124,12 +134,22 @@ def setup_class(classlist_name):  # TODO: change name because of class with pyth
     :param classlist_name: str
     :return: None
     """
-
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath('avatars')
     graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath('graph_data')
 
     avatar_path.mkdir(exist_ok=True, parents=True)
     graph_path.mkdir(exist_ok=True, parents=True)
+
+def register_class(classlist_name):
+    """
+    Register class in class_registry file.
+    Create if registry non-existent.
+
+    :param classlist_name: str
+    :return: None
+    """
+    with open(CLASS_REGISTRY_PATH, 'a+') as class_registry:  # open class registry, create if does not exist.
+        class_registry.write(f'{classlist_name}\n')
 
 
 def avatar_file_exists(avatar_file):
