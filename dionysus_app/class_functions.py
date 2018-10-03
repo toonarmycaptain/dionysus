@@ -2,7 +2,6 @@
 Functions for creating, editing, dealing with classes.
 """
 
-import os
 import time
 from pathlib import Path
 
