@@ -11,7 +11,7 @@ created avatars instead of names.
 
 [Codestyle](#codestyle)
 
-[Documentation](Documentation)
+[Documentation](#documentation)
 
 ## Code of Conduct
 The main thing here is *be nice*, be considerate to others. This includes writing clear, documented code!

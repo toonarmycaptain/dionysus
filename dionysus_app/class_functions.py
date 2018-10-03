@@ -2,13 +2,15 @@
 Functions for creating, editing, dealing with classes.
 """
 
-import os
 import time
+from pathlib import Path
 
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
+from dionysus_app.data_folder import DataFolder
 
-CLASSDATA_PATH = 'dionysus_app/app_data/class_data/'
-CLASS_REGISTRY_PATH = 'dionysus_app/app_data/class_registry.index'
+CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
+CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
+CLASSLIST_DATA_FILE_TYPE = '.cld'
 
 
 def create_classlist():
@@ -20,7 +22,10 @@ def create_classlist():
 
 
 def create_classlist_data(classlist_name):  # TODO: fix path composition
-    with open(CLASSDATA_PATH + classlist_name + r'/' + classlist_name + '.cld', 'w+') as classlist_file:
+    data_file = classlist_name + CLASSLIST_DATA_FILE_TYPE
+    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath(data_file)
+
+    with open(classlist_data_path, 'w+') as classlist_file:
         cancelled = False
         while True:
             class_data = take_class_data_input()
@@ -128,10 +133,11 @@ def setup_class_data_storage(classlist_name):
     :param classlist_name: str
     :return: None
     """
-    os.makedirs(f'{CLASSDATA_PATH}/{classlist_name}')  # class data folder
-    os.makedirs(f'{CLASSDATA_PATH}/{classlist_name}/avatars')  # avatar folder
-    os.makedirs(f'{CLASSDATA_PATH}/{classlist_name}/graph_data')  # graph data set folder
+    avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath('avatars')
+    graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath('graph_data')
 
+    avatar_path.mkdir(exist_ok=True, parents=True)
+    graph_path.mkdir(exist_ok=True, parents=True)
 
 def register_class(classlist_name):
     """
@@ -146,8 +152,7 @@ def register_class(classlist_name):
 
 
 def avatar_file_exists(avatar_file):
-    if os.path.exists(avatar_file):
-        return True
+    return Path(avatar_file).expanduser().resolve().exists()
 
 
 # TODO: reorder/rearrange functions
@@ -170,8 +175,8 @@ def take_classlist_name_input():
 
 
 def classlist_exists(classlist_name):
-    if os.path.exists(CLASSDATA_PATH + classlist_name):
-        return True  # TODO: Search class_registry.index instead of filesystem query
+    classlist_file_path = Path(classlist_name, CLASSLIST_DATA_FILE_TYPE)
+    return CLASSLIST_DATA_PATH.joinpath(classlist_file_path).exists()
 
 
 if __name__ == '__main__':

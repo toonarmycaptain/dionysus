@@ -2,10 +2,10 @@
 Main script, menu.
 """
 import os
-# import pathlib
 import sys
 
 from dionysus_app.main_menu import run_main_menu
+from dionysus_app.data_folder import DataFolder
 
 
 def data_folder_check():
@@ -16,13 +16,12 @@ def data_folder_check():
     """
 
     data_folders = {
-        'relpath_app_data': r'./dionysus_app/app_data',  # TODO: check these paths work on Windows
-        'relpath_class_data': r'./dionysus_app/app_data/class_data',  # data for classes
-        'relpath_image_data': r'./dionysus_app/app_data/image_data',  # created images
+        DataFolder.APP_DATA: DataFolder.generate_rel_path(DataFolder.APP_DATA.value),
+        DataFolder.CLASS_DATA: DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value),
+        DataFolder.IMAGE_DATA: DataFolder.generate_rel_path(DataFolder.IMAGE_DATA.value),
     }
     for key in data_folders:
-        if not os.path.exists(data_folders[key]):
-            os.makedirs(data_folders[key])
+        data_folders[key].mkdir(parents=True, exist_ok=True)
 
 
 # TODO: if the file structure already exists, check for previously created classes
@@ -45,7 +44,7 @@ def run_app():
 
     data_folder_check()
 
-    run_main_menu()
+    run_main_menu() # startup checks sucessful, enter UI.
 
 
 if __name__ == "__main__":
