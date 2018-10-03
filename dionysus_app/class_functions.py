@@ -23,7 +23,7 @@ def create_classlist():
 
 def create_classlist_data(classlist_name):  # TODO: fix path composition
     data_file = classlist_name + CLASSLIST_DATA_FILE_TYPE
-    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath(data_file)
+    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, data_file)
 
     with open(classlist_data_path, 'w+') as classlist_file:
         cancelled = False
@@ -133,8 +133,8 @@ def setup_class_data_storage(classlist_name):
     :param classlist_name: str
     :return: None
     """
-    avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath('avatars')
-    graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name).joinpath('graph_data')
+    avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
+    graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'graph_data')
 
     avatar_path.mkdir(exist_ok=True, parents=True)
     graph_path.mkdir(exist_ok=True, parents=True)
