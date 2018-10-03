@@ -2,16 +2,10 @@
 Main script, menu.
 """
 import os
-from enum import Enum
 import sys
 
 from dionysus_app.main_menu import run_main_menu
-
-
-class DataFolder(Enum):
-    APP_DATA = './dionysus_app/app_data'
-    CLASS_DATA = './dionysus_app/app_data/class_data'
-    IMAGE_DATA = './dionysus_app/app_data/image_data'
+from dionysus_app.data_folder import DataFolder
 
 
 def data_folder_check():
@@ -22,20 +16,12 @@ def data_folder_check():
     """
 
     data_folders = {
-        DataFolder.APP_DATA: generate_rel_path(DataFolder.APP_DATA.value),
-        DataFolder.CLASS_DATA: generate_rel_path(DataFolder.CLASS_DATA.value),
-        DataFolder.IMAGE_DATA: generate_rel_path(DataFolder.IMAGE_DATA.value),
+        DataFolder.APP_DATA: DataFolder.generate_rel_path(DataFolder.APP_DATA.value),
+        DataFolder.CLASS_DATA: DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value),
+        DataFolder.IMAGE_DATA: DataFolder.generate_rel_path(DataFolder.IMAGE_DATA.value),
     }
     for key in data_folders:
-        if not os.path.exists(data_folders[key]):
-            os.makedirs(data_folders[key])
-
-
-def generate_rel_path(path):
-    if not path:
-        return os.getcwd()
-    path = path.split('/')
-    return os.path.abspath(os.path.join(os.getcwd(), *path))
+        data_folders[key].mkdir(parents=True, exist_ok=True)
 
 
 def run_app():
