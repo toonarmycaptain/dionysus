@@ -25,13 +25,11 @@ def data_folder_check():
 
 
 # TODO: if the file structure already exists, check for previously created classes
-"""
-     Check for a class_registry.index in app_data directory
-         If list exists, compare with folders (? or .cld files ?) within class_data.
-             Use pathlib.iterdir() - https://docs.python.org/3.4/library/pathlib.html#basic-use
-                                   - https://stackoverflow.com/a/44228436/7942600
-         Else check for classes, create class_registry.
-"""
+    # Check for a class_registry.index in app_data directory
+    #     If list exists, compare with folders (? or .cld files ?) within class_data.
+    #         Use pathlib.iterdir() - https://docs.python.org/3.4/library/pathlib.html#basic-use
+    #                               - https://stackoverflow.com/a/44228436/7942600
+    #     Else check for classes, create class_registry.
 
 
 def run_app():
