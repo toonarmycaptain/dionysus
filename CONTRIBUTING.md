@@ -3,8 +3,8 @@
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
 This project is open source, primarily aimed at teachers. 
-This is a project designed primarily for teachers to present assessment results/snapshots of a classes' grades to students, using student 
-created avatars instead of names.
+This is a project designed primarily for teachers to present assessment results/snapshots of a classes' grades 
+to students in graphical form, using student created avatars instead of names.
 
 #### Table Of Contents
 [Code of Conduct](#code-of-conduct)
@@ -18,7 +18,8 @@ The main thing here is *be nice*, be considerate to others. This includes writin
 
 Please include clear commit/PR comments, reference issues etc - this is helpful for anyone trying to follow along.
 
-If you want to suggest or implement new features - open an issue, make a PR! Anything that's useful without cluttering the UI too much is welcomed.
+If you want to suggest or implement new features - open an issue, make a PR! Anything that's useful without cluttering
+the UI too much is welcome.
 
 
 
