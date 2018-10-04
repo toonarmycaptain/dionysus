@@ -48,7 +48,7 @@ def myfunction(param0: type, param1: str, param2: dict):
 
     :param param0: type explantion
     :param param1: str this is explanation for first param
-    :param param2: dict this is a second param
+    :param param2: dict this is another parameter  # given 3 params, might be clearer with newline here.
     :returns: this is a description of what is returned
     :raises keyError: raises an exception
     """
