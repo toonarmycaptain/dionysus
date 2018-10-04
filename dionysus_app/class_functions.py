@@ -182,4 +182,4 @@ def classlist_exists(classlist_name):
 
 if __name__ == '__main__':
     create_classlist()
-    # same for edit classlist except for with open(classlist_name + '.txt', 'r+') as classlist_file:
+    # similarly for edit classlist - with open(classlist_name + '.txt', 'r+') as classlist_file: to edit
