@@ -1,5 +1,5 @@
-import unittest
 import os
+import unittest
 from dionysus_app.data_folder import DataFolder
 
 

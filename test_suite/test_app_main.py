@@ -1,7 +1,8 @@
-import unittest
 import os
+import unittest
 from app_main import data_folder_check
 from dionysus_app.data_folder import DataFolder
+
 
 class TestAppMain(unittest.TestCase):
 
@@ -13,7 +14,8 @@ class TestAppMain(unittest.TestCase):
         ]
 
     def test_data_folder_check_default(self):
-        os.chdir(os.path.join(os.getcwd(), '..'))
+        print(os.getcwd())
+        os.chdir(os.path.join(os.getcwd(), '.'))
         data_folder_check()
         for path in self.default_paths:
             data_folder_path = DataFolder.generate_rel_path(path)
