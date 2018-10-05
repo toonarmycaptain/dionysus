@@ -1,4 +1,3 @@
-import os
 from enum import Enum
 from pathlib import Path
 from definitions import ROOT_DIR
@@ -13,7 +12,7 @@ class DataFolder(Enum):
     @staticmethod
     def generate_rel_path(path):
         if not path:
-            return os.getcwd()
+            return Path.cwd().as_uri()
 
         path = path.split('/')
         path.insert(0, ROOT_DIR)
