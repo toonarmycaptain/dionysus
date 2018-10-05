@@ -14,7 +14,6 @@ class TestAppMain(unittest.TestCase):
         ]
 
     def test_data_folder_check_default(self):
-        print(os.getcwd())
         os.chdir(os.path.join(os.getcwd(), '.'))
         data_folder_check()
         for path in self.default_paths:
