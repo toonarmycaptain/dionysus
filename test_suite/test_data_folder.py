@@ -9,7 +9,7 @@ class TestDataFolder(unittest.TestCase):
         self.default_paths = [
             r'/dionysus_app/app_data',
             r'/dionysus_app/app_data/class_data',
-            r'dionysus_app/app_data/image_data'
+            r'/dionysus_app/app_data/image_data'
         ]
 
     def test_generate_data_path_defaults(self):
