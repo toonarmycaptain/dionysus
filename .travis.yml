@@ -4,13 +4,6 @@ cache: pip
 
 python:
     - "3.6"
-    - "3.7"
-
-
-matrix:
-    fast_finish: false
-    allow_failures:
-        - python: "3.7"  # Travis CI not supporting 3.7 yet
 
 
 install:
