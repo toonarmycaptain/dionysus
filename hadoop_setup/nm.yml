@@ -1,0 +1,55 @@
+- hosts: master
+  tasks:
+   - include_vars: "ips"
+   - command: "rpm -q jdk1.8"
+     register: j
+     ignore_errors: yes
+   - command: "rpm -q hadoop"
+     register: h
+     ignore_errors: yes
+#   - stat:
+#       path: "/root/Desktop/softwares"
+#     register: f
+#   - debug:
+#       msg: "{{ x }}"
+#   - debug:
+#       msg: "{{ f }}" 
+   - copy:
+       src: "/root/Desktop/softwares"
+       dest: "/root/Desktop/"
+     when: h.rc != 0 
+   - command: "rpm -i /root/Desktop/softwares/jdk-8u171-linux-x64.rpm"
+     when: j.rc != 0
+   - lineinfile: 
+       path: "/root/.bashrc"
+       line: "export JAVA_HOME=/usr/java/jdk1.8.0_171-amd64/\nexport PATH=/usr/java/jdk1.8.0_171-amd64/bin/:$PATH:9001"
+     when: h.rc != 0 
+   - command: "rpm -i /root/Desktop/softwares/hadoop-1.2.1-1.x86_64.rpm --force"
+     when: h.rc != 0
+  
+### CONFIGURATION OF HADOOP
+     
+   - blockinfile:
+       path: "/etc/hadoop/hdfs-site.xml"
+       insertafter: "<configuration>"
+       content: "<property>\n<name>dfs.name.dir</name>\n<value>/nn</value>\n</property>"
+   - blockinfile:
+       path: "/etc/hadoop/core-site.xml"
+       insertafter: "<configuration>"
+       content: "<property>\n<name>fs.default.name</name>\n<value>hdfs://{{mip1}}</value>\n</property>"
+   - file:
+       path: "/nn"
+       state: absent
+   - file:
+       path: "/nn"
+       state: directory    
+   - selinux:
+      state: permissive
+      policy: targeted 
+   - command: "iptables -F"
+   - command: "hadoop namenode -format -force"
+     ignore_errors: yes
+   - command: "hadoop-daemon.sh stop namenode"
+   - command: "hadoop-daemon.sh start namenode"  
+      
+            
