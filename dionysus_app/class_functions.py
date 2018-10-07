@@ -60,16 +60,14 @@ def blank_class_dialogue():
 
 
 def take_class_data_input():
-    class_data = ''
+    class_data = []
     while True:
-
         student_name = take_student_name_input(class_data)
         if student_name.upper() == 'END':
             break
-
         avatar_filename = take_student_avatar(student_name)
-        # else:
-        class_data += f'{student_name}, {avatar_filename}\n'  # consider using JSON? dictionaries?
+        student_data = {student_name: [avatar_filename]}  # How to access real names?
+        class_data.append(student_data)
     return class_data
 
 
