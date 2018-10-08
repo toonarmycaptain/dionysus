@@ -60,6 +60,11 @@ def blank_class_dialogue():
 
 
 def take_class_data_input():
+    """
+    Continues to get pairs of values (student name, avatar filename) unless user type 'end'
+
+    :return: str
+    """
     class_data = ''
     while True:
 
@@ -74,6 +79,12 @@ def take_class_data_input():
 
 
 def take_student_name_input(class_data):
+    """
+    Prompts user for student name.
+
+    :param class_data: str
+    :return: str
+    """
     while True:
         student_name = input("Enter student name, or 'end': ")
         if input_is_essentially_blank(student_name):  # Do not allow blank input TODO: include dash, underscore
@@ -87,6 +98,12 @@ def take_student_name_input(class_data):
 
 
 def take_student_avatar(student_name):
+    """
+    Prompts user for path to avatar file.
+
+    :param student_name: str
+    :return: str or None
+    """
     print(f'Load avatar image for {student_name}.')
     while True:
         avatar_file = input(r'Please paste complete filepath and name eg C:\my_folder\my_avatar.jpg or None to skip: ')
@@ -153,6 +170,12 @@ def register_class(classlist_name):
 
 
 def avatar_file_exists(avatar_file):
+    """
+    Chcecks if provided file exists.
+
+    :param avatar_file: str
+    :return: bool
+    """
     return Path(avatar_file).expanduser().resolve().exists()
 
 
@@ -160,6 +183,12 @@ def avatar_file_exists(avatar_file):
 
 
 def take_classlist_name_input():
+    """
+    Prompts user for classlist name.
+    It repeats until user provide correct classlist name.
+
+    :return: str
+    """
 
     while True:
         classlist_name = input('Please enter a name for the class: ')
@@ -176,6 +205,12 @@ def take_classlist_name_input():
 
 
 def classlist_exists(classlist_name):
+    """
+    Checks if there is .cld file for classlist.
+
+    :param classlist_name: str
+    :return: bool
+    """
     classlist_file_path = Path(classlist_name, CLASSLIST_DATA_FILE_TYPE)
     return CLASSLIST_DATA_PATH.joinpath(classlist_file_path).exists()
 
