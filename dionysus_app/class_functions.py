@@ -58,6 +58,11 @@ def blank_class_dialogue():
 
 
 def take_class_data_input():
+    """
+    Take student names, avatars, return dictionary of data.
+
+    :return: dict
+    """
     class_data = {}
     while True:
         student_name = take_student_name_input(class_data)
