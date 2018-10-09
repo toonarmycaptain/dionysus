@@ -43,7 +43,7 @@ def create_classlist_data(classlist_name):  # TODO: fix path composition
             print("No students entered.")
         else:
             print(class_data)
-        
+
         # Can we use pickling instead of the following?
         classlist_file.write(class_data)  # writes JSON to the binary file
         time.sleep(2)
