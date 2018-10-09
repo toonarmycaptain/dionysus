@@ -25,12 +25,12 @@ def create_classlist_data(classlist_name):  # TODO: fix path composition
     data_file = classlist_name + CLASSLIST_DATA_FILE_TYPE
     classlist_data_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, data_file)
 
-    with open(classlist_data_path, 'w+') as classlist_file:
+    with open(classlist_data_path, 'wb+') as classlist_file:
         cancelled = False
         while True:
             class_data = take_class_data_input()
 
-            if class_data == '':  # Test for empty class.
+            if not class_data:  # Test for empty class.
                 cancelled = blank_class_dialogue()
                 if cancelled:
                     break
@@ -44,7 +44,8 @@ def create_classlist_data(classlist_name):  # TODO: fix path composition
         else:
             print(class_data)
 
-        classlist_file.write(class_data)  # consider using JSON?
+        # Can we use pickling instead of the following?
+        classlist_file.write(class_data)  # writes JSON to the binary file
         time.sleep(2)
 
 
@@ -60,16 +61,13 @@ def blank_class_dialogue():
 
 
 def take_class_data_input():
-    class_data = ''
+    class_data = {}
     while True:
-
         student_name = take_student_name_input(class_data)
         if student_name.upper() == 'END':
             break
-
         avatar_filename = take_student_avatar(student_name)
-        # else:
-        class_data += f'{student_name}, {avatar_filename}\n'  # consider using JSON? dictionaries?
+        class_data[student_name] = [avatar_filename]  # How to access real names?
     return class_data
 
 
