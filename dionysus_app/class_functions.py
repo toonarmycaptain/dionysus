@@ -67,7 +67,7 @@ def take_class_data_input():
         if student_name.upper() == 'END':
             break
         avatar_filename = take_student_avatar(student_name)
-        class_data[student_name] = [avatar_filename]  # How to access real names?
+        class_data[student_name] = [avatar_filename]
     return class_data
 
 
