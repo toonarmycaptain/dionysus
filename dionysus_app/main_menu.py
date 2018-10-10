@@ -4,7 +4,7 @@ Application main menu.
 
 import sys
 
-from dionysus_app.class_functions import create_classlist
+from dionysus_app.class_functions import ClassCreator
 
 
 def welcome_blurb():
@@ -30,7 +30,7 @@ def take_main_menu_input():
     :return: None
     """
     possible_options = {
-        '1': create_classlist,
+        '1': prompt_for_class_creation,
         '2': 'edit_classlist',
         '3': 'create_graph',
         'q': quit_app,
@@ -45,6 +45,11 @@ def take_main_menu_input():
             unselected = False  # Exiting the loop when chosen action finishes.
         except KeyError:
             print("Invalid input.")
+
+
+def prompt_for_class_creation():
+    creator = ClassCreator()
+    creator.proceed_to_class_setup()
 
 
 def quit_app():
