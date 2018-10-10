@@ -7,12 +7,12 @@ import pexpect.popen_spawn
 class TestClassList(TestCase):
 
     def setUp(self):
-        self.child = pexpect.spawn('python app_main.py')
+        self.child = pexpect.popen_spawn.PopenSpawn('python app_main.py')
         self.child.expect('1. Create a classlist', timeout=2)
         self.child.sendline('1')
 
     def tearDown(self):
-        self.child.kill(signal.SIGKILL)
+        self.child.kill(signal.SIGINT)
 
 
     def test_can_create_empty_class(self):
@@ -22,5 +22,5 @@ class TestClassList(TestCase):
         self.child.sendline('end')
         self.child.expect('Do you want to create an empty class?', timeout=2)
         self.child.sendline('y')
-        self.child.expect('Class: fooclass', timeout=2)
-        self.child.expect('No students entered', timeout=2)
+        self.child.expect('Class: fooclass', timeout=5)
+        self.child.expect('No students entered', timeout=5)
