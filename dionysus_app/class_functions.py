@@ -2,6 +2,7 @@
 Functions for creating, editing, dealing with classes.
 """
 
+import json
 import time
 from pathlib import Path
 
@@ -21,31 +22,28 @@ def create_classlist():
     create_classlist_data(classlist_name)
 
 
-def create_classlist_data(classlist_name):  # TODO: fix path composition
-    data_file = classlist_name + CLASSLIST_DATA_FILE_TYPE
-    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, data_file)
+def create_classlist_data(class_name: str):
 
-    with open(classlist_data_path, 'w+') as classlist_file:
-        cancelled = False
-        while True:
-            class_data = take_class_data_input()
+    class_data = compose_classlist_dialogue()
 
-            if class_data == '':  # Test for empty class.
-                cancelled = blank_class_dialogue()
-                if cancelled:
-                    break
-                # else: ie if not cancelled:
-                continue
-            break  # class_data not empty
+    class_data_feedback(class_name, class_data)
+    write_classlist_to_file(class_name, class_data)
+    time.sleep(2)  # Pause for user to look over feedback.
 
-        print(f'\nClass: {classlist_name}')
-        if cancelled:
-            print("No students entered.")
-        else:
-            print(class_data)
 
-        classlist_file.write(class_data)  # consider using JSON?
-        time.sleep(2)
+def compose_classlist_dialogue():
+    while True:
+        class_data = take_class_data_input()
+
+        if not class_data:  # Test for empty class.
+            cancelled = blank_class_dialogue()
+            if cancelled:
+                break
+            # else: ie if not cancelled:
+            continue
+        break  # class_data not empty
+
+    return class_data
 
 
 def blank_class_dialogue():
@@ -61,20 +59,17 @@ def blank_class_dialogue():
 
 def take_class_data_input():
     """
-    Continues to get pairs of values (student name, avatar filename) unless user type 'end'
+    Take student names, avatars, return dictionary of data.
 
-    :return: str
+    :return: dict
     """
-    class_data = ''
+    class_data = {}
     while True:
-
         student_name = take_student_name_input(class_data)
         if student_name.upper() == 'END':
             break
-
         avatar_filename = take_student_avatar(student_name)
-        # else:
-        class_data += f'{student_name}, {avatar_filename}\n'  # consider using JSON? dictionaries?
+        class_data[student_name] = [avatar_filename]
     return class_data
 
 
@@ -121,6 +116,54 @@ def take_student_avatar(student_name):
     # process_student_avatar()
     # convert to jpg or whatever, copy image file to class_data avatar folder with filename that is student name
     return avatar_filename
+
+
+def class_data_feedback(classlist_name: str, class_data_dict: dict):
+    """
+    Print classlist name and list of students as user feedback.
+
+    :param classlist_name: str
+    :param class_data_dict: dict
+    :return: None
+    """
+    print(f'\nClass name: {classlist_name}')
+    if not class_data_dict:
+        print("No students entered.")
+    else:
+        for key in class_data_dict:
+            print(key)
+
+
+def write_classlist_to_file(class_name: str, class_data_dict: dict):
+    """
+    Write classlist data to disk with format:
+
+    Classlist name
+    JSON'd class data dict  # Second line, when reading JSON back in.
+
+    :param class_name: str
+    :param class_data_dict: dict
+    :return: None
+    """
+    data_file = class_name + CLASSLIST_DATA_FILE_TYPE
+    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, data_file)
+
+    json_class_data = convert_to_json(class_data_dict)
+
+    with open(classlist_data_path, 'w') as classlist_file:
+        classlist_file.write(f'{class_name}\n')
+        classlist_file.write(json_class_data)  # writes JSON to the binary file
+
+
+def convert_to_json(data_to_convert):
+    """
+    Serialise data in JSON format, return as JSON string.
+
+    :param data_to_convert:
+    :return: str
+    """
+    converted_data = json.dumps(data_to_convert, indent=4)
+    return converted_data
 
 
 def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
