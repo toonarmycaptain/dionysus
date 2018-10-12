@@ -214,7 +214,7 @@ def register_class(classlist_name):
 
 def avatar_file_exists(avatar_file):
     """
-    Chcecks if provided file exists.
+    Checks if provided file exists.
 
     :param avatar_file: str
     :return: bool
