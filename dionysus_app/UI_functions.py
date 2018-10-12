@@ -38,7 +38,7 @@ def clean_for_filename(some_string: str):
 
     Returns a string with only alphanumeric characters and underscores.
 
-    # Possibly equivalent to:     ''.join([c for c in text if re.match(r'\w', c)])
+    # Possibly equivalent to: ''.join([c for c in text if re.match(r'\w', c)])
 
     :param some_string: str
     :return: str
@@ -60,5 +60,7 @@ def scrub_candidate_filename(dirty_string: str):
     :return: str
     """
     allowed_special_characters = [' ', '_', '-', "'"]  # TODO: test if apostrophe causes problems
-    cleaned_string = "".join([c for c in dirty_string if c.isalnum() or c in allowed_special_characters]).rstrip()
+    cleaned_string = "".join([c for c in dirty_string
+                              if c.isalnum()
+                              or c in allowed_special_characters]).rstrip()
     return cleaned_string
