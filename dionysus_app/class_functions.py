@@ -82,11 +82,11 @@ def take_student_name_input(class_data):
     """
     while True:
         student_name = input("Enter student name, or 'end': ")
-        if input_is_essentially_blank(student_name):  # Do not allow blank input TODO: include dash, underscore
+        if input_is_essentially_blank(student_name):  # Do not allow blank input
             print('Please enter a valid student name.')
             continue
 
-        if student_name in class_data:  # TODO: search for it in class - if it exists, ask for more input
+        if student_name in class_data:
             print("This student is already a member of the class.")
             continue
         return student_name
