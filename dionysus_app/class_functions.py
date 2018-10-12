@@ -152,7 +152,7 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
 
     with open(classlist_data_path, 'w') as classlist_file:
         classlist_file.write(f'{class_name}\n')
-        classlist_file.write(json_class_data)  # writes JSON to the binary file
+        classlist_file.write(json_class_data)
 
 
 def convert_to_json(data_to_convert):
