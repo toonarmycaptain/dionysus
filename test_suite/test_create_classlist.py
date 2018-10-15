@@ -1,5 +1,5 @@
 import signal
-from unittest import TestCase, mock
+from unittest import TestCase
 
 import pexpect.popen_spawn
 
