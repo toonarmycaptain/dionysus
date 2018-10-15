@@ -22,5 +22,5 @@ class TestClassList(TestCase):
         self.child.sendline('end')
         self.child.expect('Do you want to create an empty class?', timeout=2)
         self.child.sendline('y')
-        self.child.expect('Class: fooclass', timeout=5)
+        self.child.expect('Class name: fooclass', timeout=5)
         self.child.expect('No students entered', timeout=5)
