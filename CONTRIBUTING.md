@@ -18,7 +18,9 @@ The main thing here is *be nice*, be considerate to others. This includes writin
 
 Please include clear commit/PR comments, reference issues etc - this is helpful for anyone trying to follow along.
 
-If you want to suggest or implement new features - open an issue, make a PR! Anything that's useful without cluttering
+Please keep PRs to one issue as much as possible! Multiple PRs for separate issues is fine and keeps things simple. 
+
+If you want to suggest or implement new features - email, open an issue, make a PR! Anything that's useful without cluttering
 the UI too much is welcome.
 
 
@@ -32,7 +34,7 @@ Clear, well documented code is the goal.
 
 Document. 
 
-Use [typehints](https://docs.python.org/3/library/typing.html). This can be invaluable for avoiding/finding bugs!
+Use [type hints](https://docs.python.org/3/library/typing.html). This can be invaluable for avoiding/finding bugs!
 
 
 ## Documentation
@@ -40,14 +42,14 @@ Use [typehints](https://docs.python.org/3/library/typing.html). This can be inva
 So far documentation conforms roughly to a reST/Sphinx style, which happens to also be the default for PyCharm:
 
 ```python
-def myfunction(param0: type, param1: str, param2: dict):
+def my_function(param0: type, param1: str, param2: dict):
     """
     This is a reST style. 
     Miss a line between docstring text and parameters/return/exceptions.
     If there are multiple parameters, multiple potential errors raise/handled, it can be clearer
-    to separate the grouped category, much like in Google's styleguide. 
+    to separate the grouped category, much like in Google's style guide. 
 
-    :param param0: type explantion
+    :param param0: type explanation
     :param param1: str this is explanation for first param
     :param param2: dict this is another parameter  # given 3 params, might be clearer with newline here.
     :returns: this is a description of what is returned
