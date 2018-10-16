@@ -4,7 +4,7 @@ Main script, menu.
 import os
 import sys
 
-from dionysus_app.class_registry import cache_class_registry
+from dionysus_app.class_registry import cache_class_registry, check_registry_on_exit
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.main_menu import run_main_menu
 
@@ -40,6 +40,8 @@ def run_app():
     cache_class_registry()
 
     run_main_menu()  # startup checks successful, enter UI.
+
+    check_registry_on_exit() # Dump cached registry to disk if different class_registry.index.
 
 
 if __name__ == "__main__":
