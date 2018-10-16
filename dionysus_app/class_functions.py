@@ -10,7 +10,6 @@ from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
-CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
 CLASSLIST_DATA_FILE_TYPE = '.cld'
 
 
@@ -198,18 +197,6 @@ def setup_class_data_storage(classlist_name):
 
     avatar_path.mkdir(exist_ok=True, parents=True)
     graph_path.mkdir(exist_ok=True, parents=True)
-
-
-def register_class(classlist_name):
-    """
-    Register class in class_registry file.
-    Create if registry non-existent.
-
-    :param classlist_name: str
-    :return: None
-    """
-    with open(CLASS_REGISTRY_PATH, 'a+') as class_registry:  # open class registry, create if does not exist.
-        class_registry.write(f'{classlist_name}\n')
 
 
 def avatar_file_exists(avatar_file):
