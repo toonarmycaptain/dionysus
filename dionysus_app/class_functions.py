@@ -6,8 +6,8 @@ import json
 import time
 from pathlib import Path
 
-from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 from dionysus_app.data_folder import DataFolder
+from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
