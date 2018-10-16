@@ -8,10 +8,9 @@ from pathlib import Path
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
-from dionysus_app.class_registry import register_class
+from dionysus_app.class_registry import register_class, CLASSLIST_DATA_FILE_TYPE
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
-CLASSLIST_DATA_FILE_TYPE = '.cld'
 
 
 def create_classlist():
