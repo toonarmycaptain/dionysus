@@ -51,5 +51,9 @@ def register_class(classlist_name):
         class_registry.write(f'{classlist_name}\n')
 
 
+def check_registry_on_exit():
+    if open(CLASS_REGISTRY_PATH, 'r').readlines() != CLASS_REGISTRY:
+        write_registry_to_disk(CLASS_REGISTRY)
+
 if __name__ == '__main__':
     print(cache_class_registry())
