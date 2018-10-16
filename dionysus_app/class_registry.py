@@ -2,6 +2,8 @@
 Functions dealing with the class registry.
 """
 
+from dionysus_app.data_folder import DataFolder
+
 CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
 
 def register_class(classlist_name):
