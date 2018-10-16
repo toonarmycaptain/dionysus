@@ -4,8 +4,9 @@ Main script, menu.
 import os
 import sys
 
-from dionysus_app.main_menu import run_main_menu
+from dionysus_app.class_registry import cache_class_registry
 from dionysus_app.data_folder import DataFolder
+from dionysus_app.main_menu import run_main_menu
 
 
 def data_folder_check():
@@ -24,14 +25,6 @@ def data_folder_check():
         data_folders[key].mkdir(parents=True, exist_ok=True)
 
 
-# TODO: if the file structure already exists, check for previously created classes
-    # Check for a class_registry.index in app_data directory
-    #     If list exists, compare with folders (? or .cld files ?) within class_data.
-    #         Use pathlib.iterdir() - https://docs.python.org/3.4/library/pathlib.html#basic-use
-    #                               - https://stackoverflow.com/a/44228436/7942600
-    #     Else check for classes, create class_registry.
-
-
 def run_app():
     """
     Env/system checks. Data setup.
@@ -43,6 +36,8 @@ def run_app():
     os.chdir(sys.path[0])  # Make sure cwd is directory os script.
 
     data_folder_check()
+
+    cache_class_registry()
 
     run_main_menu()  # startup checks successful, enter UI.
 
