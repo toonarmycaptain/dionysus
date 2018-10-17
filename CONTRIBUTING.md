@@ -55,7 +55,6 @@ def my_function(param0: type, param1: str, param2: dict):
     """
 ```
 
-
 ## PR notes
 
 -   Some of the code review tools (particularly Codacy) flag good code as issues (eg `assert` used in tests,
