@@ -234,7 +234,7 @@ def take_classlist_name_input():
     return classlist_name
 
 
-def classlist_exists(classlist_name):  # TODO: use class_registry dict instead.
+def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
     """
     Checks if there is .cld file for classlist.
 
