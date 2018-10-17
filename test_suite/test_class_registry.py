@@ -35,6 +35,7 @@ class TestLoadNonexistentRegistryWithClassData:
     # confirm created registry file has correct data
 
 class TestAddClassToNewRegistry(unittest.TestCase):
+    pass
     # setup:
     #     dummy CLASS_REGISTRY_PATH?
     #     dummy classlist_name
@@ -46,6 +47,7 @@ class TestAddClassToNewRegistry(unittest.TestCase):
 
 
 class TestAddClassExistingRegistry(unittest.TestCase):
+    pass
     # setup:
     #     dummy CLASS_REGISTRY_PATH?
     #     dummy existing class registry
