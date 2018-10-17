@@ -13,6 +13,8 @@ to students in graphical form, using student created avatars instead of names.
 
 [Documentation](#documentation)
 
+[PR/Commit notes](#PR/Commit notes)
+
 ## Code of Conduct
 The main thing here is *be nice*, be considerate to others. This includes writing clear, documented code!
 
@@ -52,3 +54,12 @@ def my_function(param0: type, param1: str, param2: dict):
     :raises keyError: raises an exception
     """
 ```
+
+
+## PR/Commit notes
+- Some of the code review tools (particularly Codacy) flag good code as issues (eg `assert` used in tests,
+ correctly formatted f-strings). Please leave a comment about any issues the reviewers flag that you believe are 
+ are false flags, so that they can be ignored in those integrations. Legitimate issues, please amend the PR to fix them!
+- Small commits with well described commit messages, and single issue PRs are preferable to monolithic commits that add 
+several features and address multiple issues - it's far easier to review, fix/modify if necessary, and merge simple PRs 
+than complex ones!
