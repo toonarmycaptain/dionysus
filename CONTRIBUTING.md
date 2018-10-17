@@ -1,4 +1,4 @@
-[This document is a work in progress.]
+\[This document is a work in progress.]
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
@@ -23,9 +23,6 @@ Please keep PRs to one issue as much as possible! Multiple PRs for separate issu
 If you want to suggest or implement new features - email, open an issue, make a PR! Anything that's useful without cluttering
 the UI too much is welcome.
 
-
-
-
 ## Codestyle
 
 Conform to [PEP8](https://www.python.org/dev/peps/pep-0008/) as much as possible/sensible. 
@@ -35,7 +32,6 @@ Clear, well documented code is the goal.
 Document. 
 
 Use [type hints](https://docs.python.org/3/library/typing.html). This can be invaluable for avoiding/finding bugs!
-
 
 ## Documentation
 
