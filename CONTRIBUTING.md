@@ -63,3 +63,4 @@ def my_function(param0: type, param1: str, param2: dict):
 - Small commits with well described commit messages, and single issue PRs are preferable to monolithic commits that add 
 several features and address multiple issues - it's far easier to review, fix/modify if necessary, and merge simple PRs 
 than complex ones!
+- Tests for new or modified features are requested with the PR, but not required.
