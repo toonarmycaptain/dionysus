@@ -19,8 +19,9 @@ def cache_class_registry():
 
 
 def generate_registry_from_filesystem():
-    registry_list = [x.stem for x in CLASSLIST_DATA_PATH.rglob(f'**/*{CLASSLIST_DATA_FILE_TYPE}')]
-    return registry_list
+        classlist_data_fullpaths = CLASSLIST_DATA_PATH.rglob(f'**/*{CLASSLIST_DATA_FILE_TYPE}')
+        registry_list = [x.stem for x in classlist_data_fullpaths]
+        return registry_list
 
 
 def write_registry_to_disk(registry_list: list):
@@ -54,7 +55,6 @@ def register_class(classlist_name):
 def check_registry_on_exit():
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != CLASS_REGISTRY:
         write_registry_to_disk(CLASS_REGISTRY)
-
 
 if __name__ == '__main__':
     print(cache_class_registry())
