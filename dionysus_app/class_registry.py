@@ -19,7 +19,8 @@ def cache_class_registry():
 
 
 def generate_registry_from_filesystem():
-        registry_list = [x.stem for x in CLASSLIST_DATA_PATH.rglob(f'**/*{CLASSLIST_DATA_FILE_TYPE}')]
+        classlist_data_fullpaths = CLASSLIST_DATA_PATH.rglob(f'**/*{CLASSLIST_DATA_FILE_TYPE}')
+        registry_list = [x.stem for x in classlist_data_fullpaths]
         return registry_list
 
 
