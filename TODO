@@ -9,7 +9,7 @@ Write tests
 Implement logging
 Take full name and nickname/firstname for use instead of avatar, or if no avatar is provided.
 Option to use full name or firstname/nickname instead of avatar.
-Have default avatar if none provided - option to use this if student with no avatar is detected during chart creation.
+Have default avatar if none provided.
 
 
 GUI
