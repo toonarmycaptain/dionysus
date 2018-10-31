@@ -2,6 +2,15 @@ import unittest
 
 from dionysus_app.class_registry import register_class
 
+
+class TestLoadNonexistentRegistry(unittest.TestCase):
+    pass
+
+
+class TestLoadExistingRegistry(unittest.TestCase):
+    pass
+
+
 class TestAddClassToNewRegistry(unittest.TestCase):
     pass
     # setup:
@@ -13,6 +22,7 @@ class TestAddClassToNewRegistry(unittest.TestCase):
     # confirm classlist_name in cached registry dict
     # confirm classlist_name in registry file
 
+
 class TestAddClassExistingRegistry(unittest.TestCase):
     pass
     # setup:
@@ -23,8 +33,3 @@ class TestAddClassExistingRegistry(unittest.TestCase):
     # test add class to registry
     # confirm classlist_name in cached registry dict
     # confirm classlist_name in registry file
-
-
-
-
-
