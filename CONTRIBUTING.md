@@ -3,7 +3,7 @@
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
 This project is open source, primarily aimed at teachers. 
-This is a project designed primarily for teachers to present assessment results/snapshots of a classes' grades 
+This project is designed primarily for teachers to present assessment results/snapshots of a classes' grades 
 to students in graphical form, using student created avatars instead of names.
 
 #### Table Of Contents
@@ -57,6 +57,9 @@ def my_function(param0: type, param1: str, param2: dict):
 
 ## PR notes
 
+-   Make PRs to development branch, or appropriate feature branch if it exists (if you'd like to collaborate on a 
+new feature or issue, leave a comment and a branch can be created).
+
 -   Some of the code review tools (particularly Codacy) flag good code as issues (eg `assert` used in tests,
  correctly formatted f-strings). Please leave a comment about any issues the reviewers flag that you believe are 
  are false flags, so that they can be ignored in those integrations. Legitimate issues, please amend the PR to fix them!
@@ -66,4 +69,5 @@ several features and address multiple issues - it's far easier to review, fix/mo
 than complex ones!
 
 -   Tests for new or modified features are requested with the PR, but not required.
+  
   
