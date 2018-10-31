@@ -8,7 +8,7 @@ from pathlib import Path
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
-from dionysus_app.class_registry import register_class, CLASSLIST_DATA_FILE_TYPE
+from dionysus_app.class_registry import CLASSLIST_DATA_FILE_TYPE, classlist_exists, register_class
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
@@ -232,18 +232,6 @@ def take_classlist_name_input():
             continue
         break
     return classlist_name
-
-
-def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
-    """
-    Checks if there is .cld file for classlist.
-
-    :param classlist_name: str
-    :return: bool
-    """
-    # Path within class_data folder: classlist_name\classlist_name.cld
-    classlist_datafile_path = Path(classlist_name, classlist_name + CLASSLIST_DATA_FILE_TYPE)
-    return CLASSLIST_DATA_PATH.joinpath(classlist_datafile_path).exists()
 
 
 if __name__ == '__main__':

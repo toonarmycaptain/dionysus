@@ -52,6 +52,18 @@ def register_class(classlist_name):
         class_registry.write(f'{classlist_name}\n')
 
 
+def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
+    """
+    Checks if there is .cld file for classlist.
+
+    :param classlist_name: str
+    :return: bool
+    """
+    # Path within class_data folder: classlist_name\classlist_name.cld
+    classlist_datafile_path = Path(classlist_name, classlist_name + CLASSLIST_DATA_FILE_TYPE)
+    return CLASSLIST_DATA_PATH.joinpath(classlist_datafile_path).exists()
+
+
 def check_registry_on_exit():
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != CLASS_REGISTRY:
         write_registry_to_disk(CLASS_REGISTRY)
