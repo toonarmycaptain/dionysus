@@ -54,14 +54,12 @@ def register_class(classlist_name):
 
 def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
     """
-    Checks if there is .cld file for classlist.
+    Checks if there an entry in CLASS_REGISTRY for the given classlist_name.
 
     :param classlist_name: str
     :return: bool
     """
-    # Path within class_data folder: classlist_name\classlist_name.cld
-    classlist_datafile_path = Path(classlist_name, classlist_name + CLASSLIST_DATA_FILE_TYPE)
-    return CLASSLIST_DATA_PATH.joinpath(classlist_datafile_path).exists()
+    return classlist_name in CLASS_REGISTRY
 
 
 def check_registry_on_exit():
