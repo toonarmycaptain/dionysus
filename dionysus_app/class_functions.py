@@ -241,8 +241,9 @@ def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
     :param classlist_name: str
     :return: bool
     """
-    classlist_file_path = Path(classlist_name, CLASSLIST_DATA_FILE_TYPE)
-    return CLASSLIST_DATA_PATH.joinpath(classlist_file_path).exists()
+    # Path within class_data folder: classlist_name\classlist_name.cld
+    classlist_datafile_path = Path(classlist_name, classlist_name + CLASSLIST_DATA_FILE_TYPE)
+    return CLASSLIST_DATA_PATH.joinpath(classlist_datafile_path).exists()
 
 
 if __name__ == '__main__':
