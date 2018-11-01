@@ -52,6 +52,16 @@ def register_class(classlist_name):
         class_registry.write(f'{classlist_name}\n')
 
 
+def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
+    """
+    Checks if there an entry in CLASS_REGISTRY for the given classlist_name.
+
+    :param classlist_name: str
+    :return: bool
+    """
+    return classlist_name in CLASS_REGISTRY
+
+
 def check_registry_on_exit():
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != CLASS_REGISTRY:
         write_registry_to_disk(CLASS_REGISTRY)
