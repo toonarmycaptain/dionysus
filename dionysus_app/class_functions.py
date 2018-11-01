@@ -222,9 +222,6 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
 
 
 
-# TODO: reorder/rearrange functions
-
-
 if __name__ == '__main__':
     create_classlist()
     # similarly for edit classlist - with open(classlist_name + '.txt', 'r+') as classlist_file: to edit
