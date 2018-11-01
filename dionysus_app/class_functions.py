@@ -21,6 +21,62 @@ def create_classlist():
     create_classlist_data(classlist_name)
 
 
+def take_classlist_name_input():
+    """
+    Prompts user for classlist name.
+    It repeats until user provide correct classlist name.
+
+    :return: str
+    """
+
+    while True:
+        classlist_name = input('Please enter a name for the class: ')
+
+        if input_is_essentially_blank(classlist_name):  # blank input
+            continue
+
+        classlist_name = clean_for_filename(classlist_name)
+        if classlist_exists(classlist_name):
+            print('A class with this name already exists.')
+            continue
+        break
+    return classlist_name
+
+
+def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
+    """
+    Setup class data storage file structure.
+    Register class in class_registry index
+
+    :param classlist_name:
+    :return:
+    """
+    setup_class_data_storage(classlist_name)
+    register_class(classlist_name)
+
+
+def setup_class_data_storage(classlist_name):
+    """
+    Setup data storage for new classes.
+
+    Structure for data storage:
+    app_data/
+        class_data/
+            class_name/  # folder for each class
+                graph_data/  # store graph data sets
+                avatars/  # store avatars for class
+
+
+    :param classlist_name: str
+    :return: None
+    """
+    avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
+    graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'graph_data')
+
+    avatar_path.mkdir(exist_ok=True, parents=True)
+    graph_path.mkdir(exist_ok=True, parents=True)
+
+
 def create_classlist_data(class_name: str):
 
     class_data = compose_classlist_dialogue()
@@ -43,17 +99,6 @@ def compose_classlist_dialogue():
         break  # class_data not empty
 
     return class_data
-
-
-def blank_class_dialogue():
-    while True:
-        choice = input("Do you want to create an empty class? y/n")
-        if choice.upper() == 'Y':
-            return True
-        if choice.upper() == 'N':
-            return False
-        # TODO: Option to cancel creation here/after entering a class name (eg made typo in class name)
-        print('Please enter y for yes to create empty class, or n to return to student input.')
 
 
 def take_class_data_input():
@@ -117,6 +162,27 @@ def take_student_avatar(student_name):
     return avatar_filename
 
 
+def avatar_file_exists(avatar_file):
+    """
+    Checks if provided file exists.
+
+    :param avatar_file: str
+    :return: bool
+    """
+    return Path(avatar_file).expanduser().resolve().exists()
+
+
+def blank_class_dialogue():
+    while True:
+        choice = input("Do you want to create an empty class? y/n")
+        if choice.upper() == 'Y':
+            return True
+        if choice.upper() == 'N':
+            return False
+        # TODO: Option to cancel creation here/after entering a class name (eg made typo in class name)
+        print('Please enter y for yes to create empty class, or n to return to student input.')
+
+
 def class_data_feedback(classlist_name: str, class_data_dict: dict):
     """
     Print classlist name and list of students as user feedback.
@@ -165,73 +231,7 @@ def convert_to_json(data_to_convert):
     return converted_data
 
 
-def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
-    """
-    Setup class data storage file structure.
-    Register class in class_registry index
-
-    :param classlist_name:
-    :return:
-    """
-    setup_class_data_storage(classlist_name)
-    register_class(classlist_name)
-
-
-def setup_class_data_storage(classlist_name):
-    """
-    Setup data storage for new classes.
-
-    Structure for data storage:
-    app_data/
-        class_data/
-            class_name/  # folder for each class
-                graph_data/  # store graph data sets
-                avatars/  # store avatars for class
-
-
-    :param classlist_name: str
-    :return: None
-    """
-    avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
-    graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'graph_data')
-
-    avatar_path.mkdir(exist_ok=True, parents=True)
-    graph_path.mkdir(exist_ok=True, parents=True)
-
-
-def avatar_file_exists(avatar_file):
-    """
-    Checks if provided file exists.
-
-    :param avatar_file: str
-    :return: bool
-    """
-    return Path(avatar_file).expanduser().resolve().exists()
-
-
 # TODO: reorder/rearrange functions
-
-
-def take_classlist_name_input():
-    """
-    Prompts user for classlist name.
-    It repeats until user provide correct classlist name.
-
-    :return: str
-    """
-
-    while True:
-        classlist_name = input('Please enter a name for the class: ')
-
-        if input_is_essentially_blank(classlist_name):  # blank input
-            continue
-
-        classlist_name = clean_for_filename(classlist_name)
-        if classlist_exists(classlist_name):
-            print('A class with this name already exists.')
-            continue
-        break
-    return classlist_name
 
 
 if __name__ == '__main__':
