@@ -231,9 +231,6 @@ def convert_to_json(data_to_convert):
     return converted_data
 
 
-# TODO: reorder/rearrange functions
-
-
 if __name__ == '__main__':
     create_classlist()
     # similarly for edit classlist - with open(classlist_name + '.txt', 'r+') as classlist_file: to edit
