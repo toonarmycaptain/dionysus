@@ -2,13 +2,14 @@
 Functions for creating, editing, dealing with classes.
 """
 
-import json
 import time
 from pathlib import Path
 
-from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
-from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 from dionysus_app.class_registry import classlist_exists, register_class
+from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
+from dionysus_app.file_functions import convert_to_json
+from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
+
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
@@ -153,16 +154,6 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
         classlist_file.write(f'{class_name}\n')
         classlist_file.write(json_class_data)
 
-
-def convert_to_json(data_to_convert):
-    """
-    Serialise data in JSON format, return as JSON string.
-
-    :param data_to_convert:
-    :return: str
-    """
-    converted_data = json.dumps(data_to_convert, indent=4)
-    return converted_data
 
 
 def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
