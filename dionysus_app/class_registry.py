@@ -2,11 +2,11 @@
 Functions dealing with the class registry.
 """
 
-from dionysus_app.data_folder import DataFolder
+from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
-CLASSLIST_DATA_FILE_TYPE = '.cld'
+
 
 
 def cache_class_registry():

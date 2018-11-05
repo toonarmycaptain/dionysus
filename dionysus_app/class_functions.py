@@ -6,9 +6,9 @@ import json
 import time
 from pathlib import Path
 
-from dionysus_app.data_folder import DataFolder
+from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
-from dionysus_app.class_registry import CLASSLIST_DATA_FILE_TYPE, classlist_exists, register_class
+from dionysus_app.class_registry import classlist_exists, register_class
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
