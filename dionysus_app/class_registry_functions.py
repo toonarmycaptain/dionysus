@@ -10,7 +10,6 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
 
 
-
 def cache_class_registry():
     """
     Initialises CLASS_REGISTRY global variable and writes registry to disk.
@@ -74,5 +73,6 @@ def check_registry_on_exit():
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != class_registry.REGISTRY:
         write_registry_to_disk(class_registry.REGISTRY)
 
+
 if __name__ == '__main__':
-    print(cache_class_registry())
+    pass
