@@ -3,6 +3,10 @@ from pathlib import Path
 from definitions import ROOT_DIR
 
 
+CLASSLIST_DATA_FILE_TYPE = '.cld'
+CHART_DATA_FILE_TYPE = '.cdf'
+
+
 class DataFolder(Enum):
     APP_DATA = './dionysus_app/app_data/'
     CLASS_DATA = APP_DATA + 'class_data'
