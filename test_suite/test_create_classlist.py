@@ -23,3 +23,13 @@ class TestClassList(TestCase):
         self.child.sendline('y')
         self.child.expect('Class name: fooclass', timeout=5)
         self.child.expect('No students entered', timeout=5)
+
+        
+    def test_create_nonempty_class(self):
+        pass
+
+    
+    def test_create_class_with_already_existing_classname(self):
+        pass
+    
+    

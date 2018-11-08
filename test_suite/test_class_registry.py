@@ -1,5 +1,6 @@
 import unittest
 
+
 from dionysus_app.class_registry_functions import register_class
 
 
