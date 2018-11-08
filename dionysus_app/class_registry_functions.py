@@ -17,7 +17,9 @@ def cache_class_registry():
     CLASS_REGISTRY = generate_registry_from_filesystem()
     write_registry_to_disk(CLASS_REGISTRY)
 
-    return CLASS_REGISTRY  # return value unused on startup
+    registry = generate_registry_from_filesystem()
+    write_registry_to_disk(registry)
+    return registry  # return value unused on startup
 
 
 def generate_registry_from_filesystem():
@@ -33,9 +35,9 @@ def write_registry_to_disk(registry_list: list):
     :param registry_list: list
     :return: None
     """
-    with open(CLASS_REGISTRY_PATH, 'w') as class_registry:
+    with open(CLASS_REGISTRY_PATH, 'w') as registry_file:
         for classlist_name in registry_list:
-            class_registry.write(f'{classlist_name}\n')
+            registry_file.write(f'{classlist_name}\n')
 
 
 def register_class(classlist_name):
@@ -48,10 +50,8 @@ def register_class(classlist_name):
     """
     class_registry.REGISTRY.append(classlist_name)
 
-    CLASS_REGISTRY.append(classlist_name)
-
-    with open(CLASS_REGISTRY_PATH, 'a+') as class_registry:  # open class registry, create if does not exist.
-        class_registry.write(f'{classlist_name}\n')
+    with open(CLASS_REGISTRY_PATH, 'a+') as registry:  # open class registry, create if does not exist.
+        registry.write(f'{classlist_name}\n')
 
 
 def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
