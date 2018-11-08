@@ -2,6 +2,8 @@
 Functions dealing with the class registry.
 """
 
+import class_registry
+
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
@@ -44,7 +46,7 @@ def register_class(classlist_name):
     :param classlist_name: str
     :return: None
     """
-    global CLASS_REGISTRY
+    class_registry.REGISTRY.append(classlist_name)
 
     CLASS_REGISTRY.append(classlist_name)
 
@@ -59,12 +61,12 @@ def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
     :param classlist_name: str
     :return: bool
     """
-    return classlist_name in CLASS_REGISTRY
+    return classlist_name in class_registry.REGISTRY
 
 
 def check_registry_on_exit():
-    if open(CLASS_REGISTRY_PATH, 'r').readlines() != CLASS_REGISTRY:
-        write_registry_to_disk(CLASS_REGISTRY)
+    if open(CLASS_REGISTRY_PATH, 'r').readlines() != class_registry.REGISTRY:
+        write_registry_to_disk(class_registry.REGISTRY)
 
 if __name__ == '__main__':
     print(cache_class_registry())

@@ -1,6 +1,6 @@
 import unittest
 
-from dionysus_app.class_registry import register_class
+from dionysus_app.class_registry_functions import register_class
 
 
 class TestLoadNonexistentRegistryWithNoClassData(unittest.TestCase):
