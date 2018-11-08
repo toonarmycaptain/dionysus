@@ -9,7 +9,7 @@ import dionysus_app.class_registry as class_registry
 
 from dionysus_app.class_registry_functions import classlist_exists, register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
-from dionysus_app.file_functions import convert_to_json
+from dionysus_app.file_functions import convert_to_json, load_from_json
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
 
 
@@ -245,7 +245,7 @@ def create_class_dict():
     return class_dict
 
 
-def display_classes_menu(class_options: dict):
+def display_class_selection_menu(class_options: dict):
     print("Select class from list:")
     for key, class_name in class_options.items():
         print(f'{key}. {class_name}')
@@ -265,6 +265,45 @@ def take_class_selection(class_options):
             print("Invalid input.\nPlease enter the integer beside the name of the desired class.")
 
     return selected_class
+
+
+def create_student_list_dict(class_name: str):
+    """
+    Create dict with enumerated students, starting at 1.
+
+
+    :param class_name: str
+    :return:
+    """
+    class_data = load_class_data(class_name)
+    student_list_dict = {str(option): class_name for option, class_name in enumerate(class_data.keys, start=1)}
+    return student_list_dict
+
+
+def load_class_data(class_name: str):
+    """
+    Load class data from a class data ('.cld') file.
+
+    Data will be a dict with format:
+                                keys: student name
+                                values: list currently only containing the avatar filename/None.
+
+    :param class_name: str
+    :return: dict
+    """
+
+    class_data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
+    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, class_data_filename)
+    with open(classlist_data_path, 'r') as class_datafile:
+        loaded_class_json = class_datafile.read()
+        class_data_dict = load_from_json(loaded_class_json)
+    return class_data_dict
+
+
+def display_student_selection_menu(student_list: dict):
+    print("Select student from list:")
+    for key, class_name in student_list.items():
+        print(f'{key}. {class_name}')
 
 
 if __name__ == '__main__':
