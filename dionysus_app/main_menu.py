@@ -5,6 +5,7 @@ Application main menu.
 import sys
 
 from dionysus_app.class_functions import create_classlist
+from dionysus_app.graph_generator.create_graph import new_graph
 
 
 def welcome_blurb():
@@ -32,7 +33,7 @@ def take_main_menu_input():
     possible_options = {
         '1': create_classlist,
         '2': 'edit_classlist',
-        '3': 'create_graph',
+        '3': new_graph,
         'q': quit_app,
         'Q': quit_app,
         }
