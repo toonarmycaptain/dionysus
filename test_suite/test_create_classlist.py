@@ -16,7 +16,7 @@ class TestClassList(TestCase):
 
     def test_can_create_empty_class(self):
         self.child.expect('Please enter a name for the class:', timeout=2)
-        self.child.sendline('fooclass')
+        self.child.sendline('fooclass')  # NB this will fail on subsequent runs when run locally.
         self.child.expect("Enter student name, or 'end':", timeout=2)
         self.child.sendline('end')
         self.child.expect('Do you want to create an empty class?', timeout=2)
