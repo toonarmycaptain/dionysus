@@ -15,3 +15,17 @@ def convert_to_json(data_to_convert):
     """
     converted_data = json.dumps(data_to_convert, indent=4)
     return converted_data
+
+
+def load_from_json(data_to_convert: str):
+    """
+    Convert data from JSON to python object.
+
+    :param data_to_convert: str
+    :return:
+    """
+    converted_data = json.loads(data_to_convert)
+    return converted_data
+
+
+# use Path.rename(new_name) to rename a class.
