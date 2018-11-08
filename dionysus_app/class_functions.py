@@ -228,14 +228,12 @@ def select_classlist():
 
     :return: str
     """
-    # create_class_dict
-    # display_classes_menu
-    # take class selection
+    class_options = create_class_list_dict()
+    display_class_selection_menu(class_options)
 
-    class_options = create_class_dict()
-    display_classes_menu(class_options)
-    return take_class_selection(class_options)
+    selected_class =  take_class_selection(class_options)
 
+    return selected_class
 
 def create_class_dict():
     """
