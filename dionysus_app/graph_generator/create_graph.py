@@ -7,7 +7,7 @@ Immediate enhancement from there will be variable ranges for the graph, columns 
 a percentage, or column widths of 5pts rather than 10. Other potential concern is graph being too high, so some
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
-from class_functions import select_classlist
+from dionysus_app.class_functions import select_classlist
 
 
 def new_graph():

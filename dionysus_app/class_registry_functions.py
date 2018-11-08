@@ -2,7 +2,7 @@
 Functions dealing with the class registry.
 """
 
-import class_registry
+import dionysus_app.class_registry as class_registry
 
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 

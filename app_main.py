@@ -4,7 +4,7 @@ Main script, menu.
 import os
 import sys
 
-import class_registry
+import dionysus_app.class_registry as class_registry
 
 from dionysus_app.class_registry_functions import cache_class_registry, check_registry_on_exit
 from dionysus_app.data_folder import DataFolder
