@@ -12,10 +12,11 @@ CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.val
 
 
 def cache_class_registry():
+    """
+    Initialises CLASS_REGISTRY global variable and writes registry to disk.
 
-    global CLASS_REGISTRY
-    CLASS_REGISTRY = generate_registry_from_filesystem()
-    write_registry_to_disk(CLASS_REGISTRY)
+    :return: list
+    """
 
     registry = generate_registry_from_filesystem()
     write_registry_to_disk(registry)
@@ -23,6 +24,11 @@ def cache_class_registry():
 
 
 def generate_registry_from_filesystem():
+    """
+    Searches class_data folder for .cld files and returns a list of the file names without the extension.
+
+    :return: list
+    """
     classlist_data_fullpaths = CLASSLIST_DATA_PATH.rglob(f'**/*{CLASSLIST_DATA_FILE_TYPE}')
     registry_list = [x.stem for x in classlist_data_fullpaths]
     return registry_list
