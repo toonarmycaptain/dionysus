@@ -35,7 +35,7 @@ def take_main_menu_input():
         '3': 'create_graph',
         'q': quit_app,
         'Q': quit_app,
-    }
+        }
     unselected = True
     while unselected:
         chosen_option = input('>>> ')

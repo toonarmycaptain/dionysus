@@ -22,7 +22,8 @@ def data_folder_check():
         DataFolder.APP_DATA: DataFolder.generate_rel_path(DataFolder.APP_DATA.value),
         DataFolder.CLASS_DATA: DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value),
         DataFolder.IMAGE_DATA: DataFolder.generate_rel_path(DataFolder.IMAGE_DATA.value),
-    }
+        }
+
     for key in data_folders:
         data_folders[key].mkdir(parents=True, exist_ok=True)
 
@@ -43,7 +44,7 @@ def run_app():
 
     run_main_menu()  # startup checks successful, enter UI.
 
-    check_registry_on_exit() # Dump cached registry to disk if different class_registry.index.
+    check_registry_on_exit()  # Dump cached registry to disk if different class_registry.index.
 
 
 if __name__ == "__main__":
