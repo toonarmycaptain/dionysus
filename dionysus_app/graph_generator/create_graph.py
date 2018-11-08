@@ -8,6 +8,7 @@ a percentage, or column widths of 5pts rather than 10. Other potential concern i
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
 from dionysus_app.class_functions import select_classlist
+from dionysus_app.graph_generator.take_graph_data import take_score_data
 
 
 def new_graph():
@@ -22,4 +23,13 @@ def new_graph():
     #   - potential options in those scripts (or here) to include:
     #       - graph/image title options
     #       - axis labels, scale/axis tick markings
+
+    # chart_name
     class_name = select_classlist()
+    # TODO: warn for empty classlist
+    print(f'Enter student scores for {class_name}: ')
+    student_scores: dict = take_score_data(class_name)
+
+
+if __name__ == '__main__':
+    pass
