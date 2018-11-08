@@ -12,8 +12,7 @@ class TestClassList(TestCase):
         self.child.sendline('1')
 
     def tearDown(self):
-        self.child.kill(signal.SIGINT)
-
+        self.child.kill(signal.SIGINT)  # TODO: remove created fooclass files after test.
 
     def test_can_create_empty_class(self):
         self.child.expect('Please enter a name for the class:', timeout=2)
