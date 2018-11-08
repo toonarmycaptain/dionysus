@@ -206,7 +206,6 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
     """
     Write classlist data to disk with format:
 
-    Classlist name
     JSON'd class data dict  # Second line, when reading JSON back in.
 
     :param class_name: str
@@ -219,7 +218,6 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
     json_class_data = convert_to_json(class_data_dict)
 
     with open(classlist_data_path, 'w') as classlist_file:
-        classlist_file.write(f'{class_name}\n')
         classlist_file.write(json_class_data)
 
 
