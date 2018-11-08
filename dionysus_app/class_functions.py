@@ -223,6 +223,54 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
         classlist_file.write(json_class_data)
 
 
+def select_classlist():
+    """
+    Display list of existent classes from class_registry and allow user to select one, returning the name of the
+    selected class.
+
+    :return: str
+    """
+    # create_class_dict
+    # display_classes_menu
+    # take class selection
+
+    class_options = create_class_dict()
+    display_classes_menu(class_options)
+    return take_class_selection(class_options)
+
+
+def create_class_dict():
+    """
+    Create dict with enumerated classes, starting at 1. 
+    
+    :return: dict
+    """
+    class_dict = {str(option): class_name for option, class_name in enumerate(class_registry.REGISTRY, start=1)}
+    return class_dict
+
+
+def display_classes_menu(class_options: dict):
+    print("Select class from list:")
+    for key, class_name in class_options.items():
+        print(f'{key}. {class_name}')
+
+
+def take_class_selection(class_options):
+
+    unselected = True
+    selected_class = None
+    while unselected:
+        chosen_option = input('Select class: ')
+
+        try:
+            selected_class = class_options[chosen_option]
+            unselected = False  # Exiting the loop when chosen action finishes.
+        except KeyError:
+            print("Invalid input.\nPlease enter the integer beside the name of the desired class.")
+
+    return selected_class
+
+
 if __name__ == '__main__':
     create_classlist()
     # similarly for edit classlist - with open(classlist_name + '.txt', 'r+') as classlist_file: to edit
