@@ -231,14 +231,15 @@ def select_classlist():
     class_options = create_class_list_dict()
     display_class_selection_menu(class_options)
 
-    selected_class =  take_class_selection(class_options)
+    selected_class = take_class_selection(class_options)
 
     return selected_class
 
-def create_class_dict():
+
+def create_class_list_dict():
     """
-    Create dict with enumerated classes, starting at 1. 
-    
+    Create dict with enumerated classes, starting at 1.
+
     :return: dict
     """
     class_dict = {str(option): class_name for option, class_name in enumerate(class_registry.REGISTRY, start=1)}
