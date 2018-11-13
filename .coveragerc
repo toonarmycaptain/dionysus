@@ -1,8 +1,7 @@
 [run]
-source = dionysus/
 include = *.py
 omit =
-    dionysus/test_suite/*
-    dionysus/dionysus_env/*
+    /test_suite/*
+    /dionysus_env/*
     *.yml
     *.md
