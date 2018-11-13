@@ -2,10 +2,9 @@
 Script for taking and saving data for graph.
 """
 
-
 # score entry:
 
-from dionysus_app.class_functions import load_class_data
+from dionysus_app.class_functions import load_class_data, get_avatar_path
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.file_functions import convert_to_json
 
@@ -18,7 +17,12 @@ def take_score_data(class_name):
     student_scores = {}
     for student_name in list(class_data_dict.keys()):
 
-        student_scores[student_name] = take_score_entry(student_name)
+        student_avatar_filename = class_data_dict[student_name][0]
+        avatar_path = get_avatar_path(class_name, student_avatar_filename)
+
+        student_score = take_score_entry(student_name)
+        # add avatar to list of avatars for score
+        student_scores[student_score] = student_scores.get(student_score, []).append(avatar_path)
 
     return student_scores
 

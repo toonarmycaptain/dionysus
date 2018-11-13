@@ -14,6 +14,7 @@ from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_b
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
+DEFAULT_AVATAR_PATH = DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
 
 
 def create_classlist():
@@ -306,6 +307,31 @@ def display_student_selection_menu(student_list: dict):
     print("Select student from list:")
     for key, class_name in student_list.items():
         print(f'{key}. {class_name}')
+
+
+def get_avatar_path(class_name, student_avatar):
+    """
+    Take value from 'avatar' in list of student data, return path for student avatar or default avatar path if student
+    has no avatar.
+
+    :param class_name: str
+    :param student_avatar: str or None
+    :return: Path object
+    """
+    if student_avatar is None:
+        return DEFAULT_AVATAR_PATH
+    return avatar_path_from_string(class_name, student_avatar)
+
+
+def avatar_path_from_string(class_name, avatar_filename):
+    """
+    Take class name and student's avatar filename, return a Path object to the avatar image file.
+
+    :param class_name: str
+    :param avatar_filename: str
+    :return: Path object
+    """
+    return CLASSLIST_DATA_PATH.joinpath(class_name, 'avatars', avatar_filename)
 
 
 if __name__ == '__main__':
