@@ -146,9 +146,9 @@ def take_student_avatar(student_name):
     :param student_name: str
     :return: str or None
     """
-    print(f'Load avatar image for {student_name}.')
+    print(f'Load avatar image for {student_name}:')
     while True:
-        avatar_file = input(r'Please paste complete filepath and name eg C:\my_folder\my_avatar.jpg or None to skip: ')
+        avatar_file = input('Please paste complete filepath and name \neg C:\\my_folder\\my_avatar.jpg or None to skip: ')
         if avatar_file.upper() == 'NONE':
             return None
         if avatar_file_exists(avatar_file):
