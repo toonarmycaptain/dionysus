@@ -1,2 +1,5 @@
 [run]
+include = *.py
 omit = test_suite/*
+omit = *.yml
+omit = *.md
