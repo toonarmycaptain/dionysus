@@ -54,10 +54,7 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
         return score_float
 
 
-def write_chart_data_to_file(class_name: str,  # TODO: condense this interface
-                             chart_name: str,
-                             score_data_dict: dict,
-                             chart_data_dict: dict):
+def write_chart_data_to_file(class_name: str, chart_data_dict: dict):
     """
     ### chart_name, pass score_data, chart_data as a dict or tuple?
     ### include class name in chart name as enforced format? eg class_name - chart name
@@ -66,31 +63,26 @@ def write_chart_data_to_file(class_name: str,  # TODO: condense this interface
 
     Write classlist data to disk with format:
 
-    Chart name
-    Classlist name
-    JSON'd class data dict  # Second line, when reading JSON back in.
-        dict keys: student_names, values: scores, None for no score.
+    Dict: {
+        class_name:
+        chart_name:
+        date?
+        score_data_dict:    student_name, score, None for no score.
+        chart_params_dict: min/max score, other options
 
     JSON'd graph settings/options dict # Third line of file
         dict keys: settings varying from default, values: set values
 
     :param class_name: str
-    :param chart_name: str
-    :param score_data_dict: dict
     :param chart_data_dict: dict
     :return:
     """
-    chart_data_file = chart_name + CHART_DATA_FILE_TYPE
+    chart_data_file = chart_data_dict[chart_name] + CHART_DATA_FILE_TYPE
     chart_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, 'graph_data', chart_data_file)
-    # TODO: rename 'image' and 'graph' to 'chart' where they appear,
-    # apart from where 'image' is correct (ie referring to actual image/image file.
 
-    json_score_data = convert_to_json(score_data_dict)
     json_chart_data = convert_to_json(chart_data_dict)
 
     with open(chart_data_path, 'w') as chart_data_file:
-        chart_data_file.write(f'{chart_name}\n')
-        chart_data_file.write(json_score_data)
         chart_data_file.write(json_chart_data)
 
 
