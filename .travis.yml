@@ -22,10 +22,12 @@ matrix:
 install:
     - pip install -r requirements.txt
     - pip install coveralls pytest-cov
-
+    - pip install coverage
+    - pip install codacy-coverage
 
 # command to run tests
 script:
     - pytest --cov
-
+    - coverage xml
+    - python-codacy-coverage -r coverage.xml
 after_success: coveralls
