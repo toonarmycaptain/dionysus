@@ -8,7 +8,8 @@ from dionysus_app.class_functions import load_class_data, get_avatar_path
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.file_functions import convert_to_json
 
-IMAGE_DATA_PATH = DataFolder.generate_rel_path(DataFolder.IMAGE_DATA.value)
+
+CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 
 def take_score_data(class_name):
@@ -53,7 +54,8 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
         return score_float
 
 
-def write_chart_data_to_file(chart_name: str,
+def write_chart_data_to_file(class_name: str,  # TODO: condense this interface
+                             chart_name: str,
                              score_data_dict: dict,
                              chart_data_dict: dict):
     """
@@ -72,13 +74,14 @@ def write_chart_data_to_file(chart_name: str,
     JSON'd graph settings/options dict # Third line of file
         dict keys: settings varying from default, values: set values
 
-    :param chart_name:
-    :param score_data_dict:
-    :param chart_data_dict:
+    :param class_name: str
+    :param chart_name: str
+    :param score_data_dict: dict
+    :param chart_data_dict: dict
     :return:
     """
     chart_data_file = chart_name + CHART_DATA_FILE_TYPE
-    chart_data_path = IMAGE_DATA_PATH.joinpath(chart_name, chart_data_file)
+    chart_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, 'graph_data', chart_data_file)
     # TODO: rename 'image' and 'graph' to 'chart' where they appear,
     # apart from where 'image' is correct (ie referring to actual image/image file.
 
