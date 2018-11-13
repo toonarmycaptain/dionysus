@@ -1,5 +1,6 @@
 [run]
 include = *.py
 omit = test_suite/*
+omit = dionysus_env/*
 omit = *.yml
 omit = *.md
