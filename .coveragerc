@@ -1,5 +1,5 @@
 [run]
-include = /dionysus/*.py
+include = dionysus/*.py
 omit =
     /test_suite/*
     /dionysus_env/*
