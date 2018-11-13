@@ -1,7 +1,7 @@
 [run]
-include = dionysus/*.py
 omit =
     /test_suite/*
     /dionysus_env/*
+    /virtualenv/*
     *.yml
     *.md
