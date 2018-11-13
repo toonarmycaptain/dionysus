@@ -1,2 +1,9 @@
 [run]
-omit = test_suite/*
+omit =
+    /home/travis/virtualenv/python3.6.3/lib/python3.6/site-packages/*
+    /home/travis/virtualenv/*
+    /test_suite/*
+    /dionysus_env/*
+    /virtualenv/*
+    *.yml
+    *.md
