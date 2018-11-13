@@ -2,15 +2,19 @@
 Functions for creating, editing, dealing with classes.
 """
 
-import json
 import time
 from pathlib import Path
 
-from dionysus_app.data_folder import DataFolder
+import dionysus_app.class_registry as class_registry
+
+from dionysus_app.class_registry_functions import classlist_exists, register_class
+from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
+from dionysus_app.file_functions import convert_to_json, load_from_json
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
-from dionysus_app.class_registry import CLASSLIST_DATA_FILE_TYPE, classlist_exists, register_class
+
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
+DEFAULT_AVATAR_PATH = DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
 
 
 def create_classlist():
@@ -143,9 +147,10 @@ def take_student_avatar(student_name):
     :param student_name: str
     :return: str or None
     """
-    print(f'Load avatar image for {student_name}.')
+    print(f'Load avatar image for {student_name}:')
     while True:
-        avatar_file = input(r'Please paste complete filepath and name eg C:\my_folder\my_avatar.jpg or None to skip: ')
+        avatar_file = input('Please paste complete filepath and name \n'
+                            'eg C:\\my_folder\\my_avatar.jpg or None to skip: ')
         if avatar_file.upper() == 'NONE':
             return None
         if avatar_file_exists(avatar_file):
@@ -203,7 +208,6 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
     """
     Write classlist data to disk with format:
 
-    Classlist name
     JSON'd class data dict  # Second line, when reading JSON back in.
 
     :param class_name: str
@@ -216,19 +220,118 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
     json_class_data = convert_to_json(class_data_dict)
 
     with open(classlist_data_path, 'w') as classlist_file:
-        classlist_file.write(f'{class_name}\n')
         classlist_file.write(json_class_data)
 
 
-def convert_to_json(data_to_convert):
+def select_classlist():
     """
-    Serialise data in JSON format, return as JSON string.
+    Display list of existent classes from class_registry and allow user to select one, returning the name of the
+    selected class.
 
-    :param data_to_convert:
     :return: str
     """
-    converted_data = json.dumps(data_to_convert, indent=4)
-    return converted_data
+    class_options = create_class_list_dict()
+    display_class_selection_menu(class_options)
+
+    selected_class = take_class_selection(class_options)
+
+    return selected_class
+
+
+def create_class_list_dict():
+    """
+    Create dict with enumerated classes, starting at 1.
+
+    :return: dict
+    """
+    class_dict = {str(option): class_name for option, class_name in enumerate(class_registry.REGISTRY, start=1)}
+    return class_dict
+
+
+def display_class_selection_menu(class_options: dict):
+    print("Select class from list:")
+    for key, class_name in class_options.items():
+        print(f'{key}. {class_name}')
+
+
+def take_class_selection(class_options):
+
+    unselected = True
+    selected_class = None
+    while unselected:
+        chosen_option = input('Select class: ')
+
+        try:
+            selected_class = class_options[chosen_option]
+            unselected = False  # Exiting the loop when chosen action finishes.
+        except KeyError:
+            print("Invalid input.\nPlease enter the integer beside the name of the desired class.")
+
+    return selected_class
+
+
+def create_student_list_dict(class_name: str):
+    """
+    Create dict with enumerated students, starting at 1.
+
+
+    :param class_name: str
+    :return:
+    """
+    class_data = load_class_data(class_name)
+    student_list_dict = {str(option): class_name for option, class_name in enumerate(class_data.keys, start=1)}
+    return student_list_dict
+
+
+def load_class_data(class_name: str):
+    """
+    Load class data from a class data ('.cld') file.
+
+    Data will be a dict with format:
+                                keys: student name
+                                values: list currently only containing the avatar filename/None.
+
+    :param class_name: str
+    :return: dict
+    """
+
+    class_data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
+    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, class_data_filename)
+    with open(classlist_data_path, 'r') as class_datafile:
+        loaded_class_json = class_datafile.read()
+        class_data_dict = load_from_json(loaded_class_json)
+    return class_data_dict
+
+
+def display_student_selection_menu(student_list: dict):
+    print("Select student from list:")
+    for key, class_name in student_list.items():
+        print(f'{key}. {class_name}')
+
+
+def get_avatar_path(class_name, student_avatar):
+    """
+    Take value from 'avatar' in list of student data, return path for student avatar or default avatar path if student
+    has no avatar.
+
+    :param class_name: str
+    :param student_avatar: str or None
+    :return: Path object
+    """
+    if student_avatar is None:
+        return DEFAULT_AVATAR_PATH
+    return avatar_path_from_string(class_name, student_avatar)
+
+
+def avatar_path_from_string(class_name, avatar_filename):
+    """
+    Take class name and student's avatar filename, return a Path object to the avatar image file.
+
+    :param class_name: str
+    :param avatar_filename: str
+    :return: Path object
+    """
+    return CLASSLIST_DATA_PATH.joinpath(class_name, 'avatars', avatar_filename)
 
 
 if __name__ == '__main__':
