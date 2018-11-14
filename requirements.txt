@@ -1,3 +1,4 @@
+pexpect==4.6.0
 pytest==3.9.3
 setuptools==40.5.0
-pexpect==4.6.0
+
