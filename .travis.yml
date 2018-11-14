@@ -29,7 +29,7 @@ install:
 
 # command to run tests
 script:
-    - pytest --cov=dionysus/
+    - pytest --cov=toonarmycaptain/dionysus/
     - coverage xml
     - python-codacy-coverage -r coverage.xml
 
