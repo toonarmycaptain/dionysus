@@ -1,7 +1,2 @@
 [run]
-include = TRAVIS_BUILD_DIR
-omit =
-    TRAVIS_BUILD_DIR/test_suite/*
-    TRAVIS_BUILD_DIR/dionysus_env/*
-    *.yml
-    *.md
+
