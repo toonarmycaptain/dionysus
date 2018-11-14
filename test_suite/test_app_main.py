@@ -11,7 +11,7 @@ class TestAppMain(unittest.TestCase):
             r'/dionysus_app/app_data',
             r'/dionysus_app/app_data/class_data',
             r'/dionysus_app/app_data/image_data'
-        ]
+            ]
 
     def test_data_folder_check_default(self):
         os.chdir(os.path.join(os.getcwd(), '.'))
