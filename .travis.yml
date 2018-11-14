@@ -21,7 +21,8 @@ matrix:
 
 install:
     - pip install -r requirements.txt
-    - pip install coveralls pytest-cov
+    - pip install pytest-cov
+    - pip install coveralls
     - pip install coverage
     - pip install codacy-coverage
 
