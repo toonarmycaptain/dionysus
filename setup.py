@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from setuptools import setup, find_packages
 
 setup(name='dionysus_app',
@@ -11,4 +9,4 @@ setup(name='dionysus_app',
       packages=find_packages(),
       license='GNU Affero General Public License',
       long_description=open('README.md').read(),
-     )
+      )
