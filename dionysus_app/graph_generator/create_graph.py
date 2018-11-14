@@ -8,7 +8,12 @@ a percentage, or column widths of 5pts rather than 10. Other potential concern i
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
 from dionysus_app.class_functions import select_classlist
+from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.graph_generator.take_graph_data import take_score_data
+from dionysus_app.file_functions import convert_to_json
+
+
+CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 
 def new_graph():
@@ -29,6 +34,39 @@ def new_graph():
     # TODO: warn for empty classlist
     print(f'Enter student scores for {class_name}: ')
     student_scores: dict = take_score_data(class_name)
+
+
+def write_chart_data_to_file(class_name: str, chart_data_dict: dict):
+    """
+    ### chart_name, pass score_data, chart_data as a dict or tuple?
+    ### include class name in chart name as enforced format? eg class_name - chart name
+
+
+
+    Write classlist data to disk with format:
+
+    Dict: {
+        class_name:
+        chart_name:
+        date?
+        score_data_dict:    student_name, score, None for no score.
+        chart_params_dict: min/max score, other options
+
+    JSON'd graph settings/options dict # Third line of file
+        dict keys: settings varying from default, values: set values
+
+    :param class_name: str
+    :param chart_data_dict: dict
+    :return:
+    """
+    chart_data_file = chart_data_dict[chart_name] + CHART_DATA_FILE_TYPE
+    chart_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, 'graph_data', chart_data_file)
+
+    json_chart_data = convert_to_json(chart_data_dict)
+
+    with open(chart_data_path, 'w') as chart_data_file:
+        chart_data_file.write(json_chart_data)
+
 
 
 if __name__ == '__main__':
