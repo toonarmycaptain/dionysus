@@ -11,6 +11,7 @@ from dionysus_app.class_functions import select_classlist
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.graph_generator.take_graph_data import take_score_data
 from dionysus_app.file_functions import convert_to_json
+from dionysus_app.UI_functions import clean_for_filename
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
@@ -59,7 +60,8 @@ def write_chart_data_to_file(class_name: str, chart_data_dict: dict):
     :param chart_data_dict: dict
     :return:
     """
-    chart_data_file = chart_data_dict[chart_name] + CHART_DATA_FILE_TYPE
+    chart_filename = clean_for_filename(chart_data_dict[chart_name])
+    chart_data_file = chart_filename + CHART_DATA_FILE_TYPE
     chart_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, 'graph_data', chart_data_file)
 
     json_chart_data = convert_to_json(chart_data_dict)
