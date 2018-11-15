@@ -16,6 +16,9 @@ def take_score_data(class_name):
     class_data_dict = load_class_data(class_name)
 
     student_scores = {}
+
+    print(f'Enter student scores for {class_name}: ')
+
     for student_name in list(class_data_dict.keys()):
 
         student_avatar_filename = class_data_dict[student_name][0]
