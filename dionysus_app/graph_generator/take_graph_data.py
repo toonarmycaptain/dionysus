@@ -65,7 +65,7 @@ def take_chart_name():
 
     :return: str
     """
-    chart_name = input('Please enter a chart/title: ')
+    chart_name = input('Please enter a chart name/title: ')
     while True:
         if input_is_essentially_blank(chart_name):
             continue
