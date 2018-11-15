@@ -6,6 +6,7 @@ Script for taking and saving data for graph.
 
 from dionysus_app.class_functions import load_class_data, get_avatar_path
 from dionysus_app.data_folder import DataFolder
+from dionysus_app.UI_functions import input_is_essentially_blank
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
@@ -51,6 +52,20 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
             print(f'InputError: Please enter a number between {minimum} and {maximum}.')
             continue
         return score_float
+
+
+def take_chart_name():
+    """
+    Ask user for chart name. Ask again if name is essentially blank/whitespace/punctuation.
+
+    :return: str
+    """
+    chart_name = input('Please enter a chart/title: ')
+    while True:
+        if input_is_essentially_blank(chart_name):
+            continue
+        break
+    return chart_name
 
 
 if __name__ == '__main__':
