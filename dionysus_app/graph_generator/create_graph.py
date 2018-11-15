@@ -7,6 +7,9 @@ Immediate enhancement from there will be variable ranges for the graph, columns 
 a percentage, or column widths of 5pts rather than 10. Other potential concern is graph being too high, so some
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
+import matplotlib.pyplot as plt
+import numpy as np
+
 from dionysus_app.class_functions import select_classlist
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.graph_generator.take_graph_data import take_chart_name, take_score_data
@@ -47,26 +50,22 @@ def new_graph():
 
 def write_chart_data_to_file(chart_data_dict: dict):
     """
-    ### chart_name, pass score_data, chart_data as a dict or tuple?
     ### include class name in chart name as enforced format? eg class_name - chart name
-
-
 
     Write classlist data to disk with format:
 
-    Dict: {
-        class_name:
-        chart_name:
-        date?
-        score_data_dict:    student_name, score, None for no score.
-        chart_params_dict: min/max score, other options
+    class_data_dict: {
+        'class_name':
+        'chart_name':
+        # date? Not yet implemented.
+        'score-avatar_dict':    student_name, score, None for no score.
+               # chart_params_dict: Not yet implemented.
+            # eg min/max score, other options/settings varying from defaults
+            # dict keys: parameters, values: arguments/set values
+        }
 
-    JSON'd graph settings/options dict # Third line of file
-        dict keys: settings varying from default, values: set values
-
-    :param class_name: str
     :param chart_data_dict: dict
-    :return:
+    :return: None
     """
     chart_filename = clean_for_filename(chart_data_dict['chart_name'])
     chart_data_file = chart_filename + CHART_DATA_FILE_TYPE
@@ -83,5 +82,4 @@ def generate_chart_image(chart_data):
 
 
 if __name__ == '__main__':
-    new_graph()
     pass
