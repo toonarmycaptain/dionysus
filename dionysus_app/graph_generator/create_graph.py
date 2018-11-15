@@ -33,7 +33,7 @@ def new_graph():
     # chart_name
     class_name = select_classlist()
     # TODO: warn for empty classlist
-    print(f'Enter student scores for {class_name}: ')
+
     student_scores: dict = take_score_data(class_name)
 
 
