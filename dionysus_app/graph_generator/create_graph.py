@@ -74,9 +74,5 @@ def write_chart_data_to_file(chart_data_dict: dict):
         chart_data_file.write(json_chart_data)
 
 
-def generate_chart_image(chart_data):
-    pass
-
-
 if __name__ == '__main__':
     pass
