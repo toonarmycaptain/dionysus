@@ -1,4 +1,6 @@
+matplotlib=3.0.2
+numpy==1.15.4
 pexpect==4.6.0
-pytest==3.9.3
-setuptools==40.5.0
+pytest==4.0.0
+setuptools==40.6.2
 
