@@ -161,9 +161,9 @@ def take_student_avatar(student_name):
     if avatar_file is None:
         return None
     cleaned_student_name = clean_for_filename(student_name)
-    avatar_filename = f'{cleaned_student_name}.jpg'
-    # process_student_avatar()
-    # convert to jpg or whatever, copy image file to class_data avatar folder with filename that is student name
+    avatar_filename = f'{cleaned_student_name}.png'
+    # TODO: process_student_avatar()
+    # TODO: conert to png/jpg or whatever, copy image file to class_data avatar folder with filename that is student name
     return avatar_filename
 
 
