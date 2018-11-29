@@ -26,7 +26,7 @@ def take_score_data(class_name):
 
         student_score = take_score_entry(student_name)
         # add avatar to list of avatars for score
-        student_scores[student_score] = student_scores.get(student_score, []).append(avatar_path)
+        student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
     print('\n')  # Newline between entering last score and 'Please enter a chart name/title: '
 
@@ -71,6 +71,14 @@ def take_chart_name():
             continue
         break
     return chart_name
+
+
+def take_custom_chart_options():
+    pass
+
+    # offer to reduce x-axis to just outside spread of data.
+    # offer to use hash of student name instead of default avatar.
+    # offer to put chart name (or a title distinct from chart/file name) in chart.
 
 
 if __name__ == '__main__':
