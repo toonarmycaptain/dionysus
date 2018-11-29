@@ -9,6 +9,7 @@ sort of overlap without obscuring the avatars, or two columns of avatars in a po
 """
 from dionysus_app.class_functions import select_classlist
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
+from dionysus_app.graph_generator.generate_image import generate_chart_image
 from dionysus_app.graph_generator.take_graph_data import take_chart_name, take_score_data
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.UI_functions import clean_for_filename
