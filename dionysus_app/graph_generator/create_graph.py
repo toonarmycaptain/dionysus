@@ -7,6 +7,8 @@ Immediate enhancement from there will be variable ranges for the graph, columns 
 a percentage, or column widths of 5pts rather than 10. Other potential concern is graph being too high, so some
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
+from copy import deepcopy
+
 from dionysus_app.class_functions import select_classlist
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.graph_generator.generate_image import generate_chart_image
@@ -76,14 +78,43 @@ def write_chart_data_to_file(chart_data_dict: dict):
     :param chart_data_dict: dict
     :return: None
     """
-    chart_filename = clean_for_filename(chart_data_dict['chart_name'])
+    file_chart_data_dict = deepcopy(chart_data_dict)
+    chart_filename = clean_for_filename(file_chart_data_dict['chart_name'])
     chart_data_file = chart_filename + CHART_DATA_FILE_TYPE
-    chart_data_filepath = CLASSLIST_DATA_PATH.joinpath(chart_data_dict['class_name'], 'graph_data', chart_data_file)
+    chart_data_filepath = CLASSLIST_DATA_PATH.joinpath(file_chart_data_dict['class_name'], 'graph_data', chart_data_file)
 
-    json_chart_data = convert_to_json(chart_data_dict)
+    json_safe_chart_data_dict = sanitise_avatar_path_objects(file_chart_data_dict)
+    json_chart_data = convert_to_json(json_safe_chart_data_dict)
 
     with open(chart_data_filepath, 'w') as chart_data_file:
         chart_data_file.write(json_chart_data)
+
+
+def set_chart_params():
+    default_chart_params = {}  # dict with default chart params goes here.
+    chart_params = take_custom_chart_options(default_chart_params)
+    return chart_params
+
+
+def take_custom_chart_options(default_params: dict):
+    # replace/create any custom params in chart_opt dict
+    # return dict
+    return default_params
+
+
+def sanitise_avatar_path_objects(data_dict: dict):
+    """
+    chart_data_dict['score-avatar_dict'] is a dict with integer keys, lists of Path objects as values.
+
+    Possible TODO: change to save student name instead of path to avatar?
+
+    :param chart_data_dict: dict
+    :return: dict
+    """
+    for score in list(data_dict['score-avatar_dict'].keys()):
+        data_dict['score-avatar_dict'][score] = [str(avatar_Path) for avatar_Path in
+                                                       data_dict['score-avatar_dict'][score]]
+    return data_dict
 
 
 if __name__ == '__main__':
