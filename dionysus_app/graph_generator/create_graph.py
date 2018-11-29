@@ -51,8 +51,7 @@ def assemble_chart_data():
 
     chart_name = take_chart_name()
 
-    chart_data_dict = {'class_name': class_name, 'chart_name': chart_name, 'score-avatar_dict': student_scores}
-
+    chart_params = set_chart_params()
     # chart options here or before score entry, setting chart params, min, max scores etc
 
     return chart_name, class_name, student_scores, chart_params
