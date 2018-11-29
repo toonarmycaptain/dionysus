@@ -24,15 +24,27 @@ def new_graph():
     """
     # Select class or redirect to create new class.
     # Take graph_name
-    # Take new data set. Store in class_data/{class_name}/graph_data/graph_name.cgd (ClassGraphData)
+    # Take new data set. Store in class_data/{class_name}/graph_data/graph_name.cdf (ChartDataFile)
     # Pass data to graph image creation scripts
     #   - potential options in those scripts (or here) to include:
-    #       - graph/image title options
+    #       - graph/image title options eg name different from displayed title
     #       - axis labels, scale/axis tick markings
 
-    # chart_name
-    class_name = select_classlist()
-    # TODO: warn for empty classlist
+    chart_name, class_name, student_scores, chart_params = assemble_chart_data()
+
+    chart_data_dict = {'class_name': class_name,
+                       'chart_name': chart_name,
+                       'chart_params': chart_params,
+                       'score-avatar_dict': student_scores,
+                       }
+
+    write_chart_data_to_file(chart_data_dict)
+
+    generate_chart_image(chart_data_dict)
+
+
+def assemble_chart_data():
+    class_name = select_classlist()  # TODO: warn for empty classlist
 
     student_scores: dict = take_score_data(class_name)
 
@@ -42,7 +54,7 @@ def new_graph():
 
     # chart options here or before score entry, setting chart params, min, max scores etc
 
-    generate_chart_image(chart_data_dict)
+    return chart_name, class_name, student_scores, chart_params
 
 
 def write_chart_data_to_file(chart_data_dict: dict):
