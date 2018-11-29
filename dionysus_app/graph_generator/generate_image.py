@@ -8,7 +8,6 @@ if title/name desired on image:
 import matplotlib.pyplot as plt
 
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
-from matplotlib._png import read_png
 
 
 def generate_chart_image(chart_data_dict):
@@ -57,7 +56,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
     :param xy_coords: tuple (x, y)
     :return:
     """
-    avatar_image = read_png(avatar_path)
+    avatar_image = plt.imread(avatar_path)
     imagebox = OffsetImage(avatar_image, zoom=.25)
 
     for xy in xy_coords:
