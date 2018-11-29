@@ -41,10 +41,10 @@ def take_main_menu_input():
     while unselected:
         chosen_option = input('>>> ')
 
-        try:
+        if chosen_option in possible_options:
             possible_options[chosen_option]()
             unselected = False  # Exiting the loop when chosen action finishes.
-        except KeyError:
+        else:
             print("Invalid input.")
 
 
