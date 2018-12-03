@@ -22,7 +22,7 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 def new_graph():
     """
-
+    TODO: write docstring. In particular form for chart_data_dict.
     :return:
     """
     # Select class or redirect to create new class.
@@ -47,6 +47,11 @@ def new_graph():
 
 
 def assemble_chart_data():
+    """
+    TODO: write docstring, reference for return value form.
+    :return:
+    """
+
     class_name = select_classlist()  # TODO: warn for empty classlist
 
     student_scores: dict = take_score_data(class_name)
