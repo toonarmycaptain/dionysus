@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
-from dionysus_app.graph_generator.process_chart_data import generate_avatar_coords
+from dionysus_app.chart_generator.process_chart_data import generate_avatar_coords
 
 def generate_chart_image(chart_data_dict):
     """

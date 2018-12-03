@@ -67,7 +67,7 @@ def setup_class_data_storage(classlist_name):
     app_data/
         class_data/
             class_name/  # folder for each class
-                graph_data/  # store graph data sets
+                chart_data/  # store chart data sets
                 avatars/  # store avatars for class
 
 
@@ -75,10 +75,10 @@ def setup_class_data_storage(classlist_name):
     :return: None
     """
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
-    graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'graph_data')
+    chart_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'chart_data')
 
     avatar_path.mkdir(exist_ok=True, parents=True)
-    graph_path.mkdir(exist_ok=True, parents=True)
+    chart_path.mkdir(exist_ok=True, parents=True)
 
 
 def create_classlist_data(class_name: str):
