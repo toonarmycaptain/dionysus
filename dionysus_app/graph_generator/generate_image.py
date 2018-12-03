@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
+from dionysus_app.graph_generator.process_chart_data import generate_avatar_coords
 
 def generate_chart_image(chart_data_dict):
     """
@@ -73,13 +74,6 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
 # import itertools
 # y_image_coords = itertools.count(start=init_avatar_offset_from_axis, step=offset_per_avatar)
 # next(y_image_coords)  # yields 4, 11, 18, 25...each time it is called.
-
-def generate_avatar_coords(score_avatars_dict):
-
-    # take chart_data_dict['score-avatar_dict'] and translate into dict
-    # with keys: avatar path, values: list of x, y tuples eg [(80, 80), (90, 90)]
-
-    pass
 
 
 def add_avatars_to_plot(ax, avatar_coord_dict):
