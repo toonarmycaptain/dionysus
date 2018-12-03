@@ -25,6 +25,8 @@ def generate_chart_image(chart_data_dict):
 # HIDE VERTICAL AXIS
     set_axis()
 
+    # if custom chart parameters that would affect layout of avatars, pass chart_data_dict['chart_params'] to generate_avatar_coords
+
     avatar_coord_dict = generate_avatar_coords(chart_data_dict['score-avatar_dict'])
     add_avatars_to_plot(ax, avatar_coord_dict)
 
