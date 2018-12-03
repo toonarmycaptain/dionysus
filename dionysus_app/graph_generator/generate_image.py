@@ -53,10 +53,15 @@ def set_axis(x_min=0, x_max=100, x_step=10):
 
 def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
     """
+    Takes an image path and adds that image to the ax given, at each set of coordinates in the list supplied.
+
+    eg xy_coords = [(10, 90)] will place image at 10, 90
+    eg xy_coords = [(10, 90), (25, 25)} will place the image at both 10, 90 and 25, 25. This is intended for use with
+    the default avatar, or if future feature allows multiple results.
 
     :param ax:
     :param avatar_path: Path object
-    :param xy_coords: tuple (x, y)
+    :param xy_coords: list - list of tuples (x, y)
     :return:
     """
     avatar_image = plt.imread(avatar_path)
@@ -80,7 +85,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
 
 def add_avatars_to_plot(ax, avatar_coord_dict):
     # for avatar in avatar_coord_dict:
-    #
+    #     add_avatar_to_plot(ax, avatar_path, xy_coords: list)
     pass
 
 
