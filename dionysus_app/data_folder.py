@@ -15,8 +15,8 @@ class DataFolder(Enum):
 
     IMAGE_DATA = APP_DATA + 'image_data'
 
-    GRAPH_GENERATOR = './dionysus_app/graph_generator/'
-    DEFAULT_AVATAR = GRAPH_GENERATOR + 'default_avatar.png'
+    CHART_GENERATOR = './dionysus_app/chart_generator/'
+    DEFAULT_AVATAR = CHART_GENERATOR + 'default_avatar.png'
 
     @staticmethod
     def generate_rel_path(path):
