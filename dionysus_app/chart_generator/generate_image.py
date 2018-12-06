@@ -17,30 +17,28 @@ def generate_chart_image(chart_data_dict):
     :param chart_data_dict:
     :return:
     """
-    fig = plt.figure(figsize=(16, 9), dpi=120)  # set size in inches, dpi - comes to 1920*1080
-    # fig = plt.figure(figsize=(16, 9), dpi=80)  # set size in inches, dpi - comes to 1280*720
+    fig = plt.figure(figsize=(16, 9))  # set proportion/size in inches,
+    plt.subplots_adjust(left=0.05, right=0.95, top=1, bottom=0.05, wspace=0.00, hspace=0.00) # set borders
 
-    ax = plt.subplot(111, xlim=(-0, 100), ylim=(-0, 100))
+    ax = plt.subplot(xlim=(-0, 100), ylim=(-0, 100))
 # SET AXIS X 0-100, Y 0-? based on max band data points
 # HIDE VERTICAL AXIS
     set_axis()
 
-    # if custom chart parameters that would affect layout of avatars, pass chart_data_dict['chart_params'] to generate_avatar_coords
+    # if custom chart parameters affecting avatar layout, pass chart_data_dict['chart_params'] to generate_avatar_coords
 
+    # nominally, avatar_coord_dict will be chart_data_dict['score-avatar_dict']
     avatar_coord_dict = generate_avatar_coords(chart_data_dict['score-avatar_dict'])
+
     add_avatars_to_plot(ax, avatar_coord_dict)
 
     # save fig for test
-    plt.savefig(chart_data_dict['chart_name'],
-                # bbox_inches='tight',
-                pad_inches=0)  # save filename.png, cropping tightly without cutting off anything, with zero padding added.
-
+    plt.savefig(chart_data_dict['chart_name'],  # save filename.png
+                dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
 
     # Maximise displayed image.
     mng = plt.get_current_fig_manager()
     mng.window.state("zoomed")
-
-
 
     # Show image.
     plt.show()
@@ -90,10 +88,12 @@ def add_avatars_to_plot(ax, avatar_coord_dict):
 
 
 if __name__ == '__main__':
-    data_dict = {'default_avatar_1.png': [(10, 4)],
-                 'default_avatar_2.png': [(10, 11)],
-                 'default_avatar_3.png': [(10, 18)],
-                 'default_avatar.png': [(25, 25)],
+    data_dict = {'chart_name': 'testing cart',
+                 'score-avatar_dict': {'default_avatar_1.png': [(10, 4), (10, 32), ],
+                                       'default_avatar_2.png': [(10, 11), (10, 39), ],
+                                       'default_avatar_3.png': [(10, 18), (10, 46), ],
+                                       'default_avatar.png': [(10, 25), (10, 53), ],
+                                       }
                  }
     # offset by 4 and increments of 7 nearly spaces .25 zoom 150px images from x axis and eachother
 
