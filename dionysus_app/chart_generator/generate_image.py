@@ -63,7 +63,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
     :return:
     """
     avatar_image = plt.imread(avatar_path)
-    imagebox = OffsetImage(avatar_image, zoom=.25)
+    imagebox = OffsetImage(avatar_image, zoom=.4)
 
     for xy in xy_coords:
         # xy = tuple coordinates to position this image
