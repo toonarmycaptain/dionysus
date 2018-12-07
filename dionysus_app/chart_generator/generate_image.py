@@ -18,7 +18,8 @@ def generate_chart_image(chart_data_dict):
     :return:
     """
     fig = plt.figure(figsize=(16, 9))  # set proportion/size in inches,
-    plt.subplots_adjust(left=0.05, right=0.95, top=1, bottom=0.05, wspace=0.00, hspace=0.00) # set borders
+    ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01)
 
     ax = plt.subplot(xlim=(-0, 100), ylim=(-0, 100))
 # SET AXIS X 0-100, Y 0-? based on max band data points
