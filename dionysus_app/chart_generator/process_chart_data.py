@@ -5,6 +5,9 @@ Process input data for image generation code.
 
 chart_params = None  # dict of default params, information for how to set coords for default
 
+DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars vertically. Nominally pixels from x-axis to top of image//height of avatar.
+                            'column_width': None,
+                        }
 
 def generate_avatar_coords(score_avatar_dict, custom_chart_params=None):  # set chart params to a default?
     """

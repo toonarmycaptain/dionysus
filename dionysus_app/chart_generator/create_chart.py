@@ -12,6 +12,7 @@ from copy import deepcopy
 from dionysus_app.class_functions import select_classlist
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.chart_generator.generate_image import generate_chart_image
+from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.chart_generator.take_chart_data import take_chart_name, take_score_data
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.UI_functions import clean_for_filename
@@ -96,8 +97,7 @@ def write_chart_data_to_file(chart_data_dict: dict):
 
 
 def set_chart_params():
-    default_chart_params = {}  # dict with default chart params goes here.
-    chart_params = take_custom_chart_options(default_chart_params)
+    chart_params = take_custom_chart_options(DEFAULT_CHART_PARAMS)
     return chart_params
 
 
@@ -113,7 +113,7 @@ def sanitise_avatar_path_objects(data_dict: dict):
 
     Possible TODO: change to save student name instead of path to avatar?
 
-    :param chart_data_dict: dict
+    :param data_dict: dict
     :return: dict
     """
     for score in list(data_dict['score-avatar_dict'].keys()):
