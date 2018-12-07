@@ -1,20 +1,20 @@
 """
 Process input data for image generation code.
 """
-
-
-
-DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars vertically. Nominally pixels from x-axis to top of image//height of avatar.
+DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars vertically.
+                                                   # Nominally pixels from x-axis to top of image//height of avatar.
                         'column_width': None,
-                        'min_score' : 0,
-                        'max_score' : 100,
-                        # TODO: put avatar offets here
+                        'min_score': 0,
+                        'max_score': 100,
+                        # TODO: put avatar offsets here
                         }
 
-def generate_avatar_coords(score_avatar_dict, chart_params=None):  # set chart params to a default?
+
+def generate_avatar_coords(score_avatar_dict: dict, chart_params: dict=None):  # set chart params to a default?
     """
     score_avatar_dict - dict of scores to lists of avatar image locations for each score.
 
+    :type chart_params: dict
     :param score_avatar_dict: dict
     :param chart_params: dict
     :return:
@@ -30,7 +30,7 @@ def generate_avatar_coords(score_avatar_dict, chart_params=None):  # set chart p
     # Re-sort in ascending score order.
     score_avatar_dict = {score: score_avatar_dict[score] for score in sorted(score_avatar_dict)}
 
-    banded_avatars = assign_avatars_to_bands(score_avatar_dict)
+    banded_avatars = assign_avatars_to_bands(score_avatar_dict)  # TODO: use DEFAULT_CHART_PARAMS values for offsets.
   
     avatar_coord_dict = assign_avatar_coords(banded_avatars)
 

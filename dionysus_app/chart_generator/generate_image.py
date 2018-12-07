@@ -11,11 +11,12 @@ from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
 from dionysus_app.chart_generator.process_chart_data import generate_avatar_coords
 
-def generate_chart_image(chart_data_dict):
+
+def generate_chart_image(chart_data_dict: dict):
     """
 
-    :param chart_data_dict:
-    :return:
+    :param chart_data_dict: dict
+    :return: None
     """
     fig = plt.figure(figsize=(16, 9))  # set proportion/size in inches,
     ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
@@ -23,6 +24,7 @@ def generate_chart_image(chart_data_dict):
 
 # TODO: hide vertical axis, top and right border lines.
     set_axis()
+    ax.grid(False)  # No grid
 
     # if custom chart parameters affecting avatar layout, pass chart_data_dict['chart_params'] to generate_avatar_coords
 
@@ -43,7 +45,7 @@ def generate_chart_image(chart_data_dict):
     plt.show()
 
 
-def set_axis(x_min=0, x_max=100, x_step=10):
+def set_axis(x_min: int=0, x_max: int=100, x_step: int=10):
     plt.xticks([tick for tick in range(x_min, x_max+1, x_step)])
     plt.yticks([])
 
@@ -71,15 +73,21 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
                             # boxcoords="offset points",
                             )
         ax.add_artist(ab)
-        ax.grid(False)  # No grid
         plt.draw()
 
 
-def add_avatars_to_plot(ax, avatar_coord_dict):
+def add_avatars_to_plot(ax, avatar_coord_dict: dict):
+    """
+    Takes dict mapping avatar paths to lists of coordinates at which to plot them, calls add_avatar_to_plot on each
+    avatar path - coordinate list pair.
+
+    :param ax:
+    :param avatar_coord_dict: dict
+    :return: None
+    """
     for avatar_path in avatar_coord_dict.keys():
         xy_coords = avatar_coord_dict[avatar_path]
         add_avatar_to_plot(ax, avatar_path, xy_coords)
-
 
 
 if __name__ == '__main__':
