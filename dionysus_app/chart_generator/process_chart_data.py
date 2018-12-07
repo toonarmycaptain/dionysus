@@ -60,7 +60,7 @@ def assign_avatars_to_bands(score_avatar_dict: dict):
 
     for score in score_avatar_dict.keys():
         for band in band_dict:
-            if band - 5 < score and score <= band + 5:  # 95-100 set greedier than 0-5
+            if band - 5 < score <= band + 5:  # 95-100 set greedier than 0-5
                 band_dict[band] += score_avatar_dict[score]
 
     return band_dict
