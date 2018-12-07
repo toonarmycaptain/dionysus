@@ -62,7 +62,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
     :param xy_coords: list - list of tuples (x, y)
     :return:
     """
-    avatar_image = plt.imread(str(avatar_path))
+    avatar_image = plt.imread(str(avatar_path))  # matplotlib takes an 8bit string or FILE objectT, not Path object.
     imagebox = OffsetImage(avatar_image, zoom=.4)
 
     for xy in xy_coords:
