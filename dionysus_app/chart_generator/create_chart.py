@@ -69,26 +69,37 @@ def write_chart_data_to_file(chart_data_dict: dict):
     """
     ### include class name in chart name as enforced format? eg class_name - chart name
 
+    Saves chart data to disk as JSON in class' chart_data folder.
+
+    Filename is chart name sanitised to a suitable string.
+
+    Pathlib Path objects are not json-serializable, so data dict is converted to
+    a JSON-safe form before conversion to JSON
+
     Write classlist data to disk with format:
 
     class_data_dict: {
         'class_name':
         'chart_name':
         # date? Not yet implemented.
-        'score-avatar_dict':    student_name, score, None for no score.
-               # chart_params_dict: Not yet implemented.
+        'chart_params': dict of chart parameters and settings
             # eg min/max score, other options/settings varying from defaults
-            # dict keys: parameters, values: arguments/set values
+            # dict keys: parameters, values: arguments/set values - NOT FULLY IMPLEMENTED
+        'score-avatar_dict':    student_name, score, None for no score.
         }
+
 
     :param chart_data_dict: dict
     :return: None
     """
-    file_chart_data_dict = deepcopy(chart_data_dict)
+    file_chart_data_dict = deepcopy(chart_data_dict)  # Copy so as to not modify in-use dict.
+
     chart_filename = clean_for_filename(file_chart_data_dict['chart_name'])
     chart_data_file = chart_filename + CHART_DATA_FILE_TYPE
-    chart_data_filepath = CLASSLIST_DATA_PATH.joinpath(file_chart_data_dict['class_name'], 'chart_data', chart_data_file)
+    chart_data_filepath = CLASSLIST_DATA_PATH.joinpath(
+            file_chart_data_dict['class_name'], 'chart_data', chart_data_file)
 
+    # Convert data_dict to JSON-safe form.
     json_safe_chart_data_dict = sanitise_avatar_path_objects(file_chart_data_dict)
     json_chart_data = convert_to_json(json_safe_chart_data_dict)
 
@@ -117,8 +128,8 @@ def sanitise_avatar_path_objects(data_dict: dict):
     :return: dict
     """
     for score in list(data_dict['score-avatar_dict'].keys()):
-        data_dict['score-avatar_dict'][score] = [str(avatar_Path) for avatar_Path in
-                                                       data_dict['score-avatar_dict'][score]]
+        data_dict['score-avatar_dict'][score] = [str(avatar_Path) for avatar_Path
+                                                 in data_dict['score-avatar_dict'][score]]
     return data_dict
 
 
