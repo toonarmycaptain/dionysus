@@ -83,9 +83,10 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
 
 
 def add_avatars_to_plot(ax, avatar_coord_dict):
-    # for avatar in avatar_coord_dict:
-    #     add_avatar_to_plot(ax, avatar_path, xy_coords: list)
-    pass
+    for avatar_path in avatar_coord_dict.keys():
+        xy_coords = avatar_coord_dict[avatar_path]
+        add_avatar_to_plot(ax, avatar_path, xy_coords)
+
 
 
 if __name__ == '__main__':
@@ -96,6 +97,6 @@ if __name__ == '__main__':
                                        'default_avatar.png': [(10, 25), (10, 53), ],
                                        }
                  }
-    # offset by 4 and increments of 7 nearly spaces .25 zoom 150px images from x axis and eachother
+    # offset by 5 and increments of 10 neatly spaces .4 zoom 150px images from x axis and eachother
 
     generate_chart_image(data_dict)
