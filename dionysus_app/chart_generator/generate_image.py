@@ -21,9 +21,7 @@ def generate_chart_image(chart_data_dict):
     ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
     plt.subplots_adjust(left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01)
 
-    ax = plt.subplot(xlim=(-0, 100), ylim=(-0, 100))
-# SET AXIS X 0-100, Y 0-? based on max band data points
-# HIDE VERTICAL AXIS
+# TODO: hide vertical axis, top and right border lines.
     set_axis()
 
     # if custom chart parameters affecting avatar layout, pass chart_data_dict['chart_params'] to generate_avatar_coords
@@ -34,7 +32,7 @@ def generate_chart_image(chart_data_dict):
     add_avatars_to_plot(ax, avatar_coord_dict)
 
     # save fig for test
-    plt.savefig(chart_data_dict['chart_name'],  # save filename.png
+    plt.savefig(chart_data_dict['chart_name'],  # save filename.png TODO: change file save location
                 dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
 
     # Maximise displayed image.
@@ -77,11 +75,6 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
         plt.draw()
 
 
-# import itertools
-# y_image_coords = itertools.count(start=init_avatar_offset_from_axis, step=offset_per_avatar)
-# next(y_image_coords)  # yields 4, 11, 18, 25...each time it is called.
-
-
 def add_avatars_to_plot(ax, avatar_coord_dict):
     for avatar_path in avatar_coord_dict.keys():
         xy_coords = avatar_coord_dict[avatar_path]
@@ -91,10 +84,11 @@ def add_avatars_to_plot(ax, avatar_coord_dict):
 
 if __name__ == '__main__':
     data_dict = {'chart_name': 'testing cart',
-                 'score-avatar_dict': {'default_avatar_1.png': [(10, 4), (10, 32), ],
-                                       'default_avatar_2.png': [(10, 11), (10, 39), ],
-                                       'default_avatar_3.png': [(10, 18), (10, 46), ],
-                                       'default_avatar.png': [(10, 25), (10, 53), ],
+                 'score-avatar_dict': {'default_avatar_1.png': [(10, 5), (10, 55), ],
+                                       'default_avatar_2.png': [(10, 15), (10, 65), ],
+                                       'default_avatar_3.png': [(10, 25), (10, 75), ],
+                                       'default_avatar_4.png': [(10, 35), (10, 85), ],
+                                       'default_avatar.png': [(10, 45), (10, 95)],
                                        }
                  }
     # offset by 5 and increments of 10 neatly spaces .4 zoom 150px images from x axis and eachother
