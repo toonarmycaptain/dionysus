@@ -45,18 +45,7 @@ def assign_avatars_to_bands(score_avatar_dict: dict):
     :param score_avatar_dict: dict
     :return: dict
     """
-    band_dict = {0: [],
-                 10: [],
-                 20: [],
-                 30: [],
-                 40: [],
-                 50: [],
-                 60: [],
-                 70: [],
-                 80: [],
-                 90: [],
-                 100: [],
-                 }
+    band_dict = {band: [] for band in range(0, 101, 10)}
 
     for score in score_avatar_dict.keys():
         for band in band_dict:
