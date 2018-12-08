@@ -13,7 +13,7 @@ class TestClassList(TestCase):
 
     def tearDown(self):
         """
-        # TODO: remove created fooclass files after test.
+        To do: remove created fooclass files after test.
         :return:
         """
         self.child.kill(signal.SIGINT)
