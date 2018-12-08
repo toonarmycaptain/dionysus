@@ -334,6 +334,14 @@ def avatar_path_from_string(class_name, avatar_filename):
     return CLASSLIST_DATA_PATH.joinpath(class_name, 'avatars', avatar_filename)
 
 
+def edit_classlist():
+    """
+     similarly to create classlist: for edit classlist -
+    :return:
+    """
+    classlist_name = take_classlist_name_input()
+    with open(classlist_name + '.txt', 'r+') as classlist_file:
+        pass
+
 if __name__ == '__main__':
     create_classlist()
-    # similarly for edit classlist - with open(classlist_name + '.txt', 'r+') as classlist_file: to edit
