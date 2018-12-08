@@ -1,7 +1,7 @@
 # import signal
 # from unittest import TestCase
 #
-# from dionysus_app.graph_generator.take_graph_data import take_score_entry
+# from dionysus_app.chart_generator.take_graph_data import take_score_entry
 # import pexpect.run
 
 

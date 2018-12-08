@@ -67,7 +67,7 @@ def setup_class_data_storage(classlist_name):
     app_data/
         class_data/
             class_name/  # folder for each class
-                graph_data/  # store graph data sets
+                chart_data/  # store chart data sets
                 avatars/  # store avatars for class
 
 
@@ -75,10 +75,10 @@ def setup_class_data_storage(classlist_name):
     :return: None
     """
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
-    graph_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'graph_data')
+    chart_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'chart_data')
 
     avatar_path.mkdir(exist_ok=True, parents=True)
-    graph_path.mkdir(exist_ok=True, parents=True)
+    chart_path.mkdir(exist_ok=True, parents=True)
 
 
 def create_classlist_data(class_name: str):
@@ -161,9 +161,9 @@ def take_student_avatar(student_name):
     if avatar_file is None:
         return None
     cleaned_student_name = clean_for_filename(student_name)
-    avatar_filename = f'{cleaned_student_name}.jpg'
-    # process_student_avatar()
-    # convert to jpg or whatever, copy image file to class_data avatar folder with filename that is student name
+    avatar_filename = f'{cleaned_student_name}.png'
+    # TODO: process_student_avatar()
+    # TODO: convert to png or whatever, copy image file to class_data avatar folder with student name as filename
     return avatar_filename
 
 
@@ -334,6 +334,14 @@ def avatar_path_from_string(class_name, avatar_filename):
     return CLASSLIST_DATA_PATH.joinpath(class_name, 'avatars', avatar_filename)
 
 
+def edit_classlist():
+    """
+     similarly to create classlist: for edit classlist -
+    :return:
+    """
+    classlist_name = take_classlist_name_input()
+    with open(classlist_name + '.txt', 'r+') as classlist_file:
+        pass
+
 if __name__ == '__main__':
     create_classlist()
-    # similarly for edit classlist - with open(classlist_name + '.txt', 'r+') as classlist_file: to edit
