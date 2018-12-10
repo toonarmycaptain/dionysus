@@ -1,0 +1,2 @@
+pexpect==4.6.0
+pytest==4.0.1
