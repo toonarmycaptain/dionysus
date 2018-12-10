@@ -129,7 +129,7 @@ def take_student_name_input(class_data):
     :return: str
     """
     while True:
-        student_name = input("Enter student name, or 'end': ")
+        student_name = input("Enter student name, or 'end', and hit enter: ")
         if input_is_essentially_blank(student_name):  # Do not allow blank input
             print('Please enter a valid student name.')
             continue
@@ -342,6 +342,7 @@ def edit_classlist():
     classlist_name = take_classlist_name_input()
     with open(classlist_name + '.txt', 'r+') as classlist_file:
         pass
+
 
 if __name__ == '__main__':
     create_classlist()
