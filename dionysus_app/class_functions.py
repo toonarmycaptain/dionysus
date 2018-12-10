@@ -150,8 +150,8 @@ def take_student_avatar(student_name):
     print(f'Load avatar image for {student_name}:')
     while True:
         avatar_file = input('Please paste complete filepath and name \n'
-                            'eg C:\\my_folder\\my_avatar.jpg or None to skip: ')
-        if avatar_file.upper() == 'NONE':
+                            'eg C:\\my_folder\\my_avatar.jpg or N/None to skip: ')
+        if avatar_file.upper() == 'NONE' or avatar_file.upper() == 'N':
             return None
         if avatar_file_exists(avatar_file):
             break
