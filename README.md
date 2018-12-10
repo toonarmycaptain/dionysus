@@ -16,4 +16,7 @@ For development you will also need `pip install -r requirements_dev.txt`.
 
 ### Running the application
 
-Either click on `app_main.py` in the project folder, or navigate to the folder and run `python -m app_main` on the command line. 
+Either click on `app_main.py` in the project folder, or navigate to the folder and run `python -m app_main` on the command line.
+
+#### Versioning
+As much as possible this project will follow [Semantic Versioning](https://semver.org/).   
