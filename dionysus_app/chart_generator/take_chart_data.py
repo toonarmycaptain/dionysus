@@ -34,7 +34,8 @@ def take_score_data(class_name: str):
 
     student_scores = {}
 
-    print(f'Enter student scores for {class_name}: ')
+    print(f"\nEnter student scores for {class_name}: \n"
+          f"Type score for each student, or '_' to exclude student, and press enter.")
 
     for student_name in list(class_data_dict.keys()):
 

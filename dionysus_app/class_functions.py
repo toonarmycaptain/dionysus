@@ -129,7 +129,7 @@ def take_student_name_input(class_data):
     :return: str
     """
     while True:
-        student_name = input("Enter student name, or 'end': ")
+        student_name = input("Enter student name, or 'end', and hit enter: ")
         if input_is_essentially_blank(student_name):  # Do not allow blank input
             print('Please enter a valid student name.')
             continue
@@ -150,8 +150,8 @@ def take_student_avatar(student_name):
     print(f'Load avatar image for {student_name}:')
     while True:
         avatar_file = input('Please paste complete filepath and name \n'
-                            'eg C:\\my_folder\\my_avatar.jpg or None to skip: ')
-        if avatar_file.upper() == 'NONE':
+                            'eg C:\\my_folder\\my_avatar.jpg or N/None to skip: ')
+        if avatar_file.upper() == 'NONE' or avatar_file.upper() == 'N':
             return None
         if avatar_file_exists(avatar_file):
             break
@@ -342,6 +342,7 @@ def edit_classlist():
     classlist_name = take_classlist_name_input()
     with open(classlist_name + '.txt', 'r+') as classlist_file:
         pass
+
 
 if __name__ == '__main__':
     create_classlist()
