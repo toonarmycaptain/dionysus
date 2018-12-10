@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
 from dionysus_app.chart_generator.process_chart_data import generate_avatar_coords
+from dionysus_app.class_functions import avatar_file_exists, DEFAULT_AVATAR_PATH
 
 
 def generate_chart_image(chart_data_dict: dict):
@@ -63,7 +64,9 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
     :param xy_coords: list - list of tuples (x, y)
     :return:
     """
-    avatar_image = plt.imread(str(avatar_path))  # matplotlib takes an 8bit string or FILE objectT, not Path object.
+    valid_avatar_path = validate_avatar(avatar_path)
+
+    avatar_image = plt.imread(str(valid_avatar_path))  # matplotlib takes an 8bit str or FILE object, not Path object.
     imagebox = OffsetImage(avatar_image, zoom=.4)
 
     for xy in xy_coords:
@@ -74,6 +77,19 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
                             )
         ax.add_artist(ab)
         plt.draw()
+
+
+def validate_avatar(avatar_path):
+    """
+
+
+    :param avatar_path: Path
+    :return: Path
+    """
+    if not avatar_file_exists(avatar_path):
+        return DEFAULT_AVATAR_PATH
+
+    return avatar_path
 
 
 def add_avatars_to_plot(ax, avatar_coord_dict: dict):
@@ -92,11 +108,12 @@ def add_avatars_to_plot(ax, avatar_coord_dict: dict):
 
 if __name__ == '__main__':
     data_dict = {'chart_name': 'testing cart',
-                 'score-avatar_dict': {'default_avatar_1.png': [(10, 5), (10, 55), ],
-                                       'default_avatar_2.png': [(10, 15), (10, 65), ],
-                                       'default_avatar_3.png': [(10, 25), (10, 75), ],
-                                       'default_avatar_4.png': [(10, 35), (10, 85), ],
-                                       'default_avatar.png': [(10, 45), (10, 95)],
+                 'score-avatar_dict': {10: ['default_avatar_1.png',
+                                            'default_avatar_2.png',
+                                            'default_avatar_3.png',
+                                            'default_avatar_4.png',
+                                            'default_avatar.png',
+                                            ]
                                        }
                  }
     # offset by 5 and increments of 10 neatly spaces .4 zoom 150px images from x axis and eachother
