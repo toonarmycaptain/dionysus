@@ -2,6 +2,9 @@
 UI functions: user interface functions used throughout the application.
 """
 
+import tkinter as tk
+from tkinter import filedialog
+
 HUNDRED_NEWLINES = '\n'*100
 
 
@@ -64,3 +67,34 @@ def scrub_candidate_filename(dirty_string: str):
                               if c.isalnum()
                               or c in allowed_special_characters]).rstrip()
     return cleaned_string
+
+
+def select_file_dialogue(title_str=None, filetypes=None):
+    """
+    Prompts user to select a file. Calls tkinter filedialog.askopenfilename
+    with title (if provided), and filetype argument (if provided) eg '*.png'.
+
+    filetypes is a list of tuples with 2 values, a label and a pattern
+    eg for png and all files: [('.png', '*.png'), ("all files", "*.*")]
+
+    Returns None instead of empty string if no file is selected.
+
+    :param title_str: str
+    :param filetypes: list
+    :return: str
+    """
+    root = tk.Tk()
+    root.withdraw()
+
+    default_filetypes = [("all files", "*.*")]
+    if not filetypes:
+        filetypes = default_filetypes
+    filename = filedialog.askopenfilename(title=title_str, filetype=filetypes)
+
+    if filename == '':
+        return None
+    return filename
+
+
+if __name__ == '__main__':
+    pass
