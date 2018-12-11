@@ -44,7 +44,8 @@ def take_score_data(class_name: str):
 
         student_score = take_score_entry(student_name)
         # add avatar to list of avatars for score
-        student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
+        if student_score:
+            student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
     print('\n')  # Newline between entering last score and 'Please enter a chart name/title: '
 
