@@ -9,7 +9,7 @@ import dionysus_app.class_registry as class_registry
 
 from dionysus_app.class_registry_functions import classlist_exists, register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
-from dionysus_app.file_functions import convert_to_json, load_from_json
+from dionysus_app.file_functions import convert_to_json, load_from_json, copy_file
 from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank, select_file_dialogue
 
 
@@ -83,16 +83,16 @@ def setup_class_data_storage(classlist_name):
 
 def create_classlist_data(class_name: str):
 
-    class_data = compose_classlist_dialogue()
+    class_data = compose_classlist_dialogue(class_name)
 
     class_data_feedback(class_name, class_data)
     write_classlist_to_file(class_name, class_data)
     time.sleep(2)  # Pause for user to look over feedback.
 
 
-def compose_classlist_dialogue():
+def compose_classlist_dialogue(class_name):
     while True:
-        class_data = take_class_data_input()
+        class_data = take_class_data_input(class_name)
 
         if not class_data:  # Test for empty class.
             cancelled = blank_class_dialogue()
@@ -105,7 +105,7 @@ def compose_classlist_dialogue():
     return class_data
 
 
-def take_class_data_input():
+def take_class_data_input(class_name):
     """
     Take student names, avatars, return dictionary of data.
 
@@ -116,7 +116,7 @@ def take_class_data_input():
         student_name = take_student_name_input(class_data)
         if student_name.upper() == 'END':
             break
-        avatar_filename = take_student_avatar(student_name)
+        avatar_filename = take_student_avatar(class_name, student_name)
         class_data[student_name] = [avatar_filename]
     return class_data
 
@@ -140,10 +140,11 @@ def take_student_name_input(class_data):
         return student_name
 
 
-def take_student_avatar(student_name):
+def take_student_avatar(class_name, student_name):
     """
     Prompts user for path to avatar file.
 
+    :param class_name: str
     :param student_name: str
     :return: str or None
     """
@@ -151,12 +152,15 @@ def take_student_avatar(student_name):
 
     if avatar_file is None:
         return None
+
     cleaned_student_name = clean_for_filename(student_name)
-    avatar_filename = f'{cleaned_student_name}.png'
+    target_avatar_filename = f'{cleaned_student_name}.png'
 
     # TODO: process_student_avatar()
     # TODO: convert to png, copy image file to class_data avatar folder with student name as filename
-    return avatar_filename
+    copy_avatar_to_app_data(class_name, avatar_file, target_avatar_filename)
+
+    return target_avatar_filename
 
 
 def select_avatar_file_dialogue():
@@ -170,6 +174,19 @@ def select_avatar_file_dialogue():
     filename = select_file_dialogue(dialogue_box_title, filetypes)
 
     return filename
+
+
+def copy_avatar_to_app_data(classlist_name, avatar_filename, save_filename):
+    """
+    Copies given avatar image to classlist_name/avatars/
+
+    :param classlist_name: str
+    :param avatar_filename: str or Path
+    :param save_filename: str or Path
+    :return:
+    """
+    save_avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars', save_filename)
+    copy_file(avatar_filename, save_avatar_path)
 
 
 def avatar_file_exists(avatar_file):
