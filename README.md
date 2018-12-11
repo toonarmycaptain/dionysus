@@ -7,7 +7,6 @@ Currently in early alpha release, fuller features, proper install/packaging and 
 
 Excitedly welcoming contributors! 
 
-
 ### Installation
 
 Currently to use the application, you must clone or download the project from here on github. See [releases](https://github.com/toonarmycaptain/dionysus/releases) for a `zip` or `tar.gz`.
@@ -19,4 +18,5 @@ For development you will also need `pip install -r requirements_dev.txt`.
 Either click on `app_main.py` in the project folder, or navigate to the folder and run `python -m app_main` on the command line.
 
 #### Versioning
-As much as possible this project will follow [Semantic Versioning](https://semver.org/).   
+As much as possible this project will follow [Semantic Versioning](https://semver.org/).
+   
