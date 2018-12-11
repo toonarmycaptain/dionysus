@@ -178,12 +178,12 @@ def select_avatar_file_dialogue():
 
 def copy_avatar_to_app_data(classlist_name, avatar_filename, save_filename):
     """
-    Copies given avatar image to classlist_name/avatars/
+    Copies given avatar image to classlist_name/avatars/ with given save_filename.
 
     :param classlist_name: str
     :param avatar_filename: str or Path
     :param save_filename: str or Path
-    :return:
+    :return: None
     """
     save_avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars', save_filename)
     copy_file(avatar_filename, save_avatar_path)
