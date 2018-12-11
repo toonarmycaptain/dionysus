@@ -10,7 +10,7 @@ import dionysus_app.class_registry as class_registry
 from dionysus_app.class_registry_functions import classlist_exists, register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import convert_to_json, load_from_json
-from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank
+from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank, select_file_dialogue
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
@@ -147,24 +147,29 @@ def take_student_avatar(student_name):
     :param student_name: str
     :return: str or None
     """
-    print(f'Load avatar image for {student_name}:')
-    while True:
-        avatar_file = input('Please paste complete filepath and name \n'
-                            'eg C:\\my_folder\\my_avatar.jpg or N/None to skip: ')
-        if avatar_file.upper() == 'NONE' or avatar_file.upper() == 'N':
-            return None
-        if avatar_file_exists(avatar_file):
-            break
-        # else:
-        print('Supplied filepath cannot be found.')
+    avatar_file = select_avatar_file_dialogue()
 
     if avatar_file is None:
         return None
     cleaned_student_name = clean_for_filename(student_name)
     avatar_filename = f'{cleaned_student_name}.png'
+
     # TODO: process_student_avatar()
-    # TODO: convert to png or whatever, copy image file to class_data avatar folder with student name as filename
+    # TODO: convert to png, copy image file to class_data avatar folder with student name as filename
     return avatar_filename
+
+
+def select_avatar_file_dialogue():
+    """
+    Prompts user to select an avatar file. Only displays PNG files.
+    :return: str or None
+    """
+    dialogue_box_title = 'Select .png format avatar:'
+    filetypes = [('.png files', '*.png'), ("all files", "*.*")]
+
+    filename = select_file_dialogue(dialogue_box_title, filetypes)
+
+    return filename
 
 
 def avatar_file_exists(avatar_file):
