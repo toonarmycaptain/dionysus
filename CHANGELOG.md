@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - OS native file select dialogue 
     - Add `select_file_dialogue` GUI using Tkinter.
-    - Implement GUI dialogue for avatar selection. Resolves #79.     
+    - Implement GUI dialogue for avatar selection. Resolves #79.
+    - Add this [CHANGELOG.md](https://github.com/toonarmycaptain/dionysus/blob/master/CHANGELOG.md).     
 ### Changed
 - Avatar image file now copied to app-data folder.
     - Add `file_copy` function. 
