@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix bug student with no score passed to chart generator, causing error.
 ### Removed
-- Removed TODO file depreciated in favour of using issues, implementing a CHANGELOG.md
+- Removed TODO file depreciated in favour of using issues, implementing a CHANGELOG.md.
 
 ## [0.1.0-alpha.1] - 2018-12-10
 ### Added
