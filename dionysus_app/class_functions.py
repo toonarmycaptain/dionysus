@@ -157,7 +157,7 @@ def take_student_avatar(class_name, student_name):
     target_avatar_filename = f'{cleaned_student_name}.png'
 
     # TODO: process_student_avatar()
-    # TODO: convert to png, copy image file to class_data avatar folder with student name as filename
+    # TODO: convert to png
     copy_avatar_to_app_data(class_name, avatar_file, target_avatar_filename)
 
     return target_avatar_filename
