@@ -368,8 +368,4 @@ def edit_classlist():
 
 
 if __name__ == '__main__':
-    # create_classlist()
-
-    classlist_name, save_filename = 'test_class', 'test_filename'
-    save_avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars', save_filename)
-    print(save_avatar_path)
+    create_classlist()
