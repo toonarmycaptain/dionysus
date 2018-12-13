@@ -179,6 +179,7 @@ def select_avatar_file_dialogue():
 def copy_avatar_to_app_data(classlist_name, avatar_filename, save_filename):
     """
     Copies given avatar image to classlist_name/avatars/ with given save_filename.
+    No need to pre-check if file exists because it could not be selected if it did not exist.
 
     :param classlist_name: str
     :param avatar_filename: str or Path
