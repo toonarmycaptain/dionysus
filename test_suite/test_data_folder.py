@@ -10,6 +10,7 @@ class TestDataFolder(unittest.TestCase):
         self.default_paths = [
             r'/dionysus_app/app_data',
             r'/dionysus_app/app_data/class_data',
+            r'dionysus_app/app_data/class/registry.index'
             r'/dionysus_app/app_data/image_data',
             r'/dionysus_app/chart_generator',
             r'/dionysus_app/chart_generator/default_avatar.png',

@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix bug student with no score passed to chart generator, causing error.
 ### Removed
-- Removed TODO file depreciated in favour of using issues, implementing a CHANGELOG.md
+- Removed TODO file depreciated in favour of using issues, implementing a CHANGELOG.md.
 
 ## [0.1.0-alpha.1] - 2018-12-10
 ### Added
@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0-alpha] - 2018-12-10
 Initial alpha release! Dionysus will take classlists, and successfully produce charts with the default avatar.
 
-###Known bugs/non-functional features:
+### Known bugs/non-functional features:
 - setup.py is boilerplate and untested.
 - User supplied avatar does not copy to app data folder and thus does not work in app.
 - No indication of chart save location and not saving in desired/intended location in app_data/image_data/

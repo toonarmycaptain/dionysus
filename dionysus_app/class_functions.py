@@ -47,7 +47,7 @@ def take_classlist_name_input():
     return classlist_name
 
 
-def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
+def setup_class(classlist_name):  # TODO: change name because of clash with python 'class' keyword?
     """
     Setup class data storage file structure.
     Register class in class_registry index
@@ -157,7 +157,7 @@ def take_student_avatar(class_name, student_name):
     target_avatar_filename = f'{cleaned_student_name}.png'
 
     # TODO: process_student_avatar()
-    # TODO: convert to png, copy image file to class_data avatar folder with student name as filename
+    # TODO: convert to png
     copy_avatar_to_app_data(class_name, avatar_file, target_avatar_filename)
 
     return target_avatar_filename
@@ -179,6 +179,7 @@ def select_avatar_file_dialogue():
 def copy_avatar_to_app_data(classlist_name, avatar_filename, save_filename):
     """
     Copies given avatar image to classlist_name/avatars/ with given save_filename.
+    No need to pre-check if file exists because it could not be selected if it did not exist.
 
     :param classlist_name: str
     :param avatar_filename: str or Path
