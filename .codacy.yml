@@ -10,3 +10,4 @@ coverage:
         - '*.md'
         - '*.yml'
         - '*.txt'
+        - 'test_suite/**'
