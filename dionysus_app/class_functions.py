@@ -47,7 +47,7 @@ def take_classlist_name_input():
     return classlist_name
 
 
-def setup_class(classlist_name):  # TODO: change name because of class with python 'class' keyword?
+def setup_class(classlist_name):  # TODO: change name because of clash with python 'class' keyword?
     """
     Setup class data storage file structure.
     Register class in class_registry index
@@ -367,4 +367,8 @@ def edit_classlist():
 
 
 if __name__ == '__main__':
-    create_classlist()
+    # create_classlist()
+
+    classlist_name, save_filename = 'test_class', 'test_filename'
+    save_avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars', save_filename)
+    print(save_avatar_path)
