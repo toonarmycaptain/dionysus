@@ -4,3 +4,9 @@ engines:
         python_version: 3.7
 exclude_paths:
  - 'test_suite/**'
+coverage:
+    enabled: true
+    exclude_paths:
+        - '*.md'
+        - '*.yml'
+        - '*.txt'
