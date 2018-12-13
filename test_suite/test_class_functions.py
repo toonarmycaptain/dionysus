@@ -45,10 +45,3 @@ class TestCopyAvatarToAppData(TestCase):
         os.rmdir(self.test_class_avatar_subfolder_path)  # remove class_datafolder/avatars
         os.rmdir(self.test_class_chart_data_subfolder_path)  # remove class_datafolder/chart_data
         os.rmdir(self.test_class_datafolder_path)  # remove class_datafolder
-
-
-if __name__ == '__main__':
-
-    classlist_name, save_filename = 'test_class', 'test_filename'
-    save_avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars', save_filename)
-    print(save_avatar_path)
