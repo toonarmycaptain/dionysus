@@ -5,7 +5,7 @@ Functions for creating, editing, dealing with classes.
 import time
 from pathlib import Path
 
-import dionysus_app.class_registry as class_registry
+import definitions
 
 from dionysus_app.class_registry_functions import classlist_exists, register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
@@ -267,7 +267,7 @@ def create_class_list_dict():
 
     :return: dict
     """
-    class_dict = {str(option): class_name for option, class_name in enumerate(class_registry.REGISTRY, start=1)}
+    class_dict = {str(option): class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
     return class_dict
 
 
