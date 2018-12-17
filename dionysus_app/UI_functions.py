@@ -89,11 +89,35 @@ def select_file_dialogue(title_str=None, filetypes=None):
     default_filetypes = [("all files", "*.*")]
     if not filetypes:
         filetypes = default_filetypes
-    filename = filedialog.askopenfilename(title=title_str, filetype=filetypes)
+    filepath_str = filedialog.askopenfilename(title=title_str, filetype=filetypes)
 
-    if filename == '':
+    if filepath_str == '':
         return None
-    return filename
+    return filepath_str
+
+
+def select_folder_dialogue(title_str=None, initial_dir='..'):
+    """
+    Prompts user to select a file. Calls tkinter filedialog.askopenfilename
+    with title (if provided), and filetype argument (if provided) eg '*.png'.
+
+    filetypes is a list of tuples with 2 values, a label and a pattern
+    eg for png and all files: [('.png', '*.png'), ("all files", "*.*")]
+
+    Returns None instead of empty string if no file is selected.
+
+    :param title_str: str
+    :param initial_dir: str - Path for dialogue to start in.
+    :return: str
+    """
+    root = tk.Tk()
+    root.withdraw()
+
+    dir_path_str = filedialog.askdirectory(initialdir=initial_dir, title=title_str)
+
+    if dir_path_str == '':
+        return None
+    return dir_path_str
 
 
 if __name__ == '__main__':
