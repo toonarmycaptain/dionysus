@@ -4,28 +4,12 @@ Main script, menu.
 import os
 import sys
 
-import dionysus_app.class_registry as class_registry
+import definitions as definitions
 
 from dionysus_app.class_registry_functions import cache_class_registry, check_registry_on_exit
-from dionysus_app.data_folder import DataFolder
+from dionysus_app.initialise_app import app_init
 from dionysus_app.main_menu import run_main_menu
-
-
-def data_folder_check():
-    """
-    Check data folders exist, create them if they do not.
-
-    :return: None
-    """
-
-    data_folders = {
-        DataFolder.APP_DATA: DataFolder.generate_rel_path(DataFolder.APP_DATA.value),
-        DataFolder.CLASS_DATA: DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value),
-        DataFolder.IMAGE_DATA: DataFolder.generate_rel_path(DataFolder.IMAGE_DATA.value),
-        }
-
-    for key in data_folders:
-        data_folders[key].mkdir(parents=True, exist_ok=True)
+from dionysus_app.settings_functions import load_chart_save_folder
 
 
 def run_app():
@@ -38,9 +22,14 @@ def run_app():
     """
     os.chdir(sys.path[0])  # Make sure cwd is directory os script.
 
-    data_folder_check()
+    app_init()
 
-    class_registry.REGISTRY = cache_class_registry()
+
+    # load runtime variables
+    definitions.REGISTRY = cache_class_registry()
+
+    definitions.DEFAULT_CHART_SAVE_FOLDER = load_chart_save_folder()
+
 
     run_main_menu()  # startup checks successful, enter UI.
 
