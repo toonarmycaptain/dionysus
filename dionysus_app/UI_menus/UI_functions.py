@@ -7,7 +7,7 @@ from tkinter import filedialog
 
 
 def clear_screen(num_lines=50):
-    clear_seq = '\n'  * num_lines
+    clear_seq = '\n' * num_lines
 
     print(clear_seq)
 
