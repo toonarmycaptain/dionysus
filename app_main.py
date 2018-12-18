@@ -4,7 +4,7 @@ Main script, menu.
 import os
 import sys
 
-import definitions as definitions
+import definitions
 
 from dionysus_app.class_registry_functions import cache_class_registry, check_registry_on_exit
 from dionysus_app.initialise_app import app_init
