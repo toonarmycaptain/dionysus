@@ -12,7 +12,6 @@ class DataFolder(Enum):
     APP_DATA = './dionysus_app/app_data/'
 
     CLASS_DATA = APP_DATA + 'class_data/'
-    IMAGE_DATA = APP_DATA + 'image_data/'
 
     CLASS_REGISTRY = APP_DATA + 'class_registry.index'
 
