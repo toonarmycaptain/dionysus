@@ -10,7 +10,7 @@ import definitions
 from dionysus_app.class_registry_functions import classlist_exists, register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import convert_to_json, load_from_json, copy_file
-from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank, select_file_dialogue
+from dionysus_app.UI_menus.UI_functions import clean_for_filename, input_is_essentially_blank, select_file_dialogue
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)

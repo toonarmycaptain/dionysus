@@ -6,7 +6,7 @@ Script for taking and saving data for graph.
 
 from dionysus_app.class_functions import load_class_data, get_avatar_path
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.UI_functions import input_is_essentially_blank
+from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)

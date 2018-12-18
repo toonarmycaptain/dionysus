@@ -14,7 +14,7 @@ from pathlib import Path
 import definitions
 
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.UI_functions import clear_screen, select_folder_dialogue
+from dionysus_app.UI_menus.UI_functions import clear_screen, select_folder_dialogue
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
 APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)

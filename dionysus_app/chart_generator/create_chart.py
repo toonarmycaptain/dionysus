@@ -15,7 +15,7 @@ from dionysus_app.chart_generator.generate_image import generate_chart_image
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.chart_generator.take_chart_data import take_chart_name, take_score_data
 from dionysus_app.file_functions import convert_to_json
-from dionysus_app.UI_functions import clean_for_filename
+from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
