@@ -1,6 +1,6 @@
 import os
 import unittest
-from app_main import data_folder_check
+from dionysus_app.initialise_app import data_folder_check
 from dionysus_app.data_folder import DataFolder
 
 
@@ -8,9 +8,9 @@ class TestAppMain(unittest.TestCase):
 
     def setUp(self):
         self.default_paths = [
-            r'/dionysus_app/app_data',
-            r'/dionysus_app/app_data/class_data',
-            r'/dionysus_app/app_data/image_data'
+            r'./dionysus_app/app_data',
+            r'./dionysus_app/app_data/class_data',
+            r'./dionysus_app/app_data/image_data'
             ]
 
     def test_data_folder_check_default(self):
