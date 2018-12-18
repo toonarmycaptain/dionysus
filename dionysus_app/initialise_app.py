@@ -25,7 +25,6 @@ def data_folder_check():
     data_folders = {
         DataFolder.APP_DATA: DataFolder.generate_rel_path(DataFolder.APP_DATA.value),
         DataFolder.CLASS_DATA: DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value),
-        DataFolder.IMAGE_DATA: DataFolder.generate_rel_path(DataFolder.IMAGE_DATA.value),
         }
 
     for key in data_folders:
