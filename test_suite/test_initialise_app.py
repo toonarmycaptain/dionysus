@@ -10,7 +10,6 @@ class TestAppMain(unittest.TestCase):
         self.default_paths = [
             r'./dionysus_app/app_data',
             r'./dionysus_app/app_data/class_data',
-            r'./dionysus_app/app_data/image_data'
             ]
 
     def test_data_folder_check_default(self):
