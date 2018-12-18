@@ -5,10 +5,9 @@ UI functions: user interface functions used throughout the application.
 import tkinter as tk
 from tkinter import filedialog
 
-HUNDRED_NEWLINES = '\n'*100
 
-
-def clear_screen(clear_seq=HUNDRED_NEWLINES):
+def clear_screen(num_lines=50):
+    clear_seq = '\n'  * num_lines
 
     print(clear_seq)
 
