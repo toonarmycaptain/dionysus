@@ -13,8 +13,6 @@ def run_settings_menu():
             break
 
 
-
-
 def settings_menu_options():
     print("Dionysus - Settings\n")
     print("Please select an option by entering the corresponding number, and press return:\n"
@@ -22,6 +20,7 @@ def settings_menu_options():
           "     \n"
           "     0. Return to main menu."
           )
+
 
 def take_settings_menu_input():
     """
@@ -37,6 +36,7 @@ def take_settings_menu_input():
         '0': return_to_main_menu
         }
     unselected = True
+    chosen_option = None
     while unselected:
         chosen_option = input('>>> ')
 
@@ -60,11 +60,10 @@ def call_set_default_chart_save_location():
     print('\n\n')
 
 
-
 def return_to_main_menu():
     """
     Prints return to main menu message.
-    :return: None
+    :return: False
     """
     print('Returning to main menu...\n\n\n')
     return False
