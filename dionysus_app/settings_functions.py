@@ -11,6 +11,8 @@ import os
 
 from pathlib import Path
 
+import definitions
+
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_functions import clear_screen, select_folder_dialogue
 
@@ -67,9 +69,16 @@ def set_default_chart_save_location(user_set):
     chart_save_parent_folder_path = Path(new_default_save_location)
     new_chart_save_folder_str = str(Path.joinpath(chart_save_parent_folder_path, CHART_SAVE_FOLDER_NAME))
 
+    # Initialise and save chart save location.
+    definitions.DEFAULT_CHART_SAVE_FOLDER = new_chart_save_folder_str
+
+    new_setting['user_default_chart_save_folder'] = new_chart_save_folder_str
     create_app_settings_file()
     edit_app_settings_file(new_setting)
 
+    print(f'Default chart save folder set to {definitions.DEFAULT_CHART_SAVE_FOLDER}')
+
+    # Create chart save location
     Path(new_setting['user_default_chart_save_folder']).mkdir(parents=True, exist_ok=True)
 
 
@@ -84,7 +93,6 @@ def user_set_chart_save_folder():
 
 
 def write_settings_to_file(settings_dict: dict):
-    print(DataFolder.generate_rel_path(DataFolder.CHART_GENERATOR.value))
     with open(APP_SETTINGS_FILE, 'w+') as app_settings_file:
         write_string = 'dionysus_settings = ' + str(settings_dict)
         app_settings_file.write(write_string)
