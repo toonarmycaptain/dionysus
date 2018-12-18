@@ -9,7 +9,7 @@ def run_settings_menu():
         settings_menu_options()
         return_to_main = take_settings_menu_input()
 
-        if return_to_main: # user selects to return to main menu
+        if return_to_main:  # User selects to return to main menu
             break
 
 
