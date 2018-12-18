@@ -40,6 +40,7 @@ def app_start_set_default_chart_save_location():
         set_default_chart_save_location(user_set=True)
     else:
         set_default_chart_save_location(user_set=False)
+
     clear_screen()
 
 
@@ -62,7 +63,9 @@ def set_default_chart_save_location(user_set):
     if user_set:
         new_default_save_location = user_set_chart_save_folder()
 
-    new_setting['user_default_chart_save_folder'] = os.path.join(new_default_save_location, CHART_SAVE_FOLDER_NAME)
+    # Ensure saved value has correct separators.
+    chart_save_parent_folder_path = Path(new_default_save_location)
+    new_chart_save_folder_str = str(Path.joinpath(chart_save_parent_folder_path, CHART_SAVE_FOLDER_NAME))
 
     create_app_settings_file()
     edit_app_settings_file(new_setting)
