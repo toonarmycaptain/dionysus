@@ -4,14 +4,23 @@ Optional feature implementations:
 if title/name desired on image:
     fig.subtitle('title_string')
 """
+import os
+
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
+import definitions
+
 from dionysus_app.chart_generator.process_chart_data import generate_avatar_coords
 from dionysus_app.class_functions import avatar_file_exists, DEFAULT_AVATAR_PATH
+from dionysus_app.data_folder import DataFolder
+from dionysus_app.UI_menus.UI_functions import save_as_dialogue
 
+
+CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 def generate_chart_image(chart_data_dict: dict):
     """
@@ -34,16 +43,14 @@ def generate_chart_image(chart_data_dict: dict):
 
     add_avatars_to_plot(ax, avatar_coord_dict)
 
-    # save fig for test
-    plt.savefig(chart_data_dict['chart_name'],  # save filename.png TODO: change file save location
-                dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
-
     # Maximise displayed image.
     mng = plt.get_current_fig_manager()
     mng.window.state("zoomed")
 
     # Show image.
     plt.show()
+
+    save_chart_image(chart_data_dict)
 
 
 def set_axis(x_min: int=0, x_max: int=100, x_step: int=10):
@@ -104,6 +111,37 @@ def add_avatars_to_plot(ax, avatar_coord_dict: dict):
     for avatar_path in avatar_coord_dict.keys():
         xy_coords = avatar_coord_dict[avatar_path]
         add_avatar_to_plot(ax, avatar_path, xy_coords)
+
+
+def save_chart_image(chart_data_dict: dict):
+    "Save figure. Allow user to save to any filename, while saving to app_data/classname/chart_data with same filename \
+    as chart_name and chart_data_file name."
+    class_name = chart_data_dict['class_name']
+    default_chart_name = chart_data_dict['chart_default_filename']
+    app_data_save_pathname = Path(CLASSLIST_DATA_PATH).joinpath(class_name, 'chart_data', default_chart_name)
+    save_chart_pathname = get_user_save_chart_pathname(class_name, default_chart_name)
+
+    # save in app_data/class_data/class_name/chart_data with chart_default_filename
+    plt.savefig(app_data_save_pathname,
+                dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+    # Save in user selected location with user defined name
+    plt.savefig(save_chart_pathname,
+                dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+
+
+def get_user_save_chart_pathname(class_name: str, default_chart_name: str):
+
+    class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
+    class_save_folder_path.mkdir(parents=True, exist_ok=True)  # create class_save_folder if nonexistent
+
+    class_save_folder_str = str(class_save_folder_path)
+
+    save_chart_path_str = save_as_dialogue(title_str='Save chart image as:',
+                                           filetypes=[('.png', '*.png'), ("all files", "*.*")],
+                                           suggested_filename=default_chart_name,
+                                           start_dir=class_save_folder_str
+                                           )
+    return save_chart_path_str
 
 
 if __name__ == '__main__':
