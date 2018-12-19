@@ -4,7 +4,11 @@ import os
 
 from unittest import TestCase
 
+import definitions
+
 from dionysus_app.class_functions import CLASSLIST_DATA_PATH, copy_avatar_to_app_data, setup_class_data_storage
+
+
 
 
 class TestSetupClassDataStorage(TestCase):
@@ -21,6 +25,14 @@ class TestCopyAvatarToAppData(TestCase):
         # create test file and structure.
         with open(self.test_avatar_filename, 'w+') as avatar_file:
                         pass
+
+        # Mock out global for test:
+
+        # Save original value to restore in tearDown
+        self.DEFAULT_CHART_SAVE_FOLDER_value = definitions.DEFAULT_CHART_SAVE_FOLDER
+        # Mock value
+        definitions.DEFAULT_CHART_SAVE_FOLDER = '.'
+
 
         setup_class_data_storage(self.test_classlist_name)
         self.test_class_datafolder_path = CLASSLIST_DATA_PATH.joinpath(self.test_classlist_name)
@@ -45,3 +57,6 @@ class TestCopyAvatarToAppData(TestCase):
         os.rmdir(self.test_class_avatar_subfolder_path)  # remove class_datafolder/avatars
         os.rmdir(self.test_class_chart_data_subfolder_path)  # remove class_datafolder/chart_data
         os.rmdir(self.test_class_datafolder_path)  # remove class_datafolder
+
+        # Restore definitions.DEFAULT_CHART_SAVE_FOLDER to original value
+        definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
