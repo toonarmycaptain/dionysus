@@ -34,9 +34,10 @@ def new_chart():
     #       - chart/image title options eg name different from displayed title
     #       - axis labels, scale/axis tick markings
 
-    chart_name, class_name, student_scores, chart_params = assemble_chart_data()
+    chart_name, chart_default_filename, class_name, student_scores, chart_params = assemble_chart_data()
 
     chart_data_dict = {'class_name': class_name,
+                       'chart_default_filename': chart_default_filename,
                        'chart_name': chart_name,
                        'chart_params': chart_params,
                        'score-avatar_dict': student_scores,
@@ -59,10 +60,12 @@ def assemble_chart_data():
 
     chart_name = take_chart_name()
 
+    chart_filename = clean_for_filename(chart_name)
+
     chart_params = set_chart_params()
     # chart options here or before score entry, setting chart params, min, max scores etc
 
-    return chart_name, class_name, student_scores, chart_params
+    return chart_name, chart_filename, class_name, student_scores, chart_params
 
 
 def write_chart_data_to_file(chart_data_dict: dict):
@@ -94,7 +97,7 @@ def write_chart_data_to_file(chart_data_dict: dict):
     """
     file_chart_data_dict = deepcopy(chart_data_dict)  # Copy so as to not modify in-use dict.
 
-    chart_filename = clean_for_filename(file_chart_data_dict['chart_name'])
+    chart_filename = file_chart_data_dict['chart_default_filename']
     chart_data_file = chart_filename + CHART_DATA_FILE_TYPE
     chart_data_filepath = CLASSLIST_DATA_PATH.joinpath(
             file_chart_data_dict['class_name'], 'chart_data', chart_data_file)
