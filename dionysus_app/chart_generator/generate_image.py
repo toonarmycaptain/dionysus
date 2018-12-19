@@ -22,6 +22,7 @@ from dionysus_app.UI_menus.UI_functions import save_as_dialogue
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
+
 def generate_chart_image(chart_data_dict: dict):
     """
 
@@ -114,8 +115,14 @@ def add_avatars_to_plot(ax, avatar_coord_dict: dict):
 
 
 def save_chart_image(chart_data_dict: dict):
-    "Save figure. Allow user to save to any filename, while saving to app_data/classname/chart_data with same filename \
-    as chart_name and chart_data_file name."
+    """
+    Save figure. Allow user to save to any filename, while saving to app_data/classname/chart_data with same filename \
+    as chart_name and chart_data_file name.
+
+    :param chart_data_dict: dict
+    :return: None
+    """
+
     class_name = chart_data_dict['class_name']
     default_chart_name = chart_data_dict['chart_default_filename']
     app_data_save_pathname = Path(CLASSLIST_DATA_PATH).joinpath(class_name, 'chart_data', default_chart_name)
