@@ -172,8 +172,9 @@ def select_avatar_file_dialogue():
     """
     dialogue_box_title = 'Select .png format avatar:'
     filetypes = [('.png files', '*.png'), ("all files", "*.*")]
+    start_dir = '..'  # start at parent to app directory.
 
-    filename = select_file_dialogue(dialogue_box_title, filetypes)
+    filename = select_file_dialogue(dialogue_box_title, filetypes, start_dir)
 
     return filename
 
@@ -322,6 +323,7 @@ def load_class_data(class_name: str):
 
     class_data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
     classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, class_data_filename)
+
     with open(classlist_data_path, 'r') as class_datafile:
         loaded_class_json = class_datafile.read()
         class_data_dict = load_from_json(loaded_class_json)
