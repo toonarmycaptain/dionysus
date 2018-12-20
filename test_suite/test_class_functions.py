@@ -57,6 +57,7 @@ class TestCopyAvatarToAppData(TestCase):
         os.rmdir(self.test_class_avatar_subfolder_path)  # remove class_datafolder/avatars
         os.rmdir(self.test_class_chart_data_subfolder_path)  # remove class_datafolder/chart_data
         os.rmdir(self.test_class_datafolder_path)  # remove class_datafolder
+        os.rmdir(self.test_classlist_name)  # remove user_save_charts folder
 
         # Restore definitions.DEFAULT_CHART_SAVE_FOLDER to original value
         definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
