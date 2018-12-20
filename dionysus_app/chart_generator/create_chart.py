@@ -26,13 +26,7 @@ def new_chart():
     TODO: write docstring. In particular form for chart_data_dict.
     :return:
     """
-    # Select class or redirect to create new class.
-    # Take chart_name
-    # Take new data set. Store in class_data/{class_name}/chart_data/chart_name.cdf (ChartDataFile)
-    # Pass data to chart image creation scripts
-    #   - potential options in those scripts (or here) to include:
-    #       - chart/image title options eg name different from displayed title
-    #       - axis labels, scale/axis tick markings
+    class_name, chart_name, chart_default_filename, student_scores, chart_params = assemble_chart_data()
 
     chart_name, chart_default_filename, class_name, student_scores, chart_params = assemble_chart_data()
 
@@ -65,7 +59,7 @@ def assemble_chart_data():
     chart_params = set_chart_params()
     # chart options here or before score entry, setting chart params, min, max scores etc
 
-    return chart_name, chart_filename, class_name, student_scores, chart_params
+    return class_name, chart_name, chart_filename,  student_scores, chart_params
 
 
 def write_chart_data_to_file(chart_data_dict: dict):
