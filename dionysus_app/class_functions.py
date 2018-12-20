@@ -3,6 +3,7 @@ Functions for creating, editing, dealing with classes.
 """
 
 import time
+
 from pathlib import Path
 
 import definitions
@@ -257,7 +258,7 @@ def select_classlist():
     :return: str
     """
     class_options = create_class_list_dict()
-    display_class_selection_menu(class_options)
+    display_class_selection_menu(class_options)  # TODO: Select class or redirect to create new class.
 
     selected_class = take_class_selection(class_options)
 
