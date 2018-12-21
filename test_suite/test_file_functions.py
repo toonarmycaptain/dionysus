@@ -3,7 +3,8 @@ import shutil
 
 from unittest import TestCase
 
-from dionysus_app.file_functions import convert_to_json, copy_file, move_file
+from dionysus_app.file_functions import convert_to_json, load_from_json
+from dionysus_app.file_functions import copy_file,  move_file
 
 
 class TestConvertToJson(TestCase):
@@ -13,6 +14,12 @@ class TestConvertToJson(TestCase):
 
         assert convert_to_json(data_to_convert) == json_converted_data
 
+class TestLoadFromJson(TestCase):
+    def test_load_from_json(self):
+        json_data_to_convert = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
+        converted_json_data = {"1": 'a', 'b': 2, "3": 'c', 'd': 4}
+
+        assert load_from_json(json_data_to_convert) == converted_json_data
 
 class TestCopyFile(TestCase):
     def setUp(self):

@@ -99,6 +99,12 @@ def write_chart_data_to_file(chart_data_dict: dict):
                 'score-avatar_dict': student_scores,  dict
                 }
 
+    CAUTION: conversion to JSON will convert int/float keys in score_avatar_dict
+    to strings, and keep them as strings when loading.
+    This could be handled if necessary by running something like:
+    original_score_avatar_dict = {
+        float(score): avatar_list for score, avatar_list in dejsonified_score_avatar_dict.items()}
+
     :param chart_data_dict: dict
     :return: None
     """

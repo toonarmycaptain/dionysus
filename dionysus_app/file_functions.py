@@ -12,6 +12,10 @@ def convert_to_json(data_to_convert):
     """
     Serialise data in JSON format, return as JSON string.
 
+    CAUTION: If dict has int keys when converted to JSON, these will be
+    converted to str keys, and remain so on json.loads, as JSON does not have
+    int keys.
+
     :param data_to_convert:
     :return: str
     """
@@ -22,6 +26,9 @@ def convert_to_json(data_to_convert):
 def load_from_json(data_to_convert: str):
     """
     Convert data from JSON to python object.
+
+    CAUTION: If dict had int keys when converted to JSON, these will be str keys
+    when loaded from JSON due to JSON not having int keys.
 
     :param data_to_convert: str
     :return:

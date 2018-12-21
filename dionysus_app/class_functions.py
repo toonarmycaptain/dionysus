@@ -237,6 +237,9 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
 
     JSON'd class data dict  # Second line, when reading JSON back in.
 
+    CAUTION: conversion to JSON will convert int/float keys in score_avatar_dict
+    to strings, and keep them as strings when loading.
+
     :param class_name: str
     :param class_data_dict: dict
     :return: None
