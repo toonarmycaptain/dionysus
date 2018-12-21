@@ -6,6 +6,7 @@ import sys
 
 from dionysus_app.class_functions import create_classlist
 from dionysus_app.chart_generator.create_chart import new_chart
+from dionysus_app.UI_menus.edit_class_data import edit_class_data
 from dionysus_app.UI_menus.settings_menu import run_settings_menu
 
 
@@ -35,7 +36,7 @@ def take_main_menu_input():
     """
     possible_options = {
         '1': create_classlist,
-        '2': 'edit_classlist',
+        '2': edit_class_data,
         '3': new_chart,
         '9': run_settings_menu,
         'q': quit_app,
