@@ -1,5 +1,7 @@
 language: python
 sudo: false
+dist: xenial
+
 os:
   - windows
   - linux
@@ -9,7 +11,7 @@ cache: pip
 
 python:
     - 3.6
-#    - "3.7"
+   - "3.7"
 
 
 matrix:
