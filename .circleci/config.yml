@@ -27,4 +27,3 @@ jobs:
 
             pytest -v --cov=/home/circleci/dionysus/
             coverage xml
-            python-codacy-coverage -r coverage.xml
