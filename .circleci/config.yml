@@ -25,6 +25,6 @@ jobs:
           command: |
             . venv/bin/activate
 
-            pytest -v --cov=dionysus
+            pytest -v --cov
             coverage xml
             python-codacy-coverage -r coverage.xml
