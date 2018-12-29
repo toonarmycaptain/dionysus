@@ -30,10 +30,10 @@ install:
     - pip install -r requirements_dev.txt
     - pip install -r requirements.txt
 
-    - pip install pytest-cov  # TODO: Move test dependencies to requirements_dev
-    - pip install coveralls
-    - pip install coverage
-    - pip install codacy-coverage
+#    - pip install pytest-cov  # TODO: Move test dependencies to requirements_dev
+#    - pip install coveralls
+#    - pip install coverage
+#    - pip install codacy-coverage
 
 # command to run tests
 script:
