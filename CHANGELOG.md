@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - Install testing dependencies from requirements_dev.txt rather than manually. 
         - Use Python 3.7 Xenial distribution for Travis to build.
         - Require passing tests Python 3.7 on Linux for successful build.
-   
+    - Add Python 3.6, 3.7 testing via circleci.
 
 ## [0.1.1-alpha] - 2018-12-12
 ### Added
