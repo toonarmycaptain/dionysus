@@ -6,7 +6,7 @@ jobs:
       - image: circleci/python:3.6
       - image: circleci/python:3.7
 
-    working_directory: ~/repo
+    working_directory: ~/dionysus
 
     steps:
 
@@ -25,6 +25,6 @@ jobs:
           command: |
             . venv/bin/activate
 
-            pytest -v --cov=dionysus
+            pytest -v --cov=/home/circleci/dionysus/
             coverage xml
             python-codacy-coverage -r coverage.xml
