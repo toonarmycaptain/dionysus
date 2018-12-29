@@ -5,4 +5,5 @@ include = /home/travis/build/toonarmycaptain/dionysus/*
 omit =
      *.yml
      *.md
-
+     test_suite/*
+     venv/*

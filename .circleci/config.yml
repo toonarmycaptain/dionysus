@@ -8,7 +8,6 @@ jobs:
     working_directory: ~/dionysus
 
     steps:
-
       - checkout
 
       - run:
@@ -16,14 +15,19 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
+
             pip install -r requirements_dev.txt
             pip install -r requirements.txt
+
+            mkdir test-results
 
       - run:
           name: run tests
           command: |
             . venv/bin/activate
 
-            pytest -v --cov=dionysus
+            pytest -v --cov=/home/circleci/dionysus/ --junitxml=../test-results/junit.xml
             coverage xml
-            python-codacy-coverage -r coverage.xml
+
+      - store_test_results:
+          path: test-results
