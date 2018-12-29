@@ -19,15 +19,15 @@ jobs:
             pip install -r requirements_dev.txt
             pip install -r requirements.txt
 
-            mkdir test-reports
+            mkdir test-results
 
       - run:
           name: run tests
           command: |
             . venv/bin/activate
 
-            pytest -v --cov=/home/circleci/dionysus/
+            pytest -v --cov=/home/circleci/dionysus/ --junitxml=../test-results/junit.xml
             coverage xml
 
       - store_test_results:
-          path: test-reports
+          path: test-results
