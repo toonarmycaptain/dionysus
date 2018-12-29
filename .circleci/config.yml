@@ -30,4 +30,4 @@ jobs:
             coverage xml
 
       - store_test_results:
-          path: test-results
+          path: test-reports
