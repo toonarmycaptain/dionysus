@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - CI/Testing
     - Move testing/development dependencies to requirements_dev.txt
-   - Coveralls
+    - Coveralls
         - Correct coverage calculation to only include project code (not testing or python env code).
     - Travis CI
         - Install testing dependencies from requirements_dev.txt rather than manually. 
