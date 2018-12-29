@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Save chart dialogue.
-    - OS native 'save as' dialogue
+    - OS native 'save as' dialogue.
     - Starting default folder to class folder in dionysus charts.
     - Default filename provided is sanitised user supplied chart name.
     - User can save chart in user selected location with user supplied filename.
@@ -28,20 +28,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - circleci badge added to README.
 ### Changed
 - Charts save to correct location in dionysus_charts rather than in app_home folder.
-- Reorganise menus/UI scripts into folder UI_menus
-- Moved app initialisation code to initialise_app.py
+- Reorganise menus/UI scripts into folder UI_menus.
+- Moved app initialisation code to initialise_app.py.
        - data_folder_check moved here.
-- Remove class_registry.py
-    - REGISTRY variable moved to definitions.py
+- REGISTRY variable moved to definitions.py.
 - CI/Testing
-    - Move testing/development dependencies to requirements_dev.txt
+    - Move testing/development dependencies to requirements_dev.txt.
     - Coveralls
         - Correct coverage calculation to only include project code (not testing or python env code).
     - Travis CI
         - Install testing dependencies from requirements_dev.txt rather than manually. 
         - Require passing tests Python 3.7 on Linux for successful build.
- 
+ ### Removed
+- app_data/image_data folder. 
+    - Unnecessary as saving images to external folder, and in class_data/*/chart_data folder. 
+- class_registry.py.
+    - REGISTRY variable moved to definitions.py.
 
+    
 ## [0.1.1-alpha] - 2018-12-12
 ### Added
 - OS native file select dialogue 
