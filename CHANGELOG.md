@@ -24,8 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Travis CI
         - Use Xenial distribution for Python 3.7 to build on Travis.
     - circleci
-        - Add Python 3.7 testing via circleci. 
+        - Add Python 3.7 testing via [circleci](https://codeclimate.com/github/toonarmycaptain/dionysus). 
         - circleci badge added to README.
+    - Code Climate
+        - Connect dionysus to [Code Climate](https://codeclimate.com/github/toonarmycaptain/dionysus)
+        - Add Code Cimate Maintainability badge to README.
+        
 ### Changed
 - Charts save to correct location in dionysus_charts rather than in app_home folder.
 - Reorganise menus/UI scripts into folder UI_menus.
