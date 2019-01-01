@@ -29,7 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Code Climate
         - Connect dionysus to [Code Climate](https://codeclimate.com/github/toonarmycaptain/dionysus)
         - Add Code Cimate Maintainability badge to README.
-        
+    - Codebeat
+        - Add [Codebeat]{https://codebeat.co/projects/github-com-toonarmycaptain-dionysus-master} code quality checker.
+        - Add .codebeatignore to ignore test code from code quality metrics    
+
 ### Changed
 - Charts save to correct location in dionysus_charts rather than in app_home folder.
 - Reorganise menus/UI scripts into folder UI_menus.
