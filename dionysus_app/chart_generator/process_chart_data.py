@@ -40,7 +40,8 @@ def generate_avatar_coords(score_avatar_dict: dict, chart_params: dict = None): 
 def assign_avatars_to_bands(score_avatar_dict: dict):
     """
     Sort and ten  in order from lowest to highest.
-    Iterate over scores and assign score to band (scores in bands will thus be in order from lowest to highest).
+    Iterate over scores and assign score to band (scores in bands will
+    thus be in order from lowest to highest).
 
     :param score_avatar_dict: dict
     :return: dict
@@ -57,27 +58,32 @@ def assign_avatars_to_bands(score_avatar_dict: dict):
 
 def assign_avatar_coords(band_avatar_dict, chart_params=DEFAULT_CHART_PARAMS):
     """
-    Take dict of bands 0-100 by 10 with int values as keys, lists of avatar Paths as values.
-    Process and translate into dict with avatar Paths as keys, and a list of x,y coordinate tuples as values.
+    Take dict of bands 0-100 by 10 with int values as keys, lists of
+    avatar Paths as values.
+    Process and translate into dict with avatar Paths as keys, and a
+    list of x,y coordinate tuples as values.
 
-    eg keys: avatar Path, values: list of x, y tuples eg [(80, 80), (90, 90)]
+    eg keys: avatar Path,
+    values: list of x, y tuples eg [(80, 80), (90, 90)]
 
-    Values are in ascending score order when processed into bands, so placing lowest score first at the bottom, and the
-    lowest scores into the right-most column if more than one column is required for the band, maintains the order of
-    score representation visually.
+    Values are in ascending score order when processed into bands, so
+    placing lowest score first at the bottom, and the lowest scores into
+    the right-most column if more than one column is required for the
+    band, maintains the order of score representation visually.
 
     :param band_avatar_dict: dict
     :param chart_params: dict
     :return: dict
     """
     avatar_xy_dict = {}
-    col_max_avatars, init_vert_offset, horiz_offset, vert_offset = (chart_params['column_max_avatars'],
-                                                                    chart_params['init_vertical_offset'],
-                                                                    chart_params['avatar_horizontal_offset'],
-                                                                    chart_params['avatar_vertical_offset'],
-                                                                    )
+    col_max_avatars, init_vert_offset, horiz_offset, vert_offset = (
+                                    chart_params['column_max_avatars'],
+                                    chart_params['init_vertical_offset'],
+                                    chart_params['avatar_horizontal_offset'],
+                                    chart_params['avatar_vertical_offset'],
+                                    )
 
-    for band in band_avatar_dict.keys():  # iterate over bands in band_avatar_dict
+    for band in band_avatar_dict.keys():
         num_col = (len(band_avatar_dict[band]) // col_max_avatars) + 1
 
         init_x_coord = band - ((num_col - 1) * horiz_offset * 0.5)
