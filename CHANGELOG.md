@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0-alpha] - 2018-12-31
 ### Added
 - Save chart dialogue.
     - OS native 'save as' dialogue.
@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - Require passing tests Python 3.7 on Linux for successful build.
  ### Removed
 - app_data/image_data folder. 
-    - Unnecessary as saving images to external folder, and in class_data/*/chart_data folder. 
+    - Unnecessary as saving images to external folder, and to class_data/*/chart_data folder. 
 - class_registry.py.
     - REGISTRY variable moved to definitions.py.
 
