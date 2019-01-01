@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Save chart dialogue.
     - OS native 'save as' dialogue.
-    - Starting default folder to class folder in dionysus charts.
+    - Starting default folder to class folder in dionysus charts ie dionysus_charts/class_name.
     - Default filename provided is sanitised user supplied chart name.
     - User can save chart in user selected location with user supplied filename.
     - Copy of image also saved in app_data/class_data/class_name/chart_data along with the chart data. 
@@ -28,13 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - circleci badge added to README.
     - Code Climate
         - Connect dionysus to [Code Climate](https://codeclimate.com/github/toonarmycaptain/dionysus)
-        - Add Code Cimate Maintainability badge to README.
+        - Add Code Climate Maintainability badge to README.
     - Codebeat
-        - Add [Codebeat]{https://codebeat.co/projects/github-com-toonarmycaptain-dionysus-master} code quality checker.
+        - Add [Codebeat](https://codebeat.co/projects/github-com-toonarmycaptain-dionysus-master) code quality checker.
         - Add .codebeatignore to ignore test code from code quality metrics    
     - Codeship
-        - Add [Codeship](https://app.codeship.com/projects/320107) CI, badge.
-
+        - Add [Codeship CI](https://app.codeship.com/projects/320107), badge to README.
 ### Changed
 - Charts save to correct location in dionysus_charts rather than in app_home folder.
 - Reorganise menus/UI scripts into folder UI_menus.
