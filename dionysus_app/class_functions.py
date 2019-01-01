@@ -3,14 +3,15 @@ Functions for creating, editing, dealing with classes.
 """
 
 import time
+
 from pathlib import Path
 
-import dionysus_app.class_registry as class_registry
+import definitions
 
 from dionysus_app.class_registry_functions import classlist_exists, register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import convert_to_json, load_from_json, copy_file
-from dionysus_app.UI_functions import clean_for_filename, input_is_essentially_blank, select_file_dialogue
+from dionysus_app.UI_menus.UI_functions import clean_for_filename, input_is_essentially_blank, select_file_dialogue
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
@@ -76,9 +77,11 @@ def setup_class_data_storage(classlist_name):
     """
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
     chart_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'chart_data')
+    user_chart_save_folder = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(classlist_name)
 
     avatar_path.mkdir(exist_ok=True, parents=True)
     chart_path.mkdir(exist_ok=True, parents=True)
+    user_chart_save_folder.mkdir(exist_ok=True, parents=True)
 
 
 def create_classlist_data(class_name: str):
@@ -170,8 +173,9 @@ def select_avatar_file_dialogue():
     """
     dialogue_box_title = 'Select .png format avatar:'
     filetypes = [('.png files', '*.png'), ("all files", "*.*")]
+    start_dir = '..'  # start at parent to app directory.
 
-    filename = select_file_dialogue(dialogue_box_title, filetypes)
+    filename = select_file_dialogue(dialogue_box_title, filetypes, start_dir)
 
     return filename
 
@@ -233,6 +237,9 @@ def write_classlist_to_file(class_name: str, class_data_dict: dict):
 
     JSON'd class data dict  # Second line, when reading JSON back in.
 
+    CAUTION: conversion to JSON will convert int/float keys in score_avatar_dict
+    to strings, and keep them as strings when loading.
+
     :param class_name: str
     :param class_data_dict: dict
     :return: None
@@ -254,7 +261,7 @@ def select_classlist():
     :return: str
     """
     class_options = create_class_list_dict()
-    display_class_selection_menu(class_options)
+    display_class_selection_menu(class_options)  # TODO: Select class or redirect to create new class.
 
     selected_class = take_class_selection(class_options)
 
@@ -267,7 +274,7 @@ def create_class_list_dict():
 
     :return: dict
     """
-    class_dict = {str(option): class_name for option, class_name in enumerate(class_registry.REGISTRY, start=1)}
+    class_dict = {str(option): class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
     return class_dict
 
 
@@ -320,6 +327,7 @@ def load_class_data(class_name: str):
 
     class_data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
     classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, class_data_filename)
+
     with open(classlist_data_path, 'r') as class_datafile:
         loaded_class_json = class_datafile.read()
         class_data_dict = load_from_json(loaded_class_json)

@@ -1,7 +1,7 @@
 .idea/
 dionysus_env/
 dionysus_app/app_data/
-
+docs/  # don't test docs build
 
 
 

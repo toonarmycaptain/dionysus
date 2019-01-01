@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='dionysus_app',
-      version='0.1.1-alpha',
+      version='0.2.0-alpha',
       description='Avatar chart generator',
       author='David Antonini',
       author_email='toonarmycaptain@hotmail.com',

@@ -8,10 +8,11 @@ class TestDataFolder(unittest.TestCase):
 
     def setUp(self):
         self.default_paths = [
+            r'/dionysus_app'  
             r'/dionysus_app/app_data',
             r'/dionysus_app/app_data/class_data',
-            r'dionysus_app/app_data/class/registry.index'
-            r'/dionysus_app/app_data/image_data',
+            r'/dionysus_app/app_data/class/registry.index',
+            r'/dionysus_app/app_data/settings.py',
             r'/dionysus_app/chart_generator',
             r'/dionysus_app/chart_generator/default_avatar.png',
         ]

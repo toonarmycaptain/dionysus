@@ -2,7 +2,7 @@
 Functions dealing with the class registry.
 """
 
-import dionysus_app.class_registry as class_registry
+import definitions
 
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 
@@ -53,25 +53,25 @@ def register_class(classlist_name):
     :param classlist_name: str
     :return: None
     """
-    class_registry.REGISTRY.append(classlist_name)
+    definitions.REGISTRY.append(classlist_name)
 
     with open(CLASS_REGISTRY_PATH, 'a+') as registry:  # open class registry, create if does not exist.
         registry.write(f'{classlist_name}\n')
 
 
-def classlist_exists(classlist_name):  # TODO: use class_registry list instead.
+def classlist_exists(classlist_name: str):
     """
     Checks if there an entry in CLASS_REGISTRY for the given classlist_name.
 
     :param classlist_name: str
     :return: bool
     """
-    return classlist_name in class_registry.REGISTRY
+    return classlist_name in definitions.REGISTRY
 
 
 def check_registry_on_exit():
-    if open(CLASS_REGISTRY_PATH, 'r').readlines() != class_registry.REGISTRY:
-        write_registry_to_disk(class_registry.REGISTRY)
+    if open(CLASS_REGISTRY_PATH, 'r').readlines() != definitions.REGISTRY:
+        write_registry_to_disk(definitions.REGISTRY)
 
 
 if __name__ == '__main__':
