@@ -12,7 +12,8 @@ CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.val
 
 def cache_class_registry():
     """
-    Initialises CLASS_REGISTRY global variable and writes registry to disk.
+    Initialises CLASS_REGISTRY global variable and writes registry to
+    disk.
 
     :return: list
     """
@@ -24,7 +25,8 @@ def cache_class_registry():
 
 def generate_registry_from_filesystem():
     """
-    Searches class_data folder for .cld files and returns a list of the file names without the extension.
+    Searches class_data folder for .cld files and returns a list of the
+    file names without the extension.
 
     :return: list
     """
@@ -55,13 +57,15 @@ def register_class(classlist_name):
     """
     definitions.REGISTRY.append(classlist_name)
 
-    with open(CLASS_REGISTRY_PATH, 'a+') as registry:  # open class registry, create if does not exist.
+    # open class registry, create if does not exist.
+    with open(CLASS_REGISTRY_PATH, 'a+') as registry:
         registry.write(f'{classlist_name}\n')
 
 
 def classlist_exists(classlist_name: str):
     """
-    Checks if there an entry in CLASS_REGISTRY for the given classlist_name.
+    Checks if there an entry in CLASS_REGISTRY for the given
+    classlist_name.
 
     :param classlist_name: str
     :return: bool
