@@ -8,7 +8,6 @@ DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars verti
                         'init_vertical_offset': 5,  # Initial offset from x-axis ~ half width of avatar
                         'min_score': 0,
                         'max_score': 100,
-                        # TODO: put avatar offsets here
                         }
 
 
@@ -21,7 +20,7 @@ def generate_avatar_coords(score_avatar_dict: dict, chart_params: dict = None): 
 
     :param score_avatar_dict: dict
     :param chart_params: dict
-    :return:
+    :return: dict
     """
 
     if not chart_params:
