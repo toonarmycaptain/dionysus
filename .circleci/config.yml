@@ -25,7 +25,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-
+            mkdir test-reports
             pytest -v --cov=/home/circleci/dionysus/ --junitxml=../test-results/junit.xml
             coverage xml
 
