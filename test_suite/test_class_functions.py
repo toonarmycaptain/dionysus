@@ -3,7 +3,9 @@
 import os
 import shutil
 
+from pathlib import Path
 from unittest import TestCase
+from unittest import mock
 
 import definitions
 
@@ -62,3 +64,18 @@ class TestCopyAvatarToAppData(TestCase):
 
         # Restore definitions.DEFAULT_CHART_SAVE_FOLDER to original value
         definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
+
+
+class TestAvatarPathFromString(TestCase):
+    mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
+
+    def setUp(self):
+        self.mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
+
+    @mock.patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    def test_avatar_path_from_string(self):
+        class_name = 'test_classname'
+        avatar_filename = 'test_avatar.file'
+
+        return_val = Path(self.mock_CLASSLIST_DATA_PATH, class_name, 'avatars', avatar_filename)
+        assert avatar_path_from_string(class_name, avatar_filename) == return_val
