@@ -27,7 +27,7 @@ class TestCopyAvatarToAppData(TestCase):
 
         # create test file and structure.
         with open(self.test_avatar_filename, 'w+') as avatar_file:
-                        pass
+            pass
 
         # Mock out global for test:
 
