@@ -7,7 +7,11 @@ from unittest import TestCase
 
 import definitions
 
-from dionysus_app.class_functions import CLASSLIST_DATA_PATH, copy_avatar_to_app_data, setup_class_data_storage
+from dionysus_app.class_functions import (avatar_path_from_string,
+                                          CLASSLIST_DATA_PATH,
+                                          copy_avatar_to_app_data,
+                                          setup_class_data_storage,
+                                          )
 
 
 class TestSetupClassDataStorage(TestCase):
