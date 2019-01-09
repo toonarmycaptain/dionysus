@@ -8,7 +8,9 @@ pin: True
 
 # set the default branch
 # default: empty, the default branch on GitHub
-# branch: master
+# branch: development
+# Commented out as master should be branch checked, but automated PRs should be
+    # closed and new PRs merged with development branch.
 
 # update schedule
 schedule: "every month"

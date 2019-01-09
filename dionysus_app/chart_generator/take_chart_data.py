@@ -14,16 +14,18 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 def take_score_data(class_name: str):
     """
-    UI function presenting student names from supplied class one at a time and
-    taking a score for each.
-    Path objects for each student's avatar are added to a list of avatar Paths corresponding to scores.
+    UI function presenting student names from supplied class one at a
+    time and taking a score for each.
+    Path objects for each student's avatar are added to a list of avatar
+    Paths corresponding to scores.
 
-    Scores can be int or float, eg 78.5 is valid entry, and are converted to float (from str) by default.
+    Scores can be int or float, eg 78.5 is valid entry, and are
+    converted to float (from str) by default.
 
-    Return is a dict with scores as keys, lists of Path objects as values.
-    eg student_scores = {33: [Path_obj1, Path_obj2, Path_obj3,
-                         17: [Path_obj1, Path_obj2, Path_obj3]
-                         }
+    Return is a dict with scores as keys, lists of Path objects as
+    values. eg student_scores = {33: [Path_obj1, Path_obj2, Path_obj3,
+                                 17: [Path_obj1, Path_obj2, Path_obj3]
+                                 }
 
 
     :param class_name: str
@@ -47,7 +49,8 @@ def take_score_data(class_name: str):
         if student_score:
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
-    print('\n')  # Newline between entering last score and 'Please enter a chart name/title: '
+    # Newline between last score and 'Please enter a chart name/title: '
+    print('\n')
 
     return student_scores
 
@@ -56,7 +59,7 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
     """
 
     :param student_name: str
-    :param minimum: int, default=0  # is there a more correct way to document default keyword arguments?
+    :param minimum: int, default=0
     :param maximum: int, default=100
     :return: float
     """
@@ -80,7 +83,8 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
 
 def take_chart_name():
     """
-    Ask user for chart name. Ask again if name is essentially blank/whitespace/punctuation.
+    Ask user for chart name. Ask again if name is essentially
+    blank/whitespace/punctuation.
 
     :return: str
     """
@@ -97,7 +101,8 @@ def take_custom_chart_options():
 
     # offer to reduce x-axis to just outside spread of data.
     # offer to use hash of student name instead of default avatar.
-    # offer to put chart name (or a title distinct from chart/file name) in chart.
+    # offer to put chart name (or a title distinct from chart/file name)
+    # in chart.
 
 
 if __name__ == '__main__':
