@@ -12,6 +12,7 @@ import definitions
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           CLASSLIST_DATA_PATH,
                                           copy_avatar_to_app_data,
+                                          get_avatar_path,
                                           setup_class_data_storage,
                                           )
 
@@ -64,6 +65,32 @@ class TestCopyAvatarToAppData(TestCase):
 
         # Restore definitions.DEFAULT_CHART_SAVE_FOLDER to original value
         definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
+
+
+class TestGetAvatarPath(TestCase):
+    mock_DEFAULT_AVATAR_PATH = Path('mocked_default_avatar_path')
+    mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
+
+    def setUp(self):
+        self.mock_DEFAULT_AVATAR_PATH = Path('mocked_default_avatar_path')
+        self.mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
+        self.my_class_name = 'my_class'
+        self.my_avatar_path = 'my_avatar_path'
+
+    @mock.patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
+    def test_get_avatar_path_when_None(self):
+        assert get_avatar_path(self.my_class_name, None) == self.mock_DEFAULT_AVATAR_PATH
+
+    @mock.patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @mock.patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
+    def test_get_avatar_path_returning_avatar_path_from_string(self):
+        return_val = Path(self.mock_CLASSLIST_DATA_PATH, self.my_class_name, 'avatars', self.my_avatar_path)
+        assert get_avatar_path(self.my_class_name, self.my_avatar_path) == return_val
+
+    @mock.patch('dionysus_app.class_functions.avatar_path_from_string')
+    def test_get_avatar_path_calls_avatar_path_from_string(self, mock_avatar_path_from_string):
+        mock_avatar_path_from_string.return_value = True
+        assert get_avatar_path(self.my_class_name, self.my_avatar_path)
 
 
 class TestAvatarPathFromString(TestCase):
