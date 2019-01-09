@@ -49,7 +49,7 @@ def take_score_data(class_name: str):
         if student_score:
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
-    # Newline between entering last score and 'Please enter a chart name/title: '
+    # Newline between last score and 'Please enter a chart name/title: '
     print('\n')
 
     return student_scores
