@@ -4,8 +4,8 @@ import os
 import shutil
 
 from pathlib import Path
-from unittest import TestCase
 from unittest import mock
+from unittest import TestCase
 
 import definitions
 
@@ -13,8 +13,10 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           CLASSLIST_DATA_PATH,
                                           copy_avatar_to_app_data,
                                           get_avatar_path,
+                                          load_class_data,
                                           setup_class_data_storage,
                                           )
+from test_suite.testing_class_data import test_load_class_data_class_data_set as test_json_class_data
 
 
 class TestSetupClassDataStorage(TestCase):
@@ -65,6 +67,45 @@ class TestCopyAvatarToAppData(TestCase):
 
         # Restore definitions.DEFAULT_CHART_SAVE_FOLDER to original value
         definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
+
+
+class TestLoadClassData(TestCase):
+    mock_CLASSLIST_DATA_PATH = Path('.')
+    mock_CLASSLIST_DATA_FILE_TYPE = '.cld'
+
+    def setUp(self):
+        self.mock_CLASSLIST_DATA_PATH = Path('.')
+        self.mock_CLASSLIST_DATA_FILE_TYPE = '.cld'
+
+        self.test_class_name = 'my_test_class'
+        self.test_class_data_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
+        self.test_classlist_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name,
+                                                                               self.test_class_data_filename)
+
+        self.test_class_json_data = test_json_class_data['json_data_string']
+        self.test_class_loaded_data = test_json_class_data['loaded_dict']
+
+        # create class data_file
+        os.mkdir(self.test_class_name)
+        with open(self.test_classlist_data_path, 'w+') as my_test_class_data:
+            my_test_class_data.write(self.test_class_json_data)
+
+    @mock.patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @mock.patch('dionysus_app.data_folder.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
+    def test_load_class_data_from_disk(self):
+        loaded_json_data = load_class_data(self.test_class_name)
+        assert isinstance(loaded_json_data, dict)
+        assert self.test_class_loaded_data == loaded_json_data
+
+    def test_load_class_data_mocked_open(self):
+        with mock.patch('dionysus_app.class_functions.open', mock.mock_open(read_data=self.test_class_json_data)):
+            assert isinstance(self.test_class_loaded_data, dict)
+            assert self.test_class_loaded_data == load_class_data(self.test_class_name)
+
+    def tearDown(self):
+        shutil.rmtree(self.test_class_name)
+        assert not os.path.exists(self.test_classlist_data_path)
+        assert not os.path.exists(self.test_class_name)
 
 
 class TestGetAvatarPath(TestCase):
