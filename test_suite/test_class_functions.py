@@ -12,6 +12,7 @@ import definitions
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           CLASSLIST_DATA_PATH,
                                           copy_avatar_to_app_data,
+                                          create_student_list_dict,
                                           get_avatar_path,
                                           load_class_data,
                                           setup_class_data_storage,
@@ -69,6 +70,17 @@ class TestCopyAvatarToAppData(TestCase):
         definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
 
 
+class TestCreateStudentListDict(TestCase):
+    def setUp(self):
+        self.class_data_dict = test_json_class_data['loaded_dict']
+        self.enumerated_class_data_dict = test_json_class_data['enumerated_dict']
+
+    @mock.patch('dionysus_app.class_functions.load_class_data')
+    def test_create_student_list_dict_patching_load_class_data(self, mock_load_class_data):
+        mock_load_class_data.return_value = self.class_data_dict
+        assert create_student_list_dict(self.class_data_dict) == self.enumerated_class_data_dict
+
+
 class TestLoadClassData(TestCase):
     mock_CLASSLIST_DATA_PATH = Path('.')
     mock_CLASSLIST_DATA_FILE_TYPE = '.cld'
@@ -100,7 +112,7 @@ class TestLoadClassData(TestCase):
     def test_load_class_data_mocked_open(self):
         with mock.patch('dionysus_app.class_functions.open', mock.mock_open(read_data=self.test_class_json_data)):
             assert isinstance(self.test_class_loaded_data, dict)
-            assert self.test_class_loaded_data == load_class_data(self.test_class_name)
+            assert load_class_data(self.test_class_name) == self.test_class_loaded_data
 
     def tearDown(self):
         shutil.rmtree(self.test_class_name)

@@ -306,10 +306,10 @@ def create_student_list_dict(class_name: str):
 
 
     :param class_name: str
-    :return:
+    :return: dict
     """
     class_data = load_class_data(class_name)
-    student_list_dict = {str(option): class_name for option, class_name in enumerate(class_data.keys, start=1)}
+    student_list_dict = {str(option): student_name for option, student_name in enumerate(class_data, start=1)}
     return student_list_dict
 
 
