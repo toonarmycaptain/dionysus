@@ -3,10 +3,9 @@ import shutil
 
 from unittest import TestCase
 
-
 from dionysus_app.file_functions import convert_to_json, load_from_json
 from dionysus_app.file_functions import copy_file, move_file
-from test_suite.testing_class_data import  as test_json_class_data
+from test_suite.testing_class_data import test_load_class_data_class_data_set as test_json_class_data
 
 
 class TestConvertToJson(TestCase):
