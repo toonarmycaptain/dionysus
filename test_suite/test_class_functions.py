@@ -94,12 +94,12 @@ class TestLoadClassData(TestCase):
     @mock.patch('dionysus_app.data_folder.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
     def test_load_class_data_from_disk(self):
         loaded_json_data = load_class_data(self.test_class_name)
-        assert type(loaded_json_data) is dict
+        assert isinstance(loaded_json_data, dict)
         assert self.test_class_loaded_data == loaded_json_data
 
     def test_load_class_data_mocked_open(self):
         with mock.patch('dionysus_app.class_functions.open', mock.mock_open(read_data=self.test_class_json_data)):
-            assert type(self.test_class_loaded_data) is dict
+            assert isinstance(self.test_class_loaded_data, dict)
             assert self.test_class_loaded_data == load_class_data(self.test_class_name)
 
     def tearDown(self):
