@@ -4,8 +4,8 @@ import os
 import shutil
 
 from pathlib import Path
-from unittest import TestCase
 from unittest import mock
+from unittest import TestCase
 
 import definitions
 
