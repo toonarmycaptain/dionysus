@@ -100,7 +100,7 @@ class TestLoadClassData(TestCase):
     def test_load_class_data_mocked_open(self):
         with mock.patch('dionysus_app.class_functions.open', mock.mock_open(read_data=self.test_class_json_data)):
             assert isinstance(self.test_class_loaded_data, dict)
-            assert self.test_class_loaded_data == load_class_data(self.test_class_name)
+            assert load_class_data(self.test_class_name) == self.test_class_loaded_data
 
     def tearDown(self):
         shutil.rmtree(self.test_class_name)
