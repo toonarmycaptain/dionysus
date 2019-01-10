@@ -11,7 +11,6 @@ test_load_class_data_class_data_set_json_string = '{\n    "Cali": [\n        "Ca
                                                   '\n    "Danielle": [\n        "Danielle.png"\n    ],\n    "Kayla": ' \
                                                   '[\n        null\n    ],\n    "Jaleigh": [\n        null\n    ]\n}'
 
-
 test_load_class_data_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 'Monty': [None], 'Abby': [None],
                                                    'Zach': ['Zach_avatar.png'], 'Janell': [None], 'Matthew': [None],
                                                    'Olivia': [None], 'Regina': [None], 'Ashley': ['Ashley_avatar.png'],
@@ -19,7 +18,14 @@ test_load_class_data_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 
                                                    'Danielle': ['Danielle.png'], 'Kayla': [None], 'Jaleigh': [None]
                                                    }
 
+test_load_class_data_class_data_set_enumerated_dict = {'1': 'Cali', '2': 'Monty', '3': 'Abby', '4': 'Zach',
+                                                       '5': 'Janell', '6': 'Matthew', '7': 'Olivia', '8': 'Regina',
+                                                       '9': 'Ashley', '10': 'Alex', '11': 'Melissa', '12': 'Edgar',
+                                                       '13': 'Danielle', '14': 'Kayla', '15': 'Jaleigh'
+                                                       }
+
 test_load_class_data_class_data_set = {
     'json_data_string': test_load_class_data_class_data_set_json_string,
-    'loaded_dict': test_load_class_data_class_data_set_loaded_dict
+    'loaded_dict': test_load_class_data_class_data_set_loaded_dict,
+    'enumerated_dict': test_load_class_data_class_data_set_enumerated_dict,
     }
