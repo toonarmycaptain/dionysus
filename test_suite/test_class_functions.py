@@ -78,7 +78,7 @@ class TestCreateClassListDict(TestCase):
         self.mock_definitions_registry = ['First class', 'Second class', 'Third class']
         self.enumerated_class_registry = {'1': 'First class', '2': 'Second class', '3': 'Third class'}
 
-    @patch('definitions.REGISTRY', mock_definitions_registry)
+    @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
     def test_create_class_list_dict_patching_REGISTRY(self):
         assert create_class_list_dict() == self.enumerated_class_registry
 
