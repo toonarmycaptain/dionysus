@@ -96,11 +96,11 @@ class TestCreateStudentListDict(TestCase):
 
 class TestLoadClassData(TestCase):
     mock_CLASSLIST_DATA_PATH = Path('.')
-    mock_CLASSLIST_DATA_FILE_TYPE = '.cld'
+    mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
     def setUp(self):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
-        self.mock_CLASSLIST_DATA_FILE_TYPE = '.cld'
+        self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
         self.test_class_name = 'my_test_class'
         self.test_class_data_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
