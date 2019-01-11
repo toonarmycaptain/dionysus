@@ -66,12 +66,9 @@ def set_default_chart_save_location(user_set):
     if user_set:
         new_default_save_location = user_set_chart_save_folder()
 
-
-
     # Ensure saved value has correct separators.
     chart_save_parent_folder_path = Path(new_default_save_location)
     new_chart_save_folder_str = str(Path.joinpath(chart_save_parent_folder_path, CHART_SAVE_FOLDER_NAME))
-
 
     # Initialise and save chart save location.
     definitions.DEFAULT_CHART_SAVE_FOLDER = new_chart_save_folder_str
