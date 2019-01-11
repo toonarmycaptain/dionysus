@@ -4,7 +4,7 @@ import os
 import shutil
 
 from pathlib import Path
-from unittest import mock
+from unittest.mock import patch, mock_open
 from unittest import TestCase
 
 import definitions
@@ -78,7 +78,7 @@ class TestCreateClassListDict(TestCase):
         self.mock_definitions_registry = ['First class', 'Second class', 'Third class']
         self.enumerated_class_registry = {'1': 'First class', '2': 'Second class', '3': 'Third class'}
 
-    @mock.patch('definitions.REGISTRY', mock_definitions_registry)
+    @patch('definitions.REGISTRY', mock_definitions_registry)
     def test_create_class_list_dict_patching_REGISTRY(self):
         assert create_class_list_dict() == self.enumerated_class_registry
 
@@ -88,7 +88,7 @@ class TestCreateStudentListDict(TestCase):
         self.class_data_dict = test_json_class_data['loaded_dict']
         self.enumerated_class_data_dict = test_json_class_data['enumerated_dict']
 
-    @mock.patch('dionysus_app.class_functions.load_class_data')
+    @patch('dionysus_app.class_functions.load_class_data')
     def test_create_student_list_dict_patching_load_class_data(self, mock_load_class_data):
         mock_load_class_data.return_value = self.class_data_dict
         assert create_student_list_dict(self.class_data_dict) == self.enumerated_class_data_dict
@@ -115,15 +115,15 @@ class TestLoadClassData(TestCase):
         with open(self.test_classlist_data_path, 'w+') as my_test_class_data:
             my_test_class_data.write(self.test_class_json_data)
 
-    @mock.patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @mock.patch('dionysus_app.data_folder.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
     def test_load_class_data_from_disk(self):
         loaded_json_data = load_class_data(self.test_class_name)
         assert isinstance(loaded_json_data, dict)
         assert self.test_class_loaded_data == loaded_json_data
 
     def test_load_class_data_mocked_open(self):
-        with mock.patch('dionysus_app.class_functions.open', mock.mock_open(read_data=self.test_class_json_data)):
+        with patch('dionysus_app.class_functions.open', mock_open(read_data=self.test_class_json_data)):
             assert isinstance(self.test_class_loaded_data, dict)
             assert load_class_data(self.test_class_name) == self.test_class_loaded_data
 
@@ -143,17 +143,17 @@ class TestGetAvatarPath(TestCase):
         self.my_class_name = 'my_class'
         self.my_avatar_path = 'my_avatar_path'
 
-    @mock.patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
+    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
     def test_get_avatar_path_when_None(self):
         assert get_avatar_path(self.my_class_name, None) == self.mock_DEFAULT_AVATAR_PATH
 
-    @mock.patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @mock.patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
     def test_get_avatar_path_returning_avatar_path_from_string(self):
         return_val = Path(self.mock_CLASSLIST_DATA_PATH, self.my_class_name, 'avatars', self.my_avatar_path)
         assert get_avatar_path(self.my_class_name, self.my_avatar_path) == return_val
 
-    @mock.patch('dionysus_app.class_functions.avatar_path_from_string')
+    @patch('dionysus_app.class_functions.avatar_path_from_string')
     def test_get_avatar_path_calls_avatar_path_from_string(self, mock_avatar_path_from_string):
         mock_avatar_path_from_string.return_value = True
         assert get_avatar_path(self.my_class_name, self.my_avatar_path)
@@ -165,7 +165,7 @@ class TestAvatarPathFromString(TestCase):
     def setUp(self):
         self.mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
 
-    @mock.patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     def test_avatar_path_from_string(self):
         class_name = 'test_classname'
         avatar_filename = 'test_avatar.file'
