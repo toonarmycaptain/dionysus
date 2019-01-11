@@ -12,6 +12,7 @@ import definitions
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           CLASSLIST_DATA_PATH,
                                           copy_avatar_to_app_data,
+                                          create_class_list_dict,
                                           create_student_list_dict,
                                           get_avatar_path,
                                           load_class_data,
@@ -68,6 +69,18 @@ class TestCopyAvatarToAppData(TestCase):
 
         # Restore definitions.DEFAULT_CHART_SAVE_FOLDER to original value
         definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
+
+
+class TestCreateClassListDict(TestCase):
+    mock_definitions_registry = ['First class', 'Second class', 'Third class']
+
+    def setUp(self):
+        self.mock_definitions_registry = ['First class', 'Second class', 'Third class']
+        self.enumerated_class_registry = {'1': 'First class', '2': 'Second class', '3': 'Third class'}
+
+    @mock.patch('definitions.REGISTRY', mock_definitions_registry)
+    def test_create_class_list_dict_patching_REGISTRY(self):
+        assert create_class_list_dict() == self.enumerated_class_registry
 
 
 class TestCreateStudentListDict(TestCase):

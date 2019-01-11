@@ -21,7 +21,7 @@ Excitedly welcoming contributors!
 ### Installation
 
 Currently to use the application, you must clone or download the project from here on github. See [releases](https://github.com/toonarmycaptain/dionysus/releases) for a `zip` or `tar.gz`.
-You will need Python 3.6+, and need to run navigate to the project directory and run `pip install -r requirements.txt` or manually install the dependencies `pip install ...` you find in the requirements file.
+You will need Python 3.6+, unzip the project if necessary, navigate to the project directory and run `pip install -r requirements.txt` or manually install the dependencies `pip install ...` you find in the requirements file.
 For development you will also need `pip install -r requirements_dev.txt`.
 
 ### Running the application
