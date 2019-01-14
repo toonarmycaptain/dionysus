@@ -2,6 +2,7 @@ import os
 import unittest
 from pathlib import Path
 
+from definitions import ROOT_DIR
 from dionysus_app.class_registry_functions import write_registry_to_disk
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.initialise_app import data_folder_check
@@ -11,6 +12,8 @@ from dionysus_app.settings_functions import write_settings_to_file
 class TestDataFolder(unittest.TestCase):
 
     def setUp(self):
+        # set correct cwd:
+        os.chdir(ROOT_DIR)
         self.default_paths = [
             r'/dionysus_app'  
             r'/dionysus_app/app_data',
@@ -19,10 +22,10 @@ class TestDataFolder(unittest.TestCase):
             r'/dionysus_app/app_data/settings.py',
             r'/dionysus_app/chart_generator',
             r'/dionysus_app/chart_generator/default_avatar.png',
-        ]
+            ]
 
     def test_generate_data_path_defaults(self):
-        os.chdir(os.path.join(os.getcwd(), '..'))
+        os.chdir(ROOT_DIR)
         cwd_path = Path.cwd().as_uri()  # cwd path OS agnostic for assertion
         for path in self.default_paths:
             path_result = DataFolder.generate_rel_path(path).as_uri()
@@ -33,9 +36,6 @@ class TestDataFolder(unittest.TestCase):
         cwd_path = Path.cwd().as_uri()  # cwd path OS agnostic for assertion
         assert cwd_path in path_result
 
-    def test_paths_exist(self):
-        for path in self.default_paths:
-            assert os.path.exists(path)
 
 class TestDataFolderPathsExist(unittest.TestCase):
     def setUp(self):
@@ -66,7 +66,6 @@ class TestDataFolderPathsExist(unittest.TestCase):
             settings_dict = {'There were': 'no settings set.'}
             write_settings_to_file(settings_dict)
 
-
     def test_paths_exist(self):
         for path in DataFolder:
                 path = DataFolder.generate_rel_path(path.value)
@@ -78,5 +77,3 @@ class TestDataFolderPathsExist(unittest.TestCase):
             os.remove(self.registry_path)
         if self.dummy_settings_file:
             os.remove(self.settings_path)
-
-
