@@ -2,10 +2,10 @@ import os
 import unittest
 from pathlib import Path
 
-from class_registry_functions import write_registry_to_disk
+from dionysus_app.class_registry_functions import write_registry_to_disk
 from dionysus_app.data_folder import DataFolder
-from initialise_app import data_folder_check
-from settings_functions import write_settings_to_file
+from dionysus_app.initialise_app import data_folder_check
+from dionysus_app.settings_functions import write_settings_to_file
 
 
 class TestDataFolder(unittest.TestCase):
