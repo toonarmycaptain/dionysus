@@ -9,7 +9,7 @@ CHART_DATA_FILE_TYPE = '.cdf'
 
 
 class DataFolder(Enum):
-    APP = 'dionysus_app/'
+    APP = './dionysus_app/'
 
     APP_DATA = APP + 'app_data/'
 
