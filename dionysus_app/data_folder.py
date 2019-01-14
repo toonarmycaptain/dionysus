@@ -9,7 +9,9 @@ CHART_DATA_FILE_TYPE = '.cdf'
 
 
 class DataFolder(Enum):
-    APP_DATA = './dionysus_app/app_data/'
+    APP = 'dionysus_app/'
+
+    APP_DATA = APP + 'app_data/'
 
     CLASS_DATA = APP_DATA + 'class_data/'
 
@@ -18,7 +20,7 @@ class DataFolder(Enum):
     APP_SETTINGS = APP_DATA + 'settings.py'
     APP_DEFAULT_CHART_SAVE_FOLDER = '..'
 
-    CHART_GENERATOR = 'chart_generator/'
+    CHART_GENERATOR = APP + 'chart_generator/'
     DEFAULT_AVATAR = CHART_GENERATOR + 'default_avatar.png'
 
     @staticmethod
