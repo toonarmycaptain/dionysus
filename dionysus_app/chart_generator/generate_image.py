@@ -24,6 +24,7 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 def generate_chart_image(chart_data_dict: dict):
     """
+    Create the chart image with given input.
 
     :param chart_data_dict: dict
     :return: None
@@ -95,7 +96,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
 
 def validate_avatar(avatar_path):
     """
-
+    Validates the existence of the supplied path.
 
     :param avatar_path: Path
     :return: Path
@@ -169,7 +170,14 @@ def copy_image_to_user_save_loc(app_image_location, user_save_location):
 
 
 def get_user_save_chart_pathname(class_name: str, default_chart_name: str):
-
+    """
+    Calls save as dialogue to get user input for chart image file save
+    name and location. Supplies defaults, returns user chosen path
+    string.
+    :param class_name: str
+    :param default_chart_name: str
+    :return: str
+    """
     class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
     class_save_folder_path.mkdir(parents=True, exist_ok=True)  # create class_save_folder if nonexistent
 
