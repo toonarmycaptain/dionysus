@@ -19,7 +19,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
                                           )
-from test_suite.testing_class_data import test_load_class_data_class_data_set as test_json_class_data
+from test_suite.testing_class_data import test_load_class_data_class_data_set as test_class_data_set
 
 
 class TestSetupClassDataStorage(TestCase):
@@ -80,8 +80,8 @@ class TestWriteClasslistToFile(TestCase):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
         self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
         self.test_class_name = 'test_classname'
-        self.test_class_json_string = test_json_class_data['json_data_string']
-        self.test_class_data_dict = test_json_class_data['loaded_dict']
+        self.test_class_json_string = test_class_data_set['json_data_string']
+        self.test_class_data_dict = test_class_data_set['loaded_dict']
 
         self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
         self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
@@ -134,8 +134,8 @@ class TestCreateClassListDict(TestCase):
 
 class TestCreateStudentListDict(TestCase):
     def setUp(self):
-        self.class_data_dict = test_json_class_data['loaded_dict']
-        self.enumerated_class_data_dict = test_json_class_data['enumerated_dict']
+        self.class_data_dict = test_class_data_set['loaded_dict']
+        self.enumerated_class_data_dict = test_class_data_set['enumerated_dict']
 
     @patch('dionysus_app.class_functions.load_class_data')
     def test_create_student_list_dict_patching_load_class_data(self, mock_load_class_data):
@@ -156,8 +156,8 @@ class TestLoadClassData(TestCase):
         self.test_classlist_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name,
                                                                                self.test_class_data_filename)
 
-        self.test_class_json_data = test_json_class_data['json_data_string']
-        self.test_class_loaded_data = test_json_class_data['loaded_dict']
+        self.test_class_json_data = test_class_data_set['json_data_string']
+        self.test_class_loaded_data = test_class_data_set['loaded_dict']
 
         # create class data_file
         os.mkdir(self.test_class_name)
