@@ -18,6 +18,10 @@ Currently in early alpha release, fuller features, proper install/packaging and 
 
 Excitedly welcoming contributors! 
 
+### Contact/feedback
+Any comments or feedback are welcome and desired! I would love to know if you are using this project, if it has been useful, and any problems or suggestions for improvements.
+Leave a comment or [raise an issue](https://github.com/toonarmycaptain/dionysus/issues/new) in the [Github repository](https://github.com/toonarmycaptain/dionysus), or privately [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/toonarmycaptain).
+
 ### Installation
 
 Currently to use the application, you must clone or download the project from here on github. See [releases](https://github.com/toonarmycaptain/dionysus/releases) for a `zip` or `tar.gz`.
