@@ -4,8 +4,6 @@ Optional feature implementations:
 if title/name desired on image:
     fig.subtitle('title_string')
 """
-import os
-
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -17,7 +15,8 @@ import definitions
 from dionysus_app.chart_generator.process_chart_data import generate_avatar_coords
 from dionysus_app.class_functions import avatar_file_exists, DEFAULT_AVATAR_PATH
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.UI_menus.UI_functions import save_as_dialogue
+from dionysus_app.file_functions import copy_file
+from dionysus_app.UI_menus.UI_functions import save_as_dialogue, display_image_save_as
 
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
@@ -25,6 +24,7 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 def generate_chart_image(chart_data_dict: dict):
     """
+    Create the chart image with given input.
 
     :param chart_data_dict: dict
     :return: None
@@ -44,14 +44,21 @@ def generate_chart_image(chart_data_dict: dict):
 
     add_avatars_to_plot(ax, avatar_coord_dict)
 
-    # Maximise displayed image.
-    mng = plt.get_current_fig_manager()
-    mng.window.state("zoomed")
+    image_location = save_chart_image(chart_data_dict)
 
-    # Show image.
-    plt.show()
+    show_image(image_location)
 
-    save_chart_image(chart_data_dict)
+    user_save_chart_image(chart_data_dict, image_location)
+
+
+def show_image(image_location: str):
+    """
+    Calls show_image UI.
+
+    :param image_location: str or Path object.
+    :return: None
+    """
+    display_image_save_as(image_location)
 
 
 def set_axis(x_min: int=0, x_max: int=100, x_step: int=10):
@@ -89,7 +96,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
 
 def validate_avatar(avatar_path):
     """
-
+    Validates the existence of the supplied path.
 
     :param avatar_path: Path
     :return: Path
@@ -116,28 +123,61 @@ def add_avatars_to_plot(ax, avatar_coord_dict: dict):
 
 def save_chart_image(chart_data_dict: dict):
     """
-    Save figure. Allow user to save to any filename, while saving to app_data/classname/chart_data with same filename \
-    as chart_name and chart_data_file name.
+    Save figure to app_data/classname/chart_data with same filename as
+    chart_name and chart_data_file name.
 
     :param chart_data_dict: dict
-    :return: None
+    :return: Path object
     """
 
     class_name = chart_data_dict['class_name']
     default_chart_name = chart_data_dict['chart_default_filename']
-    app_data_save_pathname = Path(CLASSLIST_DATA_PATH).joinpath(class_name, 'chart_data', default_chart_name)
-    save_chart_pathname = get_user_save_chart_pathname(class_name, default_chart_name)
+    app_data_save_pathname = Path(CLASSLIST_DATA_PATH).joinpath(class_name, 'chart_data', default_chart_name + '.png')
 
-    # save in app_data/class_data/class_name/chart_data with chart_default_filename
+    # Save in app_data/class_data/class_name/chart_data with chart_default_filename
     plt.savefig(app_data_save_pathname,
                 dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
-    # Save in user selected location with user defined name
-    plt.savefig(save_chart_pathname,
-                dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+    return app_data_save_pathname
+
+
+def user_save_chart_image(chart_data_dict: dict, image_location: str):
+    """
+    Ask user for save location, defaulting to user default save folder
+    for class, with default chart filename. Copies image file from app's
+    save folder to users.
+
+    :param chart_data_dict: dict
+    :param image_location: str or Path object
+    :return: None
+    """
+    class_name = chart_data_dict['class_name']
+    default_chart_name = chart_data_dict['chart_default_filename']
+
+    # Save in user selected location with user defined name.
+    save_chart_pathname = get_user_save_chart_pathname(class_name, default_chart_name)
+    copy_image_to_user_save_loc(image_location, save_chart_pathname)
+
+
+def copy_image_to_user_save_loc(app_image_location, user_save_location):
+    """
+    Copies image from app_data location to user selected location.
+
+    :param app_image_location: str or Path object
+    :param user_save_location: str or Path object
+    :return: None
+    """
+    copy_file(app_image_location, user_save_location)
 
 
 def get_user_save_chart_pathname(class_name: str, default_chart_name: str):
-
+    """
+    Calls save as dialogue to get user input for chart image file save
+    name and location. Supplies defaults, returns user chosen path
+    string.
+    :param class_name: str
+    :param default_chart_name: str
+    :return: str
+    """
     class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
     class_save_folder_path.mkdir(parents=True, exist_ok=True)  # create class_save_folder if nonexistent
 
