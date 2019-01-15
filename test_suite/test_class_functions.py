@@ -19,7 +19,9 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
                                           )
-from test_suite.testing_class_data import test_load_class_data_class_data_set as test_class_data_set
+from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
+                                           test_display_student_selection_menu_student_output,
+                                           )
 
 
 class TestSetupClassDataStorage(TestCase):
@@ -96,7 +98,6 @@ class TestWriteClasslistToFile(TestCase):
         assert os.path.exists(self.test_class_data_file_path)
 
         assert open(self.test_class_data_file_path, 'r').read() == self.test_class_json_string
-
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
