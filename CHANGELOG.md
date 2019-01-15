@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Improved test coverage.
+### Changed
+- Bugfixes
+    - Fix path for default_avatar.
+    - Fix cwd set in TestDataFolder.test_generate_data_path_defaults to draw from ROOT_DIR.
+    - Fix bug - essentially blank (eg '_') chart name caused infinite loop. 
+    - Add '.png' to save filename, as it is not otherwise appended.
+- Major refactor of chart display and saving code.
+    - Fixes major bugs where blank image would be saved, app would hang indefinitely.
+    - Chart image now saves to app_data. Saved image is then displayed using Tkinter with a 'Save as' button. When this is pressed, image window disappears and os 'save as' dialogue is spawned, user can save where and as they choose.
+    - Pillow is used to process the image, resize it for display.
+- Add Pillow dependency, remove as yet unused numpy.
+
 
 ## [0.2.0-alpha] - 2018-12-31
 ### Added
