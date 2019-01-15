@@ -279,6 +279,12 @@ def create_class_list_dict():
 
 
 def display_class_selection_menu(class_options: dict):
+    """
+    Print "Select class from list:" followed by numbered option list.
+
+    :param class_options: dict
+    :return: None
+    """
     print("Select class from list:")
     for key, class_name in class_options.items():
         print(f'{key}. {class_name}')
@@ -334,9 +340,15 @@ def load_class_data(class_name: str):
     return class_data_dict
 
 
-def display_student_selection_menu(student_list: dict):
+def display_student_selection_menu(student_list_dict: dict):
+    """
+    Print "Select student from list:" followed by numbered option list.
+
+    :param student_list_dict: dict
+    :return: None
+    """
     print("Select student from list:")
-    for key, class_name in student_list.items():
+    for key, class_name in student_list_dict.items():
         print(f'{key}. {class_name}')
 
 
