@@ -125,8 +125,7 @@ def save_chart_image(chart_data_dict: dict):
 
     class_name = chart_data_dict['class_name']
     default_chart_name = chart_data_dict['chart_default_filename']
-    app_data_save_pathname = Path(CLASSLIST_DATA_PATH).joinpath(class_name, 'chart_data', default_chart_name)
-    save_chart_pathname = get_user_save_chart_pathname(class_name, default_chart_name)
+    app_data_save_pathname = Path(CLASSLIST_DATA_PATH).joinpath(class_name, 'chart_data', default_chart_name + '.png')
 
     # save in app_data/class_data/class_name/chart_data with chart_default_filename
     plt.savefig(app_data_save_pathname,
