@@ -194,9 +194,18 @@ def select_folder_dialogue(title_str=None, start_dir='..'):
     return dir_path_str
 
 
-def display_image_save_as(chart_image_path):
+def display_image_save_as(chart_image_path: str):
+    """
+    Displays the given image path in a window titled with the filename.
+    Supplies a button "Save as" below, which quits the window. Save as
+    dialogue is called separately (ideally directly subsequently, from
+    a UI perspective.
+
+    :param chart_image_path: str or Path object.
+    :return: None
+    """
     root = tk.Tk()
-    root.title(Path(chart_image_path).name)  # adding Path() allows string or Path object.
+    root.title(Path(chart_image_path).name)  # Adding Path() allows string or Path object.
     root.geometry("960x580")  # Half dimensions, about a quarter of full image.
 
     image_display = ImageDisplay(image_path=chart_image_path, master=root)
