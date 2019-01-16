@@ -30,7 +30,6 @@ testing_class_data_set = {
     'enumerated_dict': testing_class_data_set_enumerated_dict,
     }
 
-
 """
 test_display_student_selection_menu_enum_student_output equivalent to:
 
@@ -38,9 +37,9 @@ for key, class_name in testing_class_data_set_enumerated_dict.items():
     test_display_student_selection_menu_student_output.append(f'{key}. {class_name}')
 """
 test_display_student_selection_menu_student_output = ['1. Cali', '2. Monty', '3. Abby', '4. Zach', '5. Janell',
-                                                           '6. Matthew', '7. Olivia', '8. Regina', '9. Ashley',
-                                                           '10. Alex', '11. Melissa', '12. Edgar', '13. Danielle',
-                                                           '14. Kayla', '15. Jaleigh',]
+                                                      '6. Matthew', '7. Olivia', '8. Regina', '9. Ashley',
+                                                      '10. Alex', '11. Melissa', '12. Edgar', '13. Danielle',
+                                                      '14. Kayla', '15. Jaleigh', ]
 
 # Registry
 testing_registry_list = ['First class', 'Second class', 'Third class']
