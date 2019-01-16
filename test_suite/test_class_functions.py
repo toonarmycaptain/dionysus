@@ -5,6 +5,8 @@ import shutil
 
 from pathlib import Path
 from unittest.mock import patch, mock_open
+
+from unittest import mock  # TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 from unittest import TestCase
 
 import definitions
@@ -18,8 +20,14 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           load_class_data,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
+                                          display_student_selection_menu,
+                                          display_class_selection_menu,
                                           )
-from test_suite.testing_class_data import test_load_class_data_class_data_set as test_json_class_data
+from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
+                                           testing_registry_data_set as test_registry_data_set,
+                                           test_display_student_selection_menu_student_output,
+                                           test_display_class_selection_menu_output,
+                                           )
 
 
 class TestSetupClassDataStorage(TestCase):
@@ -80,8 +88,8 @@ class TestWriteClasslistToFile(TestCase):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
         self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
         self.test_class_name = 'test_classname'
-        self.test_class_json_string = test_json_class_data['json_data_string']
-        self.test_class_data_dict = test_json_class_data['loaded_dict']
+        self.test_class_json_string = test_class_data_set['json_data_string']
+        self.test_class_data_dict = test_class_data_set['loaded_dict']
 
         self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
         self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
@@ -96,7 +104,6 @@ class TestWriteClasslistToFile(TestCase):
         assert os.path.exists(self.test_class_data_file_path)
 
         assert open(self.test_class_data_file_path, 'r').read() == self.test_class_json_string
-
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
@@ -121,21 +128,38 @@ class TestWriteClasslistToFile(TestCase):
 
 
 class TestCreateClassListDict(TestCase):
-    mock_definitions_registry = ['First class', 'Second class', 'Third class']
+    mock_definitions_registry = test_registry_data_set['registry_classlist']
 
     def setUp(self):
-        self.mock_definitions_registry = ['First class', 'Second class', 'Third class']
-        self.enumerated_class_registry = {'1': 'First class', '2': 'Second class', '3': 'Third class'}
+        self.mock_definitions_registry = test_registry_data_set['registry_classlist']
+        self.enumerated_class_registry = test_registry_data_set['enumerated_dict']
 
     @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
     def test_create_class_list_dict_patching_REGISTRY(self):
         assert create_class_list_dict() == self.enumerated_class_registry
 
 
+class TestDisplayClassSelectionMenu(TestCase):
+
+    def setUp(self):
+        self.enumerated_registry = test_registry_data_set['enumerated_dict']
+        self.expected_enum_class_strings = test_display_class_selection_menu_output
+        self.expected_print_statements = ["Select class from list:", ] + self.expected_enum_class_strings
+
+    def test_display_class_selection_menu(self):
+        # capture print function
+        # assert captured_print_function == expected_print_statements.
+        with patch('dionysus_app.class_functions.print') as mocked_print:
+            display_class_selection_menu(self.enumerated_registry)
+
+            print_calls = [mock.call(printed_str) for printed_str in self.expected_print_statements]
+            assert mocked_print.call_args_list == print_calls
+
+
 class TestCreateStudentListDict(TestCase):
     def setUp(self):
-        self.class_data_dict = test_json_class_data['loaded_dict']
-        self.enumerated_class_data_dict = test_json_class_data['enumerated_dict']
+        self.class_data_dict = test_class_data_set['loaded_dict']
+        self.enumerated_class_data_dict = test_class_data_set['enumerated_dict']
 
     @patch('dionysus_app.class_functions.load_class_data')
     def test_create_student_list_dict_patching_load_class_data(self, mock_load_class_data):
@@ -156,8 +180,8 @@ class TestLoadClassData(TestCase):
         self.test_classlist_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name,
                                                                                self.test_class_data_filename)
 
-        self.test_class_json_data = test_json_class_data['json_data_string']
-        self.test_class_loaded_data = test_json_class_data['loaded_dict']
+        self.test_class_json_data = test_class_data_set['json_data_string']
+        self.test_class_loaded_data = test_class_data_set['loaded_dict']
 
         # create class data_file
         os.mkdir(self.test_class_name)
@@ -180,6 +204,22 @@ class TestLoadClassData(TestCase):
         shutil.rmtree(self.test_class_name)
         assert not os.path.exists(self.test_classlist_data_path)
         assert not os.path.exists(self.test_class_name)
+
+
+class TestDisplayStudentSelectionMenu(TestCase):
+    def setUp(self):
+        self.enumerated_classlist = test_class_data_set['enumerated_dict']
+        self.expected_enum_student_strings = test_display_student_selection_menu_student_output
+        self.expected_print_statements = ["Select student from list:", ] + self.expected_enum_student_strings
+
+    def test_display_student_selection_menu(self):
+        # capture print function
+        # assert captured_print_function == expected_print_statements.
+        with patch('dionysus_app.class_functions.print') as mocked_print:
+            display_student_selection_menu(self.enumerated_classlist)
+
+            print_calls = [mock.call(printed_str) for printed_str in self.expected_print_statements]
+            assert mocked_print.call_args_list == print_calls
 
 
 class TestGetAvatarPath(TestCase):
