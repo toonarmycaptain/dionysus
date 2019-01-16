@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 from unittest.mock import patch, mock_open
 
-from unittest import mock # TestCase  # this is needed to use mock.call, since from mock import call causes an error.
+from unittest import mock  # TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 from unittest import TestCase
 
 import definitions
