@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Improved test coverage.
+- Add Contact note, saythanks.io badge to README.
 ### Changed
 - Bugfixes
     - Fix path for default_avatar.
