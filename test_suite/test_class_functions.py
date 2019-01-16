@@ -5,6 +5,8 @@ import shutil
 
 from pathlib import Path
 from unittest.mock import patch, mock_open
+
+from unittest import mock # TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 from unittest import TestCase
 
 import definitions
@@ -18,9 +20,13 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           load_class_data,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
+                                          display_student_selection_menu,
+                                          display_class_selection_menu,
                                           )
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
+                                           testing_registry_data_set as test_registry_data_set,
                                            test_display_student_selection_menu_student_output,
+                                           test_display_class_selection_menu_output,
                                            )
 
 
@@ -122,15 +128,32 @@ class TestWriteClasslistToFile(TestCase):
 
 
 class TestCreateClassListDict(TestCase):
-    mock_definitions_registry = ['First class', 'Second class', 'Third class']
+    mock_definitions_registry = test_registry_data_set['registry_classlist']
 
     def setUp(self):
-        self.mock_definitions_registry = ['First class', 'Second class', 'Third class']
-        self.enumerated_class_registry = {'1': 'First class', '2': 'Second class', '3': 'Third class'}
+        self.mock_definitions_registry = test_registry_data_set['registry_classlist']
+        self.enumerated_class_registry = test_registry_data_set['enumerated_dict']
 
     @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
     def test_create_class_list_dict_patching_REGISTRY(self):
         assert create_class_list_dict() == self.enumerated_class_registry
+
+
+class TestDisplayClassSelectionMenu(TestCase):
+
+    def setUp(self):
+        self.enumerated_registry = test_registry_data_set['enumerated_dict']
+        self.expected_enum_class_strings = test_display_class_selection_menu_output
+        self.expected_print_statements = ["Select class from list:", ] + self.expected_enum_class_strings
+
+    def test_display_class_selection_menu(self):
+        # capture print function
+        # assert captured_print_function == expected_print_statements.
+        with patch('dionysus_app.class_functions.print') as mocked_print:
+            display_class_selection_menu(self.enumerated_registry)
+
+            print_calls = [mock.call(printed_str) for printed_str in self.expected_print_statements]
+            assert mocked_print.call_args_list == print_calls
 
 
 class TestCreateStudentListDict(TestCase):
@@ -181,6 +204,22 @@ class TestLoadClassData(TestCase):
         shutil.rmtree(self.test_class_name)
         assert not os.path.exists(self.test_classlist_data_path)
         assert not os.path.exists(self.test_class_name)
+
+
+class TestDisplayStudentSelectionMenu(TestCase):
+    def setUp(self):
+        self.enumerated_classlist = test_class_data_set['enumerated_dict']
+        self.expected_enum_student_strings = test_display_student_selection_menu_student_output
+        self.expected_print_statements = ["Select student from list:", ] + self.expected_enum_student_strings
+
+    def test_display_student_selection_menu(self):
+        # capture print function
+        # assert captured_print_function == expected_print_statements.
+        with patch('dionysus_app.class_functions.print') as mocked_print:
+            display_student_selection_menu(self.enumerated_classlist)
+
+            print_calls = [mock.call(printed_str) for printed_str in self.expected_print_statements]
+            assert mocked_print.call_args_list == print_calls
 
 
 class TestGetAvatarPath(TestCase):
