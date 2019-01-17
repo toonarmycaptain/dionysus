@@ -6,10 +6,7 @@ import shutil
 from pathlib import Path
 from unittest.mock import patch, mock_open
 
-from unittest import mock  # TestCase  # this is needed to use mock.call, since from mock import call causes an error.
-from unittest import TestCase
-
-import definitions
+from unittest import mock, TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           copy_avatar_to_app_data,
@@ -55,7 +52,8 @@ class TestSetupClassDataStorage(TestCase):
         with patch('dionysus_app.class_functions.Path.mkdir', autospec=True) as mock_mkdir:
             setup_class_data_storage(self.test_class_name)
 
-            mkdir_calls = [mock.call(directory_path, exist_ok=True, parents=True) for directory_path in self.created_directory_paths]
+            mkdir_calls = [mock.call(directory_path, exist_ok=True, parents=True)
+                           for directory_path in self.created_directory_paths]
             assert mock_mkdir.mock_calls == mkdir_calls
 
 
@@ -199,7 +197,6 @@ class TestWriteClasslistToFileMockingCalledFunctions(TestCase):
         self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
         self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
         self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
-
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
