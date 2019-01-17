@@ -140,6 +140,40 @@ class TestWriteClasslistToFile(TestCase):
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
     @patch('dionysus_app.class_functions.convert_to_json')
+    def test_write_classlist_to_file_mocking_convert_to_json(self, mocked_convert_to_json):
+        mocked_convert_to_json.return_value = self.test_class_json_string
+
+        assert write_classlist_to_file(self.test_class_name, self.test_class_data_dict) is None
+        assert os.path.exists(self.test_class_data_file_path)
+
+        assert open(self.test_class_data_file_path, 'r').read() == self.test_class_json_string
+        mocked_convert_to_json.assert_called_once_with(self.test_class_data_dict)
+
+    def tearDown(self):
+        shutil.rmtree(self.test_class_data_path)
+        assert not os.path.exists(self.test_class_data_file_path)
+        assert not os.path.exists(self.test_class_data_path)
+
+
+class TestWriteClasslistToFileMockingCalledFunctions(TestCase):
+    mock_CLASSLIST_DATA_PATH = Path('.')
+    mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
+
+    def setUp(self):
+        self.mock_CLASSLIST_DATA_PATH = Path('.')
+        self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
+        self.test_class_name = 'test_classname'
+        self.test_class_json_string = test_class_data_set['json_data_string']
+        self.test_class_data_dict = test_class_data_set['loaded_dict']
+
+        self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
+        self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
+        self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
+
+
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
+    @patch('dionysus_app.class_functions.convert_to_json')
     def test_write_classlist_to_file_mocking_called_functions(self, mocked_convert_to_json):
         mocked_convert_to_json.return_value = self.test_class_json_string
 
@@ -152,11 +186,6 @@ class TestWriteClasslistToFile(TestCase):
 
             opened_test_class_data_file = mocked_open()
             opened_test_class_data_file.write.assert_called_with(self.test_class_json_string)
-
-    def tearDown(self):
-        shutil.rmtree(self.test_class_data_path)
-        assert not os.path.exists(self.test_class_data_file_path)
-        assert not os.path.exists(self.test_class_data_path)
 
 
 class TestCreateClassListDict(TestCase):
