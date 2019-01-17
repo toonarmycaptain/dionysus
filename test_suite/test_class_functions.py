@@ -92,6 +92,12 @@ class TestCopyAvatarToAppData(TestCase):
 
         assert not os.path.exists(self.copied_avatar_filepath)
 
+    def test_copy_avatar_to_app_data_copyfile_mocked(self):
+        with patch('dionysus_app.file_functions.copyfile') as mocked_copyfile:
+            copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename,
+                                    self.copied_avatar_save_filename)
+            mocked_copyfile.assert_called_once_with(self.test_avatar_filename, str(self.copied_avatar_filepath))
+
     def test_copy_avatar_to_app_data(self):
         copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename, self.copied_avatar_save_filename)
         assert os.path.exists(self.copied_avatar_filepath)
