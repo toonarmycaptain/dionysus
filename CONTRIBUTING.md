@@ -15,6 +15,8 @@ to students in graphical form, using student created avatars instead of names.
 
 [PR notes](#pr-notes)
 
+[Branch descriptions](#branch-descriptions) - where should you make your PR?
+
 ## Code of Conduct
 The main thing here is *be nice*, be considerate to others. This includes writing clear, documented code!
 
@@ -70,4 +72,11 @@ than complex ones!
 
 -   Tests for new or modified features are requested with the PR, but not required.
   
+## Branch descriptions
+Currently we have several semi-permanent branches. More info is available on the [Branch descriptions wiki](https://github.com/toonarmycaptain/dionysus/wiki/Branch-descriptions). That document will be updated periodically, and will hopefully serve as a guide to where PRs should be directed.
+
+- [master](https://github.com/toonarmycaptain/dionysus/tree/master)  - Current release/release candidate.  No direct PRs here.
+- [development](https://github.com/toonarmycaptain/dionysus/tree/development)  - Current state of development, most PRs will be made here.   
+    - General development branch. General PRs, improvements, fixes. Branches for features based on this branch.  
+    - Base your dev fork here.
   
