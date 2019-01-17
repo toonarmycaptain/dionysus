@@ -104,7 +104,7 @@ class TestMoveDirectoryWithFileInIt(TestCase):
         assert not os.path.exists(os.path.join(self.destination_folder_name, self.original_folder_name))
         assert not os.path.exists(self.destination_path)  # File in destination_folder/original_folder/file.
 
-    def test_move_file(self):
+    def test_move_file_directory_containing_file(self):
         move_file(self.original_folder_name, self.destination_folder_name)
         assert os.path.exists(self.destination_path)
         assert not os.path.exists(self.original_file_path)
