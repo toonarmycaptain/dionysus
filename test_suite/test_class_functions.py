@@ -178,6 +178,7 @@ class TestWriteClasslistToFile(TestCase):
         mocked_convert_to_json.assert_called_once_with(self.test_class_data_dict)
 
     def tearDown(self):
+        os.remove(self.test_class_data_file_path)
         shutil.rmtree(self.test_class_data_path)
         assert not os.path.exists(self.test_class_data_file_path)
         assert not os.path.exists(self.test_class_data_path)
