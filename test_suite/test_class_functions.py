@@ -12,7 +12,6 @@ from unittest import TestCase
 import definitions
 
 from dionysus_app.class_functions import (avatar_path_from_string,
-                                          CLASSLIST_DATA_PATH,
                                           copy_avatar_to_app_data,
                                           create_class_list_dict,
                                           create_student_list_dict,
@@ -61,7 +60,16 @@ class TestSetupClassDataStorage(TestCase):
 
 
 class TestCopyAvatarToAppData(TestCase):
+    mock_CLASSLIST_DATA_PATH = Path('.')
+    mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
+
+    # Need to mock globals in setUp call of setup_class_data_storage
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @patch('dionysus_app.class_functions.definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
     def setUp(self):
+        self.mock_CLASSLIST_DATA_PATH = Path('.')
+        self.mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
+
         # arguments to copy_avatar_to_app_data
         self.test_classlist_name = 'arthurs_knights'
         self.test_avatar_filename = 'sir_lancelot_the_looker.image'
@@ -71,16 +79,9 @@ class TestCopyAvatarToAppData(TestCase):
         with open(self.test_avatar_filename, 'w+') as avatar_file:
             pass
 
-        # Mock out global for test:
-
-        # Save original value to restore in tearDown
-        self.DEFAULT_CHART_SAVE_FOLDER_value = definitions.DEFAULT_CHART_SAVE_FOLDER
-        # Mock value
-        definitions.DEFAULT_CHART_SAVE_FOLDER = '.'
-
         # Setup test class storage,
         setup_class_data_storage(self.test_classlist_name)
-        self.test_class_datafolder_path = CLASSLIST_DATA_PATH.joinpath(self.test_classlist_name)
+        self.test_class_datafolder_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_classlist_name)
         self.test_class_avatar_subfolder_path = self.test_class_datafolder_path.joinpath('avatars')
         self.test_class_chart_data_subfolder_path = self.test_class_datafolder_path.joinpath('chart_data')
 
@@ -92,24 +93,53 @@ class TestCopyAvatarToAppData(TestCase):
 
         assert not os.path.exists(self.copied_avatar_filepath)
 
-    def test_copy_avatar_to_app_data_copyfile_mocked(self):
-        with patch('dionysus_app.file_functions.copyfile') as mocked_copyfile:
-            copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename,
-                                    self.copied_avatar_save_filename)
-            mocked_copyfile.assert_called_once_with(self.test_avatar_filename, str(self.copied_avatar_filepath))
-
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @patch('dionysus_app.class_functions.definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
     def test_copy_avatar_to_app_data(self):
         copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename, self.copied_avatar_save_filename)
         assert os.path.exists(self.copied_avatar_filepath)
 
     def tearDown(self):
-        os.remove(self.test_avatar_filename)  # remove test avatar file
+        os.remove(self.test_avatar_filename)  # Remove test avatar file
+        assert not os.path.exists(self.test_avatar_filename)
 
-        shutil.rmtree(self.test_class_datafolder_path)  # remove class_datafolder
-        os.rmdir(self.test_classlist_name)  # remove user_save_charts folder
+        # Remove tree created in setup_class_data_storage
+        shutil.rmtree(self.test_class_datafolder_path)
+        assert not os.path.exists(self.test_class_datafolder_path)
+        shutil.rmtree(self.mock_DEFAULT_CHART_SAVE_FOLDER)
+        assert not os.path.exists(self.mock_DEFAULT_CHART_SAVE_FOLDER)
 
-        # Restore definitions.DEFAULT_CHART_SAVE_FOLDER to original value
-        definitions.DEFAULT_CHART_SAVE_FOLDER = self.DEFAULT_CHART_SAVE_FOLDER_value
+
+class TestCopyAvatarToAppDataMockingCopyfile(TestCase):
+    mock_CLASSLIST_DATA_PATH = Path('.')
+    mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
+
+    def setUp(self):
+        self.mock_CLASSLIST_DATA_PATH = Path('.')
+        self.mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
+
+        # arguments to copy_avatar_to_app_data
+        self.test_classlist_name = 'arthurs_knights'
+        self.test_avatar_filename = 'sir_lancelot_the_looker.image'
+        self.copied_avatar_save_filename = 'sir_lancelot.png'
+
+        # Setup test class storage paths
+        self.test_class_datafolder_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_classlist_name)
+        self.test_class_avatar_subfolder_path = self.test_class_datafolder_path.joinpath('avatars')
+        self.test_class_chart_data_subfolder_path = self.test_class_datafolder_path.joinpath('chart_data')
+
+        self.copied_avatar_filepath = self.test_class_avatar_subfolder_path.joinpath(self.copied_avatar_save_filename)
+
+        # assert test preconditions met
+        assert not os.path.exists(self.copied_avatar_filepath)
+
+    @patch('definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    def test_copy_avatar_to_app_data_copyfile_mocked(self):
+        with patch('dionysus_app.file_functions.copyfile') as mocked_copyfile:
+            copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename,
+                                    self.copied_avatar_save_filename)
+            mocked_copyfile.assert_called_once_with(self.test_avatar_filename, str(self.copied_avatar_filepath))
 
 
 class TestWriteClasslistToFile(TestCase):
