@@ -23,6 +23,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           display_student_selection_menu,
                                           display_class_selection_menu,
                                           )
+
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
                                            testing_registry_data_set as test_registry_data_set,
                                            test_display_student_selection_menu_student_output,
@@ -31,7 +32,32 @@ from test_suite.testing_class_data import (testing_class_data_set as test_class_
 
 
 class TestSetupClassDataStorage(TestCase):
-    pass
+    mock_CLASSLIST_DATA_PATH = Path('a_shrubbery')
+    mock_DEFAULT_CHART_SAVE_FOLDER = Path('Camelot')
+
+    def setUp(self):
+        self.mock_CLASSLIST_DATA_PATH = Path('a_shrubbery')
+        self.mock_DEFAULT_CHART_SAVE_FOLDER = Path('Camelot')
+        self.test_class_name = 'the_knights_who_say_ni'
+
+        # Created paths
+        self.test_avatar_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name, 'avatars')
+        self.test_chart_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name, 'chart_data')
+        self.test_user_chart_save_folder = Path(self.mock_DEFAULT_CHART_SAVE_FOLDER).joinpath(self.test_class_name)
+
+        self.created_directory_paths = [self.test_avatar_path,
+                                        self.test_chart_path,
+                                        self.test_user_chart_save_folder,
+                                        ]
+
+    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
+    @patch('definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
+    def test_setup_class_data_storage(self):
+        with patch('dionysus_app.class_functions.Path.mkdir', autospec=True) as mock_mkdir:
+            setup_class_data_storage(self.test_class_name)
+
+            mkdir_calls = [mock.call(directory_path, exist_ok=True, parents=True) for directory_path in self.created_directory_paths]
+            assert mock_mkdir.mock_calls == mkdir_calls
 
 
 class TestCopyAvatarToAppData(TestCase):
