@@ -2,6 +2,7 @@ import os
 import shutil
 
 from unittest import TestCase
+from unittest.mock import patch
 
 from dionysus_app.file_functions import convert_to_json, load_from_json
 from dionysus_app.file_functions import copy_file, move_file
@@ -48,7 +49,23 @@ class TestCopyFile(TestCase):
 
     def tearDown(self):
         os.remove(self.original_filename)  # remove new file
+        assert not os.path.exists(self.original_filename)
         shutil.rmtree(self.new_folder_name)  # remove new dir
+        assert not os.path.exists(self.new_folder_name)
+
+
+class TestCopyFileMockingCopyfile(TestCase):
+    def setUp(self):
+        self.original_filename = 'just_a_naughty_boy.png'
+        self.new_folder_name = 'not_the_messiah'
+
+        self.original_path = self.original_filename
+        self.destination_path = os.path.join(self.new_folder_name, self.original_filename)
+
+    def test_copy_file_mocking_copyfile(self):
+        with patch('dionysus_app.file_functions.copyfile') as mock_copyfile:
+            copy_file(self.original_path, self.destination_path)
+            mock_copyfile.assert_called_once_with(str(self.original_path), str(self.destination_path))
 
 
 class TestMoveFile(TestCase):
@@ -73,6 +90,22 @@ class TestMoveFile(TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.new_folder_name)
+        assert not os.path.exists(self.new_folder_name)
+        assert not os.path.exists(self.original_filename)
+
+
+class TestMoveFileMockingMove(TestCase):
+    def setUp(self):
+        self.original_filename = 'just_a_naughty_boy.png'
+        self.new_folder_name = 'not_the_messiah'
+
+        self.original_path = self.original_filename
+        self.destination_path = os.path.join(self.new_folder_name, self.original_filename)
+
+    def test_move_file_mocking_move(self):
+        with patch('dionysus_app.file_functions.move') as mock_move:
+            move_file(self.original_path, self.destination_path)
+            mock_move.assert_called_once_with(str(self.original_path), str(self.destination_path))
 
 
 class TestMoveDirectoryWithFileInIt(TestCase):
@@ -104,10 +137,12 @@ class TestMoveDirectoryWithFileInIt(TestCase):
         assert not os.path.exists(os.path.join(self.destination_folder_name, self.original_folder_name))
         assert not os.path.exists(self.destination_path)  # File in destination_folder/original_folder/file.
 
-    def test_move_file(self):
+    def test_move_file_directory_containing_file(self):
         move_file(self.original_folder_name, self.destination_folder_name)
         assert os.path.exists(self.destination_path)
         assert not os.path.exists(self.original_file_path)
+        assert not os.path.exists(self.original_folder_name)
 
     def tearDown(self):
         shutil.rmtree(self.destination_folder_name)
+        assert not os.path.exists(self.destination_folder_name)
