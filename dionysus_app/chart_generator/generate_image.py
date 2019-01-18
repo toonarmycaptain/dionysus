@@ -16,8 +16,9 @@ from dionysus_app.chart_generator.process_chart_data import generate_avatar_coor
 from dionysus_app.class_functions import avatar_file_exists, DEFAULT_AVATAR_PATH
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import copy_file
-from dionysus_app.UI_menus.UI_functions import save_as_dialogue, display_image_save_as
-
+from dionysus_app.UI_menus.chart_generator.create_chart_UI import (save_chart_dialogue,
+                                                                   display_image_save_as,
+                                                                   )
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
@@ -211,25 +212,6 @@ def get_class_save_folder_path(class_name: str):
     """
     class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
     return class_save_folder_path
-
-
-def save_chart_dialogue(default_chart_name: str, class_save_folder_path):
-    """
-    Calls save as dialogue to get user input for chart image file save
-    name and location. Supplies defaults, returns user chosen path
-    string.
-
-    :param default_chart_name: str
-    :param class_save_folder_path: Path or str
-    :return: str
-    """
-    class_save_folder_str = str(class_save_folder_path)
-    save_chart_path_str = save_as_dialogue(title_str='Save chart image as:',
-                                           filetypes=[('.png', '*.png'), ("all files", "*.*")],
-                                           suggested_filename=default_chart_name,
-                                           start_dir=class_save_folder_str
-                                           )
-    return save_chart_path_str
 
 
 if __name__ == '__main__':

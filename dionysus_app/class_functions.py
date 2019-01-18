@@ -8,44 +8,27 @@ from pathlib import Path
 
 import definitions
 
-from dionysus_app.class_registry_functions import classlist_exists, register_class
+from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import convert_to_json, load_from_json, copy_file
-from dionysus_app.UI_menus.UI_functions import clean_for_filename, input_is_essentially_blank, select_file_dialogue
-
+from dionysus_app.UI_menus.class_functions_UI import (take_classlist_name_input, take_student_name_input,
+                                                      blank_class_dialogue,
+                                                      class_data_feedback,
+                                                      select_avatar_file_dialogue,
+                                                      display_class_selection_menu,
+                                                      take_class_selection,
+                                                      )
+from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 DEFAULT_AVATAR_PATH = DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
 
 
 def create_classlist():
-
     classlist_name = take_classlist_name_input()  # TODO: Option to cancel creation at class name entry stage
 
     setup_class(classlist_name)
     create_classlist_data(classlist_name)
-
-
-def take_classlist_name_input():
-    """
-    Prompts user for classlist name.
-    It repeats until user provide correct classlist name.
-
-    :return: str
-    """
-
-    while True:
-        classlist_name = input('Please enter a name for the class: ')
-
-        if input_is_essentially_blank(classlist_name):  # blank input
-            continue
-
-        classlist_name = clean_for_filename(classlist_name)
-        if classlist_exists(classlist_name):
-            print('A class with this name already exists.')
-            continue
-        break
-    return classlist_name
 
 
 def setup_class(classlist_name):  # TODO: change name because of clash with python 'class' keyword?
@@ -85,7 +68,6 @@ def setup_class_data_storage(classlist_name):
 
 
 def create_classlist_data(class_name: str):
-
     class_data = compose_classlist_dialogue(class_name)
 
     class_data_feedback(class_name, class_data)
@@ -124,25 +106,6 @@ def take_class_data_input(class_name):
     return class_data
 
 
-def take_student_name_input(class_data):
-    """
-    Prompts user for student name.
-
-    :param class_data: str
-    :return: str
-    """
-    while True:
-        student_name = input("Enter student name, or 'end', and hit enter: ")
-        if input_is_essentially_blank(student_name):  # Do not allow blank input
-            print('Please enter a valid student name.')
-            continue
-
-        if student_name in class_data:
-            print("This student is already a member of the class.")
-            continue
-        return student_name
-
-
 def take_student_avatar(class_name, student_name):
     """
     Prompts user for path to avatar file.
@@ -164,20 +127,6 @@ def take_student_avatar(class_name, student_name):
     copy_avatar_to_app_data(class_name, avatar_file, target_avatar_filename)
 
     return target_avatar_filename
-
-
-def select_avatar_file_dialogue():
-    """
-    Prompts user to select an avatar file. Only displays PNG files.
-    :return: str or None
-    """
-    dialogue_box_title = 'Select .png format avatar:'
-    filetypes = [('.png files', '*.png'), ("all files", "*.*")]
-    start_dir = '..'  # start at parent to app directory.
-
-    filename = select_file_dialogue(dialogue_box_title, filetypes, start_dir)
-
-    return filename
 
 
 def copy_avatar_to_app_data(classlist_name, avatar_filename, save_filename):
@@ -202,33 +151,6 @@ def avatar_file_exists(avatar_file):
     :return: bool
     """
     return Path(avatar_file).expanduser().resolve().exists()
-
-
-def blank_class_dialogue():
-    while True:
-        choice = input("Do you want to create an empty class? y/n")
-        if choice.upper() == 'Y':
-            return True
-        if choice.upper() == 'N':
-            return False
-        # TODO: Option to cancel creation here/after entering a class name (eg made typo in class name)
-        print('Please enter y for yes to create empty class, or n to return to student input.')
-
-
-def class_data_feedback(classlist_name: str, class_data_dict: dict):
-    """
-    Print classlist name and list of students as user feedback.
-
-    :param classlist_name: str
-    :param class_data_dict: dict
-    :return: None
-    """
-    print(f'\nClass name: {classlist_name}')
-    if not class_data_dict:
-        print("No students entered.")
-    else:
-        for key in class_data_dict:
-            print(key)
 
 
 def write_classlist_to_file(class_name: str, class_data_dict: dict):
@@ -278,34 +200,6 @@ def create_class_list_dict():
     return class_dict
 
 
-def display_class_selection_menu(class_options: dict):
-    """
-    Print "Select class from list:" followed by numbered option list.
-
-    :param class_options: dict
-    :return: None
-    """
-    print("Select class from list:")
-    for key, class_name in class_options.items():
-        print(f'{key}. {class_name}')
-
-
-def take_class_selection(class_options):
-
-    unselected = True
-    selected_class = None
-    while unselected:
-        chosen_option = input('Select class: ')
-
-        try:
-            selected_class = class_options[chosen_option]
-            unselected = False  # Exiting the loop when chosen action finishes.
-        except KeyError:
-            print("Invalid input.\nPlease enter the integer beside the name of the desired class.")
-
-    return selected_class
-
-
 def create_student_list_dict(class_name: str):
     """
     Create dict with enumerated students, starting at 1.
@@ -338,18 +232,6 @@ def load_class_data(class_name: str):
         loaded_class_json = class_datafile.read()
         class_data_dict = load_from_json(loaded_class_json)
     return class_data_dict
-
-
-def display_student_selection_menu(student_list_dict: dict):
-    """
-    Print "Select student from list:" followed by numbered option list.
-
-    :param student_list_dict: dict
-    :return: None
-    """
-    print("Select student from list:")
-    for key, class_name in student_list_dict.items():
-        print(f'{key}. {class_name}')
 
 
 def get_avatar_path(class_name, student_avatar):
