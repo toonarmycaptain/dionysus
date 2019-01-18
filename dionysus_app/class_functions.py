@@ -11,7 +11,8 @@ import definitions
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import convert_to_json, load_from_json, copy_file
-from dionysus_app.UI_menus.class_functions_UI import (take_classlist_name_input, take_student_name_input,
+from dionysus_app.UI_menus.class_functions_UI import (take_classlist_name_input,
+                                                      take_student_name_input,
                                                       blank_class_dialogue,
                                                       class_data_feedback,
                                                       select_avatar_file_dialogue,
