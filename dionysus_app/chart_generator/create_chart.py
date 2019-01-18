@@ -12,10 +12,10 @@ from pathlib import Path
 
 import definitions
 
-from dionysus_app.class_functions import select_classlist
-from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.chart_generator.generate_image import generate_chart_image
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
+from dionysus_app.class_functions import select_classlist
+from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.file_functions import convert_to_json, copy_file
 from dionysus_app.UI_menus.chart_generator.create_chart_UI import (display_image_save_as,
                                                                    save_chart_dialogue,
