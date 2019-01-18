@@ -96,7 +96,8 @@ def take_class_selection(class_options):
             selected_class = class_options[chosen_option]
             unselected = False  # Exiting the loop when chosen action finishes.
         except KeyError:
-            print("Invalid input.\nPlease enter the integer beside the name of the desired class.")
+            print("Invalid input.\n"
+                  "Please enter the integer beside the name of the desired class.")
 
     return selected_class
 
