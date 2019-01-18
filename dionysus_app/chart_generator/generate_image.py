@@ -171,18 +171,59 @@ def copy_image_to_user_save_loc(app_image_location, user_save_location):
 
 def get_user_save_chart_pathname(class_name: str, default_chart_name: str):
     """
-    Calls save as dialogue to get user input for chart image file save
-    name and location. Supplies defaults, returns user chosen path
-    string.
+    Gets set class save folder path, creating class folder in
+    chart_save_folder if necessary.
+
+    Calls save chart dialogue to prompting user input for chart image
+    file save path.
+
     :param class_name: str
     :param default_chart_name: str
     :return: str
     """
-    class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
+    class_save_folder_path = create_class_save_folder(class_name)
+
+    save_chart_path_str = save_chart_dialogue(default_chart_name, class_save_folder_path)
+    return save_chart_path_str
+
+
+def create_class_save_folder(class_name: str):
+    """
+    Create class folder in user set/default chart save location if
+    necessary.
+    Return Path to created/existing folder.
+
+    :param class_name: str
+    :return: Path object
+    """
+    class_save_folder_path = get_class_save_folder_path(class_name)
     class_save_folder_path.mkdir(parents=True, exist_ok=True)  # create class_save_folder if nonexistent
+    return class_save_folder_path
 
+
+def get_class_save_folder_path(class_name: str):
+    """
+    Returns Path to the class folder in user set/default chart save
+    folder.
+
+    :param class_name: str
+    :return: Path
+    """
+    class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
+    return class_save_folder_path
+
+
+def save_chart_dialogue(default_chart_name: str, class_save_folder_path):
+    """
+    Calls save as dialogue to get user input for chart image file save
+    name and location. Supplies defaults, returns user chosen path
+    string.
+
+    :param default_chart_name: str
+    :param class_save_folder_path: Path or str
+    :return: str
+    """
     class_save_folder_str = str(class_save_folder_path)
-
     save_chart_path_str = save_as_dialogue(title_str='Save chart image as:',
                                            filetypes=[('.png', '*.png'), ("all files", "*.*")],
                                            suggested_filename=default_chart_name,
