@@ -8,17 +8,20 @@ a percentage, or column widths of 5pts rather than 10. Other potential concern i
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
 from copy import deepcopy
+from pathlib import Path
+
+import definitions
 
 from dionysus_app.class_functions import select_classlist
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
-from dionysus_app.chart_generator.generate_image import generate_chart_image
+from dionysus_app.chart_generator.generate_image import generate_chart_image, show_image
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
-from dionysus_app.file_functions import convert_to_json
-from dionysus_app.UI_menus.UI_functions import clean_for_filename
+from dionysus_app.file_functions import convert_to_json, copy_file
+from dionysus_app.UI_menus.chart_generator.create_chart_UI import save_chart_dialogue
 from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_chart_name,
                                                                       take_score_data,
                                                                       )
-
+from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
@@ -50,7 +53,11 @@ def new_chart():
 
     write_chart_data_to_file(chart_data_dict)
 
-    generate_chart_image(chart_data_dict)
+    chart_image_location = generate_chart_image(chart_data_dict)
+
+    # Show image to user, user save image.
+    show_image(chart_image_location)
+    user_save_chart_image(chart_data_dict, chart_image_location)
 
 
 def assemble_chart_data():
@@ -164,6 +171,79 @@ def sanitise_avatar_path_objects(data_dict: dict):
         data_dict['score-avatar_dict'][score] = [str(avatar_Path) for avatar_Path
                                                  in data_dict['score-avatar_dict'][score]]
     return data_dict
+
+
+def user_save_chart_image(chart_data_dict: dict, image_location: str):
+    """
+    Ask user for save location, defaulting to user default save folder
+    for class, with default chart filename. Copies image file from app's
+    save folder to users.
+
+    :param chart_data_dict: dict
+    :param image_location: str or Path object
+    :return: None
+    """
+    class_name = chart_data_dict['class_name']
+    default_chart_name = chart_data_dict['chart_default_filename']
+
+    # Save in user selected location with user defined name.
+    save_chart_pathname = get_user_save_chart_pathname(class_name, default_chart_name)
+    copy_image_to_user_save_loc(image_location, save_chart_pathname)
+
+
+def copy_image_to_user_save_loc(app_image_location, user_save_location):
+    """
+    Copies image from app_data location to user selected location.
+
+    :param app_image_location: str or Path object
+    :param user_save_location: str or Path object
+    :return: None
+    """
+    copy_file(app_image_location, user_save_location)
+
+
+def get_user_save_chart_pathname(class_name: str, default_chart_name: str):
+    """
+    Gets set class save folder path, creating class folder in
+    chart_save_folder if necessary.
+
+    Calls save chart dialogue to prompting user input for chart image
+    file save path.
+
+    :param class_name: str
+    :param default_chart_name: str
+    :return: str
+    """
+    class_save_folder_path = create_class_save_folder(class_name)
+
+    save_chart_path_str = save_chart_dialogue(default_chart_name, class_save_folder_path)
+    return save_chart_path_str
+
+
+def create_class_save_folder(class_name: str):
+    """
+    Create class folder in user set/default chart save location if
+    necessary.
+    Return Path to created/existing folder.
+
+    :param class_name: str
+    :return: Path object
+    """
+    class_save_folder_path = get_class_save_folder_path(class_name)
+    class_save_folder_path.mkdir(parents=True, exist_ok=True)  # create class_save_folder if nonexistent
+    return class_save_folder_path
+
+
+def get_class_save_folder_path(class_name: str):
+    """
+    Returns Path to the class folder in user set/default chart save
+    folder.
+
+    :param class_name: str
+    :return: Path object
+    """
+    class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
+    return class_save_folder_path
 
 
 if __name__ == '__main__':
