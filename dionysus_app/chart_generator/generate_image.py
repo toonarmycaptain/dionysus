@@ -13,8 +13,6 @@ from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 from dionysus_app.chart_generator.process_chart_data import generate_avatar_coords
 from dionysus_app.class_functions import avatar_file_exists, DEFAULT_AVATAR_PATH
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.UI_menus.chart_generator.create_chart_UI import (display_image_save_as,
-                                                                   )
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
@@ -44,16 +42,6 @@ def generate_chart_image(chart_data_dict: dict):
     image_location = save_chart_image(chart_data_dict)
 
     return image_location
-
-
-def show_image(image_location: str):
-    """
-    Calls show_image UI.
-
-    :param image_location: str or Path object.
-    :return: None
-    """
-    display_image_save_as(image_location)
 
 
 def set_axis(x_min: int=0, x_max: int=100, x_step: int=10):
