@@ -86,18 +86,32 @@ def display_class_selection_menu(class_options: dict):
         print(f'{key}. {class_name}')
 
 
-def take_class_selection(class_options):
-    unselected = True
-    selected_class = None
-    while unselected:
+def take_class_selection(class_options: dict):
+    """
+    Takes a dict with form i: 'class name', where i is an integer.
+
+    Prompts user to select class by typing in corresponding integer.
+
+    User my also type in class name if input exactly matches class name,
+    but this behaviour is predicated on exact match and thus not
+    communicated to user.
+
+    :param class_options: dict
+    :return: str
+    """
+    while True:
         chosen_option = input('Select class: ')
 
         try:
-            selected_class = class_options[chosen_option]
-            unselected = False  # Exiting the loop when chosen action finishes.
-        except KeyError:
-            print("Invalid input.\n"
-                  "Please enter the integer beside the name of the desired class.")
+            selected_class = class_options[int(chosen_option)]
+            break
+
+        except (KeyError, ValueError):
+            if chosen_option in class_options.values():
+                selected_class = chosen_option
+                break
+            # else:
+            print("Invalid input.\nPlease enter the integer beside the name of the desired class.")
 
     return selected_class
 
@@ -112,6 +126,36 @@ def display_student_selection_menu(student_list_dict: dict):
     print("Select student from list:")
     for key, class_name in student_list_dict.items():
         print(f'{key}. {class_name}')
+
+
+def take_student_selection(student_options: dict):
+    """
+    Takes a dict with form i: 'student name', where i is an integer.
+
+    Prompts user to select student by typing in corresponding integer.
+
+    User my also type in student name if input exactly matches student name,
+    but this behaviour is predicated on exact match and thus not
+    communicated to user.
+
+    :param student_options: dict
+    :return: str
+    """
+    while True:
+        chosen_option = input('Select student: ')
+
+        try:
+            selected_student = student_options[int(chosen_option)]
+            break
+
+        except (KeyError, ValueError):
+            if chosen_option in student_options.values():
+                selected_student = chosen_option
+                break
+            # else:
+            print("Invalid input.\nPlease enter the integer beside the name of the desired student.")
+
+    return selected_student
 
 
 def select_avatar_file_dialogue():

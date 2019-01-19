@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Improved test coverage.
 - Add Contact note, saythanks.io badge to README.
+- Add currently unimplemented select_student/take_student_selection functions mirroring similar class selection functionality.
+- Select class/student dialogues will now take exact name of class/student (as well as integer). 
 ### Changed
 - Bugfixes
     - Fix path for default_avatar.
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Chart image now saves to app_data. Saved image is then displayed using Tkinter with a 'Save as' button. When this is pressed, image window disappears and os 'save as' dialogue is spawned, user can save where and as they choose.
     - Pillow is used to process the image, resize it for display.
 - Add Pillow dependency, remove as yet unused numpy.
+- Move converting int to str responsibility to UI functions taking input rather than doing so in function creating enumerated dict.
 
 
 ## [0.2.0-alpha] - 2018-12-31
