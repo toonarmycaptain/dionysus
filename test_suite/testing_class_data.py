@@ -18,10 +18,9 @@ testing_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 'Monty': [Non
                                       'Danielle': ['Danielle.png'], 'Kayla': [None], 'Jaleigh': [None]
                                       }
 
-testing_class_data_set_enumerated_dict = {'1': 'Cali', '2': 'Monty', '3': 'Abby', '4': 'Zach',
-                                          '5': 'Janell', '6': 'Matthew', '7': 'Olivia', '8': 'Regina',
-                                          '9': 'Ashley', '10': 'Alex', '11': 'Melissa', '12': 'Edgar',
-                                          '13': 'Danielle', '14': 'Kayla', '15': 'Jaleigh'
+testing_class_data_set_enumerated_dict = {1: 'Cali', 2: 'Monty', 3: 'Abby', 4: 'Zach', 5: 'Janell', 6: 'Matthew',
+                                          7: 'Olivia', 8: 'Regina', 9: 'Ashley', 10: 'Alex', 11: 'Melissa', 12: 'Edgar',
+                                          13: 'Danielle', 14: 'Kayla', 15: 'Jaleigh'
                                           }
 
 testing_class_data_set = {
@@ -43,7 +42,7 @@ test_display_student_selection_menu_student_output = ['1. Cali', '2. Monty', '3.
 
 # Registry
 testing_registry_list = ['First class', 'Second class', 'Third class']
-testing_registry_enumerated_dict = {'1': 'First class', '2': 'Second class', '3': 'Third class'}
+testing_registry_enumerated_dict = {1: 'First class', 2: 'Second class', 3: 'Third class'}
 
 testing_registry_data_set = {'registry_classlist': testing_registry_list,
                              'enumerated_dict': testing_registry_enumerated_dict
