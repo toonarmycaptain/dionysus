@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Fixes major bugs where blank image would be saved, app would hang indefinitely.
     - Chart image now saves to app_data. Saved image is then displayed using Tkinter with a 'Save as' button. When this is pressed, image window disappears and os 'save as' dialogue is spawned, user can save where and as they choose.
     - Pillow is used to process the image, resize it for display.
+- Refactor UI elements into dedicated functions and scripts in UI_menus.
 - Add Pillow dependency, remove as yet unused numpy.
 - Move converting int to str responsibility to UI functions taking input rather than doing so in function creating enumerated dict.
 
