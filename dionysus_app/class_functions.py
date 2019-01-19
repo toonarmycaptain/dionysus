@@ -18,6 +18,7 @@ from dionysus_app.UI_menus.class_functions_UI import (take_classlist_name_input,
                                                       select_avatar_file_dialogue,
                                                       display_class_selection_menu,
                                                       take_class_selection,
+                                                      take_student_selection,
                                                       )
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
@@ -44,7 +45,7 @@ def setup_class(classlist_name):  # TODO: change name because of clash with pyth
     register_class(classlist_name)
 
 
-def setup_class_data_storage(classlist_name):
+def setup_class_data_storage(classlist_name: str):
     """
     Setup data storage for new classes.
 
@@ -197,8 +198,24 @@ def create_class_list_dict():
 
     :return: dict
     """
-    class_dict = {str(option): class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
+    class_dict = {option: class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
     return class_dict
+
+
+def select_student(class_name: str):
+    """
+    Display list of students in class and allow user to select one, returning the name of the
+    selected student.
+
+    :param class_name: str
+    :return: str
+    """
+    student_options = create_student_list_dict(class_name)
+    display_class_selection_menu(student_options)
+
+    selected_student = take_student_selection(student_options)
+
+    return selected_student
 
 
 def create_student_list_dict(class_name: str):
@@ -210,7 +227,7 @@ def create_student_list_dict(class_name: str):
     :return: dict
     """
     class_data = load_class_data(class_name)
-    student_list_dict = {str(option): student_name for option, student_name in enumerate(class_data, start=1)}
+    student_list_dict = {option: student_name for option, student_name in enumerate(class_data, start=1)}
     return student_list_dict
 
 
