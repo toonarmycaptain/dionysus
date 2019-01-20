@@ -82,8 +82,8 @@ def compose_classlist_dialogue(class_name):
         class_data = take_class_data_input(class_name)
 
         if not class_data:  # Test for empty class.
-            cancelled = blank_class_dialogue()
-            if cancelled:
+            create_empty_class = blank_class_dialogue()
+            if create_empty_class:
                 break
             # else: ie if not cancelled:
             continue
