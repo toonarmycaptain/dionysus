@@ -10,10 +10,13 @@ from unittest import mock, TestCase  # this is needed to use mock.call, since fr
 
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           copy_avatar_to_app_data,
+                                          create_classlist,
+                                          create_classlist_data,
                                           create_class_list_dict,
                                           create_student_list_dict,
                                           get_avatar_path,
                                           load_class_data,
+                                          setup_class,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
                                           )
@@ -21,6 +24,38 @@ from dionysus_app.class_functions import (avatar_path_from_string,
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
                                            testing_registry_data_set as test_registry_data_set,
                                            )
+
+
+class TestCreateClasslist(TestCase):
+    def setUp(self):
+        self.classlist_name = 'the_flying_circus'
+
+    @patch('dionysus_app.class_functions.take_classlist_name_input')
+    @patch('dionysus_app.class_functions.setup_class')
+    @patch('dionysus_app.class_functions.create_classlist_data')
+    def test_create_classlist(self,
+                              mock_create_classlist_data,
+                              mock_setup_class,
+                              mock_take_classlist_name_input
+                              ):
+        mock_take_classlist_name_input.return_value = self.classlist_name
+
+        assert create_classlist() is None
+        mock_take_classlist_name_input.assert_called_once_with()
+        mock_setup_class.assert_called_once_with(self.classlist_name)
+        mock_create_classlist_data.assert_called_once_with(self.classlist_name)
+
+
+class TestSetupClass(TestCase):
+    def setUp(self):
+        self.test_classlist_name = 'the_knights_who_say_ni'
+
+    @patch('dionysus_app.class_functions.setup_class_data_storage')
+    @patch('dionysus_app.class_functions.register_class')
+    def test_setup_class(self, mock_register_class, mock_setup_class_data_storage):
+        assert setup_class(self.test_classlist_name) is None
+        mock_setup_class_data_storage.assert_called_once_with(self.test_classlist_name)
+        mock_register_class.assert_called_once_with(self.test_classlist_name)
 
 
 class TestSetupClassDataStorage(TestCase):
@@ -51,6 +86,29 @@ class TestSetupClassDataStorage(TestCase):
             mkdir_calls = [mock.call(directory_path, exist_ok=True, parents=True)
                            for directory_path in self.created_directory_paths]
             assert mock_mkdir.mock_calls == mkdir_calls
+
+
+class TestCreateClasslistData(TestCase):
+    def setUp(self):
+        self.test_classname = 'hells grannys'
+        self.test_class_data = test_class_data_set['loaded_dict']
+
+    @patch('dionysus_app.class_functions.compose_classlist_dialogue')
+    @patch('dionysus_app.class_functions.class_data_feedback')
+    @patch('dionysus_app.class_functions.write_classlist_to_file')
+    @patch('dionysus_app.class_functions.time.sleep')
+    def test_create_classlist_data(self,
+                                   mock_time_sleep,
+                                   mock_write_classlist_to_file,
+                                   mock_class_data_feedback,
+                                   mock_compose_classlist_dialogue):
+        mock_compose_classlist_dialogue.return_value = self.test_class_data
+        assert create_classlist_data(self.test_classname) is None
+
+        mock_compose_classlist_dialogue.assert_called_once_with(self.test_classname)
+        mock_class_data_feedback.assert_called_once_with(self.test_classname, self.test_class_data)
+        mock_write_classlist_to_file.assert_called_once_with(self.test_classname, self.test_class_data)
+        mock_time_sleep.assert_called_once_with(2)
 
 
 class TestCopyAvatarToAppData(TestCase):
