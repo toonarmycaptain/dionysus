@@ -131,10 +131,11 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
             print(f'mock exists returns: {mock_classlist_exists_returns}')
             print(f'mock print call lists {mock_print_call_lists}')
             print(f'mock print calls: {mock_print_calls}')
-            # return_val = take_classlist_name_input()  # WHY IS FUNCTION RETURNING BLANK INPUT!!!
-            print(take_classlist_name_input())
-            # print(f'function returned classlist name: {return_val}')
+            return_val = take_classlist_name_input()  # WHY IS FUNCTION RETURNING BLANK INPUT!!!
+            print(f'function returned classlist name: {return_val}')
             print('\n\n\n')
+
+            assert return_val == self.valid_new_classname
 
             assert mock_input.call_args_list == [mock.call(self.input_prompt) for test_input in input_strings]
             # Equivalent to [call(self.input_prompt) * len(input_strings)]
