@@ -28,11 +28,12 @@ def take_classlist_name_input():
     return classlist_name
 
 
-def take_student_name_input(class_data):
+def take_student_name_input(class_data: dict):
     """
     Prompts user for student name.
+    Class data is a dict with student names as keys.
 
-    :param class_data: str
+    :param class_data: dict
     :return: str
     """
     while True:
