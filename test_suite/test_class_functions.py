@@ -217,7 +217,8 @@ class TestWriteClasslistToFile(TestCase):
         assert write_classlist_to_file(self.test_class_name, self.test_class_data_dict) is None
         assert os.path.exists(self.test_class_data_file_path)
 
-        assert open(self.test_class_data_file_path, 'r').read() == self.test_class_json_string
+        with open(self.test_class_data_file_path, 'r') as test_class_data_file:
+            assert test_class_data_file.read() == self.test_class_json_string
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
