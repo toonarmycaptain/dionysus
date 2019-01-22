@@ -34,7 +34,6 @@ class TestTakeClasslistNameInputSimpleTest(TestCase):
                                  self.valid_new_classname,
                                  ]
 
-
     @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
     def test_take_classlist_name_input(self):
         with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
@@ -42,6 +41,8 @@ class TestTakeClasslistNameInputSimpleTest(TestCase):
             assert take_classlist_name_input() == self.valid_new_classname_cleaned_for_filename
 
 
+# This test fails - for some reason existent classnames are being returned as OK.
+# NB Function doesn't fail in practice.
 class TestTakeClasslistNameInputMockingAllCalls(TestCase):
 
     def setUp(self):
@@ -82,7 +83,7 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
                 else:
                     break
 
-    @unittest.expectedFailure
+    @unittest.expectedFailure  # Test is broken!
     @patch('dionysus_app.UI_menus.class_functions_UI.clean_for_filename')
     @patch('dionysus_app.UI_menus.class_functions_UI.classlist_exists')
     @patch('dionysus_app.UI_menus.class_functions_UI.input_is_essentially_blank')
@@ -103,60 +104,61 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
                             )
 
         for test_case in self.test_cases:
-            input_strings = [test_input['classlist_name'] for test_input in test_case]
-            mock_input_is_essentially_blank_returns = [test_input['mock_input_is_essentially_blank_return']
-                                                       for test_input in test_case
-                                                       if 'mock_input_is_essentially_blank_return' in test_input]
-            mock_classlist_exists_returns = [test_input['mock_classlist_exists_return'] for test_input in test_case
-                                             if 'mock_classlist_exists_return' in test_input]
+            with self.subTest(i=test_case):
+                input_strings = [test_input['classlist_name'] for test_input in test_case]
+                mock_input_is_essentially_blank_returns = [test_input['mock_input_is_essentially_blank_return']
+                                                           for test_input in test_case
+                                                           if 'mock_input_is_essentially_blank_return' in test_input]
+                mock_classlist_exists_returns = [test_input['mock_classlist_exists_return'] for test_input in test_case
+                                                 if 'mock_classlist_exists_return' in test_input]
 
-            mock_print_call_lists = [test_input['mock_print_calls'] for test_input in test_case
-                                     if 'mock_print_calls' in test_input]
-            mock_print_calls = [print_call for print_call_list in mock_print_call_lists
-                                for print_call in print_call_list]
+                mock_print_call_lists = [test_input['mock_print_calls'] for test_input in test_case
+                                         if 'mock_print_calls' in test_input]
+                mock_print_calls = [print_call for print_call_list in mock_print_call_lists
+                                    for print_call in print_call_list]
 
-            mock_input.side_effect = input_strings
-            mock_print.side_effect = mock_print_calls
-            mock_input_is_essentially_blank.side_effect = mock_input_is_essentially_blank_returns
-            mock_classlist_exists.side_effect = mock_classlist_exists_returns
-            mock_clean_for_filename.side_effect = input_strings
+                mock_input.side_effect = input_strings
+                mock_print.side_effect = mock_print_calls
+                mock_input_is_essentially_blank.side_effect = mock_input_is_essentially_blank_returns
+                mock_classlist_exists.side_effect = mock_classlist_exists_returns
+                mock_clean_for_filename.side_effect = input_strings
 
-            print(f'test case number {self.test_cases.index(test_case)}')
+                print(f'test case number {self.test_cases.index(test_case)}')
 
-            print(f'input calls {input_strings}')
+                print(f'input calls {input_strings}')
 
-            print(f'mock_blank_calls: {[mock.call(test_input) for test_input in input_strings]}')
-            print(f'mock blank returns: {mock_input_is_essentially_blank_returns}')
-            print(f"mock exists calls: {[mock.call(test_input) for test_input in input_strings if test_input is not self.blank_classname['classlist_name']]}")
-            print(f'mock exists returns: {mock_classlist_exists_returns}')
-            print(f'mock print call lists {mock_print_call_lists}')
-            print(f'mock print calls: {mock_print_calls}')
-            return_val = take_classlist_name_input()  # WHY IS FUNCTION RETURNING BLANK INPUT!!!
-            print(f'function returned classlist name: {return_val}')
-            print('\n\n\n')
+                print(f'mock_blank_calls: {[mock.call(test_input) for test_input in input_strings]}')
+                print(f'mock blank returns: {mock_input_is_essentially_blank_returns}')
+                print(f"mock exists calls: {[mock.call(test_input) for test_input in input_strings if test_input is not self.blank_classname['classlist_name']]}")
+                print(f'mock exists returns: {mock_classlist_exists_returns}')
+                print(f'mock print call lists {mock_print_call_lists}')
+                print(f'mock print calls: {mock_print_calls}')
+                return_val = take_classlist_name_input()  # WHY IS FUNCTION RETURNING BLANK INPUT!!!
+                print(f'function returned classlist name: {return_val}')
+                print('\n\n\n')
 
-            assert return_val == self.valid_new_classname
+                assert return_val == self.valid_new_classname['classlist_name']
 
-            assert mock_input.call_args_list == [mock.call(self.input_prompt) for test_input in input_strings]
-            # Equivalent to [call(self.input_prompt) * len(input_strings)]
+                assert mock_input.call_args_list == [mock.call(self.input_prompt) for test_input in input_strings]
+                # Equivalent to [call(self.input_prompt) * len(input_strings)]
 
-            assert mock_print.call_args_list == [mock.call(print_call) for print_call in mock_print_calls if print_call]
+                assert mock_print.call_args_list == [mock.call(print_call)
+                                                     for print_call in mock_print_calls if print_call]
 
-            assert mock_input_is_essentially_blank.call_args_list == [mock.call(test_input)
-                                                                      for test_input
-                                                                      in input_strings]
+                assert mock_input_is_essentially_blank.call_args_list == [mock.call(test_input)
+                                                                          for test_input
+                                                                          in input_strings]
 
-            print([mock.call(test_input)
-                   for test_input in input_strings
-                   if test_input is not self.blank_classname['classlist_name']])
-            assert mock_classlist_exists.call_args_list == [mock.call(test_input)
-                                                            for test_input in input_strings
-                                                            if test_input is not self.blank_classname['classlist_name']]
-            assert mock_clean_for_filename.assert_called_once_with(self.valid_new_classname['classlist_name'])
+                print([mock.call(test_input)
+                       for test_input in input_strings
+                       if test_input is not self.blank_classname['classlist_name']])
+                assert mock_classlist_exists.call_args_list == [mock.call(test_input) for test_input in input_strings
+                                                                if test_input is not self.blank_classname['classlist_name']]
+                assert mock_clean_for_filename.assert_called_once_with(self.valid_new_classname['classlist_name'])
 
-            # Reset the mock functions after each test sequence:
-            for mock_function in mocked_functions:
-                mock_function.reset_mock(return_value=True, side_effect=True)
+                # Reset the mock functions after each test sequence:
+                for mock_function in mocked_functions:
+                    mock_function.reset_mock(return_value=True, side_effect=True)
 
 
 class TestDisplayClassSelectionMenu(TestCase):
