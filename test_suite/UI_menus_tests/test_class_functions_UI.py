@@ -157,6 +157,9 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
                                                                 if test_input is not self.blank_classname['classlist_name']]
                 assert mock_clean_for_filename.assert_called_once_with(self.valid_new_classname['classlist_name'])
 
+                # Reset the mock functions after each test sequence:
+                for mock_function in mocked_functions:
+                    mock_function.reset_mock(return_value=True, side_effect=True)
 
 
 class TestTakeStudentNameInput(TestCase):
