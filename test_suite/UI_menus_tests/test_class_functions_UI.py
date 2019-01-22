@@ -8,6 +8,7 @@ from unittest.mock import patch
 from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_menu,
                                                       take_classlist_name_input,
                                                       display_student_selection_menu,
+                                                      take_student_name_input,
                                                       )
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
@@ -156,13 +157,39 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
                                                                 if test_input is not self.blank_classname['classlist_name']]
                 assert mock_clean_for_filename.assert_called_once_with(self.valid_new_classname['classlist_name'])
 
-                # Reset the mock functions after each test sequence:
-                for mock_function in mocked_functions:
-                    mock_function.reset_mock(return_value=True, side_effect=True)
+
+
+class TestTakeStudentNameInput(TestCase):
+    def setUp(self):
+        self.no_student_name = ''
+        self.blank_student_name = '_'
+        self.preexisting_student = 'this student already exists in the class'
+        self.valid_new_student_name = 'this is a valid student_name'
+
+        self.test_case_inputs = [self.no_student_name,
+                                 self.blank_student_name,
+                                 self.preexisting_student,
+                                 self.valid_new_student_name,
+                                 ]
+
+        self.mock_class_data = {self.preexisting_student: ['some student data']}
+    # @patch('dionysus_app.UI_menus.UI_functions.input_is_essentially_blank')
+    @patch('dionysus_app.UI_menus.class_functions_UI.print')
+    def test_take_student_name_input(self, mock_print):
+        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+            mock_input.side_effect = self.test_case_inputs
+            assert take_student_name_input(self.mock_class_data) == self.valid_new_student_name
+
+
+
+
+
+
+
+
 
 
 class TestDisplayClassSelectionMenu(TestCase):
-
     def setUp(self):
         self.enumerated_registry = test_registry_data_set['enumerated_dict']
         self.expected_enum_class_strings = test_display_class_selection_menu_output
