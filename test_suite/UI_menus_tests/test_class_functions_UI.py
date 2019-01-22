@@ -176,9 +176,8 @@ class TestTakeStudentNameInput(TestCase):
                                  ]
 
         self.mock_class_data = {self.preexisting_student: ['some student data']}
-    # @patch('dionysus_app.UI_menus.UI_functions.input_is_essentially_blank')
-    @patch('dionysus_app.UI_menus.class_functions_UI.print')
-    def test_take_student_name_input(self, mock_print):
+
+    def test_take_student_name_input(self):
         with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
             mock_input.side_effect = self.test_case_inputs
             assert take_student_name_input(self.mock_class_data) == self.valid_new_student_name
