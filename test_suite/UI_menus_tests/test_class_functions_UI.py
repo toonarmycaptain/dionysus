@@ -10,6 +10,7 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       display_student_selection_menu,
                                                       take_student_name_input,
                                                       blank_class_dialogue,
+                                                      class_data_feedback,
                                                       )
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
@@ -227,6 +228,35 @@ class TestBlankClassDialogue(TestCase):
 
                     # Reset the mock function after each test sequence:
                     mock_input.reset_mock(return_value=True, side_effect=True)
+
+
+class TestClassDataFeedback(TestCase):
+    def setUp(self):
+        # Normal class data:
+        self.test_class_name = 'the knights of the round table'
+        self.test_class_data_dict = test_class_data_set['loaded_dict']
+        # Class created without students:
+        self.empty_class_data_dict = {}
+        self.empty_class_feedback = 'No students entered.'
+
+    def test_class_data_feedback(self):
+        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
+
+            printed_strings = [f'\nClass name: {self.test_class_name}'] + [name for name in test_class_data_set['loaded_dict']]
+
+            class_data_feedback(self.test_class_name, self.test_class_data_dict)
+
+            assert mocked_print.call_args_list == [mock.call(printed_string) for printed_string in printed_strings]
+
+    def test_class_data_feedback_with_empty_class(self):
+        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
+
+            printed_strings = [f'\nClass name: {self.test_class_name}'] + [self.empty_class_feedback]
+            assert printed_strings == [f'\nClass name: {self.test_class_name}', self.empty_class_feedback]  # ie No student names.
+
+            class_data_feedback(self.test_class_name, self.empty_class_data_dict)
+
+            assert mocked_print.call_args_list == [mock.call(printed_string) for printed_string in printed_strings]
 
 
 class TestDisplayClassSelectionMenu(TestCase):
