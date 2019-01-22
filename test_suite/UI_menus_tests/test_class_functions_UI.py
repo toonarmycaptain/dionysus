@@ -143,7 +143,6 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
                 assert return_val == self.valid_new_classname['classlist_name']
 
                 assert mock_input.call_args_list == [mock.call(self.input_prompt) for test_input in input_strings]
-                # Equivalent to [call(self.input_prompt) * len(input_strings)]
 
                 assert mock_print.call_args_list == [mock.call(print_call)
                                                      for print_call in mock_print_calls if print_call]
