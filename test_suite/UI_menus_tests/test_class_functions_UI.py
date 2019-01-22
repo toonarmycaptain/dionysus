@@ -9,6 +9,7 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       take_classlist_name_input,
                                                       display_student_selection_menu,
                                                       take_student_name_input,
+                                                      blank_class_dialogue,
                                                       )
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
@@ -183,12 +184,49 @@ class TestTakeStudentNameInput(TestCase):
             assert take_student_name_input(self.mock_class_data) == self.valid_new_student_name
 
 
+class TestBlankClassDialogue(TestCase):
+    def setUp(self):
+        # Blank or junk inputs:
+        self.no_input = ''
+        self.space_input = ' '
+        self.blank_input = '_'
+        self.junk_input_knights = 'the knights who say ni'
+        self.junk_input_questions = ('First you must answer three questions: \n'
+                                    'What is your name?\n'
+                                    'What is your quest?\n'
+                                    'What is your favourite colour?')
+        # Valid inputs:
+            # 'No' inputs:
+        self.n_input = 'n', False
+        self.N_input = 'N', False
+            # 'Yes' inputs:
+        self.y_input = 'y', True
+        self.Y_input = 'Y', True
 
 
+        self.blank_junk_inputs = [self.no_input, self.space_input, self.junk_input_knights, self.junk_input_questions]
+        self.valid_inputs = [self.n_input, self.N_input, self.y_input, self.Y_input]
 
 
+        self.input_sets = []
+        for valid_input in self.valid_inputs:
+            test_case = [self.blank_junk_inputs + [valid_input[0]], valid_input[1]]
+            self.input_sets.append(test_case)
 
+    @patch('dionysus_app.UI_menus.class_functions_UI.print')
+    def test_blank_class_dialogue(self, mocked_print):
+        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+            for test_case in self.input_sets:
+                with self.subTest(i=test_case):
+                    input_strings = test_case[0]
+                    expected_return = test_case[1]
 
+                    mock_input.side_effect = input_strings
+
+                    assert blank_class_dialogue() == expected_return
+
+                    # Reset the mock function after each test sequence:
+                    mock_input.reset_mock(return_value=True, side_effect=True)
 
 
 class TestDisplayClassSelectionMenu(TestCase):
