@@ -4,12 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0-alpha] - 2019-01-23
 ### Added
 - Improved test coverage.
 - Add Contact note, saythanks.io badge to README.
 - Add currently unimplemented select_student/take_student_selection functions mirroring similar class selection functionality.
-- Select class/student dialogues will now take exact name of class/student (as well as integer). 
+- Select class/student dialogues will now take exact name of class/student (as well as integer per user direction), note this is to be considered an implementation detail, since a class with an integer name will only be selectable by entering that name if the integer is not displayed/larger that the number of options. 
 ### Changed
 - Bugfixes
     - Fix path for default_avatar.
