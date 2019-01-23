@@ -193,22 +193,21 @@ class TestBlankClassDialogue(TestCase):
         self.blank_input = '_'
         self.junk_input_knights = 'the knights who say ni'
         self.junk_input_questions = ('First you must answer three questions: \n'
-                                    'What is your name?\n'
-                                    'What is your quest?\n'
-                                    'What is your favourite colour?')
+                                     'What is your name?\n'
+                                     'What is your quest?\n'
+                                     'What is your favourite colour?')
         # Valid inputs:
-            # 'No' inputs:
+        # 'No' inputs:
         self.n_input = 'n', False
         self.N_input = 'N', False
-            # 'Yes' inputs:
+        # 'Yes' inputs:
         self.y_input = 'y', True
         self.Y_input = 'Y', True
-
 
         self.blank_junk_inputs = [self.no_input, self.space_input, self.junk_input_knights, self.junk_input_questions]
         self.valid_inputs = [self.n_input, self.N_input, self.y_input, self.Y_input]
 
-
+        # Create test sequences:
         self.input_sets = []
         for valid_input in self.valid_inputs:
             test_case = [self.blank_junk_inputs + [valid_input[0]], valid_input[1]]
