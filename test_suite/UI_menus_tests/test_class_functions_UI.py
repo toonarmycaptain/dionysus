@@ -12,7 +12,6 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       blank_class_dialogue,
                                                       class_data_feedback,
                                                       take_class_selection,
-
                                                       )
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
