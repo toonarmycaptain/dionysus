@@ -11,6 +11,7 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       take_student_name_input,
                                                       blank_class_dialogue,
                                                       class_data_feedback,
+                                                      take_class_selection,
                                                       )
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
@@ -192,22 +193,21 @@ class TestBlankClassDialogue(TestCase):
         self.blank_input = '_'
         self.junk_input_knights = 'the knights who say ni'
         self.junk_input_questions = ('First you must answer three questions: \n'
-                                    'What is your name?\n'
-                                    'What is your quest?\n'
-                                    'What is your favourite colour?')
+                                     'What is your name?\n'
+                                     'What is your quest?\n'
+                                     'What is your favourite colour?')
         # Valid inputs:
-            # 'No' inputs:
+        # 'No' inputs:
         self.n_input = 'n', False
         self.N_input = 'N', False
-            # 'Yes' inputs:
+        # 'Yes' inputs:
         self.y_input = 'y', True
         self.Y_input = 'Y', True
-
 
         self.blank_junk_inputs = [self.no_input, self.space_input, self.junk_input_knights, self.junk_input_questions]
         self.valid_inputs = [self.n_input, self.N_input, self.y_input, self.Y_input]
 
-
+        # Create test sequences:
         self.input_sets = []
         for valid_input in self.valid_inputs:
             test_case = [self.blank_junk_inputs + [valid_input[0]], valid_input[1]]
@@ -272,6 +272,70 @@ class TestDisplayClassSelectionMenu(TestCase):
 
             print_calls = [mock.call(printed_str) for printed_str in self.expected_print_statements]
             assert mocked_print.call_args_list == print_calls
+
+
+class TestTakeClassSelection(TestCase):
+    def setUp(self):
+        self.test_class_options = test_registry_data_set['enumerated_dict']
+        self.invalid_input_response = "Invalid input.\nPlease enter the integer beside the name of the desired class."
+
+        # Blank or junk inputs:
+        self.no_input = ''
+        self.space_input = ' '
+        self.blank_input = '_'
+        self.junk_input_knights = 'the knights who say ni'
+        self.junk_input_questions = ('First you must answer three questions: \n'
+                                     'What is your name?\n'
+                                     'What is your quest?\n'
+                                     'What is your favourite colour?')
+        self.negative_input = '-7'
+        self.zero_0_input = '0'
+        self.reasonable_float = '2.0'
+        self.weird_float = '3.14159'
+        self.positive_out_of_range_input = '17'
+        # Valid inputs: (valid_input, return_value)
+        # Numerical
+        self.valid_numerical_inputs = [(str(key), self.test_class_options[key]) for key in self.test_class_options.keys()]
+        # Exact class name
+        self.valid_string_inputs = [(class_name, class_name) for class_name in self.test_class_options.values()]
+
+        self.blank_junk_inputs = [self.no_input,
+                                  self.space_input,
+                                  self.junk_input_knights,
+                                  self.junk_input_questions,
+                                  self.negative_input,
+                                  self.zero_0_input,
+                                  self.reasonable_float,
+                                  self.weird_float,
+                                  self.positive_out_of_range_input,
+                                  ]
+
+        self.valid_inputs = self.valid_numerical_inputs + self.valid_string_inputs
+
+        self.input_sets = []
+        for valid_input in self.valid_inputs:
+            test_case = [self.blank_junk_inputs + [valid_input[0]], valid_input[1]]
+            self.input_sets.append(test_case)
+
+    @patch('dionysus_app.UI_menus.class_functions_UI.print')
+    def test_take_class_selection(self, mock_print):
+        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+            for test_case in self.input_sets:
+                with self.subTest(i=test_case):
+                    input_strings = test_case[0]
+                    expected_return = test_case[1]
+
+                    mock_input.side_effect = input_strings
+
+                    assert take_class_selection(self.test_class_options) == expected_return
+
+                    # Check print calls:
+                    assert mock_print.call_args_list == [mock.call(self.invalid_input_response)
+                                                         for input_string in input_strings[0:-1]]
+
+                    # Reset the mock function after each test sequence:
+                    mock_input.reset_mock(return_value=True, side_effect=True)
+                    mock_print.reset_mock(return_value=True, side_effect=True)
 
 
 class TestDisplayStudentSelectionMenu(TestCase):
