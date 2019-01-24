@@ -10,6 +10,7 @@ from unittest import TestCase, mock
 from unittest.mock import patch
 
 from dionysus_app.UI_menus.UI_functions import (clear_screen,
+                                                input_is_essentially_blank,
                                                 )
 
 
@@ -43,10 +44,64 @@ class TestClearScreen(TestCase):
 
 class TestInputIsEssentiallyBlank(TestCase):
     def setUp(self):
-        pass
+        # Test cases: (input_value, expected_return_value)
+        self.test_empty_string = ('', True)  # ie no input
+        # Spaces
+        self.test_single_space = (' ', True)
+        self.test_2_spaces = ('  ', True)
+        self.test_3_spaces = ('   ', True)
+        self.test_5_spaces = ('     ', True)
+        # Underscores
+        self.test_single_underscore = ('_', True)
+        self.test_2_underscores = ('__', True)
+        self.test_3_underscores = ('___', True)
+        self.test_5_underscores = ('_____', True)
+
+        self.test_only_special_characters = ('''~`!@#$%^&*()-_+{}[]|\\:;"',.<>?/''', True)
+        self.test_singe_leading_space = (' test', False)
+        self.test_spaces_underscores_combo = (' _ _ _', True)
+        self.test_leading_spaces = ('   test', False)
+        self.test_singe_trailing_space = ('test ', False)
+        self.test_trailing_spaces = ('test   ', False)
+        self.test_leading_and_trailing_space = (' test ', False)
+        self.test_no_spaces = ('test', False)
+        self.test_sentence = ('not the Spanish inquisition', False)
+        self.test_sentence_leading_and_trailing_spaces = (' not the spanish inquisition ', False)
+        self.test_combination_underscore_spaces = (
+            " because nobody_expects_the _spanish_ inquisition the 2nd time", False)
+        self.test_combination_underscore_spaces_special_characters = (
+            " because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time", False)
+
+        self.test_cases = [self.test_empty_string,
+                           self.test_single_space,
+                           self.test_2_spaces,
+                           self.test_3_spaces,
+                           self.test_5_spaces,
+                           self.test_single_underscore,
+                           self.test_2_underscores,
+                           self.test_3_underscores,
+                           self.test_5_underscores,
+                           self.test_only_special_characters,
+                           self.test_singe_leading_space,
+                           self.test_spaces_underscores_combo,
+                           self.test_leading_spaces,
+                           self.test_singe_trailing_space,
+                           self.test_leading_and_trailing_space,
+                           self.test_no_spaces,
+                           self.test_sentence,
+                           self.test_sentence_leading_and_trailing_spaces,
+                           self.test_combination_underscore_spaces,
+                           self.test_combination_underscore_spaces_special_characters,
+                           ]
 
     def test_input_is_essentially_blank(self):
-        pass
+        for test_case in self.test_cases:
+            with self.subTest(i=test_case):
+                test_input = test_case[0]
+                expected_output = test_case[1]
+
+                assert input_is_essentially_blank(test_input) == expected_output
+
 
 """
         # Test cases: (input_value, expected_return_value)
