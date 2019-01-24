@@ -13,6 +13,7 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       class_data_feedback,
                                                       take_class_selection,
                                                       take_student_selection,
+                                                      select_avatar_file_dialogue,
                                                       )
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
@@ -435,3 +436,24 @@ class TestTakeStudentSelection(TestCase):
                     # Reset the mock function after each test sequence:
                     mock_input.reset_mock(return_value=True, side_effect=True)
                     mock_print.reset_mock(return_value=True, side_effect=True)
+
+
+class TestSelectAvatarFileDialogue(TestCase):
+    def setUp(self):
+        self.my_avatar_path = 'C:\\how_not_to_be_seen.avatar_can_be_seen'
+
+        # Mocked file dialogue arguments
+        self.dialogue_box_title = 'Select .png format avatar:'
+        self.filetypes = [('.png files', '*.png'), ("all files", "*.*")]
+        self.start_dir = '..'  # start at parent to app directory.
+
+    @patch('dionysus_app.UI_menus.class_functions_UI.select_file_dialogue')
+    def test_select_avatar_file_dialogue(self, mocked_select_file_dialogue):
+
+        mocked_select_file_dialogue.return_value = self.my_avatar_path
+
+        assert select_avatar_file_dialogue() == self.my_avatar_path
+        mocked_select_file_dialogue.assert_called_once_with(self.dialogue_box_title,
+                                                            self.filetypes,
+                                                            self.start_dir,
+                                                            )
