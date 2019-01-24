@@ -17,11 +17,11 @@ class TestClearScreen(TestCase):
     def setUp(self):
         self.test_arguments = 1, 5, 99
         self.expected_print_calls = ['\n',
-                                     5*'\n',
-                                     99*'\n',
+                                     5 * '\n',
+                                     99 * '\n',
                                      ]
         self.default_argument = 50
-        self.default_argument_print_call = 50*'\n'
+        self.default_argument_print_call = 50 * '\n'
 
     def test_clear_screen(self):
         with patch('dionysus_app.UI_menus.UI_functions.print') as mocked_print:
