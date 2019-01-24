@@ -171,18 +171,30 @@ class TestTakeStudentNameInput(TestCase):
         self.preexisting_student = 'this student already exists in the class'
         self.valid_new_student_name = 'this is a valid student_name'
 
+        self.invalid_student_name_response = 'Please enter a valid student name.'
+        self.preexisting_student_response = 'This student is already a member of the class.'
+
         self.test_case_inputs = [self.no_student_name,
                                  self.blank_student_name,
                                  self.preexisting_student,
                                  self.valid_new_student_name,
                                  ]
 
+        self.printed_feedback = [self.invalid_student_name_response,
+                                 self.invalid_student_name_response,
+                                 self.preexisting_student_response,
+                                 ]
+
         self.mock_class_data = {self.preexisting_student: ['some student data']}
 
-    def test_take_student_name_input(self):
+    @patch('dionysus_app.UI_menus.class_functions_UI.print')
+    def test_take_student_name_input(self, mocked_print):
         with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
             mock_input.side_effect = self.test_case_inputs
             assert take_student_name_input(self.mock_class_data) == self.valid_new_student_name
+
+            assert mocked_print.call_args_list == [mock.call(printed_string)
+                                                   for printed_string in self.printed_feedback]
 
 
 class TestBlankClassDialogue(TestCase):
