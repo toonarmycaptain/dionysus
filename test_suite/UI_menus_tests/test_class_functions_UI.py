@@ -263,11 +263,13 @@ class TestClassDataFeedback(TestCase):
         with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
 
             printed_strings = [f'\nClass name: {self.test_class_name}'] + [self.empty_class_feedback]
-            assert printed_strings == [f'\nClass name: {self.test_class_name}', self.empty_class_feedback]  # ie No student names.
+            assert printed_strings == [f'\nClass name: {self.test_class_name}',
+                                       self.empty_class_feedback]  # ie No student names.
 
             class_data_feedback(self.test_class_name, self.empty_class_data_dict)
 
-            assert mocked_print.call_args_list == [mock.call(printed_string) for printed_string in printed_strings]
+            assert mocked_print.call_args_list == [mock.call(printed_string)
+                                                   for printed_string in printed_strings]
 
 
 class TestDisplayClassSelectionMenu(TestCase):
@@ -289,7 +291,8 @@ class TestDisplayClassSelectionMenu(TestCase):
 class TestTakeClassSelection(TestCase):
     def setUp(self):
         self.test_class_options = test_registry_data_set['enumerated_dict']
-        self.invalid_input_response = "Invalid input.\nPlease enter the integer beside the name of the desired class."
+        self.invalid_input_response = ("Invalid input.\n"
+                                       "Please enter the integer beside the name of the desired class.")
 
         # Blank or junk inputs:
         self.no_input = ''
@@ -307,9 +310,11 @@ class TestTakeClassSelection(TestCase):
         self.positive_out_of_range_input = '17'
         # Valid inputs: (valid_input, return_value)
         # Numerical
-        self.valid_numerical_inputs = [(str(key), self.test_class_options[key]) for key in self.test_class_options.keys()]
+        self.valid_numerical_inputs = [(str(key), self.test_class_options[key])
+                                       for key in self.test_class_options.keys()]
         # Exact class name
-        self.valid_string_inputs = [(class_name, class_name) for class_name in self.test_class_options.values()]
+        self.valid_string_inputs = [(class_name, class_name) for class_name
+                                    in self.test_class_options.values()]
 
         self.blank_junk_inputs = [self.no_input,
                                   self.space_input,
