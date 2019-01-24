@@ -49,17 +49,31 @@ class TestInputIsEssentiallyBlank(TestCase):
         pass
 
 """
-        test_empty_string '' ie no input
-        test_single_space ' ',
-        test_multiple_spaces 2,3,5 ' ', '  ', '   ', '     '
-        test_singe_leading_space ' test'
-        test_leading_spaces '   test'
-        test_singe_trailing_space 'test '
-        test_trailing_spaces 'test   '
-        test_leading_and_trailing_space ' test '
-        test_no_spaces 'test'
-        test_sentence 'not the Spanish inquisition'
-        test_sentence_leading_and_trailing_spaces ' not the spanish inquisition'
-        test_single_underscore '_'
-        test some combinations of _, ' ', - etc
+        # Test cases: (input_value, expected_return_value)
+        self.test_empty_string = ('',   # ie no input
+        # Spaces
+        self.test_single_space = (' ', 
+        self.test_2_spaces = ('  ', 
+        self.test_3_spaces = ('   ', 
+        self.test_5_spaces = ('     ', 
+        # Underscores
+        self.test_single_underscore = ('_', 
+        self.test_2_underscores = ('__', 
+        self.test_3_underscores = ('___', 
+        self.test_5_underscores = ('_____', 
+
+        self.test_only_special_characters = ('''~`!@#$%^&*()-_+{}[]|\\:;"',.<>?/''', 
+        self.test_singe_leading_space = (' test', 
+        self.test_spaces_underscores_combo = (' _ _ _',
+        self.test_leading_spaces = ('   test', 
+        self.test_singe_trailing_space = ('test ', 
+        self.test_trailing_spaces = ('test   ', 
+        self.test_leading_and_trailing_space = (' test ', 
+        self.test_no_spaces = ('test', 
+        self.test_sentence = ('not the Spanish inquisition', 
+        self.test_sentence_leading_and_trailing_spaces = (' not the spanish inquisition ', 
+        self.test_combination_underscore_spaces = (
+            " because nobody_expects_the _spanish_ inquisition the 2nd time", 
+        self.test_combination_underscore_spaces_special_characters = (
+            " because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time", 
 """
