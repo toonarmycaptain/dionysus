@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Improved test coverage.
-
+- Improved test coverage. 
+#### Changed
+- Fix bug in save_as_dialogue that failed with TypeError when called without filetypes parameter or with default filetypes=None.
 
 ## [0.3.0-alpha] - 2019-01-23
 ### Added
