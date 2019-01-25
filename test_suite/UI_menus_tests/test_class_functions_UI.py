@@ -12,6 +12,8 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       blank_class_dialogue,
                                                       class_data_feedback,
                                                       take_class_selection,
+                                                      take_student_selection,
+                                                      select_avatar_file_dialogue,
                                                       )
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
@@ -171,18 +173,30 @@ class TestTakeStudentNameInput(TestCase):
         self.preexisting_student = 'this student already exists in the class'
         self.valid_new_student_name = 'this is a valid student_name'
 
+        self.invalid_student_name_response = 'Please enter a valid student name.'
+        self.preexisting_student_response = 'This student is already a member of the class.'
+
         self.test_case_inputs = [self.no_student_name,
                                  self.blank_student_name,
                                  self.preexisting_student,
                                  self.valid_new_student_name,
                                  ]
 
+        self.printed_feedback = [self.invalid_student_name_response,
+                                 self.invalid_student_name_response,
+                                 self.preexisting_student_response,
+                                 ]
+
         self.mock_class_data = {self.preexisting_student: ['some student data']}
 
-    def test_take_student_name_input(self):
+    @patch('dionysus_app.UI_menus.class_functions_UI.print')
+    def test_take_student_name_input(self, mocked_print):
         with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
             mock_input.side_effect = self.test_case_inputs
             assert take_student_name_input(self.mock_class_data) == self.valid_new_student_name
+
+            assert mocked_print.call_args_list == [mock.call(printed_string)
+                                                   for printed_string in self.printed_feedback]
 
 
 class TestBlankClassDialogue(TestCase):
@@ -251,11 +265,13 @@ class TestClassDataFeedback(TestCase):
         with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
 
             printed_strings = [f'\nClass name: {self.test_class_name}'] + [self.empty_class_feedback]
-            assert printed_strings == [f'\nClass name: {self.test_class_name}', self.empty_class_feedback]  # ie No student names.
+            assert printed_strings == [f'\nClass name: {self.test_class_name}',
+                                       self.empty_class_feedback]  # ie No student names.
 
             class_data_feedback(self.test_class_name, self.empty_class_data_dict)
 
-            assert mocked_print.call_args_list == [mock.call(printed_string) for printed_string in printed_strings]
+            assert mocked_print.call_args_list == [mock.call(printed_string)
+                                                   for printed_string in printed_strings]
 
 
 class TestDisplayClassSelectionMenu(TestCase):
@@ -277,7 +293,8 @@ class TestDisplayClassSelectionMenu(TestCase):
 class TestTakeClassSelection(TestCase):
     def setUp(self):
         self.test_class_options = test_registry_data_set['enumerated_dict']
-        self.invalid_input_response = "Invalid input.\nPlease enter the integer beside the name of the desired class."
+        self.invalid_input_response = ("Invalid input.\n"
+                                       "Please enter the integer beside the name of the desired class.")
 
         # Blank or junk inputs:
         self.no_input = ''
@@ -295,9 +312,11 @@ class TestTakeClassSelection(TestCase):
         self.positive_out_of_range_input = '17'
         # Valid inputs: (valid_input, return_value)
         # Numerical
-        self.valid_numerical_inputs = [(str(key), self.test_class_options[key]) for key in self.test_class_options.keys()]
+        self.valid_numerical_inputs = [(str(key), self.test_class_options[key])
+                                       for key in self.test_class_options.keys()]
         # Exact class name
-        self.valid_string_inputs = [(class_name, class_name) for class_name in self.test_class_options.values()]
+        self.valid_string_inputs = [(class_name, class_name) for class_name
+                                    in self.test_class_options.values()]
 
         self.blank_junk_inputs = [self.no_input,
                                   self.space_input,
@@ -352,3 +371,89 @@ class TestDisplayStudentSelectionMenu(TestCase):
 
             print_calls = [mock.call(printed_str) for printed_str in self.expected_print_statements]
             assert mocked_print.call_args_list == print_calls
+
+
+class TestTakeStudentSelection(TestCase):
+    def setUp(self):
+        self.test_class_student_options = test_class_data_set['enumerated_dict']
+        self.invalid_input_response = "Invalid input.\nPlease enter the integer beside the name of the desired student."
+
+        # Blank or junk inputs:
+        self.no_input = ''
+        self.space_input = ' '
+        self.blank_input = '_'
+        self.junk_input_sir_galahad = 'Sir Galahad the brave'
+        self.junk_input_questions = ('First you must answer three questions: \n'
+                                     'What is your name?\n'
+                                     'What is your quest?\n'
+                                     'What is your favourite colour?')
+        self.negative_input = '-7'
+        self.zero_0_input = '0'
+        self.reasonable_float = '2.0'
+        self.weird_float = '3.14159'
+        self.positive_out_of_range_input = '76'
+        # Valid inputs: (valid_input, return_value)
+        # Numerical
+        self.valid_numerical_inputs = [(str(key), self.test_class_student_options[key])
+                                       for key in self.test_class_student_options.keys()]
+        # Exact class name
+        self.valid_string_inputs = [(class_name, class_name) for class_name in self.test_class_student_options.values()]
+
+        self.blank_junk_inputs = [self.no_input,
+                                  self.space_input,
+                                  self.junk_input_sir_galahad,
+                                  self.junk_input_questions,
+                                  self.negative_input,
+                                  self.zero_0_input,
+                                  self.reasonable_float,
+                                  self.weird_float,
+                                  self.positive_out_of_range_input,
+                                  ]
+
+        self.valid_inputs = self.valid_numerical_inputs + self.valid_string_inputs
+
+        self.input_sets = []
+        for valid_input in self.valid_inputs:
+            test_case = [self.blank_junk_inputs + [valid_input[0]], valid_input[1]]
+            self.input_sets.append(test_case)
+
+    @patch('dionysus_app.UI_menus.class_functions_UI.print')
+    def test_take_student_selection(self, mock_print):
+        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+            for test_case in self.input_sets:
+                with self.subTest(i=test_case):
+                    input_strings = test_case[0]
+                    expected_return = test_case[1]
+
+                    mock_input.side_effect = input_strings
+
+                    assert take_student_selection(self.test_class_student_options) == expected_return
+
+                    # Check print calls:
+                    assert mock_print.call_args_list == [mock.call(self.invalid_input_response)
+                                                         for input_string in input_strings[0:-1]]
+
+                    # Reset the mock function after each test sequence:
+                    mock_input.reset_mock(return_value=True, side_effect=True)
+                    mock_print.reset_mock(return_value=True, side_effect=True)
+
+
+class TestSelectAvatarFileDialogue(TestCase):
+    def setUp(self):
+        self.my_avatar_path = 'C:\\how_not_to_be_seen.avatar_can_be_seen'
+
+        # Mocked file dialogue arguments
+        self.dialogue_box_title = 'Select .png format avatar:'
+        self.filetypes = [('.png files', '*.png'), ("all files", "*.*")]
+        self.start_dir = '..'  # start at parent to app directory.
+
+    @patch('dionysus_app.UI_menus.class_functions_UI.select_file_dialogue')
+    def test_select_avatar_file_dialogue(self, mocked_select_file_dialogue):
+
+        mocked_select_file_dialogue.return_value = self.my_avatar_path
+
+        assert select_avatar_file_dialogue() == self.my_avatar_path
+        mocked_select_file_dialogue.assert_called_once_with(self.dialogue_box_title,
+                                                            self.filetypes,
+                                                            self.start_dir,
+                                                            )
