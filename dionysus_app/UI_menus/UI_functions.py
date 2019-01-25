@@ -70,7 +70,7 @@ def scrub_candidate_filename(dirty_string: str):
 
 
 def save_as_dialogue(title_str=None,
-                     default_file_type=None,
+                     default_file_extension=None,
                      filetypes=None,
                      suggested_filename=None,
                      start_dir=None
@@ -103,7 +103,7 @@ def save_as_dialogue(title_str=None,
     Returns None instead of empty string if no file is selected.
 
     :param title_str: str
-    :param default_file_type: list
+    :param default_file_extension: list
     :param suggested_filename: str
     :param filetypes: list
     :param start_dir: str
@@ -112,17 +112,17 @@ def save_as_dialogue(title_str=None,
     root = tk.Tk()
     root.withdraw()
 
-    if not default_file_type:
+    if filetypes and not default_file_extension:
         # Make extension of first listed filetype default save extension.
         first_extension_without_wildcard = filetypes[0][1].strip('*')
         if first_extension_without_wildcard != '.':
-            default_file_type = first_extension_without_wildcard
+            default_file_extension = first_extension_without_wildcard
 
     default_filetypes = [("all files", "*.*")]
     if not filetypes:
         filetypes = default_filetypes
     filepath_str = filedialog.asksaveasfilename(title=title_str,
-                                                defaultextension=default_file_type,
+                                                defaultextension=default_file_extension,
                                                 filetypes=filetypes,
                                                 initialfile=suggested_filename,
                                                 initialdir=start_dir,
