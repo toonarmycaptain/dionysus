@@ -81,6 +81,7 @@ def save_as_dialogue(title_str=None,
     filetype argument (if provided) eg '*.png'.
 
     title_str is string to be displayed in popup's title bar.
+    NB if none provided, or is None - title displayed is "Save as".
 
     default_filetype is a string to be added as an extension (eg '.png, but can
         be anything (eg 'dead_parrot', '_chart.png' in the event user does not
