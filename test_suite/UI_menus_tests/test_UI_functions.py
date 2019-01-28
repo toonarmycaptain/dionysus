@@ -188,13 +188,13 @@ class TestScrubCandidateFilename(TestCase):
 
                 assert scrub_candidate_filename(test_input) == expected_output
 
-
+@patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
 class TestSaveAsDialogue(TestCase):
     def setUp(self):
         self.default_filetypes = [("all files", "*.*")]
         self.test_returned_filepath_str = "my save file"
 
-    def test_save_as_dialogue_no_arguments(self):
+    def test_save_as_dialogue_no_arguments(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             save_as_filedialog.return_value = self.test_returned_filepath_str
             assert save_as_filedialog.return_value == save_as_dialogue()
@@ -206,7 +206,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None
                                                        )
 
-    def test_save_as_dialogue_all_None_arguments(self):
+    def test_save_as_dialogue_all_None_arguments(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             save_as_filedialog.return_value = self.test_returned_filepath_str
 
@@ -224,7 +224,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
-    def test_save_as_dialogue_with_title_str(self):
+    def test_save_as_dialogue_with_title_str(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             title_string = "Save your super_file_as:"
 
@@ -239,7 +239,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
-    def test_save_as_dialogue_with_default_extension_some_ext(self):
+    def test_save_as_dialogue_with_default_extension_some_ext(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_default_extension = '.some_ext'
 
@@ -254,7 +254,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None
                                                        )
 
-    def test_save_as_dialogue_with_filetypes_all_files(self):
+    def test_save_as_dialogue_with_filetypes_all_files(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_filetypes = [("all files", "*.*")]
 
@@ -269,7 +269,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None
                                                        )
 
-    def test_save_as_dialogue_with_filetypes_some_ext(self):
+    def test_save_as_dialogue_with_filetypes_some_ext(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_filetypes = [('some ext', '*.some_ext')]
             test_default_extension = '.some_ext'
@@ -287,7 +287,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
-    def test_save_as_dialogue_with_filetypes_all_files_plus_some_ext(self):
+    def test_save_as_dialogue_with_filetypes_all_files_plus_some_ext(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_filetypes = [('all files', '*.*'), ('some ext', '*.some_ext')]
 
@@ -302,7 +302,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
-    def test_save_as_dialogue_with_filetypes_some_ext_plus_all_files(self):
+    def test_save_as_dialogue_with_filetypes_some_ext_plus_all_files(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
             test_default_extension = '.some_ext'
@@ -320,7 +320,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
-    def test_save_as_dialogue_with_suggested_filename(self):
+    def test_save_as_dialogue_with_suggested_filename(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_suggested_filename = 'you should call your save file THIS'
 
@@ -335,7 +335,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=test_suggested_filename,
                                                        )
 
-    def test_save_as_dialogue_with_start_dir_str(self):
+    def test_save_as_dialogue_with_start_dir_str(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_start_dir = 'where to start?'
 
@@ -350,7 +350,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
-    def test_save_as_dialogue_with_start_dir_Path(self):
+    def test_save_as_dialogue_with_start_dir_Path(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_start_dir = 'where to start?'
             test_start_dir_path = Path(test_start_dir)
@@ -366,7 +366,7 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
-    def test_save_as_dialogue_no_input_returns_None(self):
+    def test_save_as_dialogue_no_input_returns_None(self, Tk):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             save_as_filedialog.return_value = ''
 
