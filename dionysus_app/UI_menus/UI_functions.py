@@ -103,6 +103,14 @@ def save_as_dialogue(title_str=None,
 
     Returns None instead of empty string if no file is selected.
 
+
+
+    NB When default_file_extension is given, but not in filetypes, if
+    the first filetype in filetypes is NOT ("all files", "*.*"), that
+    first filetype in filetypes will by appended rather than the default
+    extension. If ("all files", "*.*") is the first filetype, the
+    default_file_extension will be appended as expected.
+
     :param title_str: str
     :param default_file_extension: list
     :param suggested_filename: str
