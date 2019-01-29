@@ -200,6 +200,7 @@ class TestSaveAsDialogue(TestCase):
             save_as_filedialog.return_value = self.test_returned_filepath_str
             assert save_as_filedialog.return_value == save_as_dialogue()
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
@@ -218,6 +219,7 @@ class TestSaveAsDialogue(TestCase):
                                     start_dir=None
                                     ) == save_as_filedialog.return_value
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
@@ -233,6 +235,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue(title_str=title_string) == save_as_filedialog.return_value
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=title_string,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
@@ -248,6 +251,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue(default_file_extension=test_default_extension) == save_as_filedialog.return_value
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension='.some_ext',
                                                        filetypes=self.default_filetypes,
@@ -263,6 +267,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue(filetypes=test_filetypes) == save_as_filedialog.return_value
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
@@ -281,6 +286,7 @@ class TestSaveAsDialogue(TestCase):
                                     filetypes=test_filetypes
                                     ) == self.test_returned_filepath_str
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=test_default_extension,
                                                        filetypes=test_filetypes,
@@ -296,6 +302,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue(filetypes=test_filetypes) == self.test_returned_filepath_str
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=test_filetypes,
@@ -314,6 +321,7 @@ class TestSaveAsDialogue(TestCase):
                                     filetypes=test_filetypes,
                                     ) == save_as_filedialog.return_value
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=test_default_extension,
                                                        filetypes=test_filetypes,
@@ -329,6 +337,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue(suggested_filename=test_suggested_filename) == self.test_returned_filepath_str
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
@@ -344,6 +353,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue(start_dir=test_start_dir) == self.test_returned_filepath_str
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
@@ -360,6 +370,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue(start_dir=test_start_dir_path) == self.test_returned_filepath_str
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
@@ -373,6 +384,7 @@ class TestSaveAsDialogue(TestCase):
 
             assert save_as_dialogue() is None
 
+            mock_tkinter.assert_called()
             save_as_filedialog.assert_called_once_with(title=None,
                                                        defaultextension=None,
                                                        filetypes=self.default_filetypes,
