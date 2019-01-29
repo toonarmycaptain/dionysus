@@ -188,6 +188,7 @@ class TestScrubCandidateFilename(TestCase):
 
                 assert scrub_candidate_filename(test_input) == expected_output
 
+
 @patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
 class TestSaveAsDialogue(TestCase):
     def setUp(self):
