@@ -26,11 +26,10 @@ jobs:
                 command: |
                     . venv/bin/activate
                     mkdir test-reports
-                    pytest -v --cov=/home/circleci/dionysus/ --junitxml=../test-results/junit.xml
-                    coverage xml
+                    pytest --junitxml=test-reports/junit.xml
 
             - store_test_results:
-                path: test-results
+                path: test-reports
 
             - store_artifacts:
                 path: test-reports
