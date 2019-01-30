@@ -324,7 +324,7 @@ class TestLoadClassData(TestCase):
         assert self.test_class_loaded_data == loaded_json_data
 
     def test_load_class_data_mocked_open(self):
-        with patch('dionysus_app.class_functions.open', mock_open(read_data=self.test_class_json_data)):
+        with patch('dionysus_app.file_functions.open', mock_open(read_data=self.test_class_json_data)):
             assert isinstance(self.test_class_loaded_data, dict)
             assert load_class_data(self.test_class_name) == self.test_class_loaded_data
 
