@@ -253,11 +253,11 @@ def load_class_data(class_name: str):
     return class_data_dict
 
 
-def load_chart_data(chart_data_path: Path):
+def load_chart_data(chart_data_path: str):
     """
     Load class data from chart data ('.cdf') file.
 
-    :param chart_data_path: Path
+    :param chart_data_path: Path or str
     :return: dict
     """
     chart_data_dict = load_from_json_file(chart_data_path)
