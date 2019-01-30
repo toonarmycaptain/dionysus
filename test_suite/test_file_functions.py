@@ -1,10 +1,14 @@
 import os
 import shutil
 
+from pathlib import Path
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 
-from dionysus_app.file_functions import convert_to_json, load_from_json
+from dionysus_app.file_functions import (convert_to_json,
+                                         load_from_json,
+                                         load_from_json_file,
+                                         )
 from dionysus_app.file_functions import copy_file, move_file
 from test_suite.testing_class_data import testing_class_data_set as test_json_class_data
 
@@ -29,6 +33,18 @@ class TestLoadFromJson(TestCase):
 
     def test_load_from_json_test_class_data(self):
         assert load_from_json(self.test_json_class_data['json_data_string']) == self.test_json_class_data['loaded_dict']
+
+
+class TestLoadFromJsonFile(TestCase):
+    def setUp(self):
+        self.test_file_json_data_to_convert = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
+        self.mock_file_path = Path('test_file_path')
+        self.converted_json_data = {"1": 'a', 'b': 2, "3": 'c', 'd': 4}
+
+    def test_load_from_json_file(self):
+        with patch('dionysus_app.file_functions.open', mock_open(read_data=self.test_file_json_data_to_convert)):
+
+            assert load_from_json_file(self.mock_file_path) == self.converted_json_data
 
 
 class TestCopyFile(TestCase):
