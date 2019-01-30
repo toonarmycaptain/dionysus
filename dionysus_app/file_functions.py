@@ -37,6 +37,18 @@ def load_from_json(data_to_convert: str):
     return converted_data
 
 
+def load_from_json_file(json_file_path: str):
+    """
+    Take a filepath and load json from that file.
+
+    :param json_file_path: Path (or str)
+    :return: dict
+    """
+    with open(json_file_path) as json_file:
+        json_data = json_file.read()
+        loaded_data = load_from_json(json_data)
+        return loaded_data
+
 def copy_file(origin_fullpath: str, destination_fullpath: str):
     """
     Takes two filepaths, copying the origin file to the destination path and filename.
