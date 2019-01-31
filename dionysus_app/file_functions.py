@@ -49,6 +49,7 @@ def load_from_json_file(json_file_path: str):
         loaded_data = load_from_json(json_data)
         return loaded_data
 
+
 def copy_file(origin_fullpath: str, destination_fullpath: str):
     """
     Takes two filepaths, copying the origin file to the destination path and filename.
