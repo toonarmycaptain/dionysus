@@ -155,6 +155,9 @@ def select_file_dialogue(title_str=None,
 
     Returns None instead of empty string if no file is selected.
 
+    NB If no title is passed to filedialog.askopenfilename, the window
+    title will be "Open".
+
     :param title_str: str
     :param filetypes: list
     :param start_dir: str
