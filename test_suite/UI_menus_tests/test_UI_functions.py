@@ -399,7 +399,7 @@ class TestSelectFileDialogue(TestCase):
     def setUp(self):
         self.test_default_filetypes = [('all files', '*.*')]
 
-        self.test_title_str = 'First you must answer three questions',
+        self.test_title_str = 'First you must answer three questions'
         self.test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
         self.test_start_dir = 'What\\is\\your\\quest'
 
@@ -417,7 +417,7 @@ class TestSelectFileDialogue(TestCase):
                                                       filetype=self.test_default_filetypes,
                                                       initialdir=None)
 
-    def test_save_as_dialogue_all_None_arguments(self, mock_tkinter):
+    def test_select_file_dialogue_all_None_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
             select_filedialog.return_value = self.test_returned_filepath_str
 
