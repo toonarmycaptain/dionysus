@@ -15,6 +15,7 @@ from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
                                                 input_is_essentially_blank,
                                                 save_as_dialogue,
                                                 scrub_candidate_filename,
+                                                select_file_dialogue,
                                                 )
 
 
@@ -391,3 +392,66 @@ class TestSaveAsDialogue(TestCase):
                                                        initialdir=None,
                                                        initialfile=None,
                                                        )
+
+
+@patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
+class TestSelectFileDialogue(TestCase):
+    def setUp(self):
+        self.test_default_filetypes = [('all files', '*.*')]
+
+        self.test_title_str = 'First you must answer three questions',
+        self.test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
+        self.test_start_dir = 'What\\is\\your\\quest'
+
+        self.test_returned_filepath_str = 'strange women lying in ponds distributing swords'
+
+    def test_select_file_dialogue_called_without_arguments(self, mock_tkinter):
+        # Tests filedialog called with default_filetypes.
+        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
+            select_filedialog.return_value = self.test_returned_filepath_str
+
+            assert select_file_dialogue() == self.test_returned_filepath_str
+
+            mock_tkinter.assert_called()
+            select_filedialog.assert_called_once_with(title=None,
+                                                      filetype=self.test_default_filetypes,
+                                                      initialdir=None)
+
+    def test_save_as_dialogue_all_None_arguments(self, mock_tkinter):
+        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
+            select_filedialog.return_value = self.test_returned_filepath_str
+
+            assert select_file_dialogue(title_str=None,
+                                        filetypes=None,
+                                        start_dir=None,
+                                        ) == self.test_returned_filepath_str
+
+            mock_tkinter.assert_called()
+            select_filedialog.assert_called_once_with(title=None,
+                                                      filetype=self.test_default_filetypes,
+                                                      initialdir=None)
+
+    def test_select_file_dialogue_called_with_all_arguments(self, mock_tkinter):
+        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
+            select_filedialog.return_value = self.test_returned_filepath_str
+
+            assert select_file_dialogue(title_str=self.test_title_str,
+                                        filetypes=self.test_filetypes,
+                                        start_dir=self.test_start_dir,
+                                        ) == self.test_returned_filepath_str
+
+            mock_tkinter.assert_called()
+            select_filedialog.assert_called_once_with(title=self.test_title_str,
+                                                      filetype=self.test_filetypes,
+                                                      initialdir=self.test_start_dir)
+
+    def test_select_file_dialogue_no_input_returns_None(self, mock_tkinter):
+        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
+            select_filedialog.return_value = ''
+
+            assert select_file_dialogue() is None
+
+            mock_tkinter.assert_called()
+            select_filedialog.assert_called_once_with(title=None,
+                                                      filetype=self.test_default_filetypes,
+                                                      initialdir=None)
