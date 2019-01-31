@@ -1,0 +1,13 @@
+languages:
+- python
+
+- name: python
+    production:
+        exclude:
+            - /test_suite/.*
+
+    test:
+        include:
+            - /test_suite/.*
+
+component_depth: 2
