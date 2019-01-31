@@ -331,6 +331,24 @@ class TestSaveAsDialogue(TestCase):
                                                        initialfile=None,
                                                        )
 
+    def test_save_as_dialogue_with_filetypes_some_ext_no_default(self, mock_tkinter):
+        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
+            test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
+            test_default_extension = '.some_ext'
+
+            save_as_filedialog.return_value = self.test_returned_filepath_str
+
+            assert save_as_dialogue(filetypes=test_filetypes,
+                                    ) == save_as_filedialog.return_value
+
+            mock_tkinter.assert_called()
+            save_as_filedialog.assert_called_once_with(title=None,
+                                                       defaultextension=test_default_extension,
+                                                       filetypes=test_filetypes,
+                                                       initialdir=None,
+                                                       initialfile=None,
+                                                       )
+
     def test_save_as_dialogue_with_suggested_filename(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
             test_suggested_filename = 'you should call your save file THIS'
