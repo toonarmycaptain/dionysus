@@ -19,6 +19,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           setup_class,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
+                                          load_chart_data,
                                           )
 
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
@@ -324,7 +325,7 @@ class TestLoadClassData(TestCase):
         assert self.test_class_loaded_data == loaded_json_data
 
     def test_load_class_data_mocked_open(self):
-        with patch('dionysus_app.class_functions.open', mock_open(read_data=self.test_class_json_data)):
+        with patch('dionysus_app.file_functions.open', mock_open(read_data=self.test_class_json_data)):
             assert isinstance(self.test_class_loaded_data, dict)
             assert load_class_data(self.test_class_name) == self.test_class_loaded_data
 
@@ -332,6 +333,18 @@ class TestLoadClassData(TestCase):
         shutil.rmtree(self.test_class_name)
         assert not os.path.exists(self.test_classlist_data_path)
         assert not os.path.exists(self.test_class_name)
+
+
+class TestLoadChartData(TestCase):
+    def setUp(self):
+        self.test_chart_data_path = Path('my_test_path')
+        self.mock_load_from_json_file_return_data = {1: 'one', 2: 'two', 3: 'three'}
+
+    def test_load_chart_data(self):
+        with patch('dionysus_app.class_functions.load_from_json_file') as mock_load_from_json_file:
+            mock_load_from_json_file.return_value = self.mock_load_from_json_file_return_data
+
+            assert load_chart_data(self.test_chart_data_path) == self.mock_load_from_json_file_return_data
 
 
 class TestGetAvatarPath(TestCase):

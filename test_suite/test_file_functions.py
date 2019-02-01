@@ -1,31 +1,50 @@
 import os
 import shutil
 
+from pathlib import Path
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 
-from dionysus_app.file_functions import convert_to_json, load_from_json
+from dionysus_app.file_functions import (convert_to_json,
+                                         load_from_json,
+                                         load_from_json_file,
+                                         )
 from dionysus_app.file_functions import copy_file, move_file
 from test_suite.testing_class_data import testing_class_data_set as test_json_class_data
 
 
 class TestConvertToJson(TestCase):
-    def test_convert_to_json(self):
-        data_to_convert = {1: 'a', 'b': 2, 3: 'c', 'd': 4}
-        json_converted_data = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
+    def setUp(self):
+        self.data_to_convert = {1: 'a', 'b': 2, 3: 'c', 'd': 4}
+        self.json_converted_data = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
 
-        assert convert_to_json(data_to_convert) == json_converted_data
+    def test_convert_to_json(self):
+        assert convert_to_json(self.data_to_convert) == self.json_converted_data
 
 
 class TestLoadFromJson(TestCase):
-    def test_load_from_json(self):
-        json_data_to_convert = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
-        converted_json_data = {"1": 'a', 'b': 2, "3": 'c', 'd': 4}
+    def setUp(self):
+        self.json_data_to_convert = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
+        self.converted_json_data = {"1": 'a', 'b': 2, "3": 'c', 'd': 4}
+        self.test_json_class_data = test_json_class_data
 
-        assert load_from_json(json_data_to_convert) == converted_json_data
+    def test_load_from_json(self):
+        assert load_from_json(self.json_data_to_convert) == self.converted_json_data
 
     def test_load_from_json_test_class_data(self):
-        assert test_json_class_data['loaded_dict'] == load_from_json(test_json_class_data['json_data_string'])
+        assert load_from_json(self.test_json_class_data['json_data_string']) == self.test_json_class_data['loaded_dict']
+
+
+class TestLoadFromJsonFile(TestCase):
+    def setUp(self):
+        self.test_file_json_data_to_convert = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
+        self.mock_file_path = Path('test_file_path')
+        self.converted_json_data = {"1": 'a', 'b': 2, "3": 'c', 'd': 4}
+
+    def test_load_from_json_file(self):
+        with patch('dionysus_app.file_functions.open', mock_open(read_data=self.test_file_json_data_to_convert)):
+
+            assert load_from_json_file(self.mock_file_path) == self.converted_json_data
 
 
 class TestCopyFile(TestCase):

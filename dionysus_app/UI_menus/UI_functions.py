@@ -70,7 +70,7 @@ def scrub_candidate_filename(dirty_string: str):
 
 
 def save_as_dialogue(title_str=None,
-                     default_file_type=None,
+                     default_file_extension=None,
                      filetypes=None,
                      suggested_filename=None,
                      start_dir=None
@@ -81,6 +81,7 @@ def save_as_dialogue(title_str=None,
     filetype argument (if provided) eg '*.png'.
 
     title_str is string to be displayed in popup's title bar.
+    NB if none provided, or is None - title displayed is "Save as".
 
     default_filetype is a string to be added as an extension (eg '.png, but can
         be anything (eg 'dead_parrot', '_chart.png' in the event user does not
@@ -102,8 +103,16 @@ def save_as_dialogue(title_str=None,
 
     Returns None instead of empty string if no file is selected.
 
+
+
+    NB When default_file_extension is given, but not in filetypes, if
+    the first filetype in filetypes is NOT ("all files", "*.*"), that
+    first filetype in filetypes will by appended rather than the default
+    extension. If ("all files", "*.*") is the first filetype, the
+    default_file_extension will be appended as expected.
+
     :param title_str: str
-    :param default_file_type: list
+    :param default_file_extension: list
     :param suggested_filename: str
     :param filetypes: list
     :param start_dir: str
@@ -112,17 +121,17 @@ def save_as_dialogue(title_str=None,
     root = tk.Tk()
     root.withdraw()
 
-    if not default_file_type:
+    if filetypes and not default_file_extension:
         # Make extension of first listed filetype default save extension.
         first_extension_without_wildcard = filetypes[0][1].strip('*')
         if first_extension_without_wildcard != '.':
-            default_file_type = first_extension_without_wildcard
+            default_file_extension = first_extension_without_wildcard
 
     default_filetypes = [("all files", "*.*")]
     if not filetypes:
         filetypes = default_filetypes
     filepath_str = filedialog.asksaveasfilename(title=title_str,
-                                                defaultextension=default_file_type,
+                                                defaultextension=default_file_extension,
                                                 filetypes=filetypes,
                                                 initialfile=suggested_filename,
                                                 initialdir=start_dir,
@@ -145,6 +154,9 @@ def select_file_dialogue(title_str=None,
     eg for png and all files: [('.png', '*.png'), ("all files", "*.*")]
 
     Returns None instead of empty string if no file is selected.
+
+    NB If no title is passed to filedialog.askopenfilename, the window
+    title will be "Open".
 
     :param title_str: str
     :param filetypes: list

@@ -10,7 +10,10 @@ import definitions
 
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
-from dionysus_app.file_functions import convert_to_json, load_from_json, copy_file
+from dionysus_app.file_functions import (convert_to_json,
+                                         load_from_json_file,
+                                         copy_file,
+                                         )
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
                                                       display_class_selection_menu,
@@ -246,10 +249,19 @@ def load_class_data(class_name: str):
     class_data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
     classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, class_data_filename)
 
-    with open(classlist_data_path, 'r') as class_datafile:
-        loaded_class_json = class_datafile.read()
-        class_data_dict = load_from_json(loaded_class_json)
+    class_data_dict = load_from_json_file(classlist_data_path)
     return class_data_dict
+
+
+def load_chart_data(chart_data_path: str):
+    """
+    Load class data from chart data ('.cdf') file.
+
+    :param chart_data_path: Path or str
+    :return: dict
+    """
+    chart_data_dict = load_from_json_file(chart_data_path)
+    return chart_data_dict
 
 
 def get_avatar_path(class_name, student_avatar):
