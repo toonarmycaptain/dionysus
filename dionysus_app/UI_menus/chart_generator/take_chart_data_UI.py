@@ -4,7 +4,7 @@ Script for taking and saving data for graph.
 
 # score entry:
 
-from dionysus_app.class_functions import load_class_data, get_avatar_path
+from dionysus_app.class_functions import get_avatar_path
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
 
@@ -12,7 +12,32 @@ from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 
-def take_score_data(class_name: str):
+def take_score_data(class_name: str, class_data_dict: dict):
+    """
+    Prints score taking instructions, calls take_student_scores.
+    Prints a newline after completion for readability.
+
+    Returns dict with scores as keys, lists of Path objects as
+    values. eg student_scores = {33: [Path_obj1, Path_obj2, Path_obj3,
+                                 17: [Path_obj1, Path_obj2, Path_obj3]
+                                 }
+
+    :param class_name: str
+    :param class_data_dict: dict
+    :return: dict
+    """
+    print(f"\nEnter student scores for {class_name}: \n"
+          f"Type score for each student, or '_' to exclude student, and press enter.")
+
+    student_scores = take_student_scores(class_name, class_data_dict)
+
+    # Newline between last score and 'Please enter a chart name/title: '
+    print('\n')
+
+    return student_scores
+
+
+def take_student_scores(class_name: str, class_data_dict: dict):
     """
     UI function presenting student names from supplied class one at a
     time and taking a score for each.
@@ -27,18 +52,11 @@ def take_score_data(class_name: str):
                                  17: [Path_obj1, Path_obj2, Path_obj3]
                                  }
 
-
     :param class_name: str
+    :param class_data_dict: dict
     :return: dict
     """
-
-    class_data_dict = load_class_data(class_name)
-
     student_scores = {}
-
-    print(f"\nEnter student scores for {class_name}: \n"
-          f"Type score for each student, or '_' to exclude student, and press enter.")
-
     for student_name in list(class_data_dict.keys()):
 
         student_avatar_filename = class_data_dict[student_name][0]
@@ -48,9 +66,6 @@ def take_score_data(class_name: str):
         # add avatar to list of avatars for score
         if student_score:
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
-
-    # Newline between last score and 'Please enter a chart name/title: '
-    print('\n')
 
     return student_scores
 
