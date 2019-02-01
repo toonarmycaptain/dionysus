@@ -1,59 +1,34 @@
-
-from unittest import TestCase
+from unittest import mock, TestCase
+from unittest.mock import patch
 
 from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_score_data,
+                                                                      take_student_scores,
                                                                       )
+from test_suite.testing_class_data import testing_class_data_set as test_class_data
 
 
 class TestTakeScoreData(TestCase):
-    def test_take_score_data(self):
-        self.fail()
+    def setUp(self):
+        self.test_classname = 'the knights who say ni'
+        self.test_class_data_dict = test_class_data['loaded_dict']
 
+        self.score_entry_instruction = (f"\nEnter student scores for {self.test_classname}: \n"
+                                        f"Type score for each student, or '_' to exclude student, and press enter.")
+        self.newline_after_entry = '\n'
+        self.print_calls = [self.score_entry_instruction, self.newline_after_entry]
 
+        self.mock_score_avatar_dict = {'scores': 'list of avatars'}
 
-def take_score_data(class_name: str):
-    """
-    UI function presenting student names from supplied class one at a
-    time and taking a score for each.
-    Path objects for each student's avatar are added to a list of avatar
-    Paths corresponding to scores.
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.take_student_scores')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    def test_take_score_data(self, mocked_print, mocked_take_student_scores):
+        mocked_take_student_scores.return_value = self.mock_score_avatar_dict
 
-    Scores can be int or float, eg 78.5 is valid entry, and are
-    converted to float (from str) by default.
+        assert take_score_data(self.test_classname,
+                               self.test_class_data_dict) == self.mock_score_avatar_dict
 
-    Return is a dict with scores as keys, lists of Path objects as
-    values. eg student_scores = {33: [Path_obj1, Path_obj2, Path_obj3,
-                                 17: [Path_obj1, Path_obj2, Path_obj3]
-                                 }
-
-
-    :param class_name: str
-    :return: dict
-    """
-
-    class_data_dict = load_class_data(class_name)
-
-    student_scores = {}
-
-    print(f"\nEnter student scores for {class_name}: \n"
-          f"Type score for each student, or '_' to exclude student, and press enter.")
-
-    for student_name in list(class_data_dict.keys()):
-
-        student_avatar_filename = class_data_dict[student_name][0]
-        avatar_path = get_avatar_path(class_name, student_avatar_filename)
-
-        student_score = take_score_entry(student_name)
-        # add avatar to list of avatars for score
-        if student_score:
-            student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
-
-    # Newline between last score and 'Please enter a chart name/title: '
-    print('\n')
-
-    return student_scores
-
-
+        assert mocked_print.call_args_list == [mock.call(print_call) for print_call in self.print_calls]
+        mocked_take_student_scores.called_once_with(self.test_classname, self.test_class_data_dict)
 
 
 
