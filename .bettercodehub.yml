@@ -4,10 +4,10 @@ languages:
 - name: python
   production:
     exclude:
-      - */test_suite/.*
+      - .*/test_suite/.*
 
   test:
     include:
-      - */test_suite/.*
+      - .*/test_suite/.*
 
 component_depth: 2
