@@ -64,7 +64,7 @@ def take_student_scores(class_name: str, class_data_dict: dict):
 
         student_score = take_score_entry(student_name)
         # add avatar to list of avatars for score
-        if student_score:
+        if student_score or student_score is 0:
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
     return student_scores
@@ -76,7 +76,7 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
     :param student_name: str
     :param minimum: int, default=0
     :param maximum: int, default=100
-    :return: float
+    :return: float or None
     """
     while True:
         score = input(f'{student_name}: ')
