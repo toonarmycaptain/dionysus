@@ -4,17 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.1-alpha]
 ### Added
 - Improved test coverage.
 - Add load_chart_data, load_json_from_file
 - Add .bettercodehub.yml - prevent failed PR checks because of test code.
 ### Changed
-- Fix bug in save_as_dialogue that failed with TypeError when called without filetypes parameter or with default filetypes=None.
-- Fix circleci not storing test metadata.
 - Refactor save_as_dialogue to prevent TypeError.
 - Refactor load_class_data using load_from_json_file.
-
+### Fixed
+- Fix bug where avatar for student with score of 0 not added to student_scores.
+- Fix bug in save_as_dialogue that failed with TypeError when called without filetypes parameter or with default filetypes=None.
+- Fix circleci not storing test metadata.
 
 ## [0.3.0-alpha] - 2019-01-23
 ### Added
