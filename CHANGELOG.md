@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+[Unreleased]
+### Changed
+- Implementation of take_student_scores:
+    - Move fetching of student data into `if` clause, fetch only if student has a score.
+    - Simplify conditional to only filter out scores of `None` rather than chained conditional testing for values evaluating to `True` or `0`.
+
 ## [0.3.1-alpha]
 ### Added
 - Improved test coverage.
