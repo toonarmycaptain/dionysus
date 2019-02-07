@@ -41,12 +41,16 @@ class TestTakeStudentScores(TestCase):
         self.test_class_data_dict = test_class_data['loaded_dict']
 
         # NB If data other than avatar in dict values, this test implementation may need to change.
-        self.mocked_get_avatar_path_return_values = [f'path to {avatar[0]}' if avatar[0] is not None
-                                                     else self.mock_DEFAULT_AVATAR_PATH
-                                                     for avatar in test_class_data['loaded_dict'].values()]
+        self.avatar_paths = [f'path to {avatar[0]}' if avatar[0] is not None
+                             else self.mock_DEFAULT_AVATAR_PATH
+                             for avatar in test_class_data['loaded_dict'].values()]
 
         # Gives no score to one student with and without an avatar.
         self.mocked_take_score_entry_return_values = [0, 1, 3, None, 50, 99, 100, 1, 2, 3, 4, None, 6, 7, 8]
+        self.mocked_get_avatar_path_return_values = [self.avatar_paths[self.mocked_take_score_entry_return_values.index(score)]
+                                                     for score in self.mocked_take_score_entry_return_values
+                                                     if score is not None]
+
         self.test_take_student_scores_return_value = {0: ['path to Cali_avatar.png'],
                                                       1: [self.mock_DEFAULT_AVATAR_PATH, self.mock_DEFAULT_AVATAR_PATH],
                                                       3: [self.mock_DEFAULT_AVATAR_PATH, self.mock_DEFAULT_AVATAR_PATH],
