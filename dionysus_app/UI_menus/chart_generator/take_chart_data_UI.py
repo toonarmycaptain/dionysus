@@ -59,12 +59,12 @@ def take_student_scores(class_name: str, class_data_dict: dict):
     student_scores = {}
     for student_name in list(class_data_dict.keys()):
 
-        student_avatar_filename = class_data_dict[student_name][0]
-        avatar_path = get_avatar_path(class_name, student_avatar_filename)
-
         student_score = take_score_entry(student_name)
         # add avatar to list of avatars for score
         if student_score or student_score is 0:
+            student_avatar_filename = class_data_dict[student_name][0]
+            avatar_path = get_avatar_path(class_name, student_avatar_filename)
+
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
     return student_scores
