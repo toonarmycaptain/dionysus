@@ -1,7 +1,7 @@
 from unittest import TestCase, mock
 from unittest.mock import patch
 
-from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_score_data,
+from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_score_data, take_score_entry,
                                                                       take_student_scores,
                                                                       )
 from test_suite.testing_class_data import testing_class_data_set as test_class_data
@@ -80,13 +80,88 @@ class TestTakeStudentScores(TestCase):
                                                  for student_name in self.test_class_data_dict]
 
 
-def test_take_score_entry():
-    """
-    Test for regular parameters (ie default 0-100 range)
-    Need further tests using different range.
+class TestTakeScoreEntry(TestCase):
+    def setUp(self):
+        self.test_student_name = 'king arthur'
 
-    :return:
-    """
+        self.bad_input_print_stmt = "InputError: please enter a number or '_' to exclude student."
+        # self.out_of_range_print_stmt = f'InputError: Please enter a number between {minimum} and {maximum}.'
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_no_input(self, mocked_input, mocked_print):
+        """Test no score entered (but return pressed)."""
+
+        mocked_input.side_effect = ['',
+                                    '50'  # Good input.
+                                    ]
+
+        assert take_score_entry(self.test_student_name) == 50.0
+
+        mocked_print.assert_called_with(self.bad_input_print_stmt)
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_good_input_default_range(self, mocked_input, mocked_print):
+        """Test for regular parameters (ie default 0-100 range)."""
+        test_inputs = [('0', 0.0),
+                       ('0.0', 0.0),
+                       ('1.25', 1.25),
+                       ('5.7', 5.7),
+                       ('5.700', 5.7),
+                       ('7', 7.0),
+                       ('99', 99.0),
+                       ('99.99', 99.99),
+                       ('100', 100.0,),
+                       ('100.0', 100.0),
+                       ]
+
+        for input_str, return_value in test_inputs:
+            with self.subTest(f'Good input of {input_str}, default min/max.'):
+                mocked_input.return_value = input_str
+                assert take_score_entry(self.test_student_name) == return_value
+                mocked_print.assert_not_called()
+                mocked_input.reset_mock(return_value=True)
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_good_input_custom_range(self, mocked_input):
+
+        """Test for good input in with custom range parameters."""
+        test_inputs = [('5.7', 5.7),
+                       ('7', 7.0),
+                       ('99', 99.0),
+                       ('99.99', 99.99),
+                       ('100', 100.0,),
+                       ('100.0', 100.0),
+                       ('107.60', 107.6),
+                       ]
+        for input_str, return_value in test_inputs:
+            with self.subTest('Good input of {input_str}, minimum=3, maximum=110.'):
+                mocked_input.return_value = input_str
+
+                assert take_score_entry(self.test_student_name, minimum=3, maximum=110) == return_value
+
+                mocked_input.reset_mock(return_value=True)
+
+
+
+'''
+
+*test no input
+test non numeric string input
+test No score given
+*test good answer defaults
+*test good answer with min/max
+
+test non int/float score
+
+test initial input below minimum defaults
+test initial input above maximum defaults
+test initial input below minimum
+test initial input above maximum
+test negative number defaults
+test negative number above minimum min/max given
+
 
     test_dict = {
         '_': None,
