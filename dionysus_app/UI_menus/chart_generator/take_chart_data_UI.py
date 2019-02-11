@@ -89,7 +89,7 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
         except ValueError:
             print("InputError: please enter a number or '_' to exclude student.")
             continue
-        # else:
+
         if score_float < minimum or score_float > maximum:
             print(f'InputError: Please enter a number between {minimum} and {maximum}.')
             continue
