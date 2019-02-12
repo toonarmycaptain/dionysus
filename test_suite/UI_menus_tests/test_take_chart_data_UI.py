@@ -247,4 +247,4 @@ class TestTakeCustomChartOptions(TestCase):
     """Function currently not implemented."""
 
     def test_take_custom_chart_options(self):
-        assert take_custom_chart_options() == None
+        assert take_custom_chart_options() is None
