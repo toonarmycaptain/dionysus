@@ -102,6 +102,29 @@ class TestTakeScoreEntry(TestCase):
 
     @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
     @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_non_numeric_input(self, mocked_input, mocked_print):
+        """Test non-numeric input."""
+
+        mocked_input.side_effect = ['Fifty-seven',
+                                    '50'  # Good input.
+                                    ]
+
+        assert take_score_entry(self.test_student_name) == 50.0
+
+        mocked_print.assert_called_with(self.bad_input_print_stmt)
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_no_score_provided(self, mocked_input, mocked_print):
+        """Test for no score given/omit student."""
+
+        mocked_input.return_value = '_'
+
+        assert take_score_entry(self.test_student_name) is None
+        mocked_print.assert_not_called()
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
     def test_take_score_entry_good_input_default_range(self, mocked_input, mocked_print):
         """Test for regular parameters (ie default 0-100 range)."""
         test_inputs = [('0', 0.0),
@@ -117,15 +140,14 @@ class TestTakeScoreEntry(TestCase):
                        ]
 
         for input_str, return_value in test_inputs:
-            with self.subTest(f'Good input of {input_str}, default min/max.'):
+            with self.subTest(msg=f'Good input of {input_str}, default min/max.'):
                 mocked_input.return_value = input_str
                 assert take_score_entry(self.test_student_name) == return_value
                 mocked_print.assert_not_called()
-                mocked_input.reset_mock(return_value=True)
 
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
     @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
-    def test_take_score_entry_good_input_custom_range(self, mocked_input):
-
+    def test_take_score_entry_good_input_custom_range(self, mocked_input, mocked_print):
         """Test for good input in with custom range parameters."""
         test_inputs = [('5.7', 5.7),
                        ('7', 7.0),
@@ -136,46 +158,86 @@ class TestTakeScoreEntry(TestCase):
                        ('107.60', 107.6),
                        ]
         for input_str, return_value in test_inputs:
-            with self.subTest('Good input of {input_str}, minimum=3, maximum=110.'):
+            with self.subTest(msg=f'Good input of {input_str}, minimum=3, maximum=110.'):
                 mocked_input.return_value = input_str
 
                 assert take_score_entry(self.test_student_name, minimum=3, maximum=110) == return_value
+                mocked_print.assert_not_called()
 
-                mocked_input.reset_mock(return_value=True)
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_good_input_custom_range_negative(self, mocked_input, mocked_print):
+        """Test for good input in with custom range parameters."""
+        test_inputs = [('-50', -50),
+                       ('-16.4', -16.4),
+                       ('5.7', 5.7),
+                       ('7', 7.0),
+                       ('99', 99.0),
+                       ('99.99', 99.99),
+                       ('100', 100.0,),
+                       ('100.0', 100.0),
+                       ('107.60', 107.6),
+                       ]
+        for input_str, return_value in test_inputs:
+            with self.subTest(msg=f'Good input of {input_str}, minimum=3, maximum=110.'):
+                mocked_input.return_value = input_str
 
+                assert take_score_entry(self.test_student_name, minimum=-99, maximum=110) == return_value
+                mocked_print.assert_not_called()
 
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_input_outside_default_range(self, mocked_input, mocked_print):
+        """Test for good input outside default range parameters."""
 
-'''
+        test_inputs = ['-17',
+                       '-5.67'
+                       '103',
+                       '107.60',
+                       ]
 
-*test no input
-test non numeric string input
-test No score given
-*test good answer defaults
-*test good answer with min/max
+        out_of_range_print_stmt = f'InputError: Please enter a number between 0 and 100.'
 
-test non int/float score
+        for input_str in test_inputs:
+            with self.subTest(msg=f'Input of {input_str} outside default range minimum=0, maximum=100.'):
 
-test initial input below minimum defaults
-test initial input above maximum defaults
-test initial input below minimum
-test initial input above maximum
-test negative number defaults
-test negative number above minimum min/max given
+                mocked_input.side_effect = [input_str,
+                                            '50'  # Good input.
+                                            ]
 
+                assert take_score_entry(self.test_student_name) == 50.0
+                mocked_print.assert_called_once_with(out_of_range_print_stmt)
 
-    test_dict = {
-        '_': None,
-        '0': 0.0,
-        '1.25': 1.25,
-        '5.7': 5.7,
-        '7': 7.0,
-        '99': 99.0,
-        '100': 100.0,
-        '101': "InputError: Please enter a number between 0 and 100.",
-        'i am bad data': "InputError: please enter a number or '_' to exclude student.",
-        }
+                mocked_print.reset_mock()
 
-    for i in test_dict:
-        assert i == i
-        # mock input
-        # assert take_score_entry() == return_value_from_function
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_score_entry_input_outside_custom_range(self, mocked_input, mocked_print):
+        """Test for good input outside custom range parameters."""
+        test_inputs = ['-66',
+                       '-4.567'
+                       '0',
+                       '0.0',
+                       '1.25',
+                       '5.7',
+                       '7',
+                       '99',
+                       '99.99',
+                       '100',
+                       '100.0',
+                       '107.60',
+                       ]
+        min_range, max_range = 49, 51
+        out_of_range_print_stmt = f'InputError: Please enter a number between {min_range} and {max_range}.'
+
+        for input_str in test_inputs:
+            with self.subTest(msg=f'Input of {input_str} outside range minimum=49, maximum=51.'):
+
+                mocked_input.side_effect = [input_str,
+                                            '50'  # Good input.
+                                            ]
+
+                assert take_score_entry(self.test_student_name, minimum=min_range, maximum=max_range) == 50.0
+                mocked_print.assert_called_once_with(out_of_range_print_stmt)
+
+                mocked_print.reset_mock()
