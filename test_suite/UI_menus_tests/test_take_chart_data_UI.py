@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_score_data, take_score_entry,
                                                                       take_student_scores,
+                                                                      take_custom_chart_options,
                                                                       )
 from test_suite.testing_class_data import testing_class_data_set as test_class_data
 
@@ -239,3 +240,11 @@ class TestTakeScoreEntry(TestCase):
                 mocked_print.assert_called_once_with(out_of_range_print_stmt)
 
                 mocked_print.reset_mock()
+
+
+
+class TestTakeCustomChartOptions(TestCase):
+    """Function currently not implemented."""
+
+    def test_take_custom_chart_options(self):
+        assert take_custom_chart_options() == None
