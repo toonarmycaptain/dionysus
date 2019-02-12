@@ -86,7 +86,6 @@ class TestTakeScoreEntry(TestCase):
         self.test_student_name = 'king arthur'
 
         self.bad_input_print_stmt = "InputError: please enter a number or '_' to exclude student."
-        # self.out_of_range_print_stmt = f'InputError: Please enter a number between {minimum} and {maximum}.'
 
     @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
     @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
@@ -180,7 +179,7 @@ class TestTakeScoreEntry(TestCase):
                        ('107.60', 107.6),
                        ]
         for input_str, return_value in test_inputs:
-            with self.subTest(msg=f'Good input of {input_str}, minimum=3, maximum=110.'):
+            with self.subTest(msg=f'Good input of {input_str}, minimum=-99, maximum=110.'):
                 mocked_input.return_value = input_str
 
                 assert take_score_entry(self.test_student_name, minimum=-99, maximum=110) == return_value
