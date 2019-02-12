@@ -22,6 +22,7 @@ from dionysus_app.UI_menus.chart_generator.create_chart_UI import (display_image
                                                                    )
 from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_chart_name,
                                                                       take_score_data,
+                                                                      take_custom_chart_options,
                                                                       )
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
@@ -139,11 +140,11 @@ def write_chart_data_to_file(chart_data_dict: dict):
 
 
 def set_chart_params():
-    chart_params = take_custom_chart_options(DEFAULT_CHART_PARAMS)
+    chart_params = get_custom_chart_options(DEFAULT_CHART_PARAMS)
     return chart_params
 
 
-def take_custom_chart_options(default_params: dict):
+def get_custom_chart_options(default_params: dict):
     """
     Take default parameters dict and apply modifications based on user input.
 
@@ -160,6 +161,7 @@ def take_custom_chart_options(default_params: dict):
     :param default_params: dict
     :return: dict
     """
+    take_custom_chart_options()
 
     return default_params
 
