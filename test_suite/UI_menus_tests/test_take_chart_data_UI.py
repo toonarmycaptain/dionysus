@@ -55,7 +55,7 @@ class TestTakeStudentScores(TestCase):
         self.test_take_student_scores_return_value = {0: ['path to Cali_avatar.png'],
                                                       1: [self.mock_DEFAULT_AVATAR_PATH, self.mock_DEFAULT_AVATAR_PATH],
                                                       3: [self.mock_DEFAULT_AVATAR_PATH, self.mock_DEFAULT_AVATAR_PATH],
-                                                      # None: ['Zach_avatar.png', None],  # No score not returned.
+                                                      # No score, not returned: None: ['Zach_avatar.png', None]
                                                       50: [self.mock_DEFAULT_AVATAR_PATH],
                                                       99: [self.mock_DEFAULT_AVATAR_PATH],
                                                       100: [self.mock_DEFAULT_AVATAR_PATH],
