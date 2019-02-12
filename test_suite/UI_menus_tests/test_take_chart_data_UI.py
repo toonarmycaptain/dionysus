@@ -47,9 +47,10 @@ class TestTakeStudentScores(TestCase):
 
         # Gives no score to one student with and without an avatar.
         self.mocked_take_score_entry_return_values = [0, 1, 3, None, 50, 99, 100, 1, 2, 3, 4, None, 6, 7, 8]
-        self.mocked_get_avatar_path_return_values = [self.avatar_paths[self.mocked_take_score_entry_return_values.index(score)]
-                                                     for score in self.mocked_take_score_entry_return_values
-                                                     if score is not None]
+        self.mocked_get_avatar_path_return_values = [
+            self.avatar_paths[self.mocked_take_score_entry_return_values.index(score)]
+            for score in self.mocked_take_score_entry_return_values
+            if score is not None]
 
         self.test_take_student_scores_return_value = {0: ['path to Cali_avatar.png'],
                                                       1: [self.mock_DEFAULT_AVATAR_PATH, self.mock_DEFAULT_AVATAR_PATH],
@@ -200,7 +201,6 @@ class TestTakeScoreEntry(TestCase):
 
         for input_str in test_inputs:
             with self.subTest(msg=f'Input of {input_str} outside default range minimum=0, maximum=100.'):
-
                 mocked_input.side_effect = [input_str,
                                             '50'  # Good input.
                                             ]
@@ -232,7 +232,6 @@ class TestTakeScoreEntry(TestCase):
 
         for input_str in test_inputs:
             with self.subTest(msg=f'Input of {input_str} outside range minimum=49, maximum=51.'):
-
                 mocked_input.side_effect = [input_str,
                                             '50'  # Good input.
                                             ]
