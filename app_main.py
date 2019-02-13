@@ -24,7 +24,6 @@ def run_app():
 
     app_init()
 
-
     # load runtime variables
     definitions.REGISTRY = cache_class_registry()
 
