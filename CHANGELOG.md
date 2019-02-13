@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Move fetching of student data into `if` clause, fetch only if student has a score.
     - Simplify conditional to only filter out scores of `None` rather than chained conditional testing for values evaluating to `True` or `0`.
 
-## [0.3.1-alpha]
+## [0.3.1-alpha] - 2019-02-06
 ### Added
 - Improved test coverage.
 - Add load_chart_data, load_json_from_file
