@@ -4,6 +4,7 @@ from unittest.mock import patch
 from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_score_data, take_score_entry,
                                                                       take_student_scores,
                                                                       take_custom_chart_options,
+                                                                      take_chart_name,
                                                                       )
 from test_suite.testing_class_data import testing_class_data_set as test_class_data
 
@@ -241,6 +242,56 @@ class TestTakeScoreEntry(TestCase):
 
                 mocked_print.reset_mock()
 
+
+class TestTakeChartName(TestCase):
+    def setUp(self):
+        self.blank_chart_name_print_stmt = 'Please enter a valid chart name.'
+        self.test_good_chart_name = 'my chart name'
+        self.test_blank_chart_inputs = ['', ' ', ' _ ', '_', '.', ',']
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input_is_essentially_blank')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_chart_name_good_input(self, mocked_input, mocked_input_is_essentially_blank):
+        mocked_input.return_value = self.test_good_chart_name
+        mocked_input_is_essentially_blank.return_value = False
+
+        assert take_chart_name() == self.test_good_chart_name
+
+        mocked_input_is_essentially_blank.assert_called_once_with(self.test_good_chart_name)
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_chart_name_good_input_unmocked(self, mocked_input):
+        mocked_input.return_value = self.test_good_chart_name
+
+        assert take_chart_name() == self.test_good_chart_name
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input_is_essentially_blank')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_chart_name_initial_blank_inputs(self, mocked_input, mocked_input_is_essentially_blank, mocked_print):
+
+        all_inputs = self.test_blank_chart_inputs + [self.test_good_chart_name]
+        mocked_input.side_effect = all_inputs
+        mocked_input_is_essentially_blank.side_effect = [True for blank_input in self.test_blank_chart_inputs] + [False]
+
+        assert take_chart_name() == self.test_good_chart_name
+
+        assert mocked_input_is_essentially_blank.call_args_list == [mock.call(chart_name_input)
+                                                                    for chart_name_input in all_inputs]
+        assert mocked_print.call_args_list == [mock.call(self.blank_chart_name_print_stmt)
+                                               for blank_input in self.test_blank_chart_inputs]
+
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.print')
+    @patch('dionysus_app.UI_menus.chart_generator.take_chart_data_UI.input')
+    def test_take_chart_name_initial_blank_inputs_unmocked(self, mocked_input, mocked_print):
+
+        all_inputs = self.test_blank_chart_inputs + [self.test_good_chart_name]
+        mocked_input.side_effect = all_inputs
+
+        assert take_chart_name() == self.test_good_chart_name
+
+        assert mocked_print.call_args_list == [mock.call(self.blank_chart_name_print_stmt)
+                                               for blank_input in self.test_blank_chart_inputs]
 
 
 class TestTakeCustomChartOptions(TestCase):
