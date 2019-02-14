@@ -59,12 +59,12 @@ def take_student_scores(class_name: str, class_data_dict: dict):
     student_scores = {}
     for student_name in list(class_data_dict.keys()):
 
-        student_avatar_filename = class_data_dict[student_name][0]
-        avatar_path = get_avatar_path(class_name, student_avatar_filename)
-
         student_score = take_score_entry(student_name)
         # add avatar to list of avatars for score
-        if student_score or student_score is 0:
+        if student_score is not None:
+            student_avatar_filename = class_data_dict[student_name][0]
+            avatar_path = get_avatar_path(class_name, student_avatar_filename)
+
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
     return student_scores
@@ -89,7 +89,7 @@ def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
         except ValueError:
             print("InputError: please enter a number or '_' to exclude student.")
             continue
-        # else:
+
         if score_float < minimum or score_float > maximum:
             print(f'InputError: Please enter a number between {minimum} and {maximum}.')
             continue

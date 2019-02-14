@@ -20,18 +20,16 @@ def run_app():
 
     :return: None
     """
-    os.chdir(sys.path[0])  # Make sure cwd is directory os script.
+    os.chdir(sys.path[0])  # Make sure cwd is directory of script.
 
     app_init()
-
 
     # load runtime variables
     definitions.REGISTRY = cache_class_registry()
 
     definitions.DEFAULT_CHART_SAVE_FOLDER = load_chart_save_folder()
 
-
-    run_main_menu()  # startup checks successful, enter UI.
+    run_main_menu()  # Startup checks successful, enter UI.
 
     check_registry_on_exit()  # Dump cached registry to disk if different class_registry.index.
 

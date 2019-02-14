@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.1-alpha]
+[Unreleased]
+### Added
+- Improved test coverage.
+### Changed
+- Implementation of take_student_scores:
+    - Move fetching of student data into `if` clause, fetch only if student has a score.
+    - Simplify conditional to only filter out scores of `None` rather than chained conditional testing for values evaluating to `True` or `0`.
+- Chart generation test scripts moved to dedicated folder in test_suite.
+
+## [0.3.1-alpha] - 2019-02-06
 ### Added
 - Improved test coverage.
 - Add load_chart_data, load_json_from_file
@@ -12,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactor save_as_dialogue to prevent TypeError.
 - Refactor load_class_data using load_from_json_file.
+- Rename take_custom_chart_options to get_custom_chart_options to avoid name conflict. Calls UI function take_custom_chart_options.
 ### Fixed
 - Fix bug where avatar for student with score of 0 not added to student_scores.
 - Fix bug in save_as_dialogue that failed with TypeError when called without filetypes parameter or with default filetypes=None.

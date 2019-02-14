@@ -50,7 +50,7 @@ class TestClearScreen(TestCase):
 
 class TestInputIsEssentiallyBlank(TestCase):
     def setUp(self):
-        # Test cases: (input_value, expected_return_value)
+        "Test cases: (input_value, expected_return_value)"
         self.test_cases = {
             'test_empty_string': ('', True),  # ie no input
             # Spaces
@@ -91,7 +91,7 @@ class TestInputIsEssentiallyBlank(TestCase):
 
 class TestCleanForFilename(TestCase):
     def setUp(self):
-        # Test cases: (input_value, expected_return_value)
+        "Test cases: (input_value, expected_return_value)"
         self.test_cases = {
             'test_empty_string': ('', ''),  # ie no input
             # Spaces
@@ -151,7 +151,7 @@ class TestCleanForFilename(TestCase):
 
 class TestScrubCandidateFilename(TestCase):
     def setUp(self):
-        # Test cases: (input_value, expected_return_value)
+        "Test cases: (input_value, expected_return_value)"
         self.test_cases = {
             'test_empty_string': ('', ''),  # ie no input
             # Spaces
