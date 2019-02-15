@@ -13,13 +13,14 @@ def welcome_blurb():
 
 def main_menu_options():
     print("Dionysus - Main menu\n")
-    print("Please select an option by entering the corresponding number, and press return:\n"
-          "     1. Create a classlist\n"
+    print("Please select an option by entering the corresponding number, and press return:\n")
+    print("     1. Create a classlist\n"
           "     2. Edit a classlist\n"
           "     3. Create a new chart\n"
           "     \n"
           "     9. Settings\n"
-          "     Enter Q to quit.\n")
+          "     Enter Q to quit.\n"
+          )
 
 
 def take_main_menu_input():
