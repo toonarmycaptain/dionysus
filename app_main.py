@@ -14,6 +14,8 @@ from dionysus_app.settings_functions import load_chart_save_folder
 
 def quit_app():
     """
+    Checks disk registry, rewrites if inconsistent with runtime registry
+    (eg if user has deleted files during runtime), quits application.
 
     :return: None
     """
