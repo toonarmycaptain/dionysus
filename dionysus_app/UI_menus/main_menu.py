@@ -36,9 +36,8 @@ def take_main_menu_input():
         '2': edit_class_data,
         '3': new_chart,
         '9': run_settings_menu,
-        'q': quit_app,
-        'Q': quit_app,
         }
+
     unselected = True
     while unselected:
         chosen_option = input('>>> ')
@@ -46,6 +45,8 @@ def take_main_menu_input():
         if chosen_option in possible_options:
             possible_options[chosen_option]()
             unselected = False  # Exiting the loop when chosen action finishes.
+        elif chosen_option.upper() == 'Q':
+            return True  # Quit app.
         else:
             print("Invalid input.")
 
@@ -63,8 +64,9 @@ def run_main_menu():
 
     while True:
         main_menu_options()
-        take_main_menu_input()
-    quit_app()
+        quit_app = take_main_menu_input()
+        if quit_app:
+            break
 
 
 if __name__ == "__main__":
