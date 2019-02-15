@@ -1,9 +1,6 @@
 """
 Application main menu.
 """
-
-import sys
-
 from dionysus_app.class_functions import create_classlist
 from dionysus_app.chart_generator.create_chart import new_chart
 from dionysus_app.UI_menus.edit_class_data_UI import edit_class_data
@@ -51,10 +48,6 @@ def take_main_menu_input():
             unselected = False  # Exiting the loop when chosen action finishes.
         else:
             print("Invalid input.")
-
-
-def quit_app():
-    sys.exit()
 
 
 # Create a classlist
