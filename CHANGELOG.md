@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor application exit, `main_menu`:
     - Move `quit_app` to `app_main`, have `quit_app` call `check_registry_on_exit` before call to `sys.exit`.
     - Refactor `main_menu` and `take_main_menu_input` to use flag for exit call. `take_main_menu_input` returns `True` instead of `None` if use chooses to quit. 
-    
+- Simplify loop in `take_main_menu_input` preferring `if; if` over `if elif else`.
 
 ## [0.3.1-alpha] - 2019-02-06
 ### Added
