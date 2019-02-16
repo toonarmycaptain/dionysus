@@ -12,6 +12,17 @@ from dionysus_app.UI_menus.main_menu import run_main_menu
 from dionysus_app.settings_functions import load_chart_save_folder
 
 
+def quit_app():
+    """
+    Checks disk registry, rewrites if inconsistent with runtime registry
+    (eg if user has deleted files during runtime), quits application.
+
+    :return: None
+    """
+    check_registry_on_exit()  # Dump cached registry to disk if different class_registry.index.
+    sys.exit()
+
+
 def run_app():
     """
     Env/system checks. Data setup.
@@ -31,7 +42,7 @@ def run_app():
 
     run_main_menu()  # Startup checks successful, enter UI.
 
-    check_registry_on_exit()  # Dump cached registry to disk if different class_registry.index.
+    quit_app()
 
 
 if __name__ == "__main__":

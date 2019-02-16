@@ -8,10 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Improved test coverage.
 ### Changed
-- Implementation of take_student_scores:
+- Implementation of `take_student_scores`:
     - Move fetching of student data into `if` clause, fetch only if student has a score.
     - Simplify conditional to only filter out scores of `None` rather than chained conditional testing for values evaluating to `True` or `0`.
-- Chart generation test scripts moved to dedicated folder in test_suite.
+- Chart generation test scripts moved to dedicated folder in `test_suite`.
+- Refactor application exit, `main_menu`:
+    - Move `quit_app` to `app_main`, have `quit_app` call `check_registry_on_exit` before call to `sys.exit`.
+    - Refactor `main_menu` and `take_main_menu_input` to use flag for exit call. `take_main_menu_input` returns `True` instead of `None` if use chooses to quit. 
+- Simplify loop in `take_main_menu_input` preferring `if; if` over `if elif else`.
+### Fixed
+- `check_registry_on_exit` is now called on exit. Previously was called after `sys.exit` and not run. 
 
 ## [0.3.1-alpha] - 2019-02-06
 ### Added
