@@ -39,17 +39,15 @@ def take_main_menu_input():
         '9': run_settings_menu,
         }
 
-    unselected = True
-    while unselected:
+    while True:
         chosen_option = input('>>> ')
 
         if chosen_option in possible_options:
             possible_options[chosen_option]()
-            unselected = False  # Exiting the loop when chosen action finishes.
-        elif chosen_option.upper() == 'Q':
+            break  # Exit  loop when chosen action finishes.
+        if chosen_option.upper() == 'Q':
             return True  # Quit app.
-        else:
-            print("Invalid input.")
+        print("Invalid input.")  # User input does not correspond to option or exit.
 
 
 # Create a classlist
