@@ -68,7 +68,3 @@ def run_main_menu():
         quit_app = take_main_menu_input()
         if quit_app:
             break
-
-
-if __name__ == "__main__":
-    run_main_menu()
