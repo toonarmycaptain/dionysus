@@ -3,6 +3,7 @@
 [![CircleCI](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master.svg?style=svg)](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master) 
 [![Build status](https://ci.appveyor.com/api/projects/status/yb33uwd13tkv7l79?svg=true)](https://ci.appveyor.com/project/toonarmycaptain/dionysus) 
 [![Coverage Status](https://coveralls.io/repos/github/toonarmycaptain/dionysus/badge.svg)](https://coveralls.io/github/toonarmycaptain/dionysus) 
+[![codecov](https://codecov.io/gh/toonarmycaptain/dionysus/branch/master/graph/badge.svg)](https://codecov.io/gh/toonarmycaptain/dionysus)
 [![BCH compliance](https://bettercodehub.com/edge/badge/toonarmycaptain/dionysus?branch=master)](https://bettercodehub.com/) 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d24e9508258849c2b40760fce3448c6b)](https://www.codacy.com/app/toonarmycaptain/dionysus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toonarmycaptain/dionysus&amp;utm_campaign=Badge_Grade) 
 [![codebeat badge](https://codebeat.co/badges/c7b02602-ed39-46ff-9513-d06217fdfab4)](https://codebeat.co/projects/github-com-toonarmycaptain-dionysus-master) 
