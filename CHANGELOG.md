@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]
 ### Added
 - Added [codecov.io](https://codecov.io) coverage.
-- Added/enable Codeship test build on Python 3.6.8 with manually-installed tkinter via `sudo apt-get install -y python3-tk`.
+- Added/enable Codeship test build on Python 3.7.2 with manually-installed tkinter via `sudo apt-get install -y python3-tk`.
 
 [0.3.2-alpha]
 ### Added
