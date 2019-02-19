@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]
 ### Added
 - Added [codecov.io](https://codecov.io) coverage.
-- Added/enabled Codeship test builds.
+- Added/enabled Codeship test build on Python 3.7.2.
 
 [0.3.2-alpha]
 ### Added
