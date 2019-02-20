@@ -4,7 +4,11 @@ from dionysus_app.settings_functions import set_default_chart_save_location
 
 
 def run_settings_menu():
+    """
+    Runs settings menu.
 
+    :return: None
+    """
     while True:
         settings_menu_options()
         return_to_main = take_settings_menu_input()
