@@ -40,22 +40,19 @@ def take_settings_menu_input():
     """
     possible_options = {
         '1': call_set_default_chart_save_location,
-        '0': return_to_main_menu
+        '0': return_to_main_menu,
         }
-    unselected = True
-    chosen_option = None
-    while unselected:
+
+    while True:
         chosen_option = input('>>> ')
 
         if chosen_option in possible_options:
             possible_options[chosen_option]()
-            unselected = False  # Exiting the loop when chosen action finishes.
-        else:
-            print("Invalid input.")
-
-    if chosen_option == '0':  # user selects to return to main menu
-        return True
-    return False
+            break  # Exit loop when chosen action finishes. Returns None.
+        if chosen_option == '0':  # User selects to return to main menu.
+            return True
+        # else:
+        print("Invalid input.")
 
 
 def call_set_default_chart_save_location():
