@@ -25,11 +25,14 @@ def settings_menu_options():
 def take_settings_menu_input():
     """
     Takes input and runs chosen action.
-    Flag for unselected/no option chosen used to exit the loop when chosen
-    action finishes, returning to main menu run loop rather than option
-    selection, which will reprint the menu options.
+    Loop broken when chosen action completes, returning None and
+    returning to the loop in run_settings_menu, which will reprint the
+    menu options. If '0' is entered to return to the main menu, the loop
+    returns True, triggering the
+    flag in run_settings_menu, breaking that loop, and returning to the
+    loop in run_main_menu.
 
-    :return: None
+    :return: None or True
     """
     possible_options = {
         '1': call_set_default_chart_save_location,
