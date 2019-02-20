@@ -40,7 +40,7 @@ def take_settings_menu_input():
     """
     possible_options = {
         '1': call_set_default_chart_save_location,
-        '0': return_to_main_menu,
+        # '0': return_to_main_menu,
         }
 
     while True:
