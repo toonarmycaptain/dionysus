@@ -1,5 +1,7 @@
 """Test app_main."""
 import os
+import sys
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -18,7 +20,7 @@ class TestQuitApp(TestCase):
 class TestRunApp(TestCase):
     def setUp(self):
         self.initial_cwd = os.getcwd()  # For resetting after tests.
-        self.app_main_cwd = os.path.abspath('..//')  # Current location of app_main.
+        self.app_main_cwd = os.path.abspath('.//')  # Current location of app_main.
 
     @patch('app_main.app_init')
     @patch('app_main.cache_class_registry')
@@ -37,6 +39,7 @@ class TestRunApp(TestCase):
         At present this is the folder above test_suite where
         test_app_main.py is located, hence testing against '..//'.
         """
+
         assert run_app() is None
 
         assert os.getcwd() == self.app_main_cwd  # Ensure run_app changed cwd to location of app_main.
