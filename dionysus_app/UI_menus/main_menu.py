@@ -26,9 +26,11 @@ def main_menu_options():
 def take_main_menu_input():
     """
     Takes input and runs chosen action.
-    Flag for unselected/no option chosen used to exit the loop when chosen
-    action finishes, returning to main menu run loop rather than option
-    selection, which will reprint the menu options.
+    Loop broken when chosen action completes, returning None and
+    returning to the loop in run_main_menu, which will reprint the menu
+    options. If 'Q' is entered to quit app, returns True, triggering the
+    flag in run_main_menu, breaking that loop, and proceeding to app
+    quit/shutdown code.
      
     :return: None
     """
@@ -44,9 +46,10 @@ def take_main_menu_input():
 
         if chosen_option in possible_options:
             possible_options[chosen_option]()
-            break  # Exit  loop when chosen action finishes.
+            break  # Exit loop when chosen action finishes. Returns None.
         if chosen_option.upper() == 'Q':
             return True  # Quit app.
+        # else:
         print("Invalid input.")  # User input does not correspond to option or exit.
 
 

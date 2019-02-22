@@ -105,14 +105,14 @@ class TestRunMainMenu(TestCase):
                            mocked_main_menu_options,
                            mocked_take_main_menu_input,
                            ):
-        take_main_menu_input_returns = [None, None, True]
-        mocked_take_main_menu_input.side_effect = take_main_menu_input_returns  # 2 mock feature calls, call to quit.
+        mocked_take_main_menu_input_returns = [None, None, True]  # 2 mock feature calls, call to quit.
+        mocked_take_main_menu_input.side_effect = mocked_take_main_menu_input_returns
 
         assert run_main_menu() is None
 
         mocked_welcome_blurb.assert_called_once()
 
-        main_menu_calls = [mock.call() for each_call in take_main_menu_input_returns]
+        main_menu_calls = [mock.call() for each_call in mocked_take_main_menu_input_returns]
         assert mocked_main_menu_options.call_args_list == main_menu_calls
         assert mocked_take_main_menu_input.call_args_list == main_menu_calls
 

@@ -4,7 +4,11 @@ from dionysus_app.settings_functions import set_default_chart_save_location
 
 
 def run_settings_menu():
+    """
+    Runs settings menu.
 
+    :return: None
+    """
     while True:
         settings_menu_options()
         return_to_main = take_settings_menu_input()
@@ -25,30 +29,30 @@ def settings_menu_options():
 def take_settings_menu_input():
     """
     Takes input and runs chosen action.
-    Flag for unselected/no option chosen used to exit the loop when chosen
-    action finishes, returning to main menu run loop rather than option
-    selection, which will reprint the menu options.
+    Loop broken when chosen action completes, returning None and
+    returning to the loop in run_settings_menu, which will reprint the
+    menu options. If '0' is entered to return to the main menu, the loop
+    returns True, triggering the
+    flag in run_settings_menu, breaking that loop, and returning to the
+    loop in run_main_menu.
 
-    :return: None
+    :return: None or True
     """
     possible_options = {
         '1': call_set_default_chart_save_location,
-        '0': return_to_main_menu
+        # '0': return_to_main_menu,
         }
-    unselected = True
-    chosen_option = None
-    while unselected:
+
+    while True:
         chosen_option = input('>>> ')
 
         if chosen_option in possible_options:
             possible_options[chosen_option]()
-            unselected = False  # Exiting the loop when chosen action finishes.
-        else:
-            print("Invalid input.")
-
-    if chosen_option == '0':  # user selects to return to main menu
-        return True
-    return False
+            break  # Exit loop when chosen action finishes. Returns None.
+        if chosen_option == '0':  # User selects to return to main menu.
+            return True
+        # else:
+        print("Invalid input.")
 
 
 def call_set_default_chart_save_location():
