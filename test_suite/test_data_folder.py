@@ -1,6 +1,7 @@
 import os
-import unittest
+
 from pathlib import Path
+from unittest import TestCase
 
 from definitions import ROOT_DIR
 from dionysus_app.class_registry_functions import write_registry_to_disk
@@ -9,7 +10,7 @@ from dionysus_app.initialise_app import data_folder_check
 from dionysus_app.settings_functions import write_settings_to_file
 
 
-class TestDataFolder(unittest.TestCase):
+class TestDataFolder(TestCase):
 
     def setUp(self):
         # set correct cwd:
@@ -37,7 +38,7 @@ class TestDataFolder(unittest.TestCase):
         assert cwd_path in path_result
 
 
-class TestDataFolderPathsExist(unittest.TestCase):
+class TestDataFolderPathsExist(TestCase):
     def setUp(self):
         """
         Ensure file system and key files with paths in DataFolder exist.
