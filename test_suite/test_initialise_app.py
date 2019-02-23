@@ -1,10 +1,14 @@
 import os
-import unittest
+
+from unittest import TestCase
+
 from dionysus_app.initialise_app import data_folder_check
 from dionysus_app.data_folder import DataFolder
 
 
-class TestAppMain(unittest.TestCase):
+
+
+class TestDataFolderCheck(TestCase):
 
     def setUp(self):
         self.default_paths = [
