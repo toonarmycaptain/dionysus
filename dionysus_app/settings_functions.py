@@ -13,8 +13,10 @@ from pathlib import Path
 
 import definitions
 
+
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import move_file
+from dionysus_app.UI_menus.settings_functions_UI import user_decides_to_set_default_location
 from dionysus_app.UI_menus.UI_functions import clear_screen, select_folder_dialogue
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
@@ -25,35 +27,19 @@ CHART_SAVE_FOLDER_NAME = 'dionysus_charts'
 
 
 def app_start_set_default_chart_save_location():
-    """if not os.exists:
-            print Welcome to dionysus, looks like this is your first time using the program on your machine.
-            Would you like to set a default location to save your charts?
-            You can do this later or change your selection in Settings.
-            Type 'Y' for Yes or 'N' for No, and press enter:
-            # accent Y/N/Yes/No/None/'' -> '' indicates enter pressed without typing
-            create config.py:
-                with open('settings.py'"""
+    """
+    Prints welcome statement asking user if they would like to set a
+    default chart save location.
+    Calls set_default_chart_save_location with user's choice, setting
+    save location. Clears screen.
 
-    print('Welcome to dionysus.\n'
-          'It looks like this is your first time running the program.\n\n'
-          'Would you like to set a default location to save your charts?\n'
-          'You can do this later or change your selection in Settings.\n'
-          )
+    :return: None
+    """
+
     if user_decides_to_set_default_location():
         set_default_chart_save_location(user_set=True)
     else:
         set_default_chart_save_location(user_set=False)
-
-    clear_screen()
-
-
-def user_decides_to_set_default_location():
-    selection = input("Type 'Y' for Yes or 'N' for No, and press enter: ")
-
-    if selection.upper() == 'Y' or selection.upper() == 'YES':
-        return True
-    # else: user entered 'N' or pressed return without entry (which returns '')
-    return False
 
 
 def set_default_chart_save_location(user_set):
