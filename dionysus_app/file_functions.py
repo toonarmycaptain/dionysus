@@ -4,6 +4,7 @@ File functions - functions for dealing with files and the filesystem.
 """
 
 import json
+from pathlib import Path
 
 from shutil import copyfile, move
 
@@ -52,38 +53,39 @@ def load_from_json_file(json_file_path: str):
 
 def copy_file(origin_fullpath: str, destination_fullpath: str):
     """
-    Takes two filepaths, copying the origin file to the destination path and filename.
+    Takes two filepaths, copying the origin file to the destination path and
+    filename, doing nothing if the origin filepath doesn't exist.
 
     Converts non-string object to string in case of Path object argument.
-
-
 
     :param origin_fullpath: str or Path
     :param destination_fullpath: str or Path
     :return: None
     """
-    origin_fullpath = str(origin_fullpath)
-    destination_fullpath = str(destination_fullpath)
+    origin_fullpath = Path(origin_fullpath)
+    if origin_fullpath.exists():
+        origin_fullpath = str(origin_fullpath)
+        destination_fullpath = str(destination_fullpath)
 
-    copyfile(origin_fullpath, destination_fullpath)
+        copyfile(origin_fullpath, destination_fullpath)
 
 
 def move_file(origin_fullpath: str, destination_fullpath: str):
     """
     Takes two filepaths, copying the origin file/directory to the destination
-    path and filename.
+    path and filename, doing nothing if the origin filepath doesn't exist.
 
     Converts non-string object to string in case of Path object argument.
-
-
 
     :param origin_fullpath: str or Path
     :param destination_fullpath: str or Path
     :return: None
     """
-    origin_fullpath = str(origin_fullpath)
-    destination_fullpath = str(destination_fullpath)
+    origin_fullpath = Path(origin_fullpath)
+    if origin_fullpath.exists():
+        origin_fullpath = str(origin_fullpath)
+        destination_fullpath = str(destination_fullpath)
 
-    move(origin_fullpath, destination_fullpath)
+        move(origin_fullpath, destination_fullpath)
 
 # use Path.rename(new_name) to rename a class.
