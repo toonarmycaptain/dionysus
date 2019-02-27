@@ -188,11 +188,11 @@ class TestCopyAvatarToAppDataMockingCopyfile(TestCase):
 
     @patch('definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    def test_copy_avatar_to_app_data_copyfile_mocked(self):
-        with patch('dionysus_app.file_functions.copyfile') as mocked_copyfile:
+    def test_copy_avatar_to_app_data_copy_file_mocked(self):
+        with patch('dionysus_app.class_functions.copy_file') as mocked_copy_file:
             copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename,
                                     self.copied_avatar_save_filename)
-            mocked_copyfile.assert_called_once_with(self.test_avatar_filename, str(self.copied_avatar_filepath))
+            mocked_copy_file.assert_called_once_with(self.test_avatar_filename, self.copied_avatar_filepath)
 
 
 class TestWriteClasslistToFile(TestCase):
