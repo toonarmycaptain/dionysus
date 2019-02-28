@@ -8,16 +8,15 @@ Settings dict keys:
 """
 
 import os
-
 from pathlib import Path
 
 import definitions
 
-
+from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_default_location,
+                                                         user_set_chart_save_folder,
+                                                         )
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import move_file
-from dionysus_app.UI_menus.settings_functions_UI import user_decides_to_set_default_location
-from dionysus_app.UI_menus.UI_functions import clear_screen, select_folder_dialogue
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
 APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
@@ -35,7 +34,6 @@ def app_start_set_default_chart_save_location():
 
     :return: None
     """
-
     if user_decides_to_set_default_location():
         set_default_chart_save_location(user_set=True)
     else:
@@ -43,43 +41,47 @@ def app_start_set_default_chart_save_location():
 
 
 def set_default_chart_save_location(user_set):
-
-    # initialise default location
+    # Initialise default location.
     new_default_save_location = APP_DEFAULT_CHART_SAVE_FOLDER
     original_location = definitions.DEFAULT_CHART_SAVE_FOLDER
-    new_setting = {}
 
     if user_set:
         new_default_save_location = user_set_chart_save_folder()
 
-    # Ensure saved value has correct separators.
-    chart_save_parent_folder_path = Path(new_default_save_location)
-    new_chart_save_folder_str = str(Path.joinpath(chart_save_parent_folder_path, CHART_SAVE_FOLDER_NAME))
+    new_chart_save_folder_path = Path(new_default_save_location, CHART_SAVE_FOLDER_NAME)
 
     # Initialise and save chart save location.
-    definitions.DEFAULT_CHART_SAVE_FOLDER = new_chart_save_folder_str
+    definitions.DEFAULT_CHART_SAVE_FOLDER = str(new_chart_save_folder_path)
+    save_new_default_chart_save_location_setting(new_chart_save_folder_path)
 
-    new_setting['user_default_chart_save_folder'] = new_chart_save_folder_str
-    create_app_settings_file()
-    edit_app_settings_file(new_setting)
+    create_chart_save_folder(new_chart_save_folder_path, original_location)
 
+
+def create_chart_save_folder(new_path, original_location=None):
+    """
+    Create a new chart_save_folder, moving files from old location, if
+    it exists.
+
+    :param new_path: str or Path
+    :param original_location: None, str or Path
+    :return: None
+    """
+    # Create new chart save location.
+    # Path(new_path).mkdir(parents=True, exist_ok=True)
+    # Move older folder to new location.
     if original_location:
-        move_file(original_location, new_chart_save_folder_str)
-
-    print(f'Default chart save folder set to {definitions.DEFAULT_CHART_SAVE_FOLDER}')
-
-    # Create chart save location
-    Path(new_setting['user_default_chart_save_folder']).mkdir(parents=True, exist_ok=True)
+        move_file(original_location, new_path)
 
 
-def user_set_chart_save_folder():
-    dialogue_message = 'Please_select location for chart save folder, or press cancel to use default.'
-    new_default_save_location = select_folder_dialogue(title_str=dialogue_message, start_dir='..')
+def save_new_default_chart_save_location_setting(new_location):
+    """
+    Save new default chart save location to settings.
 
-    if not new_default_save_location:  # User presses cancel, doesn't select a folder.
-        return APP_DEFAULT_CHART_SAVE_FOLDER
-    # else:
-    return new_default_save_location
+    :param new_location: str or Path
+    :return:
+    """
+    new_setting = {'user_default_chart_save_folder': str(new_location)}
+    edit_app_settings_file(new_setting)
 
 
 def write_settings_to_file(settings_dict: dict):
@@ -89,7 +91,6 @@ def write_settings_to_file(settings_dict: dict):
 
 
 def create_app_settings_file(settings_dict=None):
-
     # create __init__.py in app_data so that settings.py may be imported.
     init_py_path = os.path.join(APP_DATA, '__init__.py')
 
@@ -103,6 +104,8 @@ def create_app_settings_file(settings_dict=None):
 
 
 def edit_app_settings_file(new_settings: dict):
+    if not Path.exists(APP_SETTINGS_FILE):
+        create_app_settings_file()
 
     from dionysus_app.app_data.settings import dionysus_settings
 
