@@ -132,6 +132,14 @@ class TestMoveFileMockingMove(TestCase):
         move_file(self.original_path, self.destination_path)
         mock_move.assert_called_once_with(self.original_path, self.destination_path)
 
+    @patch('dionysus_app.file_functions.move')
+    @patch('dionysus_app.file_functions.Path.exists')
+    def test_move_file_mocking_move_non_existent_origin(self, mock_path_exists, mock_move):
+        mock_path_exists.return_value = False  # Assume the path exists.
+
+        move_file(self.original_path, self.destination_path)
+        mock_move.assert_not_called()
+
 
 class TestMoveDirectoryWithFileInIt(TestCase):
     def setUp(self):
