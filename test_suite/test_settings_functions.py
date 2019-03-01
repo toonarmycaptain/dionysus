@@ -68,7 +68,6 @@ class TestSetDefaultChartSaveLocation(TestCase):
                                                             mocked_user_set_chart_save_folder,
                                                             mocked_save_new_default_chart_save_location_setting,
                                                             mocked_create_chart_save_folder,
-
                                                             ):
         assert set_default_chart_save_location(False) is None
 
