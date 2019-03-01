@@ -43,7 +43,6 @@ class TestLoadFromJsonFile(TestCase):
 
     def test_load_from_json_file(self):
         with patch('dionysus_app.file_functions.open', mock_open(read_data=self.test_file_json_data_to_convert)):
-
             assert load_from_json_file(self.mock_file_path) == self.converted_json_data
 
 
@@ -127,7 +126,7 @@ class TestMoveFileMockingMove(TestCase):
 
     @patch('dionysus_app.file_functions.move')
     @patch('dionysus_app.file_functions.Path.exists')
-    def test_move_file_mocking_move(self, mock_path_exists,mock_move):
+    def test_move_file_mocking_move(self, mock_path_exists, mock_move):
         mock_path_exists.return_value = True  # Assume the path exists.
 
         move_file(self.original_path, self.destination_path)
