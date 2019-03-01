@@ -53,7 +53,7 @@ def user_decides_to_set_default_location():
 
 
 def user_set_chart_save_folder():
-    dialogue_message = 'Please_select location for chart save folder, or press cancel to use default.'
+    dialogue_message = 'Please select location for chart save folder, or press cancel to use default.'
     new_default_save_location = select_folder_dialogue(title_str=dialogue_message, start_dir='..')
 
     if not new_default_save_location:  # User presses cancel, doesn't select a folder.
