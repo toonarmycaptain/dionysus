@@ -1,9 +1,11 @@
 """Tests for settings_functions_UI.py"""
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
 
 from dionysus_app.UI_menus.settings_functions_UI import (get_user_choice_to_set_location,
                                                          user_decides_to_set_default_location,
+                                                         user_set_chart_save_folder,
                                                          welcome_set_default_location_message,
                                                          )
 
@@ -95,3 +97,41 @@ class TestUserDecidesToSetDefaultLocation(TestCase):
                 mocked_welcome_set_default_location_message.reset_mock(return_value=True)
                 mocked_get_user_choice_to_set_location.reset_mock(return_value=True)
                 mocked_clear_screen.reset_mock(return_value=True)
+
+
+class TestUserSetChartSaveFolder(TestCase):
+    mocked_APP_DEFAULT_CHART_SAVE_FOLDER = Path('app_default')
+
+    def setUp(self):
+        self.test_dialogue_message = 'Please select location for chart save folder, or press cancel to use default.'
+        # Preset app default
+        self.mocked_APP_DEFAULT_CHART_SAVE_FOLDER = Path('app_default')
+
+        self.test_user_location = 'camelot'
+        self.user_feedback = f'Default chart save folder set to {self.test_user_location}'
+
+    @patch('dionysus_app.UI_menus.settings_functions_UI.APP_DEFAULT_CHART_SAVE_FOLDER',
+           mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
+    @patch('dionysus_app.UI_menus.settings_functions_UI.print')
+    @patch('dionysus_app.UI_menus.settings_functions_UI.select_folder_dialogue')
+    def test_user_set_set_chart_folder_blank_input(self, mocked_select_folder_dialogue, mocked_print):
+        mocked_select_folder_dialogue.return_value = ''
+
+        assert user_set_chart_save_folder() == self.mocked_APP_DEFAULT_CHART_SAVE_FOLDER
+
+        mocked_select_folder_dialogue.assert_called_once_with(title_str=self.test_dialogue_message,
+                                                              start_dir='..')
+        mocked_print.assert_not_called()
+
+    @patch('dionysus_app.UI_menus.settings_functions_UI.APP_DEFAULT_CHART_SAVE_FOLDER',
+           mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
+    @patch('dionysus_app.UI_menus.settings_functions_UI.print')
+    @patch('dionysus_app.UI_menus.settings_functions_UI.select_folder_dialogue')
+    def test_user_set_set_chart_folder_user_selects_location(self, mocked_select_folder_dialogue, mocked_print):
+        mocked_select_folder_dialogue.return_value = self.test_user_location
+
+        assert user_set_chart_save_folder() == self.test_user_location
+
+        mocked_select_folder_dialogue.assert_called_once_with(title_str=self.test_dialogue_message,
+                                                              start_dir='..')
+        mocked_print.assert_called_once_with(self.user_feedback)
