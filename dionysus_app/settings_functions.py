@@ -125,4 +125,3 @@ def edit_app_settings_file(new_settings: dict):
 def load_chart_save_folder():
     from dionysus_app.app_data.settings import dionysus_settings
     return dionysus_settings['user_default_chart_save_folder']
-
