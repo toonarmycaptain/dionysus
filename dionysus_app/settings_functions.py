@@ -67,10 +67,17 @@ def create_chart_save_folder(new_path, original_location=None):
     :return: None
     """
     # Create new chart save location.
-    # Path(new_path).mkdir(parents=True, exist_ok=True)
-    # Move older folder to new location.
-    if original_location:
-        move_file(original_location, new_path)
+    new_path = Path(new_path)
+    if original_location:  # Move older folder to new location.
+        move_chart_save_folder(original_location, new_path)
+    # Ensure directory creation if no orig location, or in event move fails.
+    new_path.mkdir(parents=True, exist_ok=True)
+
+
+def move_chart_save_folder(original_location, new_location):
+    original_location_path = Path(original_location)
+    if original_location_path.exists():
+        move_file(original_location, new_location)
 
 
 def save_new_default_chart_save_location_setting(new_location):
@@ -119,6 +126,3 @@ def load_chart_save_folder():
     from dionysus_app.app_data.settings import dionysus_settings
     return dionysus_settings['user_default_chart_save_folder']
 
-
-if __name__ == '__main__':
-    app_start_set_default_chart_save_location()
