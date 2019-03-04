@@ -4,14 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.3-alpha] - 2019-03-04
 ### Added
 - Added [codecov.io](https://codecov.io) coverage.
 - Added/enable [Codeship](https://app.codeship.com) test build on Python 3.7.2 with manually-installed tkinter via `sudo apt-get install -y python3-tk`.
+- Improved test coverage.
+- Added `settings_functions_UI`.
+- Implemented `create_chart_save_folder` - now creates new folder, moves existing folder.
+### Changed
 - Refactored `settings_menu` to match `main_menu` with a view to a future factoring out similar/common logic.
+- Refactored settings_functions:
+    - Factor out UI elements into `settings_functions_UI`.
+    - Refactor folder move out of `create_chart_save_folder`. 
+- `copy_file`, `move_file` now check to see if origin path exists, doing nothing if it does not.
 - Update dependencies.
 
-## [0.3.2-alpha]
+## [0.3.2-alpha] - 2019-02-15
 ### Added
 - Improved test coverage.
 ### Changed
