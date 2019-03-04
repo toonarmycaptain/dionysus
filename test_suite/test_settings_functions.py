@@ -4,6 +4,8 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from dionysus_app.settings_functions import (app_start_set_default_chart_save_location,
+                                             create_chart_save_folder,
+                                             move_chart_save_folder,
                                              set_default_chart_save_location,
                                              )
 
@@ -122,3 +124,88 @@ class TestSetDefaultChartSaveLocation(TestCase):
         mocked_create_chart_save_folder.assert_called_once_with(self.app_default_chart_save_folder_path,
                                                                 self.mocked_DEFAULT_CHART_SAVE_FOLDER)
         assert mocked_definitions.DEFAULT_CHART_SAVE_FOLDER == str(self.app_default_chart_save_folder_path)
+
+
+class TestCreateChartSaveFolder(TestCase):
+    def setUp(self):
+        self.test_original_location = 'mock_location'
+        self.test_new_location = 'mock_new_location'
+
+    @patch('dionysus_app.settings_functions.move_chart_save_folder')
+    @patch('dionysus_app.settings_functions.Path')
+    def test_create_chart_save_folder_test_correct_argument_passed_to_path(self,
+                                                                           mocked_path,
+                                                                           mocked_move_chart_save_folder,
+                                                                           ):
+        """Mocking call to path and mkdir method on Path class didn't work."""
+        assert create_chart_save_folder(self.test_new_location) is None
+
+        mocked_move_chart_save_folder.assert_not_called()
+        mocked_path.assert_called_once_with(self.test_new_location)
+
+    @patch('dionysus_app.settings_functions.move_chart_save_folder')
+    @patch('dionysus_app.settings_functions.Path.mkdir')
+    def test_create_chart_save_folder_no_original(self,
+                                                  mocked_mkdir,
+                                                  mocked_move_chart_save_folder,
+                                                  ):
+        assert create_chart_save_folder(self.test_new_location) is None
+
+        mocked_move_chart_save_folder.assert_not_called()
+        mocked_mkdir.assert_called_once_with(exist_ok=True, parents=True)
+
+    @patch('dionysus_app.settings_functions.move_chart_save_folder')
+    @patch('dionysus_app.settings_functions.Path.mkdir')
+    def test_create_chart_save_folder_original_exists(self,
+                                                      mocked_mkdir,
+                                                      mocked_move_chart_save_folder,
+                                                      ):
+        assert create_chart_save_folder(self.test_new_location,
+                                        self.test_original_location) is None
+
+        mocked_move_chart_save_folder.assert_called_once_with(self.test_original_location,
+                                                              Path(self.test_new_location))
+        mocked_mkdir.assert_called_once_with(exist_ok=True, parents=True)
+
+
+class TestMoveChartSaveFolder(TestCase):
+    def setUp(self):
+        self.test_original_location = 'mock_location'
+        self.test_new_location = 'mock_new_location'
+
+    @patch('dionysus_app.settings_functions.Path')
+    def test_move_chart_save_folder_path_called_on_correct_argument(self,
+                                                                    mocked_path,
+                                                                    ):
+        """Mocking call to path and mkdir method on Path class didn't work."""
+        assert move_chart_save_folder(self.test_original_location,
+                                      self.test_new_location) is None
+
+        mocked_path.assert_called_once_with(self.test_original_location)
+
+    @patch('dionysus_app.settings_functions.move_file')
+    @patch('dionysus_app.settings_functions.Path.exists')
+    def test_move_chart_save_folder_original_nonexistent(self,
+                                                         mocked_path_exists,
+                                                         mocked_move_file,
+                                                         ):
+        mocked_path_exists.return_value = False
+
+        assert move_chart_save_folder(self.test_original_location,
+                                      self.test_new_location) is None
+
+        mocked_move_file.assert_not_called()
+
+    @patch('dionysus_app.settings_functions.move_file')
+    @patch('dionysus_app.settings_functions.Path.exists')
+    def test_move_chart_save_folder_original_existent(self,
+                                                      mocked_path_exists,
+                                                      mocked_move_file,
+                                                      ):
+        mocked_path_exists.return_value = True
+
+        assert move_chart_save_folder(self.test_original_location,
+                                      self.test_new_location) is None
+
+        mocked_move_file.assert_called_once_with(self.test_original_location,
+                                                 self.test_new_location)
