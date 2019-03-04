@@ -5,7 +5,8 @@ from dionysus_app.UI_menus.UI_functions import (clear_screen,
                                                 select_folder_dialogue
                                                 )
 
-APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
+APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(
+    DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
 
 
 def welcome_set_default_location_message():
@@ -53,7 +54,8 @@ def user_decides_to_set_default_location():
 
 
 def user_set_chart_save_folder():
-    dialogue_message = 'Please select location for chart save folder, or press cancel to use default.'
+    dialogue_message = ('Please select location for chart save folder, or'
+                        ' press cancel to use default.')
     new_default_save_location = select_folder_dialogue(title_str=dialogue_message, start_dir='..')
 
     if not new_default_save_location:  # User presses cancel, doesn't select a folder.
