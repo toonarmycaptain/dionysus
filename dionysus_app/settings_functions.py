@@ -98,16 +98,30 @@ def write_settings_to_file(settings_dict: dict):
 
 
 def create_app_settings_file(settings_dict=None):
-    # create __init__.py in app_data so that settings.py may be imported.
-    init_py_path = os.path.join(APP_DATA, '__init__.py')
+    """
+    Create settings file, ensuring __init__.py in containing folder.
 
-    with open(init_py_path, 'w+') as init_py:
-        init_py.write('"""__init__.py so that settings.py may be imported."""')
+    :param settings_dict: dict
+    :return: None
+    """
+    create_app_data__init__()
 
     if not settings_dict:
         settings_dict = 'dionysus_settings = {}'
 
     write_settings_to_file(settings_dict)
+
+
+def create_app_data__init__():
+    """
+    Create __init__.py in app_data so that settings.py may be imported.
+
+    :return: None
+    """
+    init_py_path = os.path.join(APP_DATA, '__init__.py')
+
+    with open(init_py_path, 'w+') as init_py:
+        init_py.write('"""__init__.py so that settings.py may be imported."""')
 
 
 def edit_app_settings_file(new_settings: dict):
