@@ -75,6 +75,14 @@ def create_chart_save_folder(new_path, original_location=None):
 
 
 def move_chart_save_folder(original_location, new_location):
+    """
+    Tests if the supplied path to the original chart save folder exists, moving
+    to the supplied new location if it does. Otherwise does nothing.
+
+    :param original_location: str or Path
+    :param new_location: str or Path
+    :return: None
+    """
     original_location_path = Path(original_location)
     if original_location_path.exists():
         move_file(original_location, new_location)
@@ -92,6 +100,12 @@ def save_new_default_chart_save_location_setting(new_location):
 
 
 def write_settings_to_file(settings_dict: dict):
+    """
+    Writes settings dict to file, overwriting any previous settings file.
+
+    :param settings_dict: dict
+    :return: None
+    """
     with open(APP_SETTINGS_FILE, 'w+') as app_settings_file:
         write_string = 'dionysus_settings = ' + str(settings_dict)
         app_settings_file.write(write_string)
