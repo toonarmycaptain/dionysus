@@ -1,12 +1,14 @@
 """Test settings functions.py"""
 from pathlib import Path
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 
 from dionysus_app.settings_functions import (app_start_set_default_chart_save_location,
                                              create_chart_save_folder,
                                              move_chart_save_folder,
+                                             save_new_default_chart_save_location_setting,
                                              set_default_chart_save_location,
+                                             write_settings_to_file,
                                              )
 
 
@@ -209,3 +211,35 @@ class TestMoveChartSaveFolder(TestCase):
 
         mocked_move_file.assert_called_once_with(self.test_original_location,
                                                  self.test_new_location)
+
+
+class TestSaveNewDefaultChartSaveLocationSetting(TestCase):
+    def setUp(self):
+        self.test_new_location = Path(r'camelot\holy_grail')
+        self.test_new_setting_dict = {'user_default_chart_save_folder': str(self.test_new_location)}
+
+    @patch('dionysus_app.settings_functions.edit_app_settings_file')
+    def test_save_new_default_chart_save_location_setting(self,
+                                                          mocked_edit_app_settings_file):
+        assert save_new_default_chart_save_location_setting(self.test_new_location) is None
+
+        mocked_edit_app_settings_file.assert_called_once_with(self.test_new_setting_dict)
+
+
+class TestWriteSettingsToFile(TestCase):
+    mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+
+    def setUp(self):
+        self.mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+
+        self.test_settings_dict = {'knight': 'sir lancelot'}
+        self.test_settings_write_str = 'dionysus_settings = ' + str(self.test_settings_dict)
+
+    @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
+    def test_write_settings_to_file(self):
+        with patch('dionysus_app.settings_functions.open', mock_open(read_data=None)) as mocked_open:
+            assert write_settings_to_file(self.test_settings_dict) is None
+
+            mocked_open.assert_called_once_with(self.mock_APP_SETTINGS_FILE, 'w+')
+            mocked_settings_file = mocked_open()
+            mocked_settings_file.write.assert_called_once_with(self.test_settings_write_str)
