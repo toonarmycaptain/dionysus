@@ -247,11 +247,7 @@ class TestWriteSettingsToFile(TestCase):
 
 
 class TestCreateAppSettingsFile(TestCase):
-    mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
-
     def setUp(self):
-        self.mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
-
         self.default_blank_settings_dict = {}
         self.test_settings_dict = {'system of government': 'Strange women lying in ponds distributing swords.'}
 
