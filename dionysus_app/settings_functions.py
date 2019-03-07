@@ -115,13 +115,17 @@ def create_app_settings_file(settings_dict=None):
     """
     Create settings file, ensuring __init__.py in containing folder.
 
+    Future: could have a dict containing some default settings, to pass to
+    write_settings_to_file (or to add to provided dict to supply unprovided
+    settings) if no settings_dict argument is provided.
+
     :param settings_dict: dict
     :return: None
     """
     create_app_data__init__()
 
     if not settings_dict:
-        settings_dict = 'dionysus_settings = {}'
+        settings_dict = {}  # If default settings are desired, pass them here.
 
     write_settings_to_file(settings_dict)
 
