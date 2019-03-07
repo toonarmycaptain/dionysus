@@ -252,7 +252,7 @@ class TestCreateAppSettingsFile(TestCase):
     def setUp(self):
         self.mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
 
-        self.default_blank_settings_dict = 'dionysus_settings = {}'
+        self.default_blank_settings_dict = {}
         self.test_settings_dict = {'system of government': 'Strange women lying in ponds distributing swords.'}
 
     @patch('dionysus_app.settings_functions.write_settings_to_file')
@@ -265,6 +265,10 @@ class TestCreateAppSettingsFile(TestCase):
 
         mocked_create_app_data__init__.assert_called_once_with()
         mocked_write_settings_to_file.assert_called_once_with(self.default_blank_settings_dict)
+
+        # Check default settings argument passed to write_settings_to_file is a dict:
+        # call_args_list[first call][positional args][first positional arg]
+        assert isinstance(mocked_write_settings_to_file.call_args_list[0][0][0], dict)
 
     @patch('dionysus_app.settings_functions.write_settings_to_file')
     @patch('dionysus_app.settings_functions.create_app_data__init__')
