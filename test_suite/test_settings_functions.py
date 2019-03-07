@@ -4,6 +4,7 @@ from unittest import TestCase
 from unittest.mock import patch, mock_open
 
 from dionysus_app.settings_functions import (app_start_set_default_chart_save_location,
+                                             create_app_settings_file,
                                              create_chart_save_folder,
                                              move_chart_save_folder,
                                              save_new_default_chart_save_location_setting,
@@ -243,3 +244,35 @@ class TestWriteSettingsToFile(TestCase):
             mocked_open.assert_called_once_with(self.mock_APP_SETTINGS_FILE, 'w+')
             mocked_settings_file = mocked_open()
             mocked_settings_file.write.assert_called_once_with(self.test_settings_write_str)
+
+
+class TestCreateAppSettingsFile(TestCase):
+    mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+
+    def setUp(self):
+        self.mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+
+        self.default_blank_settings_dict = 'dionysus_settings = {}'
+        self.test_settings_dict = {'system of government': 'Strange women lying in ponds distributing swords.'}
+
+    @patch('dionysus_app.settings_functions.write_settings_to_file')
+    @patch('dionysus_app.settings_functions.create_app_data__init__')
+    def test_create_app_settings_file_no_settings_dict(self,
+                                                       mocked_create_app_data__init__,
+                                                       mocked_write_settings_to_file
+                                                       ):
+        assert create_app_settings_file() is None
+
+        mocked_create_app_data__init__.assert_called_once_with()
+        mocked_write_settings_to_file.assert_called_once_with(self.default_blank_settings_dict)
+
+    @patch('dionysus_app.settings_functions.write_settings_to_file')
+    @patch('dionysus_app.settings_functions.create_app_data__init__')
+    def test_create_app_settings_file_with_settings_dict(self,
+                                                         mocked_create_app_data__init__,
+                                                         mocked_write_settings_to_file
+                                                         ):
+        assert create_app_settings_file(self.test_settings_dict) is None
+
+        mocked_create_app_data__init__.assert_called_once_with()
+        mocked_write_settings_to_file.assert_called_once_with(self.test_settings_dict)
