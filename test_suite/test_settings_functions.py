@@ -5,7 +5,8 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch, mock_open
 
-from dionysus_app.settings_functions import (app_start_set_default_chart_save_location,
+from dionysus_app.settings_functions import (APP_SETTINGS_FILE,
+                                             app_start_set_default_chart_save_location,
                                              create_app_data__init__,
                                              create_app_settings_file,
                                              create_chart_save_folder,
@@ -315,6 +316,13 @@ class TestEditAppSettingsFile(TestCase):
         self.test_new_settings = {'my_new_setting': 'some setting'}
         self.new_dionysus_settings_write = {**self.mock_dionysus_settings, **self.test_new_settings}
 
+        # Create file such that mocking it does not fail.
+        if not Path.exists(APP_SETTINGS_FILE):
+            self.created_app_settings = True
+            create_app_settings_file()
+        else:
+            self.created_app_settings = False
+
     @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
     @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
     @patch('dionysus_app.settings_functions.Path.write_settings_to_file')
@@ -355,6 +363,11 @@ class TestEditAppSettingsFile(TestCase):
 
         mock_write_settings_to_file.assert_called_once_with(self.new_dionysus_settings_write)
 
+    def tearDown(self):
+        # Remove settings file if created for test.
+        if self.created_app_settings:
+            os.remove(APP_SETTINGS_FILE)
+
 
 class TestLoadChartSaveFolder(TestCase):
     mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
@@ -364,6 +377,18 @@ class TestLoadChartSaveFolder(TestCase):
 
         self.test_load_chart_save_folder_return = Path(self.mock_dionysus_settings['user_default_chart_save_folder'])
 
+        # Create file such that mocking it does not fail.
+        if not Path.exists(APP_SETTINGS_FILE):
+            self.created_app_settings = True
+            create_app_settings_file()
+        else:
+            self.created_app_settings = False
+
     @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
     def test_load_chart_save_folder(self):
         assert load_chart_save_folder() == self.test_load_chart_save_folder_return
+
+    def tearDown(self):
+        # Remove settings file if created for test.
+        if self.created_app_settings:
+            os.remove(APP_SETTINGS_FILE)
