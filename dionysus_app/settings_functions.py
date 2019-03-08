@@ -12,11 +12,11 @@ from pathlib import Path
 
 import definitions
 
+from dionysus_app.data_folder import DataFolder
+from dionysus_app.file_functions import move_file
 from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_default_location,
                                                          user_set_chart_save_folder,
                                                          )
-from dionysus_app.data_folder import DataFolder
-from dionysus_app.file_functions import move_file
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
 APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
