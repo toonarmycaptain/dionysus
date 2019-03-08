@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved test coverage.
 ### Changed
 - Factored out `create_app_data__init__` from `create_app_settings_file`.
+- Change load_chart_save_folder to return Path object.
+### Fixed
+- Rectified error where settings_dict was initialised with a string, not dict. 
 
 ## [0.3.3-alpha] - 2019-03-04
 ### Added
