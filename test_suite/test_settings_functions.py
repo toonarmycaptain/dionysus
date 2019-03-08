@@ -325,13 +325,13 @@ class TestEditAppSettingsFile(TestCase):
 
     @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
     @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
-    @patch('dionysus_app.settings_functions.Path.write_settings_to_file')
-    @patch('dionysus_app.settings_functions.Path.create_app_settings_file')
+    @patch('dionysus_app.settings_functions.write_settings_to_file')
+    @patch('dionysus_app.settings_functions.create_app_settings_file')
     @patch('dionysus_app.settings_functions.Path.exists')
     def test_edit_app_settings_file_no_settings_file(self,
                                                      mock_path_exists,
-                                                     mock_write_settings_to_file,
                                                      mock_create_app_settings_file,
+                                                     mock_write_settings_to_file,
                                                      ):
         mock_path_exists.return_value = False
 
@@ -348,11 +348,11 @@ class TestEditAppSettingsFile(TestCase):
     @patch('dionysus_app.settings_functions.write_settings_to_file')
     @patch('dionysus_app.settings_functions.create_app_settings_file')
     @patch('dionysus_app.settings_functions.Path.exists')
-    def test_edit_app_settings_file_no_settings_file(self,
-                                                     mock_path_exists,
-                                                     mock_create_app_settings_file,
-                                                     mock_write_settings_to_file,
-                                                     ):
+    def test_edit_app_settings_file_existent_settings_file(self,
+                                                           mock_path_exists,
+                                                           mock_create_app_settings_file,
+                                                           mock_write_settings_to_file,
+                                                           ):
         mock_path_exists.return_value = True
 
         assert edit_app_settings_file(self.test_new_settings) is None
