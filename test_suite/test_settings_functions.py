@@ -9,6 +9,7 @@ from dionysus_app.settings_functions import (app_start_set_default_chart_save_lo
                                              create_app_data__init__,
                                              create_app_settings_file,
                                              create_chart_save_folder,
+                                             edit_app_settings_file,
                                              load_chart_save_folder,
                                              move_chart_save_folder,
                                              save_new_default_chart_save_location_setting,
@@ -301,6 +302,58 @@ class TestCreateAppDataInit(TestCase):
             mocked_open.assert_called_once_with(self.test_init_py_path, 'w+')
             mocked_settings_file = mocked_open()
             mocked_settings_file.write.assert_called_once_with(self.test_init_py_write_string)
+
+
+class TestEditAppSettingsFile(TestCase):
+    mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+    mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
+
+    def setUp(self):
+        self.mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+        self.mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
+
+        self.test_new_settings = {'my_new_setting': 'some setting'}
+        self.new_dionysus_settings_write = {**self.mock_dionysus_settings, **self.test_new_settings}
+
+    @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
+    @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
+    @patch('dionysus_app.settings_functions.Path.write_settings_to_file')
+    @patch('dionysus_app.settings_functions.Path.create_app_settings_file')
+    @patch('dionysus_app.settings_functions.Path.exists')
+    def test_edit_app_settings_file_no_settings_file(self,
+                                                     mock_path_exists,
+                                                     mock_write_settings_to_file,
+                                                     mock_create_app_settings_file,
+                                                     ):
+        mock_path_exists.return_value = False
+
+        assert edit_app_settings_file(self.test_new_settings) is None
+
+        mock_path_exists.assert_called_once_with(self.mock_APP_SETTINGS_FILE)
+        # New settings file is created.
+        mock_create_app_settings_file.assert_called_once_with()
+
+        mock_write_settings_to_file.assert_called_once_with(self.new_dionysus_settings_write)
+
+    @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
+    @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
+    @patch('dionysus_app.settings_functions.write_settings_to_file')
+    @patch('dionysus_app.settings_functions.create_app_settings_file')
+    @patch('dionysus_app.settings_functions.Path.exists')
+    def test_edit_app_settings_file_no_settings_file(self,
+                                                     mock_path_exists,
+                                                     mock_create_app_settings_file,
+                                                     mock_write_settings_to_file,
+                                                     ):
+        mock_path_exists.return_value = True
+
+        assert edit_app_settings_file(self.test_new_settings) is None
+
+        mock_path_exists.assert_called_once_with(self.mock_APP_SETTINGS_FILE)
+        # New settings file is not created.
+        mock_create_app_settings_file.assert_not_called()
+
+        mock_write_settings_to_file.assert_called_once_with(self.new_dionysus_settings_write)
 
 
 class TestLoadChartSaveFolder(TestCase):
