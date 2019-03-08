@@ -143,6 +143,17 @@ def create_app_data__init__():
 
 
 def edit_app_settings_file(new_settings: dict):
+    """
+    Writes settings to settings file.
+
+    Checks if settings file exists, creates if it does not.
+    Imports settings (module level import might error if file nonexistent).
+    Add/change settings in loaded settings, writes modified
+    settings dict to file.
+
+    :param new_settings: dict
+    :return: None
+    """
     if not Path.exists(APP_SETTINGS_FILE):
         create_app_settings_file()
 
@@ -155,5 +166,12 @@ def edit_app_settings_file(new_settings: dict):
 
 
 def load_chart_save_folder():
+    """
+    Return location for chart save folder.
+    Import in function as module level import would error functions run before/
+    if settings file doesn't exist.
+
+    :return: Path
+    """
     from dionysus_app.app_data.settings import dionysus_settings
     return dionysus_settings['user_default_chart_save_folder']

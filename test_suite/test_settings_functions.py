@@ -9,6 +9,7 @@ from dionysus_app.settings_functions import (app_start_set_default_chart_save_lo
                                              create_app_data__init__,
                                              create_app_settings_file,
                                              create_chart_save_folder,
+                                             load_chart_save_folder,
                                              move_chart_save_folder,
                                              save_new_default_chart_save_location_setting,
                                              set_default_chart_save_location,
@@ -295,9 +296,21 @@ class TestCreateAppDataInit(TestCase):
     @patch('dionysus_app.settings_functions.APP_DATA', mock_APP_DATA)
     def test_create_app_data__init__(self):
         with patch('dionysus_app.settings_functions.open', mock_open(read_data=None)) as mocked_open:
-
             assert create_app_data__init__() is None
 
             mocked_open.assert_called_once_with(self.test_init_py_path, 'w+')
             mocked_settings_file = mocked_open()
             mocked_settings_file.write.assert_called_once_with(self.test_init_py_write_string)
+
+
+class TestLoadChartSaveFolder(TestCase):
+    mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
+
+    def setUp(self):
+        self.mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
+
+        self.test_load_chart_save_folder_return = Path(self.mock_dionysus_settings['user_default_chart_save_folder'])
+
+    @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
+    def test_load_chart_save_folder(self):
+        assert load_chart_save_folder() == self.test_load_chart_save_folder_return
