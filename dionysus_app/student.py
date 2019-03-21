@@ -28,6 +28,8 @@ class Student:
     json_dict()
         Returns a JSON serialisable dictionary of student's data.
 
+    from_json_dict(json_data)
+        Returns a Student object instantiated from provided dict.
     """
 
     def __init__(self, name: str, avatar_path: Union[Path, str] = None):
@@ -98,4 +100,34 @@ class Student:
 
             self._avatar_path = Path(avatar_path)
         else:
-            self._avatar = None
+            self._avatar_path = None
+
+    def json_dict(self):
+        """
+        Translates Student object into JSON-serialisable dict.
+
+        Captures name, avatar_path attributes.
+        Path is converted to string.
+
+        :return: dict
+        """
+        json_data = {'name': self._name}
+        if self._avatar_path:
+            json_data['avatar_path'] = str(self._avatar_path)
+        return json_data
+
+    @classmethod
+    def from_json_dict(cls, json_data):
+        """
+        Instantiate a Student object from a JSON-serialisable dict.
+
+        Dict must have keys corresponding to arguments to Student.__init__:
+        'name' : str
+        'avatar_path' : Path/str/None (optional, defaults to None).
+
+        :param json_data: dict
+        :return: Student object
+        """
+        _name = json_data['name']
+        _avatar_path = json_data.get('avatar_path', None)
+        return Student(name=_name, avatar_path=_avatar_path)

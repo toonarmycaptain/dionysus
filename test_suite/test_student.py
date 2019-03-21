@@ -121,3 +121,35 @@ class TestStudentAvatar:
         assert test_instantiate_student_with_avatar.avatar_path == self.test_avatar_path_path
 
         assert isinstance(test_instantiate_student_with_avatar.avatar_path, Path)
+
+
+class TestStudentJsonDict:
+    @pytest.mark.parametrize(
+        'student_object,output_json',
+        [(Student('Sir Galahad'), {'name': 'Sir Galahad'}),  # name only
+         (Student('Sir Lancelot: the Brave', None), {'name': 'Sir Lancelot: the Brave'}),
+         # use str(Path()) to be sys agnostic.
+         (Student('Arther, King of the Britons', 'Holy\\Grail'),
+          {'name': 'Arther, King of the Britons', 'avatar_path': str(Path('Holy\\Grail'))}
+          ),
+         (Student('Brian', Path('a\\naughty\\boy')), {'name': 'Brian', 'avatar_path': str(Path('a\\naughty\\boy'))}),
+         ])
+    def test_json_dict(self, student_object, output_json):
+        assert student_object.json_dict() == output_json
+
+
+class TestStudentFromJson:
+    @pytest.mark.parametrize(
+        'output_json',
+        [({'name': 'Sir Galahad'}),  # name only
+         ({'name': 'Sir Lancelot: the Brave'}),
+         # use str(Path()) to be sys agnostic.
+         ({'name': 'Arther, King of the Britons', 'avatar_path': str(Path('Holy\\Grail'))}
+          ),
+         ({'name': 'Brian', 'avatar_path': str(Path('a\\naughty\\boy'))}),
+         ])
+    def test_from_json_dict(self, output_json):
+        student_object = Student.from_json_dict(output_json)
+        assert isinstance(student_object, Student)
+        # Verify instantiated object is equivalent by reserialising:
+        assert student_object.json_dict() == output_json
