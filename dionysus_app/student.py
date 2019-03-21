@@ -13,17 +13,24 @@ class Student:
 
     Attributes
     ----------
-    :attr name: str Student's name
-    :attr path_safe_name: str
-    :attr avatar: Path or None - Path to student's avatar.
+    name : str
+        Student's name
+
+    path_safe_name : str
+        Cleaned string safe to use in file names and paths.
+
+    avatar_path : Path or None
+        Path to student's avatar.
+
 
     Methods
     -------
+    json_dict()
+        Returns a JSON serialisable dictionary of student's data.
 
     """
 
     def __init__(self, name: str, avatar_path: Union[Path, str] = None):
-
         self.name = name
         self.path_safe_name = name
 
