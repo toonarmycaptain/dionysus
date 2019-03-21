@@ -76,7 +76,7 @@ class Student:
 
         :return: Path or None
         """
-        return self._avatar
+        return self._avatar_path
 
     @avatar_path.setter
     def avatar_path(self, avatar_path: Union[Path, str] = None):
@@ -86,9 +86,9 @@ class Student:
         :param avatar_path: Path, str, or None.
         :return: None
         """
-        self._avatar: Union[Path, None]
+        self._avatar_path: Union[Path, None]
         if avatar_path:
 
-            self._avatar = Path(avatar_path)
+            self._avatar_path = Path(avatar_path)
         else:
             self._avatar = None
