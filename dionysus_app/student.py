@@ -117,7 +117,7 @@ class Student:
         return json_data
 
     @classmethod
-    def from_json_dict(cls, json_data):
+    def from_dict(cls, student_dict):
         """
         Instantiate a Student object from a JSON-serialisable dict.
 
@@ -125,9 +125,9 @@ class Student:
         'name' : str
         'avatar_path' : Path/str/None (optional, defaults to None).
 
-        :param json_data: dict
+        :param student_dict: dict
         :return: Student object
         """
-        _name = json_data['name']
-        _avatar_path = json_data.get('avatar_path', None)
+        _name = student_dict['name']
+        _avatar_path = student_dict.get('avatar_path', None)
         return Student(name=_name, avatar_path=_avatar_path)
