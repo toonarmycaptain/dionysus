@@ -13,7 +13,7 @@ from dionysus_app.UI_menus.UI_functions import clean_for_filename
 #   - instantiate class without students and add students one by one
 #   - instantiate from JSON dict
 
-class Class:  # class name, classlist as dict
+Comment/class Class:
     """
     Class to contain a class' data (ie student objects) and related methods.
     ...
@@ -27,7 +27,6 @@ class Class:  # class name, classlist as dict
         Cleaned string safe to use in file names and paths.
 
     students : list[Student]
-
 
 
     Methods
@@ -109,7 +108,6 @@ class Class:  # class name, classlist as dict
         :type student: Student
 
         :keyword name: str - Name of student, first arg to Student __init__.
-
 
         For other keyword arguments, see Student object documentation.
 
