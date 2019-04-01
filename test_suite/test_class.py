@@ -5,6 +5,8 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from dionysus_app.class_ import Class
+from dionysus_app.student import Student
+from test_suite.test_student import test_student_name_only
 
 
 @pytest.fixture()
@@ -92,3 +94,38 @@ class TestClassNameMocked(TestCase):
         assert self.test_class.path_safe_name == self.test_changed_path_safe_name
 
         mocked_clean_for_filename.assert_called_once_with(self.test_changed_name)
+
+
+class TestAddStudent(TestCase):
+    """Test add_student method."""
+
+    def setUp(self):
+        self.test_class = Class('my test_class')
+        self.test_student = Student('Arthur')
+
+    def test_add_student_student_arg_is_student_obj(self):
+        assert self.test_class.students == []
+        assert isinstance(self.test_student, Student)
+        self.test_class.add_student(self.test_student)
+
+        assert self.test_class.students == [self.test_student]
+
+    def test_add_student_student_arg_is_string(self):
+        assert self.test_class.students == []
+
+        self.test_class.add_student('test_student_name')
+
+        assert self.test_class.students == []
+
+    def test_add_student_with_kwargs(self):
+        pass
+
+    def test_add_student_with_non_str_name_kwarg(self):
+        pass
+
+# add Student obj *
+# positional argument given but not Student obj (eg 'student name' *
+# add Student from params
+# do nothing if name= param is not str.
+
+# test_student_name_only_object = test_student_name_only
