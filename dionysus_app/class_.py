@@ -2,7 +2,7 @@
 import json
 
 from pathlib import Path
-from typing import List, Union, Any
+from typing import Any, List, Union
 
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
@@ -108,8 +108,8 @@ class Class:  # class name, classlist as dict
         :param student: Student object.
         :type student: Student
 
-        :keyword name: Name of student, first argument to Student __init__.
-        :type name: str
+        :keyword name: str - Name of student, first arg to Student __init__.
+
 
         For other keyword arguments, see Student object documentation.
 
