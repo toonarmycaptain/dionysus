@@ -13,7 +13,7 @@ from dionysus_app.UI_menus.UI_functions import clean_for_filename
 #   - instantiate class without students and add students one by one
 #   - instantiate from JSON dict
 
-Comment/class Class:
+class Class:
     """
     Class to contain a class' data (ie student objects) and related methods.
     ...
