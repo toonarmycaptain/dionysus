@@ -88,7 +88,7 @@ class Class:
         """
         self._path_safe_name = clean_for_filename(class_name)
 
-    def add_student(self, student: [Student] = None, **kwargs: Any):
+    def add_student(self, student: Student = None, **kwargs: Any):
         """
         Adds a student to the class.
 
