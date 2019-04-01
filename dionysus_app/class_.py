@@ -2,7 +2,7 @@
 import json
 
 from pathlib import Path
-from typing import List, Union
+from typing import List, Union, Any
 
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
@@ -89,23 +89,39 @@ class Class:  # class name, classlist as dict
         """
         self._path_safe_name = clean_for_filename(class_name)
 
-    def add_student(self, name: Union[str, Student], avatar_path: Union[Path, str] = None):
+    def add_student(self, student: [Student] = None, **kwargs: Any):
         """
         Adds a student to the class.
 
         May be called with a student object as first argument, otherwise adds
-        a Student object instantiated with supplied parameters to list of
-        students in class.
+        a Student object instantiated with supplied named parameters to list of
+        students in class:
 
-        :param name: str or Student
-        :param avatar_path: Path or str
+        Class.add_student(my_student_object)
+        or
+        Class.add_student(name='student_name', ...)
+
+        NB If Student object is passed to student parameter, any kwargs are
+        ignored, such that an avatar cannot be added to a student object while
+        adding it to a class.
+
+        :param student: Student object.
+        :type student: Student
+
+        :keyword name: Name of student, first argument to Student __init__.
+        :type name: str
+
+        For other keyword arguments, see Student object documentation.
 
         :return: None
         """
-        if isinstance(name, Student):
-            self.students.append(name)
+        if student and isinstance(student, Student):
+            self.students.append(student)
         else:
-            self.students.append(Student(name, avatar_path))
+            # if name := kwargs.get('name') is not None: Python 3.8
+            name = kwargs.get('name')
+            if isinstance(name, str):
+                self.students.append(Student(name, **kwargs))
 
     def json_dict(self):
         """

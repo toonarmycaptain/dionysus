@@ -108,7 +108,7 @@ class TestStudentAvatar:
 
     def test_instantiate_with_avatar_path_str(self):
         test_instantiate_student_with_avatar = Student(self.test_name,
-                                                       self.test_avatar_path_str)
+                                                       avatar_path=self.test_avatar_path_str)
 
         assert test_instantiate_student_with_avatar.avatar_path == self.test_avatar_path_path
 
@@ -116,7 +116,7 @@ class TestStudentAvatar:
 
     def test_instantiate_with_avatar_path_path(self):
         test_instantiate_student_with_avatar = Student(self.test_name,
-                                                       self.test_avatar_path_path)
+                                                       avatar_path=self.test_avatar_path_path)
 
         assert test_instantiate_student_with_avatar.avatar_path == self.test_avatar_path_path
 
@@ -127,12 +127,13 @@ class TestStudentJsonDict:
     @pytest.mark.parametrize(
         'student_object,output_json',
         [(Student('Sir Galahad'), {'name': 'Sir Galahad'}),  # name only
-         (Student('Sir Lancelot: the Brave', None), {'name': 'Sir Lancelot: the Brave'}),
+         (Student('Sir Lancelot: the Brave', avatar_path=None), {'name': 'Sir Lancelot: the Brave'}),
          # use str(Path()) to be sys agnostic.
-         (Student('Arther, King of the Britons', 'Holy\\Grail'),
+         (Student('Arther, King of the Britons', avatar_path='Holy\\Grail'),
           {'name': 'Arther, King of the Britons', 'avatar_path': str(Path('Holy\\Grail'))}
           ),
-         (Student('Brian', Path('a\\naughty\\boy')), {'name': 'Brian', 'avatar_path': str(Path('a\\naughty\\boy'))}),
+         (Student('Brian', avatar_path=Path('a\\naughty\\boy')),
+          {'name': 'Brian', 'avatar_path': str(Path('a\\naughty\\boy'))}),
          ])
     def test_json_dict(self, student_object, output_json):
         assert student_object.json_dict() == output_json

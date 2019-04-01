@@ -1,7 +1,7 @@
 """Class for student."""
 
 from pathlib import Path
-from typing import Union
+from typing import Union, Any
 
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
@@ -32,11 +32,22 @@ class Student:
         Returns a Student object instantiated from provided dict.
     """
 
-    def __init__(self, name: str, avatar_path: Union[Path, str] = None):
+    def __init__(self, name: str, **kwargs: Any):
+        """
+        Create an instance of Student.
+
+        Can be instantiated with name only.
+
+        :param name: The student's name.
+        :type name: str
+
+        :keyword avatar_path: Path to the student's avatar.
+        :type avatar_path: Path or str
+        """
         self.name = name
         self.path_safe_name = name
 
-        self.avatar_path = avatar_path
+        self.avatar_path = kwargs.get('avatar_path')  # Equivalent to kwargs.get('avatar_path', None)
         # NB Assuring existence is responsibility of code instantiating/adding avatar_path.
 
     @property
@@ -53,7 +64,9 @@ class Student:
         """
         Set student name. Also sets path_safe_name.
 
-        :param name: str
+        :param name: The student's name.
+        :type name: str # TODO: change other docstrings in class to this format.
+
         :return: None
         """
         self._name = name
