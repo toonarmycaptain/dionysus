@@ -115,7 +115,7 @@ class Class:
         """
         if student and isinstance(student, Student):
             self.students.append(student)
-        else:
+        elif kwargs and not student:
             if isinstance(kwargs['name'], str):
                 self.students.append(Student(**kwargs))
 
