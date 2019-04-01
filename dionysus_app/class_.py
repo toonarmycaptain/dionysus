@@ -116,10 +116,8 @@ Comment/class Class:
         if student and isinstance(student, Student):
             self.students.append(student)
         else:
-            # if name := kwargs.get('name') is not None: Python 3.8
-            name = kwargs.get('name')
-            if isinstance(name, str):
-                self.students.append(Student(name, **kwargs))
+            if isinstance(kwargs['name'], str):
+                self.students.append(Student(**kwargs))
 
     def json_dict(self):
         """
