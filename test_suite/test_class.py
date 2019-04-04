@@ -45,10 +45,10 @@ class TestClassNamePathSafeName:
         """
 
         self.test_name = "The Knights of the Round-table: we don't say 'Ni!'"
-        self.test_path_safe_name = "The_Knights_of_the_Round-table_we_don't_say_'Ni'"
+        self.test_path_safe_name = "The_Knights_of_the_Round-table__we_don_t_say_'Ni__"
 
         self.test_changed_name = 'Adaptable Knights: We now say Ni!, but we dont have to.'
-        self.test_changed_path_safe_name = 'Adaptable_Knights_We_now_say_Ni_but_we_dont_have_to'
+        self.test_changed_path_safe_name = 'Adaptable_Knights__We_now_say_Ni___but_we_dont_have_to'
 
     def test_name_getter(self, test_class_name_only):
         assert test_class_name_only.name == self.test_name

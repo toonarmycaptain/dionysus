@@ -25,10 +25,10 @@ class TestStudentNamePathSafeName:
         """
 
         self.test_name = 'Arthur, King of the Britons'
-        self.test_path_safe_name = 'Arthur_King_of_the_Britons'
+        self.test_path_safe_name = 'Arthur__King_of_the_Britons'
 
         self.test_changed_name = 'Sir Lancelot: the not-so-brave'
-        self.test_changed_path_safe_name = 'Sir_Lancelot_the_not-so-brave'
+        self.test_changed_path_safe_name = 'Sir_Lancelot__the_not-so-brave'
 
     def test_name_getter(self, test_student_name_only):
         assert test_student_name_only.name == self.test_name
