@@ -45,7 +45,7 @@ class TestClassNamePathSafeName:
         """
 
         self.test_name = "The Knights of the Round-table: we don't say 'Ni!'"
-        self.test_path_safe_name = "The_Knights_of_the_Round-table__we_don_t_say_'Ni__"
+        self.test_path_safe_name = "The_Knights_of_the_Round-table__we_don_t_say__Ni__"
 
         self.test_changed_name = 'Adaptable Knights: We now say Ni!, but we dont have to.'
         self.test_changed_path_safe_name = 'Adaptable_Knights__We_now_say_Ni___but_we_dont_have_to_'
