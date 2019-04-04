@@ -71,7 +71,7 @@ class TestClassNamePathSafeName:
 class TestClassNameMocked(TestCase):
     def setUp(self):
         self.test_name = "The Knights of the Round-table: we don't say 'Ni!'"
-        self.test_path_safe_name = "The_Knights_of_the_Round-table_we_don't_say_'Ni__"
+        self.test_path_safe_name = "The_Knights_of_the_Round-table_we_don't_say__Ni__"
 
         self.test_class = Class(self.test_name)
 
