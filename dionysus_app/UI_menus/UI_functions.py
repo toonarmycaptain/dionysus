@@ -60,6 +60,7 @@ def scrub_candidate_filename(dirty_string: str):
 
     >>> scrub_candidate_filename(r"Les méµoires¬de¬M. d'Ar∫@gnåñ  /\/\ 'abc∂éåß®∆˚__˙©¬ñ√ƒµ©∆∫ø'")
     'Les méµoires_de_M_ d_Ar__gnåñ  ____ _abc_éåß________ñ_ƒµ___ø_'
+
     # Which at least makes distinct words clear, rather than:
     'Les méµoiresdeM dArgnåñ   abcéåßñƒµø'  # Which is completely unreadable.
 
