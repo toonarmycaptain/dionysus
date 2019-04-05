@@ -115,7 +115,12 @@ class TestCleanForFilename(TestCase):
                 '_because_nobody_expects_the__spanish__inquisition_the_2nd_time'),
             'test_combination_underscore_spaces_special_characters': (
                 ' because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time',
-                '_because_nobody_expects_the______ing__spanish__inquisition_the_2nd_______time')
+                '_because_nobody_expects_the______ing__spanish__inquisition_the_2nd_______time'),
+            # Explicitly test OS/Filesystem format prohibited characters:
+            'Test prohibited chars FAT32': (r'" * / : < > ? \ | + , . ; = [ ] ! @ ; ',
+                                            '_____________________________________'),
+            'Test prohibited characters Windows': (r'\/:*?"<>|.', '__________'),
+            'Test prohibited *nix/OSX chars': (r'*?!/.', '_____'),
         }
 
     @patch('dionysus_app.UI_menus.UI_functions.scrub_candidate_filename')
@@ -172,6 +177,8 @@ class TestCleanForFilename(TestCase):
       ' because nobody_expects_the _____ing _spanish_ inquisition the 2nd _____ time'),
      # d'Artagnan's memoirs: preserving accented é, replacing apostrophe, period with underscores.
      ("Les mémoires de M. d'Artagnan", "Les mémoires de M_ d_Artagnan"),
+     # Test prohibited chars FAT32
+     (r'" * / : < > ? \ | + , . ; = [ ] ! @ ; ', '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _'),
      # Test prohibited characters Windows
      (r'\/:*?"<>|.', '__________'),
      # Test prohibited *nix/OSX chars
