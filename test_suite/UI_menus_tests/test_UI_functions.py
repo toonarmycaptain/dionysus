@@ -172,6 +172,10 @@ class TestCleanForFilename(TestCase):
       ' because nobody_expects_the _____ing _spanish_ inquisition the 2nd _____ time'),
      # d'Artagnan's memoirs: preserving accented é, replacing apostrophe, period with underscores.
      ("Les mémoires de M. d'Artagnan", "Les mémoires de M_ d_Artagnan"),
+     # Test prohibited characters Windows
+     (r'\/:*?"<>|.', '__________'),
+     # Test prohibited *nix/OSX chars
+     (r'*?!/.', '_____'),
      ])
 def test_scrub_candidate_filename(test_input, expected_output):
     assert scrub_candidate_filename(test_input) == expected_output
