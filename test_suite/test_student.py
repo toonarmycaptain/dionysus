@@ -3,7 +3,6 @@ import pytest
 
 from pathlib import Path
 from unittest import TestCase
-from unittest.mock import patch
 
 from dionysus_app.student import Student
 
@@ -25,55 +24,28 @@ class TestStudentNamePathSafeName:
         """
 
         self.test_name = 'Arthur, King of the Britons'
-        self.test_path_safe_name = 'Arthur__King_of_the_Britons'
 
         self.test_changed_name = 'Sir Lancelot: the not-so-brave'
-        self.test_changed_path_safe_name = 'Sir_Lancelot__the_not-so-brave'
 
     def test_name_getter(self, test_student_name_only):
         assert test_student_name_only.name == self.test_name
 
-    def test_path_safe_name_getter(self, test_student_name_only):
-        assert test_student_name_only.path_safe_name == self.test_path_safe_name
-
     def test_name_setter_unmocked(self, test_student_name_only):
         assert test_student_name_only.name != self.test_changed_name
-        assert test_student_name_only.path_safe_name != self.test_changed_path_safe_name
 
         # Change name
         test_student_name_only.name = self.test_changed_name
 
         assert test_student_name_only.name == self.test_changed_name
-        #  Assert name change carried over to path_safe_name attribute.
-        assert test_student_name_only.path_safe_name == self.test_changed_path_safe_name
 
 
 class TestStudentNameMocked(TestCase):
     def setUp(self):
         self.test_name = 'Arthur, King of the Britons'
-        self.test_path_safe_name = 'Arthur_King_of_the_Britons'
 
         self.test_student = Student(self.test_name)
 
         self.test_changed_name = 'Sir Lancelot: the not-so-brave'
-        self.test_changed_path_safe_name = 'Sir_Lancelot_the_not-so-brave'
-
-    @patch('dionysus_app.student.clean_for_filename')
-    def test_name_setter_mocked(self, mocked_clean_for_filename):
-        # Assert name, path_safe_name initial value != changed value
-        assert self.test_student.name != self.test_changed_name
-        assert self.test_student.path_safe_name != self.test_changed_path_safe_name
-
-        mocked_clean_for_filename.return_value = self.test_changed_path_safe_name
-
-        # Change name
-        self.test_student.name = self.test_changed_name
-
-        assert self.test_student.name == self.test_changed_name
-        #  Assert name change carried over to path_safe_name attribute.
-        assert self.test_student.path_safe_name == self.test_changed_path_safe_name
-
-        mocked_clean_for_filename.assert_called_once_with(self.test_changed_name)
 
 
 class TestStudentAvatar:
@@ -141,16 +113,20 @@ class TestStudentJsonDict:
 
 class TestStudentFromDict:
     @pytest.mark.parametrize(
-        'output_json',
+        'output_json_dict',
         [({'name': 'Sir Galahad'}),  # name only
          ({'name': 'Sir Lancelot: the Brave'}),
          # use str(Path()) to be sys agnostic.
-         ({'name': 'Arther, King of the Britons', 'avatar_path': str(Path('Holy\\Grail'))}
-          ),
-         ({'name': 'Brian', 'avatar_path': str(Path('a\\naughty\\boy'))}),
+         ({'name': 'Arther, King of the Britons', 'avatar_path': str(Path('Holy\\Grail'))}),
+         ({'name': 'Brian', 'avatar_path': str(Path('a//naughty//boy'))}),
          ])
-    def test_from_dict(self, output_json):
-        student_object = Student.from_dict(output_json)
+    def test_from_dict(self, output_json_dict):
+        student_object = Student.from_dict(output_json_dict)
         assert isinstance(student_object, Student)
         # Verify instantiated object is equivalent by reserialising:
-        assert student_object.json_dict() == output_json
+        assert student_object.json_dict() == output_json_dict
+
+        # Test attributes
+        assert student_object.name == output_json_dict['name']
+        if output_json_dict.get('avatar_path') is not None:
+            assert str(student_object.avatar_path) == output_json_dict['avatar_path']

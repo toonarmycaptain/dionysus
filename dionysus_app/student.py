@@ -45,7 +45,6 @@ class Student:
         :type avatar_path: Path or str
         """
         self.name = name
-        self.path_safe_name = name
 
         self.avatar_path = kwargs.get('avatar_path')  # Equivalent to kwargs.get('avatar_path', None)
         # NB Assuring existence is responsibility of code instantiating/adding avatar_path.
@@ -62,34 +61,18 @@ class Student:
     @name.setter
     def name(self, name: str):
         """
-        Set student name. Also sets path_safe_name.
+        Set student name.
 
         :param name: The student's name.
         :type name: str # TODO: change other docstrings in class to this format.
 
         :return: None
         """
-        self._name = name
-        self.path_safe_name = self._name
-
-    @property
-    def path_safe_name(self):
-        """
-        Get path_safe_name: filename-safe student name string.
-
-        :return: str
-        """
-        return self._path_safe_name
-
-    @path_safe_name.setter
-    def path_safe_name(self, student_name: str):
-        """
-        Set path_safe_name: filename-safe student name string.
-
-        :param student_name: str
-        :return: None
-        """
-        self._path_safe_name = clean_for_filename(student_name)
+        if isinstance(name, str):
+            self._name = name
+        else:
+            raise TypeError(f"Student name must be a str, "
+                            f"got {type(name)} instead.")
 
     @property
     def avatar_path(self):
