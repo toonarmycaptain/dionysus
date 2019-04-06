@@ -13,7 +13,7 @@ def test_student_name_only():
     yield Student(test_name)
 
 
-class TestStudentNamePathSafeName:
+class TestStudentName:
     """
     Test Student name and path_safe_name properties.
     """
@@ -37,6 +37,19 @@ class TestStudentNamePathSafeName:
         test_student_name_only.name = self.test_changed_name
 
         assert test_student_name_only.name == self.test_changed_name
+
+    @pytest.mark.parametrize(
+        'name_arg',
+        [
+            ['passing', 'a', 'list'],  # list
+            ('passed', 'tuple',),  # tuple
+            Student('Student object for name'),  # Student object
+            {'passing a dict': 'Some value'},  # dict
+        ])
+    def test_non_str_name_raises_error(self, name_arg):
+        """Test error is raised for each bad type, error msg contains type."""
+        with pytest.raises(TypeError, match=str(type(name_arg))):
+            Student(name=name_arg)
 
 
 class TestStudentNameMocked(TestCase):
