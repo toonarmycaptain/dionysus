@@ -115,6 +115,8 @@ class Student:
             json_data['avatar_path'] = str(self._avatar_path)
         return json_data
 
+    # Alternate constructors
+
     @classmethod
     def from_dict(cls, student_dict):
         """
