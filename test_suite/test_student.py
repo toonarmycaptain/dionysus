@@ -40,12 +40,11 @@ class TestStudentName:
 
     @pytest.mark.parametrize(
         'name_arg',
-        [
-            ['passing', 'a', 'list'],  # list
-            ('passed', 'tuple',),  # tuple
-            Student('Student object for name'),  # Student object
-            {'passing a dict': 'Some value'},  # dict
-        ])
+        [{'passing a dict': 'Some value'},  # dict
+         ['passing', 'a', 'list'],  # list
+         Student('Student object for name'),  # Student object
+         ('passed', 'tuple',),  # tuple
+         ])
     def test_non_str_name_raises_error(self, name_arg):
         """Test error is raised for each bad type, error msg contains type."""
         with pytest.raises(TypeError, match=str(type(name_arg))):
