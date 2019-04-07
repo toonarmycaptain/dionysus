@@ -13,6 +13,13 @@ def test_student_name_only():
     yield Student(test_name)
 
 
+@pytest.fixture()
+def test_student_with_avatar_path():
+    test_name = 'Arthur, King of the Britons'
+    test_avatar_path = Path(r'path\to\avatar\for\Arthur')
+    yield Student(name=test_name, avatar_path=test_avatar_path)
+
+
 class TestStudentName:
     """
     Test Student name and path_safe_name properties.
