@@ -134,3 +134,16 @@ class Student:
         return Student(name=_name,
                        avatar_path=_avatar_path,
                        )
+
+    # String representations
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
+                    f'name={self._name!r}, '
+                    f'avatar_path={self._avatar_path!r}'
+                    f')'
+                    )
+        return repr_str
+
+    def __str__(self):
+        avatar_stmt = f'avatar {self.avatar_path}' if self.avatar_path is not None else 'no avatar'
+        return f'Student {self.name}, with {avatar_stmt}.'

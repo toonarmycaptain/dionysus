@@ -143,3 +143,25 @@ class TestStudentFromDict:
         assert student_object.name == output_json_dict['name']
         if output_json_dict.get('avatar_path') is not None:
             assert str(student_object.avatar_path) == output_json_dict['avatar_path']
+
+
+class TestStudentRepr:
+    @pytest.mark.parametrize('student_object',
+                             [Student(name='I have no avatar!'),
+                              Student(name='I have an avatar', avatar_path='path_to_my_avatar'),
+                              ])
+    def test_repr(self, student_object):
+        assert repr(student_object) == (f'{student_object.__class__.__module__}'
+                                        f'.{student_object.__class__.__name__}('
+                                        f'name={student_object._name!r}, '
+                                        f'avatar_path={student_object._avatar_path!r})')
+
+
+class TestStudentStr:
+    @pytest.mark.parametrize('student_object, expected_str',
+                             [(Student(name='I have no avatar!'), f"Student {'I have no avatar!'}, with no avatar."),
+                              (Student(name='I have an avatar', avatar_path='path_to_my_avatar'), (f"Student {'I have an avatar'}, "
+                                                                                                   f"with avatar {'path_to_my_avatar'}.")),
+                              ])
+    def test_str(self, student_object, expected_str, test_student_name_only, test_student_with_avatar_path):
+        assert str(student_object) == expected_str
