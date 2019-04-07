@@ -128,4 +128,6 @@ class Student:
         """
         _name = student_dict['name']
         _avatar_path = student_dict.get('avatar_path', None)
-        return Student(name=_name, avatar_path=_avatar_path)
+        return Student(name=_name,
+                       avatar_path=_avatar_path,
+                       )
