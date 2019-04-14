@@ -6,7 +6,8 @@ from unittest.mock import patch
 
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
-from test_suite.test_student import test_student_name_only
+
+from test_suite.test_student import test_student_name_only, test_student_with_avatar_path
 
 
 @pytest.fixture()
@@ -36,12 +37,12 @@ def test_class_student_list_instantiation_no_list_arg():
 
 class TestClassNamePathSafeName:
     """
-    Test Student name and path_safe_name properties.
+    Test Class name and path_safe_name properties.
     """
 
     def setup_method(self):
-        """ setup any state tied to the execution of the given method in a
-        class.  setup_method is invoked for every test method of a class.
+        """
+        Setup class name and name for change.
         """
 
         self.test_name = "The Knights of the Round-table: we don't say 'Ni!'"
@@ -96,36 +97,97 @@ class TestClassNameMocked(TestCase):
         mocked_clean_for_filename.assert_called_once_with(self.test_changed_name)
 
 
-class TestAddStudent(TestCase):
-    """Test add_student method."""
+class TestAddStudent:
+    """Test Class.add_student method."""
 
-    def setUp(self):
-        self.test_class = Class('my test_class')
-        self.test_student = Student('Arthur')
+    def test_add_student_student_arg_is_student_obj(self,
+                                                    test_class_name_only,
+                                                    test_student_name_only):
+        # Ensure empty class and student is student object.
+        assert test_class_name_only.students == []
+        assert isinstance(test_student_name_only, Student)
 
-    def test_add_student_student_arg_is_student_obj(self):
-        assert self.test_class.students == []
-        assert isinstance(self.test_student, Student)
-        self.test_class.add_student(self.test_student)
+        test_class_name_only.add_student(test_student_name_only)
 
-        assert self.test_class.students == [self.test_student]
+        assert test_class_name_only.students == [test_student_name_only]
 
-    def test_add_student_student_arg_is_string(self):
-        assert self.test_class.students == []
+    def test_add_multiple_students(self,
+                                   test_class_name_only,
+                                   test_student_name_only,
+                                   test_student_with_avatar_path):
+        # Ensure empty class and students are student object.
+        assert test_class_name_only.students == []
+        assert isinstance(test_student_name_only, Student)
+        assert isinstance(test_student_with_avatar_path, Student)
 
-        self.test_class.add_student('test_student_name')
+        test_class_name_only.add_student(test_student_name_only)
+        test_class_name_only.add_student(test_student_with_avatar_path)
 
-        assert self.test_class.students == []
+        assert test_class_name_only.students == [test_student_name_only,
+                                                 test_student_with_avatar_path]
 
-    def test_add_student_with_kwargs(self):
-        pass
+    def test_add_student_with_kwargs(self,
+                                     test_class_name_only,
+                                     test_student_with_avatar_path):
+        # Ensure class initially empty.
+        assert test_class_name_only.students == []
 
-    def test_add_student_with_non_str_name_kwarg(self):
-        pass
+        test_class_name_only.add_student(name=test_student_with_avatar_path.name,
+                                         avatar_path=test_student_with_avatar_path.avatar_path)
 
-# add Student obj *
-# positional argument given but not Student obj (eg 'student name' *
-# add Student from params
-# do nothing if name= param is not str.
+        assert len(test_class_name_only.students) is 1
+        # Test student attributes are as expected
+        assert test_class_name_only.students[0].name == test_student_with_avatar_path.name
+        assert test_class_name_only.students[0].avatar_path == test_student_with_avatar_path.avatar_path
 
-# test_student_name_only_object = test_student_name_only
+    @pytest.mark.parametrize('student_arg',
+                             ['student name',  # string
+                              ['passing', 'a', 'list'],  # list
+                              ('passed', 'tuple',),  # tuple
+                              {'passing a dict': 'Some value'},  # dict
+                              ])
+    def test_add_student_non_student_student_arg_raises_error(self,
+                                                              test_class_name_only,
+                                                              student_arg):
+        """
+        Test non Student positional argument.
+        String could conceivably be passed if intending to pass non-kwarg student name.
+
+        Test error is raised for each bad type, error msg contains type.
+        """
+        # Ensure class initially empty.
+        assert test_class_name_only.students == []
+
+        with pytest.raises(TypeError, match=str(type(student_arg))):
+            test_class_name_only.add_student(student_arg)
+
+        # Ensure class still empty (since no student should have been added).
+        assert test_class_name_only.students == []
+
+    @pytest.mark.parametrize('name_arg',
+                             [{'passing a dict': 'Some value'},  # dict
+                              ['passing', 'a', 'list'],  # list
+                              ('passed', 'tuple',),  # tuple
+                              test_student_name_only,  # Student object
+                              test_student_with_avatar_path,  # Student object
+                              ])
+    def test_add_student_with_non_str_name_kwarg(self,
+                                                 test_class_name_only,
+                                                 name_arg,
+                                                 test_student_name_only,
+                                                 test_student_with_avatar_path,
+                                                 ):
+        """
+        Test Class.add_student(name=) argument.
+        String could conceivably be passed if intending to pass non-kwarg student name.
+
+        Test error is raised for each bad type, error msg contains type.
+        """
+        # Ensure class initially empty.
+        assert test_class_name_only.students == []
+
+        with pytest.raises(TypeError, match=str(type(name_arg))):
+            test_class_name_only.add_student(name=name_arg)
+
+        # Ensure class still empty (since no student should have been added).
+        assert test_class_name_only.students == []
