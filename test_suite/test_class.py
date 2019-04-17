@@ -200,3 +200,31 @@ class TestAddStudent:
 
         # Ensure class still empty (since no student should have been added).
         assert test_class_name_only.students == []
+
+
+class TestJSONDict:
+    def test_test_class_name_only_to_json_dict(self, test_class_name_only):
+        assert test_class_name_only.json_dict() == {'name': test_class_name_only.name,
+                                                    'students': test_class_name_only.students
+                                                    }
+
+    def test_test_full_class_to_json_dict(self, test_full_class):
+        assert test_full_class.json_dict() == test_class_data_set['loaded_dict']
+
+
+class TestToJsonStr:
+    def test_test_class_name_only_to_json_str(self, test_class_name_only):
+        """
+        Have to be very careful with the string formatting here.
+        To avoid hard-coding, have to insert values using f-strings, but insert
+        on multiple lines as the {} not used by the fstring in JSON formatting
+        raises errors. Also have to include \n in correct locations.
+        """
+        assert test_class_name_only.to_json_str() == ('{\n'
+                                                      + f'    "name": "{test_class_name_only.name}",\n'
+                                                      + f'    "students": {test_class_name_only.students}\n'
+                                                      + '}'
+                                                      )
+
+    def test_test_full_class_to_json_str(self, test_full_class):
+        assert test_full_class.to_json_str() == test_class_data_set['json_data_string']
