@@ -88,6 +88,22 @@ class Class:
         """
         self._path_safe_name = clean_for_filename(class_name)
 
+    def __contains__(self, item: Union[str, Student]):
+        """
+
+        :param item: str or Student object
+        :return: Bool
+        """
+        if isinstance(item, str):
+            name = item
+            return name in (student.name for student in self.students)
+        elif isinstance(item, Student):
+            student = item
+            return student in self.students
+        else:
+            raise ValueError(f'Expected type str or Student: '
+                             f'received type {type(item)}.')
+
     def add_student(self, student: Student = None, **kwargs: Any):
         """
         Adds a student to the class.
@@ -149,6 +165,8 @@ class Class:
         """
         json_class_data = convert_to_json(self.json_dict())
         return json_class_data
+
+    # Alternate constructors
 
     @classmethod
     def from_dict(cls, class_dict: dict):
