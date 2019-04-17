@@ -111,13 +111,22 @@ class Class:
 
         For other keyword arguments, see Student object documentation.
 
+        :raises: TypeError if non-Student positional argument passed.
+
         :return: None
         """
-        if student and isinstance(student, Student):
+        if student:
+            # Python 3.8:
+            # if not isinstance(new_student := student, Student):
+            #     raise TypeError(f"Student name must be a str, "
+            #                     f"got {type(name)} instead.")
+            if not isinstance(student, Student): raise TypeError(f"Student expected, got {type(student)} instead.")
+            # raise inline with isinstance to show code causing error.
+            # else:
             self.students.append(student)
+
         elif kwargs and not student:
-            if isinstance(kwargs['name'], str):
-                self.students.append(Student(**kwargs))
+            self.students.append(Student(**kwargs))
 
     def json_dict(self):
         """
