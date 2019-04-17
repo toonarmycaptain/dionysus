@@ -55,3 +55,83 @@ for key, class_name in testing_registry_enumerated_dict.items():
     test_display_class_selection_menu_output.append(f'{key}. {class_name}')
 """
 test_display_class_selection_menu_output = ['1. First class', '2. Second class', '3. Third class']
+
+# new data storage formats
+
+test_class_data_set_json_string = ('{\n'
+                                   '    "name": "test_class",\n'
+                                   '    "students": [\n'
+                                   '        {\n'
+                                   '            "name": "Cali",\n'
+                                   '            "avatar_path": "Cali_avatar.png"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Monty"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Abby"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Zach",\n'
+                                   '            "avatar_path": "Zach_avatar.png"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Janell"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Matthew"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Olivia"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Regina"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Ashley",\n'
+                                   '            "avatar_path": "Ashley_avatar.png"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Alex"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Melissa"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Edgar"\n'
+                                   '        },\n        {\n'
+                                   '            "name": "Danielle",\n'
+                                   '            "avatar_path": "Danielle.png"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Kayla"\n'
+                                   '        },\n'
+                                   '        {\n'
+                                   '            "name": "Jaleigh"\n'
+                                   '        }\n'
+                                   '    ]\n'
+                                   '}'
+                                   )
+
+test_class_data_set_loaded_dict = {'name': 'test_class',
+                                   'students': [{'name': 'Cali', 'avatar_path': 'Cali_avatar.png'},
+                                                {'name': 'Monty'},
+                                                {'name': 'Abby'},
+                                                {'name': 'Zach', 'avatar_path': 'Zach_avatar.png'},
+                                                {'name': 'Janell'},
+                                                {'name': 'Matthew'},
+                                                {'name': 'Olivia'},
+                                                {'name': 'Regina'},
+                                                {'name': 'Ashley', 'avatar_path': 'Ashley_avatar.png'},
+                                                {'name': 'Alex'},
+                                                {'name': 'Melissa'},
+                                                {'name': 'Edgar'},
+                                                {'name': 'Danielle', 'avatar_path': 'Danielle.png'},
+                                                {'name': 'Kayla'},
+                                                {'name': 'Jaleigh'}]}
+
+test_class_data_set = {
+    'json_data_string': test_class_data_set_json_string,
+    'loaded_dict': test_class_data_set_loaded_dict,
+    # 'enumerated_dict': test_class_data_set_enumerated_dict,
+}

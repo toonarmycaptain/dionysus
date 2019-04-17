@@ -8,6 +8,7 @@ from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 
 from test_suite.test_student import test_student_name_only, test_student_with_avatar_path
+from test_suite.testing_class_data import test_class_data_set
 
 
 @pytest.fixture()
@@ -15,6 +16,14 @@ def test_class_name_only():
     """Returns empty class instantiated with name only."""
     test_name = "The Knights of the Round-table: we don't say 'Ni!'"
     yield Class(test_name)
+
+
+@pytest.fixture()
+def test_full_class():
+    test_class = Class(test_class_data_set['loaded_dict']['name'])
+    for student in test_class_data_set['loaded_dict']['students']:
+        test_class.add_student(Student(**student))
+    return test_class
 
 
 @pytest.mark.parametrize(
