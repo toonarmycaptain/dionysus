@@ -161,7 +161,7 @@ class Class:
         :param json_data: str
         :return: Class object
         """
-        class_dict = json.load(json_data)
+        class_dict = json.loads(json_data)
         return Class.from_dict(class_dict)
 
     @classmethod
