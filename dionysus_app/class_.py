@@ -90,6 +90,10 @@ class Class:
 
     def __contains__(self, item: Union[str, Student]):
         """
+        Implement use of 'in' operator for membership testing or iterating over
+        students in the class eg:
+            name_str in instance_of_Class -> True/False
+            Student_instance in instance_of_Class -> True/False
 
         :param item: str or Student object
         :return: Bool
@@ -103,6 +107,22 @@ class Class:
         else:
             raise ValueError(f'Expected type str or Student: '
                              f'received type {type(item)}.')
+
+    def __iter__(self):
+        """
+        Implement use of 'for' operator for iterating over students in the
+        class eg:
+            for student in instance_of_Class: # do something
+             eg print(student.name)
+
+        :yield: Student object
+        """
+        return iter(self.students)
+        # Equivalent to:
+        # yield from self.students
+        # and:
+        # for student in self.students:
+        #     yield student
 
     def add_student(self, student: Student = None, **kwargs: Any):
         """
