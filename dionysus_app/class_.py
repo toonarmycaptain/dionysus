@@ -9,10 +9,6 @@ from dionysus_app.student import Student
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 
-# pre-commit note to self: uses
-#   - instantiate class without students and add students one by one
-#   - instantiate from JSON dict
-
 class Class:
     """
     Class to contain a class' data (ie student objects) and related methods.
@@ -43,12 +39,6 @@ class Class:
         else:
             self.students = []
 
-        # func return number of students in class
-        # return list of student names
-        # return list of student avatar paths
-        # method for adding or removing students
-        # 'save' method as well as or instead of
-        # implement default avatar at class level by initialising with None or path to app default avatar.
     @property
     def name(self):
         """
