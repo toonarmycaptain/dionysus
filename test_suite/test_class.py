@@ -249,3 +249,27 @@ class TestFromJson:
 
     def test_from_json_instantiation_full_class(self, test_full_class):
         assert Class.from_json(test_full_class.json_str_rep).json_dict() == test_full_class.json_dict()
+
+
+class TestFromFile:
+    def test_from_file_load_class_name_only(self, tmp_path,
+                                            test_class_name_only):
+        # Setup test data file:
+        class_data_file_name = test_class_name_only.path_safe_name + '.cdf'
+        class_data_file_path = tmp_path.joinpath(class_data_file_name)
+
+        with open(class_data_file_path, 'w+') as class_data_file:
+            class_data_file.write(test_class_name_only.json_str_rep)
+
+        assert Class.from_file(class_data_file_path).json_dict() == test_class_name_only.json_dict()
+
+    def test_from_file_load_full_class(self, tmp_path,
+                                       test_full_class):
+        # Setup test data file:
+        class_data_file_name = test_full_class.path_safe_name + '.cdf'
+        class_data_file_path = tmp_path.joinpath(class_data_file_name)
+
+        with open(class_data_file_path, 'w+') as class_data_file:
+            class_data_file.write(test_full_class.json_str_rep)
+
+        assert Class.from_file(class_data_file_path).json_dict() == test_full_class.json_dict()
