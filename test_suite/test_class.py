@@ -16,13 +16,11 @@ def test_class_name_only():
     """Returns empty class instantiated with name only."""
     test_class_name_only = Class(test_class_name_only_data_set['json_dict_rep']['name'])
 
-
     # Add attributes to test expected output.
     test_class_name_only.json_str_rep = test_class_name_only_data_set['json_str_rep']
-
     test_class_name_only.json_dict_rep = test_class_name_only_data_set['json_dict_rep']
 
-    yield test_class_name_only
+    return test_class_name_only
 
 @ pytest.fixture()
 def test_full_class():
