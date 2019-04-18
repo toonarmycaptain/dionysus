@@ -232,3 +232,20 @@ class TestToJsonStr:
 
     def test_test_full_class_to_json_str(self, test_full_class):
         assert test_full_class.to_json_str() == test_full_class_data_set['json_str_rep']
+
+
+class TestFromDict:
+    def test_from_dict_instantiation_class_name_only(self, test_class_name_only):
+
+        assert Class.from_dict(test_class_name_only.json_dict_rep).json_dict() == test_class_name_only.json_dict()
+
+    def test_from_dict_instantiation_full_class(self, test_full_class):
+        assert Class.from_dict(test_full_class.json_dict_rep).json_dict() == test_full_class.json_dict()
+
+
+class TestFromJson:
+    def test_from_json_instantiation_class_name_only(self, test_class_name_only):
+        assert Class.from_json(test_class_name_only.json_str_rep).json_dict() == test_class_name_only.json_dict()
+
+    def test_from_json_instantiation_full_class(self, test_full_class):
+        assert Class.from_json(test_full_class.json_str_rep).json_dict() == test_full_class.json_dict()
