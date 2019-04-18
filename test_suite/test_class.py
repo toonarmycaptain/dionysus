@@ -24,10 +24,14 @@ def test_class_name_only():
 
 @ pytest.fixture()
 def test_full_class():
-    test_class = Class(test_full_class_data_set['json_dict_rep']['name'])
+    test_full_class = Class(test_full_class_data_set['json_dict_rep']['name'])
     for student in test_full_class_data_set['json_dict_rep']['students']:
-        test_class.add_student(Student(**student))
-    return test_class
+        test_full_class.add_student(Student(**student))
+
+    test_full_class.json_str_rep = test_full_class_data_set['json_str_rep']
+    test_full_class.json_dict_rep = test_full_class_data_set['json_dict_rep']
+
+    return test_full_class
 
 
 @pytest.mark.parametrize(
