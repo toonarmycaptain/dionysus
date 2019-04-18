@@ -22,7 +22,8 @@ def test_class_name_only():
 
     return test_class_name_only
 
-@ pytest.fixture()
+
+@pytest.fixture()
 def test_full_class():
     test_full_class = Class(test_full_class_data_set['json_dict_rep']['name'])
     for student in test_full_class_data_set['json_dict_rep']['students']:
@@ -236,7 +237,6 @@ class TestToJsonStr:
 
 class TestFromDict:
     def test_from_dict_instantiation_class_name_only(self, test_class_name_only):
-
         assert Class.from_dict(test_class_name_only.json_dict_rep).json_dict() == test_class_name_only.json_dict()
 
     def test_from_dict_instantiation_full_class(self, test_full_class):
