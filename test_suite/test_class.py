@@ -8,20 +8,26 @@ from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 
 from test_suite.test_student import test_student_name_only, test_student_with_avatar_path
-from test_suite.testing_class_data import test_class_data_set
+from test_suite.testing_class_data import test_class_name_only_data_set, test_full_class_data_set
 
 
 @pytest.fixture()
 def test_class_name_only():
     """Returns empty class instantiated with name only."""
-    test_name = "The Knights of the Round-table: we don't say 'Ni!'"
-    yield Class(test_name)
+    test_class_name_only = Class(test_class_name_only_data_set['json_dict_rep']['name'])
 
 
-@pytest.fixture()
+    # Add attributes to test expected output.
+    test_class_name_only.json_str_rep = test_class_name_only_data_set['json_str_rep']
+
+    test_class_name_only.json_dict_rep = test_class_name_only_data_set['json_dict_rep']
+
+    yield test_class_name_only
+
+@ pytest.fixture()
 def test_full_class():
-    test_class = Class(test_class_data_set['loaded_dict']['name'])
-    for student in test_class_data_set['loaded_dict']['students']:
+    test_class = Class(test_full_class_data_set['json_dict_rep']['name'])
+    for student in test_full_class_data_set['json_dict_rep']['students']:
         test_class.add_student(Student(**student))
     return test_class
 
@@ -209,7 +215,7 @@ class TestJSONDict:
                                                     }
 
     def test_test_full_class_to_json_dict(self, test_full_class):
-        assert test_full_class.json_dict() == test_class_data_set['loaded_dict']
+        assert test_full_class.json_dict() == test_full_class_data_set['json_dict_rep']
 
 
 class TestToJsonStr:
@@ -220,11 +226,7 @@ class TestToJsonStr:
         on multiple lines as the {} not used by the fstring in JSON formatting
         raises errors. Also have to include \n in correct locations.
         """
-        assert test_class_name_only.to_json_str() == ('{\n'
-                                                      + f'    "name": "{test_class_name_only.name}",\n'
-                                                      + f'    "students": {test_class_name_only.students}\n'
-                                                      + '}'
-                                                      )
+        assert test_class_name_only.to_json_str() == test_class_name_only.json_str_rep
 
     def test_test_full_class_to_json_str(self, test_full_class):
-        assert test_full_class.to_json_str() == test_class_data_set['json_data_string']
+        assert test_full_class.to_json_str() == test_full_class_data_set['json_str_rep']
