@@ -201,4 +201,4 @@ class Class:
         """
         with open(Path(cdf_path)) as class_data_file:
             class_json = json.load(class_data_file)
-        return Class.from_json(class_json)
+        return Class.from_dict(class_json)
