@@ -115,6 +115,63 @@ class TestClassNameMocked(TestCase):
         mocked_clean_for_filename.assert_called_once_with(self.test_changed_name)
 
 
+class TestContainsMethod:
+    def test__contains__student_obj_in_class(self, test_student_name_only, test_class_name_only):
+        assert test_class_name_only.students == []  # No students in class
+        test_class_name_only.add_student(test_student_name_only)
+
+        assert test_student_name_only in test_class_name_only
+
+    def test__contains__student_obj_not_in_empty_class(self, test_student_name_only, test_class_name_only):
+        assert test_class_name_only.students == []  # No students in class
+
+        assert test_student_name_only not in test_class_name_only
+
+    def test__contains___str_name_in_class(self, test_class_name_only):
+        test_student_name = 'Mostly silly'
+        assert test_class_name_only.students == []  # No students in class
+        test_class_name_only.add_student(name=test_student_name)
+
+        assert test_student_name in test_class_name_only
+
+    def test__contains__fixture_student_name_in_class(self, test_student_name_only, test_class_name_only):
+        assert test_class_name_only.students == []  # No students in class
+        test_class_name_only.add_student(test_student_name_only)
+
+        assert test_student_name_only.name in test_class_name_only
+
+    def test__contains__str_name_in_full_class(self, test_full_class):
+        """Test with more than one student in class."""
+        test_student_name = 'Mostly silly'
+        test_full_class.add_student(name=test_student_name)
+
+        assert test_student_name in test_full_class
+
+    def test__contains__str_name_not_in_class(self, test_class_name_only):
+        assert test_class_name_only.students == []  # No students in class
+
+        assert 'Slightly silly' not in test_class_name_only
+
+    def test__contains__fixture_student_str_name_not_in_class(self, test_student_name_only, test_class_name_only):
+        assert test_class_name_only.students == []  # No students in class
+
+        assert test_student_name_only.name not in test_class_name_only
+
+    def test__contains__str_name_not_in_full_class(self, test_full_class):
+        """Test with more than one student in class."""
+        assert 'Some Name' not in test_full_class
+
+    @pytest.mark.parametrize(
+            'contains_arg',
+            [{'passing a dict': 'Some value'},  # dict
+             ['passing', 'a', 'list'],  # list
+             ('passed', 'tuple',),  # tuple
+             ])
+    def test_non_str_or_student_obj_arg_throws_valueerror(self, test_class_name_only, contains_arg):
+        with pytest.raises(ValueError, match=str(type(contains_arg))):
+            contains_arg in test_class_name_only
+
+
 class TestAddStudent:
     """Test Class.add_student method."""
 
