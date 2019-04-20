@@ -85,6 +85,15 @@ class Class:
             name_str in instance_of_Class -> True/False
             Student_instance in instance_of_Class -> True/False
 
+        NB if Student is imported via from student import Student, or in a
+        manner other than rather than from dionysus_app.student (as it is here
+        in class_.py), the comparison, will be between:
+            <class 'dionysus_app.student.Student'> and
+            <class 'student.Student'>
+        - and will return False even though the .__class__.__name__ and
+        .__class__.__qualname__ will both return 'Student'.
+
+
         :param item: str or Student object
         :return: Bool
         """
