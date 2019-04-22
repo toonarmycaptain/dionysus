@@ -5,6 +5,8 @@ from itertools import permutations
 from unittest import TestCase, mock
 from unittest.mock import patch
 
+from dionysus_app.class_ import Class
+from dionysus_app.student import Student
 from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_menu,
                                                       take_classlist_name_input,
                                                       display_student_selection_menu,
@@ -170,7 +172,7 @@ class TestTakeStudentNameInput(TestCase):
     def setUp(self):
         self.no_student_name = ''
         self.blank_student_name = '_'
-        self.preexisting_student = 'this student already exists in the class'
+        self.preexisting_student_name = 'this student already exists in the class'
         self.valid_new_student_name = 'this is a valid student_name'
 
         self.invalid_student_name_response = 'Please enter a valid student name.'
@@ -178,7 +180,7 @@ class TestTakeStudentNameInput(TestCase):
 
         self.test_case_inputs = [self.no_student_name,
                                  self.blank_student_name,
-                                 self.preexisting_student,
+                                 self.preexisting_student_name,
                                  self.valid_new_student_name,
                                  ]
 
@@ -187,13 +189,13 @@ class TestTakeStudentNameInput(TestCase):
                                  self.preexisting_student_response,
                                  ]
 
-        self.mock_class_data = {self.preexisting_student: ['some student data']}
+        self.test_class = Class(name='my_test_class', students=[Student(name=self.preexisting_student_name)])
 
     @patch('dionysus_app.UI_menus.class_functions_UI.print')
     def test_take_student_name_input(self, mocked_print):
         with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
             mock_input.side_effect = self.test_case_inputs
-            assert take_student_name_input(self.mock_class_data) == self.valid_new_student_name
+            assert take_student_name_input(self.test_class) == self.valid_new_student_name
 
             assert mocked_print.call_args_list == [mock.call(printed_string)
                                                    for printed_string in self.printed_feedback]
