@@ -14,10 +14,10 @@ def test_student_name_only():
 
 
 @pytest.fixture()
-def test_student_with_avatar_path():
+def test_student_with_avatar():
     test_name = 'Arthur, King of the Britons'
-    test_avatar_path = Path(r'path\to\avatar\for\Arthur')
-    yield Student(name=test_name, avatar_path=test_avatar_path)
+    test_avatar_filename = 'Arthur'
+    yield Student(name=test_name, avatar_filename=test_avatar_filename)
 
 
 class TestStudentName:
@@ -73,58 +73,48 @@ class TestStudentAvatar:
         class.  setup_method is invoked for every test method of a class.
         """
         self.test_name = 'Arthur, King of the Britons'
-        self.test_avatar_path_str = 'camelot'
-        self.test_avatar_path_path = Path('camelot')
+        self.test_avatar_filename = 'camelot.jpg'
 
     def test_no_avatar_on_instantiation(self, test_student_name_only):
-        assert test_student_name_only.avatar_path is None
+        assert test_student_name_only.avatar_filename is None
 
-    def test_change_avatar_passing_str(self, test_student_name_only):
-        assert test_student_name_only.avatar_path != self.test_avatar_path_path
+    def test_change_avatar(self, test_student_name_only):
+        assert test_student_name_only.avatar_filename != self.test_avatar_filename
 
-        test_student_name_only.avatar_path = self.test_avatar_path_path
+        test_student_name_only.avatar_filename = self.test_avatar_filename
 
-        assert isinstance(test_student_name_only.avatar_path, Path)
-        assert test_student_name_only.avatar_path == self.test_avatar_path_path
+        assert isinstance(test_student_name_only.avatar_filename, str)
+        assert test_student_name_only.avatar_filename == self.test_avatar_filename
 
     def test_change_avatar_passing_path(self, test_student_name_only):
-        assert test_student_name_only.avatar_path != self.test_avatar_path_path
+        assert test_student_name_only.avatar_filename != self.test_avatar_filename
 
-        test_student_name_only.avatar_path = self.test_avatar_path_path
+        test_student_name_only.avatar_filename = self.test_avatar_filename
 
-        assert isinstance(test_student_name_only.avatar_path, Path)
-        assert test_student_name_only.avatar_path == self.test_avatar_path_path
+        assert isinstance(test_student_name_only.avatar_filename, str)
+        assert test_student_name_only.avatar_filename == self.test_avatar_filename
 
-    # Test instantiate with avatar_path:
+    # Test instantiate with avatar_filename:
 
-    def test_instantiate_with_avatar_path_str(self):
+    def test_instantiate_with_avatar_filename(self):
         test_instantiate_student_with_avatar = Student(self.test_name,
-                                                       avatar_path=self.test_avatar_path_str)
+                                                       avatar_filename=self.test_avatar_filename)
 
-        assert test_instantiate_student_with_avatar.avatar_path == self.test_avatar_path_path
+        assert test_instantiate_student_with_avatar.avatar_filename == self.test_avatar_filename
 
-        assert isinstance(test_instantiate_student_with_avatar.avatar_path, Path)
-
-    def test_instantiate_with_avatar_path_path(self):
-        test_instantiate_student_with_avatar = Student(self.test_name,
-                                                       avatar_path=self.test_avatar_path_path)
-
-        assert test_instantiate_student_with_avatar.avatar_path == self.test_avatar_path_path
-
-        assert isinstance(test_instantiate_student_with_avatar.avatar_path, Path)
+        assert isinstance(test_instantiate_student_with_avatar.avatar_filename, str)
 
 
 class TestStudentJsonDict:
     @pytest.mark.parametrize(
         'student_object,output_json',
         [(Student('Sir Galahad'), {'name': 'Sir Galahad'}),  # name only
-         (Student('Sir Lancelot: the Brave', avatar_path=None), {'name': 'Sir Lancelot: the Brave'}),
-         # use str(Path()) to be sys agnostic.
-         (Student('Arther, King of the Britons', avatar_path='Holy\\Grail'),
-          {'name': 'Arther, King of the Britons', 'avatar_path': str(Path('Holy\\Grail'))}
+         (Student('Sir Lancelot: the Brave', avatar_filename=None), {'name': 'Sir Lancelot: the Brave'}),
+         (Student('Arther, King of the Britons', avatar_filename='Holy_Grail.jpg'),
+          {'name': 'Arther, King of the Britons', 'avatar_filename': 'Holy_Grail.jpg'}
           ),
-         (Student('Brian', avatar_path=Path('a\\naughty\\boy')),
-          {'name': 'Brian', 'avatar_path': str(Path('a\\naughty\\boy'))}),
+         (Student('Brian', avatar_filename='a_naughty_boy.png'),
+          {'name': 'Brian', 'avatar_filename': 'a_naughty_boy.png'}),
          ])
     def test_json_dict(self, student_object, output_json):
         assert student_object.json_dict() == output_json
@@ -135,9 +125,8 @@ class TestStudentFromDict:
         'output_json_dict',
         [({'name': 'Sir Galahad'}),  # name only
          ({'name': 'Sir Lancelot: the Brave'}),
-         # use str(Path()) to be sys agnostic.
-         ({'name': 'Arther, King of the Britons', 'avatar_path': str(Path('Holy\\Grail'))}),
-         ({'name': 'Brian', 'avatar_path': str(Path('a//naughty//boy'))}),
+         ({'name': 'Arther, King of the Britons', 'avatar_filename': 'Holy_Grail.jpg'}),
+         ({'name': 'Brian', 'avatar_filename': 'a_naughty_boy.png'}),
          ])
     def test_from_dict(self, output_json_dict):
         student_object = Student.from_dict(output_json_dict)
@@ -147,20 +136,20 @@ class TestStudentFromDict:
 
         # Test attributes
         assert student_object.name == output_json_dict['name']
-        if output_json_dict.get('avatar_path') is not None:
-            assert str(student_object.avatar_path) == output_json_dict['avatar_path']
+        if output_json_dict.get('avatar_filename') is not None:
+            assert str(student_object.avatar_filename) == output_json_dict['avatar_filename']
 
 
 class TestStudentRepr:
     @pytest.mark.parametrize('student_object',
                              [Student(name='I have no avatar!'),
-                              Student(name='I have an avatar', avatar_path='path_to_my_avatar'),
+                              Student(name='I have an avatar', avatar_filename='my_avatar_filename.png'),
                               ])
     def test_repr(self, student_object):
         assert repr(student_object) == (f'{student_object.__class__.__module__}'
                                         f'.{student_object.__class__.__name__}('
                                         f'name={student_object._name!r}, '
-                                        f'avatar_path={student_object._avatar_path!r})')
+                                        f'avatar_filename={student_object._avatar_filename!r})')
 
 
 class TestStudentStr:
@@ -169,8 +158,8 @@ class TestStudentStr:
         'expected_str',
         [(Student(name='I have no avatar!'),
           f"Student {'I have no avatar!'}, with no avatar."),
-         (Student(name='I have an avatar', avatar_path='path_to_my_avatar'),
+         (Student(name='I have an avatar', avatar_filename='path_to_my_avatar'),
           f"Student {'I have an avatar'}, with avatar {'path_to_my_avatar'}."),
          ])
-    def test_str(self, student_object, expected_str, test_student_name_only, test_student_with_avatar_path):
+    def test_str(self, student_object, expected_str, test_student_name_only, test_student_with_avatar):
         assert str(student_object) == expected_str

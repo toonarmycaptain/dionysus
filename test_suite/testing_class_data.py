@@ -84,7 +84,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '    "students": [\n'
                                         '        {\n'
                                         '            "name": "Cali",\n'
-                                        '            "avatar_path": "Cali_avatar.png"\n'
+                                        '            "avatar_filename": "Cali_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Monty"\n'
@@ -94,7 +94,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Zach",\n'
-                                        '            "avatar_path": "Zach_avatar.png"\n'
+                                        '            "avatar_filename": "Zach_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Janell"\n'
@@ -110,7 +110,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Ashley",\n'
-                                        '            "avatar_path": "Ashley_avatar.png"\n'
+                                        '            "avatar_filename": "Ashley_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Alex"\n'
@@ -122,7 +122,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '            "name": "Edgar"\n'
                                         '        },\n        {\n'
                                         '            "name": "Danielle",\n'
-                                        '            "avatar_path": "Danielle.png"\n'
+                                        '            "avatar_filename": "Danielle.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Kayla"\n'
@@ -135,19 +135,19 @@ test_full_class_data_set_json_string = ('{\n'
                                         )
 
 test_full_class_data_set_json_dict = {'name': 'test_class',
-                                      'students': [{'name': 'Cali', 'avatar_path': 'Cali_avatar.png'},
+                                      'students': [{'name': 'Cali', 'avatar_filename': 'Cali_avatar.png'},
                                                    {'name': 'Monty'},
                                                    {'name': 'Abby'},
-                                                   {'name': 'Zach', 'avatar_path': 'Zach_avatar.png'},
+                                                   {'name': 'Zach', 'avatar_filename': 'Zach_avatar.png'},
                                                    {'name': 'Janell'},
                                                    {'name': 'Matthew'},
                                                    {'name': 'Olivia'},
                                                    {'name': 'Regina'},
-                                                   {'name': 'Ashley', 'avatar_path': 'Ashley_avatar.png'},
+                                                   {'name': 'Ashley', 'avatar_filename': 'Ashley_avatar.png'},
                                                    {'name': 'Alex'},
                                                    {'name': 'Melissa'},
                                                    {'name': 'Edgar'},
-                                                   {'name': 'Danielle', 'avatar_path': 'Danielle.png'},
+                                                   {'name': 'Danielle', 'avatar_filename': 'Danielle.png'},
                                                    {'name': 'Kayla'},
                                                    {'name': 'Jaleigh'}]}
 

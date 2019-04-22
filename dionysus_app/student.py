@@ -1,6 +1,5 @@
 """Class for student."""
 
-from pathlib import Path
 from typing import Union, Any
 
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
@@ -19,8 +18,9 @@ class Student:
     path_safe_name : str
         Cleaned string safe to use in file names and paths.
 
-    avatar_path : Path or None
-        Path to student's avatar.
+
+    avatar_filename : sre or None
+        Filename of student's avatar.
 
 
     Methods
@@ -41,13 +41,13 @@ class Student:
         :param name: The student's name.
         :type name: str
 
-        :keyword avatar_path: Path to the student's avatar.
-        :type avatar_path: Path or str
+        :keyword avatar_filename: Filename of student's avatar.
+        :type avatar_filename: str
         """
         self.name = name
 
-        self.avatar_path = kwargs.get('avatar_path')  # Equivalent to kwargs.get('avatar_path', None)
-        # NB Assuring existence is responsibility of code instantiating/adding avatar_path.
+        self.avatar_filename = kwargs.get('avatar_filename')  # Equivalent to kwargs.get('avatar_filename', None)
+        # NB Assuring existence is responsibility of code instantiating/adding avatar_filename.
 
     @property
     def name(self):
@@ -78,41 +78,40 @@ class Student:
         self._name = name
 
     @property
-    def avatar_path(self):
+    def avatar_filename(self):
         """
         Get avatar path.
 
-        :return: Path or None
+        :return: str or None
         """
-        return self._avatar_path
+        return self._avatar_filename
 
-    @avatar_path.setter
-    def avatar_path(self, avatar_path: Union[Path, str] = None):
+    @avatar_filename.setter
+    def avatar_filename(self, avatar_filename: str = None):
         """
-        Set _avatar_path. Ensure saved value is Path object, otherwise None.
+        Set _avatar_filename, defaults to None.
 
-        :param avatar_path: Path, str, or None.
+        :param avatar_filename: str or None.
         :return: None
         """
-        self._avatar_path: Union[Path, None]
-        if avatar_path:
+        self._avatar_filename: Union[str, None]
+        if avatar_filename:
 
-            self._avatar_path = Path(avatar_path)
+            self._avatar_filename = avatar_filename
         else:
-            self._avatar_path = None
+            self._avatar_filename = None
 
     def json_dict(self):
         """
         Translates Student object into JSON-serialisable dict.
 
-        Captures name, avatar_path attributes.
-        Path is converted to string.
+        Captures name, avatar_filename attributes.
 
         :return: dict
         """
         json_data = {'name': self._name}
-        if self._avatar_path:
-            json_data['avatar_path'] = str(self._avatar_path)
+        if self._avatar_filename:
+            json_data['avatar_filename'] = str(self._avatar_filename)
         return json_data
 
     # Alternate constructors
@@ -124,26 +123,26 @@ class Student:
 
         Dict must have keys corresponding to arguments to Student.__init__:
         'name' : str
-        'avatar_path' : Path/str/None (optional, defaults to None).
+        'avatar_filename' : str/None (optional, defaults to None).
 
         :param student_dict: dict
         :return: Student object
         """
         _name = student_dict['name']
-        _avatar_path = student_dict.get('avatar_path', None)
+        _avatar_filename = student_dict.get('avatar_filename', None)
         return Student(name=_name,
-                       avatar_path=_avatar_path,
+                       avatar_filename=_avatar_filename,
                        )
 
     # String representations
     def __repr__(self):
         repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
                     f'name={self._name!r}, '
-                    f'avatar_path={self._avatar_path!r}'
+                    f'avatar_filename={self._avatar_filename!r}'
                     f')'
                     )
         return repr_str
 
     def __str__(self):
-        avatar_stmt = f'avatar {self.avatar_path}' if self.avatar_path is not None else 'no avatar'
+        avatar_stmt = f'avatar {self.avatar_filename}' if self.avatar_filename is not None else 'no avatar'
         return f'Student {self.name}, with {avatar_stmt}.'

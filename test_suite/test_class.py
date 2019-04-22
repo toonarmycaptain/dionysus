@@ -7,7 +7,7 @@ from unittest.mock import patch
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 
-from test_suite.test_student import test_student_name_only, test_student_with_avatar_path
+from test_suite.test_student import test_student_name_only, test_student_with_avatar
 from test_suite.testing_class_data import test_class_name_only_data_set, test_full_class_data_set
 
 
@@ -195,31 +195,31 @@ class TestAddStudent:
     def test_add_multiple_students(self,
                                    test_class_name_only,
                                    test_student_name_only,
-                                   test_student_with_avatar_path):
+                                   test_student_with_avatar):
         # Ensure empty class and students are student object.
         assert test_class_name_only.students == []
         assert isinstance(test_student_name_only, Student)
-        assert isinstance(test_student_with_avatar_path, Student)
+        assert isinstance(test_student_with_avatar, Student)
 
         test_class_name_only.add_student(test_student_name_only)
-        test_class_name_only.add_student(test_student_with_avatar_path)
+        test_class_name_only.add_student(test_student_with_avatar)
 
         assert test_class_name_only.students == [test_student_name_only,
-                                                 test_student_with_avatar_path]
+                                                 test_student_with_avatar]
 
     def test_add_student_with_kwargs(self,
                                      test_class_name_only,
-                                     test_student_with_avatar_path):
+                                     test_student_with_avatar):
         # Ensure class initially empty.
         assert test_class_name_only.students == []
 
-        test_class_name_only.add_student(name=test_student_with_avatar_path.name,
-                                         avatar_path=test_student_with_avatar_path.avatar_path)
+        test_class_name_only.add_student(name=test_student_with_avatar.name,
+                                         avatar_filename=test_student_with_avatar.avatar_filename)
 
         assert len(test_class_name_only.students) is 1
         # Test student attributes are as expected
-        assert test_class_name_only.students[0].name == test_student_with_avatar_path.name
-        assert test_class_name_only.students[0].avatar_path == test_student_with_avatar_path.avatar_path
+        assert test_class_name_only.students[0].name == test_student_with_avatar.name
+        assert test_class_name_only.students[0].avatar_filename == test_student_with_avatar.avatar_filename
 
     @pytest.mark.parametrize('student_arg',
                              ['student name',  # string
@@ -250,13 +250,13 @@ class TestAddStudent:
                               ['passing', 'a', 'list'],  # list
                               ('passed', 'tuple',),  # tuple
                               test_student_name_only,  # Student object
-                              test_student_with_avatar_path,  # Student object
+                              test_student_with_avatar,  # Student object
                               ])
     def test_add_student_with_non_str_name_kwarg(self,
                                                  test_class_name_only,
                                                  name_arg,
                                                  test_student_name_only,
-                                                 test_student_with_avatar_path,
+                                                 test_student_with_avatar,
                                                  ):
         """
         Test Class.add_student(name=) argument.
