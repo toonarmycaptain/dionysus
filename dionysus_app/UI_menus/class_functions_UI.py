@@ -1,4 +1,5 @@
 """UI elements for class_functions"""
+from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import classlist_exists
 from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
                                                 input_is_essentially_blank,
@@ -28,12 +29,14 @@ def take_classlist_name_input():
     return classlist_name
 
 
-def take_student_name_input(class_data: dict):
+def take_student_name_input(the_class: Class):
     """
-    Prompts user for student name.
-    Class data is a dict with student names as keys.
+    Prompts user for student name, checks if student name is a valid name, or
+    is already in the class, prompting to enter a different name if this is the
+    case.
 
-    :param class_data: dict
+
+    :param class_data: Class object
     :return: str
     """
     while True:
@@ -42,7 +45,7 @@ def take_student_name_input(class_data: dict):
             print('Please enter a valid student name.')
             continue
 
-        if student_name in class_data:
+        if student_name in the_class:
             print("This student is already a member of the class.")
             continue
         return student_name
