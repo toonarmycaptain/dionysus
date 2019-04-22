@@ -169,7 +169,13 @@ class TestContainsMethod:
              ])
     def test_non_str_or_student_obj_arg_throws_valueerror(self, test_class_name_only, contains_arg):
         with pytest.raises(ValueError, match=str(type(contains_arg))):
-            contains_arg in test_class_name_only
+            confirm = contains_arg in test_class_name_only
+            assert confirm is not True
+
+
+class TestIterMethod:
+    def test_iter_method_returns_iterator(self, test_class_name_only):
+        assert isinstance(test_class_name_only.__iter__(), type([].__iter__()))
 
 
 class TestAddStudent:
