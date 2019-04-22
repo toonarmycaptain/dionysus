@@ -2,8 +2,6 @@
 
 from typing import Union, Any
 
-from dionysus_app.UI_menus.UI_functions import clean_for_filename
-
 
 class Student:
     """
