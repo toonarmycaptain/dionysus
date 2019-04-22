@@ -167,7 +167,7 @@ class TestContainsMethod:
              ['passing', 'a', 'list'],  # list
              ('passed', 'tuple',),  # tuple
              ])
-    def test_non_str_or_student_obj_arg_throws_valueerror(self, test_class_name_only, contains_arg):
+    def test_non_str_or_student_obj_arg_throws_value_error(self, test_class_name_only, contains_arg):
         with pytest.raises(ValueError, match=str(type(contains_arg))):
             confirm = contains_arg in test_class_name_only
             assert confirm is not True
