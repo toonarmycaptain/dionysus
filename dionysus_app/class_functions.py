@@ -295,7 +295,3 @@ def edit_classlist():
     classlist_name = take_classlist_name_input()
     with open(classlist_name + '.txt', 'r+') as classlist_file:
         pass
-
-
-if __name__ == '__main__':
-    create_classlist()
