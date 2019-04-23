@@ -66,17 +66,17 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
             'mock_input_is_essentially_blank_return': False,
             'mock_classlist_exists_return': True,
             'mock_print_calls': [self.classlist_exists_response],
-            }
+        }
         self.valid_new_classname = {
             'classlist_name': 'this_is_a_valid_class_name',
             'mock_input_is_essentially_blank_return': False,
             'mock_classlist_exists_return': False,
-            }
+        }
         self.blank_classname = {
             'classlist_name': '__blank_classname__',
             'mock_input_is_essentially_blank_return': True,
             'mock_print_calls': [],
-            }
+        }
 
         self.test_case_inputs = [self.blank_classname, self.preexisting_class, self.valid_new_classname]
 
@@ -446,7 +446,6 @@ class TestSelectAvatarFileDialogue(TestCase):
 
     @patch('dionysus_app.UI_menus.class_functions_UI.select_file_dialogue')
     def test_select_avatar_file_dialogue(self, mocked_select_file_dialogue):
-
         mocked_select_file_dialogue.return_value = self.my_avatar_path
 
         assert select_avatar_file_dialogue() == self.my_avatar_path
