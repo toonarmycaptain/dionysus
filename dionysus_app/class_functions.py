@@ -37,7 +37,7 @@ def create_classlist():
     create_classlist_data(classlist_name)
 
 
-def setup_class(classlist_name):  # TODO: change name because of clash with python 'class' keyword?
+def setup_class(classlist_name):
     """
     Setup class data storage file structure.
     Register class in class_registry index
