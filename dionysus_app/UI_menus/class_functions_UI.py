@@ -36,7 +36,7 @@ def take_student_name_input(the_class: Class):
     case.
 
 
-    :param class_data: Class object
+    :param the_class: Class object
     :return: str
     """
     while True:
@@ -62,20 +62,19 @@ def blank_class_dialogue():
         print('Please enter y for yes to create empty class, or n to return to student input.')
 
 
-def class_data_feedback(classlist_name: str, class_data_dict: dict):
+def class_data_feedback(current_class: Class):
     """
     Print classlist name and list of students as user feedback.
 
-    :param classlist_name: str
-    :param class_data_dict: dict
+    :param current_class: Class object
     :return: None
     """
-    print(f'\nClass name: {classlist_name}')
-    if not class_data_dict:
+    print(f'\nClass name: {current_class.name}')
+    if not current_class.students:
         print("No students entered.")
     else:
-        for key in class_data_dict:
-            print(key)
+        for student in current_class:
+            print(student.name)
 
 
 def display_class_selection_menu(class_options: dict):

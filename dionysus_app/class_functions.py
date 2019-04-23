@@ -8,6 +8,7 @@ from pathlib import Path
 
 import definitions
 
+from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import (convert_to_json,
@@ -73,10 +74,10 @@ def setup_class_data_storage(classlist_name: str):
 
 
 def create_classlist_data(class_name: str):
-    class_data = compose_classlist_dialogue(class_name)
+    new_class = compose_classlist_dialogue(class_name)
 
-    class_data_feedback(class_name, class_data)
-    write_classlist_to_file(class_name, class_data)
+    class_data_feedback(new_class)
+    write_classlist_to_file(new_class)
     time.sleep(2)  # Pause for user to look over feedback.
 
 
@@ -101,14 +102,14 @@ def take_class_data_input(class_name):
 
     :return: dict
     """
-    class_data = {}
+    new_class = Class(name=class_name)
     while True:
-        student_name = take_student_name_input(class_data)
+        student_name = take_student_name_input(new_class)
         if student_name.upper() == 'END':
             break
         avatar_filename = take_student_avatar(class_name, student_name)
-        class_data[student_name] = [avatar_filename]
-    return class_data
+        new_class.add_student(name=student_name, avatar_filename=avatar_filename)
+    return new_class
 
 
 def take_student_avatar(class_name, student_name):
@@ -126,6 +127,7 @@ def take_student_avatar(class_name, student_name):
 
     cleaned_student_name = clean_for_filename(student_name)
     target_avatar_filename = f'{cleaned_student_name}.png'
+    # TODO: append hash to filename to prevent name collisions eg cleaned versions of 'a_b.jpg' and 'a b.jpg' will be identical.
 
     # TODO: process_student_avatar()
     # TODO: convert to png
@@ -158,24 +160,23 @@ def avatar_file_exists(avatar_file):
     return Path(avatar_file).expanduser().resolve().exists()
 
 
-def write_classlist_to_file(class_name: str, class_data_dict: dict):
+def write_classlist_to_file(current_class: Class):
     """
-    Write classlist data to disk with format:
+    Write classlist data to disk as JSON dict, according to Class object's
+    Class.json_dict and Class.to_json_str methods.
 
-    JSON'd class data dict  # Second line, when reading JSON back in.
+    CAUTION: conversion to JSON will convert int/float keys to strings, and
+    keep them as strings when loading.
 
-    CAUTION: conversion to JSON will convert int/float keys in score_avatar_dict
-    to strings, and keep them as strings when loading.
-
-    :param class_name: str
-    :param class_data_dict: dict
+    :param current_class: Class object
     :return: None
     """
-    data_file = class_name + CLASSLIST_DATA_FILE_TYPE
-    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, data_file)
+    class_name = current_class.name
+    data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
+    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, data_filename)
 
-    json_class_data = convert_to_json(class_data_dict)
-
+    json_class_data = current_class.to_json_str()
+    assert isinstance(json_class_data, str)
     with open(classlist_data_path, 'w') as classlist_file:
         classlist_file.write(json_class_data)
 

@@ -17,6 +17,7 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       take_student_selection,
                                                       select_avatar_file_dialogue,
                                                       )
+from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
                                            testing_class_data_set as test_class_data_set,
@@ -245,35 +246,29 @@ class TestBlankClassDialogue(TestCase):
                     mock_input.reset_mock(return_value=True, side_effect=True)
 
 
-class TestClassDataFeedback(TestCase):
-    def setUp(self):
-        # Normal class data:
-        self.test_class_name = 'the knights of the round table'
-        self.test_class_data_dict = test_class_data_set['loaded_dict']
-        # Class created without students:
-        self.empty_class_data_dict = {}
-        self.empty_class_feedback = 'No students entered.'
+class TestClassDataFeedback:
+    """
+    NB These tests are kinda fragile because of necessity to append the '\n's
+    in the correct places. Currently function is including a newline before
+    the class name, but the rest are supplied by the multiple calls to
+    print(), hence needing to include them manually when simply capturing
+    what is passed to print.
+    """
 
-    def test_class_data_feedback(self):
-        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
+    def test_class_data_feedback(self, test_full_class, capsys):
+        printed_strings = [f'\nClass name: {test_full_class.name}\n'] + [student.name + '\n' for student in
+                                                                         test_full_class]
+        class_data_feedback(test_full_class)
+        captured = capsys.readouterr().out
+        assert captured == ''.join(printed_strings)
 
-            printed_strings = [f'\nClass name: {self.test_class_name}'] + [name for name in test_class_data_set['loaded_dict']]
+    def test_class_data_feedback_with_empty_class(self, test_class_name_only, capsys):
+        empty_class_feedback = 'No students entered.'
 
-            class_data_feedback(self.test_class_name, self.test_class_data_dict)
-
-            assert mocked_print.call_args_list == [mock.call(printed_string) for printed_string in printed_strings]
-
-    def test_class_data_feedback_with_empty_class(self):
-        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
-
-            printed_strings = [f'\nClass name: {self.test_class_name}'] + [self.empty_class_feedback]
-            assert printed_strings == [f'\nClass name: {self.test_class_name}',
-                                       self.empty_class_feedback]  # ie No student names.
-
-            class_data_feedback(self.test_class_name, self.empty_class_data_dict)
-
-            assert mocked_print.call_args_list == [mock.call(printed_string)
-                                                   for printed_string in printed_strings]
+        printed_strings = [f'\nClass name: {test_class_name_only.name}\n{empty_class_feedback}\n']
+        class_data_feedback(test_class_name_only)
+        captured = capsys.readouterr().out
+        assert captured == ''.join(printed_strings)
 
 
 class TestDisplayClassSelectionMenu(TestCase):

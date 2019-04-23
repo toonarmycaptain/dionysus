@@ -5,6 +5,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from dionysus_app.class_ import Class
+from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
 
 from test_suite.test_student import test_student_name_only, test_student_with_avatar
@@ -296,6 +297,9 @@ class TestToJsonStr:
 
     def test_test_full_class_to_json_str(self, test_full_class):
         assert test_full_class.to_json_str() == test_full_class_data_set['json_str_rep']
+
+    def test_to_json_str_is_equivalent_to_converting_dict_directly(self, test_full_class):
+        assert convert_to_json(test_full_class.json_dict()) == test_full_class.to_json_str()
 
 
 class TestFromDict:

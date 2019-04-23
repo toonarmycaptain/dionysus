@@ -8,6 +8,7 @@ from unittest.mock import patch, mock_open
 
 from unittest import mock, TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 
+from dionysus_app.class_ import Class
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           copy_avatar_to_app_data,
                                           create_classlist,
@@ -24,7 +25,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
 
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
                                            testing_registry_data_set as test_registry_data_set,
-                                           )
+                                           test_full_class_data_set)
 
 
 class TestCreateClasslist(TestCase):
@@ -91,8 +92,9 @@ class TestSetupClassDataStorage(TestCase):
 
 class TestCreateClasslistData(TestCase):
     def setUp(self):
-        self.test_classname = 'hells grannys'
-        self.test_class_data = test_class_data_set['loaded_dict']
+        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
+        self.test_classname = self.test_class_json_dict['name']
+        self.test_class_object = Class.from_dict(self.test_class_json_dict)
 
     @patch('dionysus_app.class_functions.compose_classlist_dialogue')
     @patch('dionysus_app.class_functions.class_data_feedback')
@@ -103,12 +105,13 @@ class TestCreateClasslistData(TestCase):
                                    mock_write_classlist_to_file,
                                    mock_class_data_feedback,
                                    mock_compose_classlist_dialogue):
-        mock_compose_classlist_dialogue.return_value = self.test_class_data
+
+        mock_compose_classlist_dialogue.return_value = self.test_class_object
         assert create_classlist_data(self.test_classname) is None
 
         mock_compose_classlist_dialogue.assert_called_once_with(self.test_classname)
-        mock_class_data_feedback.assert_called_once_with(self.test_classname, self.test_class_data)
-        mock_write_classlist_to_file.assert_called_once_with(self.test_classname, self.test_class_data)
+        mock_class_data_feedback.assert_called_once_with(self.test_class_object)
+        mock_write_classlist_to_file.assert_called_once_with(self.test_class_object)
         mock_time_sleep.assert_called_once_with(2)
 
 
@@ -202,10 +205,13 @@ class TestWriteClasslistToFile(TestCase):
     def setUp(self):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
         self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
-        self.test_class_name = 'test_classname'
-        self.test_class_json_string = test_class_data_set['json_data_string']
-        self.test_class_data_dict = test_class_data_set['loaded_dict']
 
+        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
+        self.test_class_name = self.test_class_json_dict['name']
+
+        self.test_class_object = Class.from_dict(self.test_class_json_dict)
+
+        # Build save file path
         self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
         self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
         self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
@@ -215,24 +221,16 @@ class TestWriteClasslistToFile(TestCase):
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
     def test_write_classlist_to_file(self):
-        assert write_classlist_to_file(self.test_class_name, self.test_class_data_dict) is None
+        # Assert precondition:
+        assert not os.path.exists(self.test_class_data_file_path)
+
+        assert write_classlist_to_file(self.test_class_object) is None
+
+        # Assert file created:
         assert os.path.exists(self.test_class_data_file_path)
-
+        # Verify file contents:
         with open(self.test_class_data_file_path, 'r') as test_class_data_file:
-            assert test_class_data_file.read() == self.test_class_json_string
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
-    @patch('dionysus_app.class_functions.convert_to_json')
-    def test_write_classlist_to_file_mocking_convert_to_json(self, mocked_convert_to_json):
-        mocked_convert_to_json.return_value = self.test_class_json_string
-
-        assert write_classlist_to_file(self.test_class_name, self.test_class_data_dict) is None
-        assert os.path.exists(self.test_class_data_file_path)
-
-        with open(self.test_class_data_file_path, 'r') as test_class_data_file:
-            assert test_class_data_file.read() == self.test_class_json_string
-        mocked_convert_to_json.assert_called_once_with(self.test_class_data_dict)
+            assert test_class_data_file.read() == self.test_class_object.to_json_str()
 
     def tearDown(self):
         os.remove(self.test_class_data_file_path)
@@ -248,29 +246,28 @@ class TestWriteClasslistToFileMockingCalledFunctions(TestCase):
     def setUp(self):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
         self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
-        self.test_class_name = 'test_classname'
-        self.test_class_json_string = test_class_data_set['json_data_string']
-        self.test_class_data_dict = test_class_data_set['loaded_dict']
 
+        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
+        self.test_class_name = self.test_class_json_dict['name']
+
+        self.test_class_object = Class.from_dict(self.test_class_json_dict)
+
+        # Build save file path
         self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
         self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
         self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
-    @patch('dionysus_app.class_functions.convert_to_json')
-    def test_write_classlist_to_file_mocking_called_functions(self, mocked_convert_to_json):
-        mocked_convert_to_json.return_value = self.test_class_json_string
-
+    def test_write_classlist_to_file_mocking_open(self):
         mocked_open = mock_open()
         with patch('dionysus_app.class_functions.open', mocked_open):
-            assert write_classlist_to_file(self.test_class_name, self.test_class_data_dict) is None
+            assert write_classlist_to_file(self.test_class_object) is None
 
-            mocked_convert_to_json.assert_called_once_with(self.test_class_data_dict)
             mocked_open.assert_called_once_with(self.test_class_data_file_path, 'w')
 
             opened_test_class_data_file = mocked_open()
-            opened_test_class_data_file.write.assert_called_with(self.test_class_json_string)
+            opened_test_class_data_file.write.assert_called_with(self.test_class_object.to_json_str())
 
 
 class TestCreateClassListDict(TestCase):
