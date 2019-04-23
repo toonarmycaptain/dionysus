@@ -20,14 +20,14 @@ testing_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 'Monty': [Non
 
 testing_class_data_set_enumerated_dict = {1: 'Cali', 2: 'Monty', 3: 'Abby', 4: 'Zach', 5: 'Janell', 6: 'Matthew',
                                           7: 'Olivia', 8: 'Regina', 9: 'Ashley', 10: 'Alex', 11: 'Melissa', 12: 'Edgar',
-                                          13: 'Danielle', 14: 'Kayla', 15: 'Jaleigh'
+                                          13: 'Danielle', 14: 'Kayla', 15: 'Jaleigh',
                                           }
 
 testing_class_data_set = {
     'json_data_string': testing_class_data_set_json_string,
     'loaded_dict': testing_class_data_set_loaded_dict,
     'enumerated_dict': testing_class_data_set_enumerated_dict,
-    }
+}
 
 """
 test_display_student_selection_menu_enum_student_output equivalent to:
