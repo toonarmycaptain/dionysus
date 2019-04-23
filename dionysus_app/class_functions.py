@@ -225,6 +225,8 @@ def create_student_list_dict(class_name: str):
     """
     Create dict with enumerated students, starting at 1.
 
+    CONSIDER DEPRECIATED GOING FORWARD, as for most all use cases, class will
+    already be loaded when this is needed.
 
     :param class_name: str
     :return: dict
@@ -238,7 +240,6 @@ def create_student_list_dict(class_name: str):
 def load_class_from_disk(class_name: str):
     """
     Load class data from a class data ('.cld') file, return Class object.
-
 
     :param class_name: str
     :return: Class object
