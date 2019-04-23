@@ -230,28 +230,26 @@ def create_student_list_dict(class_name: str):
     :param class_name: str
     :return: dict
     """
-    class_data = load_class_data(class_name)
-    student_list_dict = {option: student_name for option, student_name in enumerate(class_data, start=1)}
+    loaded_class = load_class_from_disk(class_name)
+    student_list_dict = {option: student.name
+                         for option, student in enumerate(loaded_class.students, start=1)}
     return student_list_dict
 
 
-def load_class_data(class_name: str):
+def load_class_from_disk(class_name: str):
     """
-    Load class data from a class data ('.cld') file.
+    Load class data from a class data ('.cld') file, return Class object.
 
-    Data will be a dict with format:
-                                keys: student name
-                                values: list currently only containing the avatar filename/None.
 
     :param class_name: str
-    :return: dict
+    :return: Class object
     """
 
     class_data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
     classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, class_data_filename)
 
-    class_data_dict = load_from_json_file(classlist_data_path)
-    return class_data_dict
+    loaded_class = Class.from_file(classlist_data_path)
+    return loaded_class
 
 
 def load_chart_data(chart_data_path: str):

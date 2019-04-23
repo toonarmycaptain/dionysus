@@ -16,7 +16,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           create_class_list_dict,
                                           create_student_list_dict,
                                           get_avatar_path,
-                                          load_class_data,
+                                          load_class_from_disk,
                                           setup_class,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
@@ -239,7 +239,7 @@ class TestWriteClasslistToFile(TestCase):
         assert not os.path.exists(self.test_class_data_path)
 
 
-class TestWriteClasslistToFileMockingCalledFunctions(TestCase):
+class TestWriteClasslistToFileMockingOpen(TestCase):
     mock_CLASSLIST_DATA_PATH = Path('.')
     mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
@@ -284,47 +284,55 @@ class TestCreateClassListDict(TestCase):
 
 class TestCreateStudentListDict(TestCase):
     def setUp(self):
-        self.class_data_dict = test_class_data_set['loaded_dict']
-        self.enumerated_class_data_dict = test_class_data_set['enumerated_dict']
+        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
+        self.test_class_name = self.test_class_json_dict['name']
 
-    @patch('dionysus_app.class_functions.load_class_data')
+        self.test_class_object = Class.from_dict(self.test_class_json_dict)
+        self.enumerated_test_class_students_dict = test_full_class_data_set['enumerated_dict']
+
+    @patch('dionysus_app.class_functions.load_class_from_disk')
     def test_create_student_list_dict_patching_load_class_data(self, mock_load_class_data):
-        mock_load_class_data.return_value = self.class_data_dict
-        assert create_student_list_dict(self.class_data_dict) == self.enumerated_class_data_dict
+        mock_load_class_data.return_value = self.test_class_object
+        assert create_student_list_dict(self.test_class_name) == self.enumerated_test_class_students_dict
 
 
 class TestLoadClassData(TestCase):
     mock_CLASSLIST_DATA_PATH = Path('.')
     mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
+    # self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
+    # self.test_class_name = self.test_class_json_dict['name']
+    #
+    # self.test_class_object = Class.from_dict(self.test_class_json_dict)
+    #
+    # # Build save file path
+    # self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
+    # self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
+    # self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
     def setUp(self):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
         self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
-        self.test_class_name = 'my_test_class'
+
+        self.test_class_json_str = test_full_class_data_set['json_str_rep']
+        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
+        self.test_class_name = self.test_class_json_dict['name']
+
         self.test_class_data_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
         self.test_classlist_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name,
                                                                                self.test_class_data_filename)
 
-        self.test_class_json_data = test_class_data_set['json_data_string']
-        self.test_class_loaded_data = test_class_data_set['loaded_dict']
-
-        # create class data_file
+        # Create class data_file
         os.mkdir(self.test_class_name)
         with open(self.test_classlist_data_path, 'w+') as my_test_class_data:
-            my_test_class_data.write(self.test_class_json_data)
+            my_test_class_data.write(self.test_class_json_str)
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
     def test_load_class_data_from_disk(self):
-        loaded_json_data = load_class_data(self.test_class_name)
-        assert isinstance(loaded_json_data, dict)
-        assert self.test_class_loaded_data == loaded_json_data
-
-    def test_load_class_data_mocked_open(self):
-        with patch('dionysus_app.file_functions.open', mock_open(read_data=self.test_class_json_data)):
-            assert isinstance(self.test_class_loaded_data, dict)
-            assert load_class_data(self.test_class_name) == self.test_class_loaded_data
+        loaded_class = load_class_from_disk(self.test_class_name)
+        assert isinstance(loaded_class, Class)
+        assert loaded_class.json_dict() == self.test_class_json_dict
 
     def tearDown(self):
         shutil.rmtree(self.test_class_name)

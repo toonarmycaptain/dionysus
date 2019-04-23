@@ -151,7 +151,24 @@ test_full_class_data_set_json_dict = {'name': 'test_class',
                                                    {'name': 'Kayla'},
                                                    {'name': 'Jaleigh'}]}
 
+test_full_class_data_set_enumerated_dict = {1: 'Cali',
+                                            2: 'Monty',
+                                            3: 'Abby',
+                                            4: 'Zach',
+                                            5: 'Janell',
+                                            6: 'Matthew',
+                                            7: 'Olivia',
+                                            8: 'Regina',
+                                            9: 'Ashley',
+                                            10: 'Alex',
+                                            11: 'Melissa',
+                                            12: 'Edgar',
+                                            13: 'Danielle',
+                                            14: 'Kayla',
+                                            15: 'Jaleigh',
+                                            }
+
 test_full_class_data_set = {'json_str_rep': test_full_class_data_set_json_string,
                             'json_dict_rep': test_full_class_data_set_json_dict,
-                            # 'enumerated_dict': test_class_data_set_enumerated_dict,
+                            'enumerated_dict': test_full_class_data_set_enumerated_dict,
                             }
