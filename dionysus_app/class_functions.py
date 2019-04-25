@@ -104,11 +104,12 @@ def compose_classlist_dialogue(class_name: str):
     return new_class
 
 
-def take_class_data_input(class_name):
+def take_class_data_input(class_name: str):
     """
-    Take student names, avatars, return dictionary of data.
+    Take student names, avatars, return Class object.
 
-    :return: dict
+    :param class_name: str
+    :return: Class
     """
     new_class = Class(name=class_name)
     while True:
