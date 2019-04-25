@@ -24,8 +24,10 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           load_class_from_disk,
                                           setup_class,
                                           setup_class_data_storage,
+                                          take_class_data_input,
                                           write_classlist_to_file,
                                           )
+from dionysus_app.student import Student
 from test_suite.test_class import (test_class_name_only,
                                    test_full_class)
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
@@ -149,6 +151,28 @@ class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
         mock_blank_class_dialogue.return_value = False
 
         assert compose_classlist_dialogue(self.full_class_return.name).json_dict() == self.full_class_return.json_dict()
+
+
+class TestTakeClassDataInput(TestCase):
+    """Unittest used to mock multiple returns from student_name_input."""
+    def setUp(self) -> None:
+        self.test_class_name = 'my test class'
+        self.test_student_name_input_returns = ['test_student', 'END']
+        self.take_student_avatar_return = 'my_student_avatar.jpg'
+
+        self.test_class = Class(name=self.test_class_name,
+                                students=[Student(name=self.test_student_name_input_returns[0],
+                                                  avatar_filename=self.take_student_avatar_return),
+                                          ])
+
+    @patch('dionysus_app.class_functions.take_student_avatar')
+    @patch('dionysus_app.class_functions.take_student_name_input')
+    def test_take_class_data_input(self, mock_take_student_name_input,
+                                   mock_take_student_avatar):
+        mock_take_student_name_input.side_effect = self.test_student_name_input_returns
+        mock_take_student_avatar.return_value = self.take_student_avatar_return
+
+        assert take_class_data_input(self.test_class_name).json_dict() == self.test_class.json_dict()
 
 
 class TestCopyAvatarToAppData(TestCase):
@@ -348,7 +372,6 @@ class TestLoadClassData(TestCase):
     def setUp(self):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
         self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
-
 
         self.test_class_json_str = test_full_class_data_set['json_str_rep']
         self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
