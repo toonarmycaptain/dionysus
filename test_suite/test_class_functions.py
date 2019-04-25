@@ -9,9 +9,8 @@ from unittest.mock import patch, mock_open
 
 from unittest import mock, TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 
-
-from dionysus_app.class_ import Class
 from dionysus_app import class_functions
+from dionysus_app.class_ import Class
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           compose_classlist_dialogue,
                                           copy_avatar_to_app_data,
@@ -113,7 +112,6 @@ class TestCreateClasslistData(TestCase):
                                    mock_write_classlist_to_file,
                                    mock_class_data_feedback,
                                    mock_compose_classlist_dialogue):
-
         mock_compose_classlist_dialogue.return_value = self.test_class_object
         assert create_classlist_data(self.test_classname) is None
 
@@ -135,6 +133,7 @@ class TestComposeClasslistDialogue:
         monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
         monkeypatch.setattr('builtins.input', lambda x: 'N')
         assert compose_classlist_dialogue(test_full_class.name).json_dict() == test_full_class.json_dict()
+
 
 class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
     """This is necessary to mock multiple returns from take_class_data_input."""
