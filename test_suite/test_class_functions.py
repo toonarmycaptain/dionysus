@@ -1,6 +1,7 @@
 """Test functions in class_functions.py"""
 
 import os
+import pytest
 import shutil
 
 from pathlib import Path
@@ -8,24 +9,29 @@ from unittest.mock import patch, mock_open
 
 from unittest import mock, TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 
+
 from dionysus_app.class_ import Class
+from dionysus_app import class_functions
 from dionysus_app.class_functions import (avatar_path_from_string,
+                                          compose_classlist_dialogue,
                                           copy_avatar_to_app_data,
                                           create_classlist,
                                           create_classlist_data,
                                           create_class_list_dict,
                                           create_student_list_dict,
                                           get_avatar_path,
+                                          load_chart_data,
                                           load_class_from_disk,
                                           setup_class,
                                           setup_class_data_storage,
                                           write_classlist_to_file,
-                                          load_chart_data,
                                           )
-
+from test_suite.test_class import (test_class_name_only,
+                                   test_full_class)
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
                                            testing_registry_data_set as test_registry_data_set,
-                                           test_full_class_data_set)
+                                           test_full_class_data_set,
+                                           )
 
 
 class TestCreateClasslist(TestCase):
@@ -113,6 +119,36 @@ class TestCreateClasslistData(TestCase):
         mock_class_data_feedback.assert_called_once_with(self.test_class_object)
         mock_write_classlist_to_file.assert_called_once_with(self.test_class_object)
         mock_time_sleep.assert_called_once_with(2)
+
+
+class TestComposeClasslistDialogue:
+    def test_compose_classlist_dialogue_full_class(self, monkeypatch, test_full_class):
+        def mocked_take_class_data_input(class_name):
+            return test_full_class
+
+        monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
+
+        assert compose_classlist_dialogue(test_full_class.name) == test_full_class
+
+        monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
+        monkeypatch.setattr('builtins.input', lambda x: 'N')
+        assert compose_classlist_dialogue(test_full_class.name).json_dict() == test_full_class.json_dict()
+
+class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
+    """This is necessary to mock multiple returns from take_class_data_input."""
+    def setUp(self) -> None:
+        self.full_class_return = Class.from_dict(test_full_class_data_set['json_dict_rep'])
+        self.empty_class_return = Class(name=self.full_class_return.name)
+
+    @patch('dionysus_app.class_functions.blank_class_dialogue')
+    @patch('dionysus_app.class_functions.take_class_data_input')
+    def test_compose_classlist_dialogue_empty_class(self, mock_take_class_data_input,
+                                                    mock_blank_class_dialogue):
+        mock_take_class_data_input.side_effect = [self.empty_class_return,
+                                                  self.full_class_return]
+        mock_blank_class_dialogue.return_value = False
+
+        assert compose_classlist_dialogue(self.full_class_return.name).json_dict() == self.full_class_return.json_dict()
 
 
 class TestCopyAvatarToAppData(TestCase):

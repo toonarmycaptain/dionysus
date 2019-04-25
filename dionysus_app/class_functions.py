@@ -80,11 +80,20 @@ def create_classlist_data(class_name: str):
     time.sleep(2)  # Pause for user to look over feedback.
 
 
-def compose_classlist_dialogue(class_name):
-    while True:
-        class_data = take_class_data_input(class_name)
+def compose_classlist_dialogue(class_name: str):
+    """
+    Create class object.
 
-        if not class_data:  # Test for empty class.
+    If no students added to class, check if intended, making subsequent call to
+    take_class_data_input UI if unintended blank class returned.
+
+    :param class_name: str
+    :return: Class object
+    """
+    while True:
+        new_class = take_class_data_input(class_name)
+
+        if not new_class.students:  # Test for empty class.
             create_empty_class = blank_class_dialogue()
             if create_empty_class:
                 break
@@ -92,7 +101,7 @@ def compose_classlist_dialogue(class_name):
             continue
         break  # class_data not empty
 
-    return class_data
+    return new_class
 
 
 def take_class_data_input(class_name):
