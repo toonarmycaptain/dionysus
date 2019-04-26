@@ -18,6 +18,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           create_classlist_data,
                                           create_class_list_dict,
                                           create_student_list_dict,
+                                          edit_classlist,
                                           get_avatar_path,
                                           load_chart_data,
                                           load_class_from_disk,
@@ -191,9 +192,6 @@ class TestTakeClassDataInput(TestCase):
 
 
 class TestTakeStudentAvatar:
-    # no file supplied, no file saved
-    # pre-clean name supplied, file saved
-    # dirty name supplied, clean named file saved
     def test_take_student_avatar_no_avatar(self, monkeypatch):
         def mocked_select_avatar_file_dialogue():
             return None  # No file selected
@@ -582,3 +580,11 @@ class TestAvatarPathFromString(TestCase):
 
         return_val = Path(self.mock_CLASSLIST_DATA_PATH, class_name, 'avatars', avatar_filename)
         assert avatar_path_from_string(class_name, avatar_filename) == return_val
+
+class TestEditClasslist(TestCase):
+    @patch('dionysus_app.class_functions.take_classlist_name_input')
+    def test_edit_classlist(self, mocked_take_classlist_name_input):
+        mocked_take_classlist_name_input.return_value = 'some class name'
+        mocked_open = mock_open()
+        with patch('dionysus_app.class_functions.open', mocked_open):
+            assert edit_classlist() is None
