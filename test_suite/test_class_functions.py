@@ -22,6 +22,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           load_chart_data,
                                           load_class_from_disk,
                                           select_classlist,
+                                          select_student,
                                           setup_class,
                                           setup_class_data_storage,
                                           take_class_data_input,
@@ -431,6 +432,34 @@ class TestCreateClassListDict(TestCase):
     @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
     def test_create_class_list_dict_patching_REGISTRY(self):
         assert create_class_list_dict() == self.enumerated_class_registry
+
+
+class TestSelectStudent:
+    def test_select_student(self, monkeypatch):
+        test_class_name = 'some_class'
+        test_student_options = {1: 'one', 2: 'two', 3: 'three'}
+        selected_student = 'some_student'
+
+        def mocked_create_student_list_dict(class_name):
+            if class_name != test_class_name:
+                raise ValueError  # Ensure called with correct arg.
+            return test_student_options
+
+        def mocked_display_student_selection_menu(class_options):
+            if class_options != test_student_options:
+                raise ValueError  # Ensure called with correct arg.
+            return None
+
+        def mocked_take_student_selection(class_options):
+            if class_options != test_student_options:
+                raise ValueError  # Ensure called with correct arg.
+            return selected_student
+
+        monkeypatch.setattr(class_functions, 'create_student_list_dict', mocked_create_student_list_dict)
+        monkeypatch.setattr(class_functions, 'display_student_selection_menu', mocked_display_student_selection_menu)
+        monkeypatch.setattr(class_functions, 'take_student_selection', mocked_take_student_selection)
+
+        assert select_student(test_class_name) == selected_student
 
 
 class TestCreateStudentListDict(TestCase):
