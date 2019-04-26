@@ -163,7 +163,8 @@ def take_student_selection(student_options: dict):
 
 def select_avatar_file_dialogue():
     """
-    Prompts user to select an avatar file. Only displays PNG files.
+    Prompts user to select an avatar file. Currently only displays PNG files by
+    default.
     :return: str or None
     """
     dialogue_box_title = 'Select .png format avatar:'
