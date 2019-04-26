@@ -130,13 +130,25 @@ class TestComposeClasslistDialogue:
         def mocked_take_class_data_input(class_name):
             return test_full_class
 
-        monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
+        def mocked_blank_class_dialogue():
+            raise ValueError  # Should not be called.
 
-        assert compose_classlist_dialogue(test_full_class.name) == test_full_class
-
         monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
-        monkeypatch.setattr('builtins.input', lambda x: 'N')
+        monkeypatch.setattr(class_functions, 'blank_class_dialogue', mocked_blank_class_dialogue)
+
         assert compose_classlist_dialogue(test_full_class.name).json_dict() == test_full_class.json_dict()
+
+    def test_compose_classlist_dialogue_create_empty_class(self, monkeypatch, test_class_name_only):
+        def mocked_take_class_data_input(class_name):
+            return test_class_name_only
+
+        def mocked_blank_class_dialogue():
+            return True
+
+        monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
+        monkeypatch.setattr(class_functions, 'blank_class_dialogue', mocked_blank_class_dialogue)
+
+        assert compose_classlist_dialogue(test_class_name_only.name).json_dict() == test_class_name_only.json_dict()
 
 
 class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
