@@ -24,11 +24,13 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           setup_class,
                                           setup_class_data_storage,
                                           take_class_data_input,
+                                          take_student_avatar,
                                           write_classlist_to_file,
                                           )
 from dionysus_app.student import Student
 from test_suite.test_class import (test_class_name_only,
                                    test_full_class)
+from dionysus_app.UI_menus.UI_functions import clean_for_filename
 from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
                                            testing_registry_data_set as test_registry_data_set,
                                            test_full_class_data_set,
@@ -172,6 +174,71 @@ class TestTakeClassDataInput(TestCase):
         mock_take_student_avatar.return_value = self.take_student_avatar_return
 
         assert take_class_data_input(self.test_class_name).json_dict() == self.test_class.json_dict()
+
+
+class TestTakeStudentAvatar:
+    # no file supplied, no file saved
+    # pre-clean name supplied, file saved
+    # dirty name supplied, clean named file saved
+    def test_take_student_avatar_no_avatar(self, monkeypatch):
+        def mocked_select_avatar_file_dialogue():
+            return None  # No file selected
+
+        monkeypatch.setattr(class_functions, 'select_avatar_file_dialogue', mocked_select_avatar_file_dialogue)
+
+        # Ensure calls to other funcs will cause error.
+        monkeypatch.delattr(class_functions, 'clean_for_filename')
+        monkeypatch.delattr(class_functions, 'copy_avatar_to_app_data')
+
+        assert take_student_avatar('some class', 'some student') is None
+
+    def test_take_student_avatar_pre_clean_name(self, monkeypatch):
+        test_class_name = 'some class'
+        test_student_name = 'clean name'
+        test_avatar_filename = 'avatar file name'
+        cleaned_student_name = 'file name was already clean'
+        returned_filename = f'{cleaned_student_name}.png'
+
+        def mocked_select_avatar_file_dialogue():
+            return test_avatar_filename
+
+        def mocked_clean_for_filename(student_name):
+            if student_name != test_student_name:
+                raise ValueError  # Ensure called with correct arg.
+            return cleaned_student_name
+
+        def mocked_copy_avatar_to_app_data(class_name, avatar_filename, target_filename):
+            if (class_name, avatar_filename, target_filename) != (
+                    test_class_name, test_avatar_filename, returned_filename):
+                raise ValueError  # Ensure called with correct args.
+            return None
+
+        monkeypatch.setattr(class_functions, 'select_avatar_file_dialogue', mocked_select_avatar_file_dialogue)
+        monkeypatch.setattr(class_functions, 'clean_for_filename', mocked_clean_for_filename)
+        monkeypatch.setattr(class_functions, 'copy_avatar_to_app_data', mocked_copy_avatar_to_app_data)
+
+        assert take_student_avatar(test_class_name, test_student_name) == returned_filename
+
+    def test_take_student_avatar_dirty_name(self, monkeypatch):
+        test_class_name = 'some class'
+        test_student_name = r'very unsafe */^@ :$ name'
+        test_avatar_filename = 'avatar file name'
+
+        returned_filename = f'{clean_for_filename(test_student_name)}.png'
+
+        def mocked_select_avatar_file_dialogue():
+            return test_avatar_filename
+
+        def mocked_copy_avatar_to_app_data(class_name, avatar_filename, target_filename):
+            if (class_name, avatar_filename, target_filename) != (
+                    test_class_name, test_avatar_filename, returned_filename):
+                raise ValueError  # Ensure called with correct args.
+            return None
+
+        monkeypatch.setattr(class_functions, 'select_avatar_file_dialogue', mocked_select_avatar_file_dialogue)
+        monkeypatch.setattr(class_functions, 'copy_avatar_to_app_data', mocked_copy_avatar_to_app_data)
+
+        assert take_student_avatar(test_class_name, test_student_name) == returned_filename
 
 
 class TestCopyAvatarToAppData(TestCase):
