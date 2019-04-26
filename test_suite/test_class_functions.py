@@ -412,6 +412,7 @@ class TestSelectClasslist:
     def test_select_classlist(self, monkeypatch):
         test_class_options = {1: 'one', 2: 'two', 3: 'three'}
         selected_class = 'some_class'
+
         def mocked_create_class_list_dict():
             return test_class_options
 
@@ -580,6 +581,7 @@ class TestAvatarPathFromString(TestCase):
 
         return_val = Path(self.mock_CLASSLIST_DATA_PATH, class_name, 'avatars', avatar_filename)
         assert avatar_path_from_string(class_name, avatar_filename) == return_val
+
 
 class TestEditClasslist(TestCase):
     @patch('dionysus_app.class_functions.take_classlist_name_input')
