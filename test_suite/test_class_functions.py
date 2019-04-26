@@ -21,6 +21,7 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           get_avatar_path,
                                           load_chart_data,
                                           load_class_from_disk,
+                                          select_classlist,
                                           setup_class,
                                           setup_class_data_storage,
                                           take_class_data_input,
@@ -394,6 +395,30 @@ class TestWriteClasslistToFileMockingOpen(TestCase):
 
             opened_test_class_data_file = mocked_open()
             opened_test_class_data_file.write.assert_called_with(self.test_class_object.to_json_str())
+
+
+class TestSelectClasslist:
+    def test_select_classlist(self, monkeypatch):
+        test_class_options = {1: 'one', 2: 'two', 3: 'three'}
+        selected_class = 'some_class'
+        def mocked_create_class_list_dict():
+            return test_class_options
+
+        def mocked_display_class_selection_menu(class_options):
+            if class_options != test_class_options:
+                raise ValueError  # Ensure called with correct arg.
+            return None
+
+        def mocked_take_class_selection(class_options):
+            if class_options != test_class_options:
+                raise ValueError  # Ensure called with correct arg.
+            return selected_class
+
+        monkeypatch.setattr(class_functions, 'create_class_list_dict', mocked_create_class_list_dict)
+        monkeypatch.setattr(class_functions, 'display_class_selection_menu', mocked_display_class_selection_menu)
+        monkeypatch.setattr(class_functions, 'take_class_selection', mocked_take_class_selection)
+
+        assert select_classlist() == selected_class
 
 
 class TestCreateClassListDict(TestCase):
