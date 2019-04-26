@@ -17,6 +17,7 @@ from dionysus_app.file_functions import (load_from_json_file,
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
                                                       display_class_selection_menu,
+                                                      display_student_selection_menu,
                                                       select_avatar_file_dialogue,
                                                       take_class_selection,
                                                       take_classlist_name_input,
@@ -224,7 +225,7 @@ def select_student(class_name: str):
     :return: str
     """
     student_options = create_student_list_dict(class_name)
-    display_class_selection_menu(student_options)
+    display_student_selection_menu(student_options)
 
     selected_student = take_student_selection(student_options)
 
