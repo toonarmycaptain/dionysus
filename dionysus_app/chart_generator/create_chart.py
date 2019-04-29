@@ -81,9 +81,9 @@ def assemble_chart_data():
 
     class_name = select_classlist()  # TODO: warn for empty classlist
 
-    class_data_dict = load_class_from_disk(class_name)
+    loaded_class = load_class_from_disk(class_name)
 
-    student_scores: dict = take_score_data(class_name, class_data_dict)
+    student_scores: dict = take_score_data(loaded_class)
 
     chart_name = take_chart_name()
 
