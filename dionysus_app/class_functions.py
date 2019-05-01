@@ -187,6 +187,10 @@ def write_classlist_to_file(current_class: Class):
 
     json_class_data = current_class.to_json_str()
     assert isinstance(json_class_data, str)
+
+    # Make data path if it doesn't exist.
+    classlist_data_path.parent.mkdir(parents=True, exist_ok=True)
+
     with open(classlist_data_path, 'w') as classlist_file:
         classlist_file.write(json_class_data)
 

@@ -399,8 +399,11 @@ class TestWriteClasslistToFileMockingOpen(TestCase):
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
     def test_write_classlist_to_file_mocking_open(self):
         mocked_open = mock_open()
-        with patch('dionysus_app.class_functions.open', mocked_open):
+        with patch('dionysus_app.class_functions.open', mocked_open), \
+             patch('dionysus_app.class_functions.Path.mkdir', autospec=True) as mocked_mkdir:
             assert write_classlist_to_file(self.test_class_object) is None
+
+            mocked_mkdir.assert_called_once_with(self.test_class_data_file_path.parent, exist_ok=True, parents=True)
 
             mocked_open.assert_called_once_with(self.test_class_data_file_path, 'w')
 
