@@ -1,13 +1,11 @@
 """
-Script for taking and saving data for graph.
+Script for taking and saving data for chart.
 """
 
-# score entry:
 from dionysus_app.class_ import Class
 from dionysus_app.class_functions import get_avatar_path
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
-
 
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
@@ -68,7 +66,9 @@ def take_student_scores(current_class: Class):
     return student_scores
 
 
-def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
+def take_score_entry(student_name: str,
+                     minimum: int = 0,
+                     maximum: int = 100):
     """
 
     :param student_name: str
