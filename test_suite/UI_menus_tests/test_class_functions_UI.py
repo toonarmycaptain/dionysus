@@ -20,7 +20,7 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
 from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
-                                           testing_class_data_set as test_class_data_set,
+                                           test_full_class_data_set as test_class_data_set,
                                            test_display_student_selection_menu_student_output,
                                            )
 

@@ -33,8 +33,7 @@ from dionysus_app.student import Student
 from test_suite.test_class import (test_class_name_only,
                                    test_full_class)
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
-from test_suite.testing_class_data import (testing_class_data_set as test_class_data_set,
-                                           testing_registry_data_set as test_registry_data_set,
+from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_full_class_data_set,
                                            )
 
@@ -499,15 +498,6 @@ class TestLoadClassData(TestCase):
     mock_CLASSLIST_DATA_PATH = Path('.')
     mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
-    # self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
-    # self.test_class_name = self.test_class_json_dict['name']
-    #
-    # self.test_class_object = Class.from_dict(self.test_class_json_dict)
-    #
-    # # Build save file path
-    # self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
-    # self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
-    # self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
     def setUp(self):
         self.mock_CLASSLIST_DATA_PATH = Path('.')
         self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
