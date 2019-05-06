@@ -340,3 +340,31 @@ class TestFromFile:
             class_data_file.write(test_full_class.json_str_rep)
 
         assert Class.from_file(class_data_file_path).json_dict() == test_full_class.json_dict()
+
+
+class TestClassRepr:
+    @pytest.mark.parametrize('class_object',
+                             [Class(name='name_only_class'),
+                              Class.from_dict(test_full_class_data_set['json_dict_rep']),
+                              ])
+    def test_repr(self, class_object):
+        assert repr(class_object) == (f'{class_object.__class__.__module__}'
+                                      f'.{class_object.__class__.__name__}('
+                                      f'name={class_object._name!r}, '
+                                      f'path_safe_name={class_object._path_safe_name!r}, '
+                                      f'students={class_object.students!r})')
+
+
+class TestClassStr:
+    @pytest.mark.parametrize(
+        'class_object,'
+        'expected_str',
+        [(Class(name='name_only_class'),
+          f"Class {'name_only_class'}, containing 0 students."),
+         (Class.from_dict(test_full_class_data_set['json_dict_rep']),
+          f"Class {Class.from_dict(test_full_class_data_set['json_dict_rep']).name}, "
+          f"containing {len(Class.from_dict(test_full_class_data_set['json_dict_rep']).students)} students, "
+          f"with names: {', '.join([student.name for student in Class.from_dict(test_full_class_data_set['json_dict_rep']).students])}."),
+         ])
+    def test_str(self, class_object, expected_str):
+        assert str(class_object) == expected_str

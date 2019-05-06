@@ -221,3 +221,22 @@ class Class:
         with open(Path(cdf_path)) as class_data_file:
             class_json = json.load(class_data_file)
         return Class.from_dict(class_json)
+
+    # String representations
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
+                    f'name={self._name!r}, '
+                    f'path_safe_name={self._path_safe_name!r}, '
+                    f'students={self.students!r}'
+                    f')'
+                    )
+        return repr_str
+
+    def __str__(self):
+        if self.students:
+            student_list_str = ', '.join([student.name for student in self.students])
+            students_stmt = f'containing {len(self.students)} students, with names: {student_list_str}'
+        else:
+            students_stmt = 'containing 0 students'
+
+        return f'Class {self.name}, {students_stmt}.'
