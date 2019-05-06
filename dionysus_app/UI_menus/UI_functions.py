@@ -4,6 +4,7 @@ UI functions: user interface functions used throughout the application.
 
 import tkinter as tk
 
+from pathlib import Path
 from tkinter import filedialog
 
 
@@ -186,7 +187,7 @@ def select_file_dialogue(title_str=None,
 
     if filepath_str == '':
         return None
-    return filepath_str
+    return Path(filepath_str)
 
 
 def select_folder_dialogue(title_str=None, start_dir='..'):
@@ -210,7 +211,7 @@ def select_folder_dialogue(title_str=None, start_dir='..'):
 
     if dir_path_str == '':
         return None
-    return dir_path_str
+    return Path(dir_path_str)
 
 
 if __name__ == '__main__':

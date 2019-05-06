@@ -419,14 +419,16 @@ class TestSelectFileDialogue(TestCase):
         self.test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
         self.test_start_dir = 'What\\is\\your\\quest'
 
-        self.test_returned_filepath_str = 'strange women lying in ponds distributing swords'
+        self.test_returned_filepath_path = Path('strange women lying in ponds distributing swords')
 
     def test_select_file_dialogue_called_without_arguments(self, mock_tkinter):
         # Tests filedialog called with default_filetypes.
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_str
+            select_filedialog.return_value = self.test_returned_filepath_path
 
-            assert select_file_dialogue() == self.test_returned_filepath_str
+            assert select_file_dialogue() == self.test_returned_filepath_path
+
+            assert isinstance(self.test_returned_filepath_path, Path)
 
             mock_tkinter.assert_called()
             select_filedialog.assert_called_once_with(title=None,
@@ -435,12 +437,14 @@ class TestSelectFileDialogue(TestCase):
 
     def test_select_file_dialogue_all_None_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_str
+            select_filedialog.return_value = self.test_returned_filepath_path
 
             assert select_file_dialogue(title_str=None,
                                         filetypes=None,
                                         start_dir=None,
-                                        ) == self.test_returned_filepath_str
+                                        ) == self.test_returned_filepath_path
+
+            assert isinstance(self.test_returned_filepath_path, Path)
 
             mock_tkinter.assert_called()
             select_filedialog.assert_called_once_with(title=None,
@@ -449,12 +453,14 @@ class TestSelectFileDialogue(TestCase):
 
     def test_select_file_dialogue_called_with_all_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_str
+            select_filedialog.return_value = self.test_returned_filepath_path
 
             assert select_file_dialogue(title_str=self.test_title_str,
                                         filetypes=self.test_filetypes,
                                         start_dir=self.test_start_dir,
-                                        ) == self.test_returned_filepath_str
+                                        ) == self.test_returned_filepath_path
+
+            assert isinstance(self.test_returned_filepath_path, Path)
 
             mock_tkinter.assert_called()
             select_filedialog.assert_called_once_with(title=self.test_title_str,
@@ -481,13 +487,15 @@ class TestSelectFolderDialogue(TestCase):
         self.test_title_str = 'First you must answer three questions'
         self.test_start_dir = 'What\\is\\your\\quest'
 
-        self.test_returned_folderpath_str = 'strange women lying in ponds distributing swords'
+        self.test_returned_folderpath_path = Path('strange women lying in ponds distributing swords')
 
     def test_select_folder_dialogue_called_without_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_str
+            select_directorydialog.return_value = self.test_returned_folderpath_path
 
-            assert select_folder_dialogue() == self.test_returned_folderpath_str
+            assert select_folder_dialogue() == self.test_returned_folderpath_path
+
+            assert isinstance(self.test_returned_folderpath_path, Path)
 
             mock_tkinter.assert_called()
             select_directorydialog.assert_called_once_with(title=None,
@@ -495,11 +503,13 @@ class TestSelectFolderDialogue(TestCase):
 
     def test_select_folder_dialogue_all_None_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_str
+            select_directorydialog.return_value = self.test_returned_folderpath_path
 
             assert select_folder_dialogue(title_str=None,
                                           start_dir=None,
-                                          ) == self.test_returned_folderpath_str
+                                          ) == self.test_returned_folderpath_path
+
+            assert isinstance(self.test_returned_folderpath_path, Path)
 
             mock_tkinter.assert_called()
             select_directorydialog.assert_called_once_with(title=None,
@@ -507,11 +517,13 @@ class TestSelectFolderDialogue(TestCase):
 
     def test_select_folder_dialogue_called_with_all_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_str
+            select_directorydialog.return_value = self.test_returned_folderpath_path
 
             assert select_folder_dialogue(title_str=self.test_title_str,
                                           start_dir=self.test_start_dir,
-                                          ) == self.test_returned_folderpath_str
+                                          ) == self.test_returned_folderpath_path
+
+            assert isinstance(self.test_returned_folderpath_path, Path)
 
             mock_tkinter.assert_called()
             select_directorydialog.assert_called_once_with(title=self.test_title_str,
