@@ -161,5 +161,5 @@ class TestStudentStr:
          (Student(name='I have an avatar', avatar_filename='path_to_my_avatar'),
           f"Student {'I have an avatar'}, with avatar {'path_to_my_avatar'}."),
          ])
-    def test_str(self, student_object, expected_str, test_student_name_only, test_student_with_avatar):
+    def test_str(self, student_object, expected_str):
         assert str(student_object) == expected_str
