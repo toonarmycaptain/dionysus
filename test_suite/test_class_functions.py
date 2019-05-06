@@ -1,7 +1,6 @@
 """Test functions in class_functions.py"""
 
 import os
-import pytest
 import shutil
 
 from pathlib import Path
@@ -154,6 +153,7 @@ class TestComposeClasslistDialogue:
 
 class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
     """This is necessary to mock multiple returns from take_class_data_input."""
+
     def setUp(self) -> None:
         self.full_class_return = Class.from_dict(test_full_class_data_set['json_dict_rep'])
         self.empty_class_return = Class(name=self.full_class_return.name)
@@ -171,6 +171,7 @@ class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
 
 class TestTakeClassDataInput(TestCase):
     """Unittest used to mock multiple returns from student_name_input."""
+
     def setUp(self) -> None:
         self.test_class_name = 'my test class'
         self.test_student_name_input_returns = ['test_student', 'END']
