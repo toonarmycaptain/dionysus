@@ -179,7 +179,7 @@ def write_classlist_to_file(current_class: Class):
     keep them as strings when loading.
 
     :param current_class: Class object
-    :return: None
+    :return: Path
     """
     class_name = current_class.name
     data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
@@ -194,6 +194,7 @@ def write_classlist_to_file(current_class: Class):
     with open(classlist_data_path, 'w') as classlist_file:
         classlist_file.write(json_class_data)
 
+    return classlist_data_path
 
 def select_classlist():
     """
