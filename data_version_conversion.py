@@ -49,6 +49,7 @@ def run_script(args: argparse.Namespace):
     No args: run GUI to select and process single file.
     -A/--all_class_data_files: Process all the data files in class_data.
     --f/--filepath: Process single file at path given to arg.
+                    Usage: --f=path_to_file
 
     :param args: argparse.Namespace
     :return: None
