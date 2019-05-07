@@ -51,9 +51,15 @@ def run_script(args: argparse.Namespace):
     --f/--filepath: Process single file at path given to arg.
                     Usage: --f=path_to_file
 
+    NB if --f/--filepath= is passed without a filename, but with the = sign,
+    the resulting string in args.filepath is '' and is False, spawning the GUI
+    dialogue branch.
+
     :param args: argparse.Namespace
     :return: None
     """
+    print(f'args={args}')
+    print(f'args.filepath={args.filepath}')
     if args.all_class_data_files:
         transform_all_old_data_files()
 
