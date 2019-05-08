@@ -161,6 +161,7 @@ def edit_app_settings_file(new_settings: dict):
     Add/change settings in loaded settings, writes modified
     settings dict to file.
 
+
     :param new_settings: dict
     :return: None
     """
