@@ -10,6 +10,7 @@ Settings dict keys:
 import os
 
 from pathlib import Path
+from typing import Union
 
 import definitions
 
@@ -41,7 +42,14 @@ def app_start_set_default_chart_save_location():
         set_default_chart_save_location(user_set=False)
 
 
-def set_default_chart_save_location(user_set):
+def set_default_chart_save_location(user_set: bool):
+    """
+    Set and save default_chart_save_location, taking user input, or defaulting
+    to original location. Creates chart save folder.
+
+    :param user_set: Path or str
+    :return: None
+    """
     # Initialise default location.
     new_default_save_location = APP_DEFAULT_CHART_SAVE_FOLDER
     original_location = definitions.DEFAULT_CHART_SAVE_FOLDER
@@ -58,13 +66,14 @@ def set_default_chart_save_location(user_set):
     create_chart_save_folder(new_chart_save_folder_path, original_location)
 
 
-def create_chart_save_folder(new_path, original_location=None):
+def create_chart_save_folder(new_path: Union[Path, str],
+                             original_location: Union[Path, str] = None):
     """
     Create a new chart_save_folder, moving files from old location, if
     it exists.
 
-    :param new_path: str or Path
-    :param original_location: None, str or Path
+    :param new_path: Path or str
+    :param original_location: Path or str, default: None
     :return: None
     """
     # Create new chart save location.
@@ -75,13 +84,13 @@ def create_chart_save_folder(new_path, original_location=None):
     new_path.mkdir(parents=True, exist_ok=True)
 
 
-def move_chart_save_folder(original_location, new_location):
+def move_chart_save_folder(original_location: Union[Path, str], new_location: Union[Path, str]):
     """
     Tests if the supplied path to the original chart save folder exists, moving
     to the supplied new location if it does. Otherwise does nothing.
 
-    :param original_location: str or Path
-    :param new_location: str or Path
+    :param original_location: Path or str
+    :param new_location: Path or str
     :return: None
     """
     original_location_path = Path(original_location)
@@ -89,12 +98,12 @@ def move_chart_save_folder(original_location, new_location):
         move_file(original_location, new_location)
 
 
-def save_new_default_chart_save_location_setting(new_location):
+def save_new_default_chart_save_location_setting(new_location: Union[Path, str]):
     """
     Save new default chart save location to settings.
 
-    :param new_location: str or Path
-    :return:
+    :param new_location: Path or str
+    :return: None
     """
     new_setting = {'user_default_chart_save_folder': str(new_location)}
     edit_app_settings_file(new_setting)
