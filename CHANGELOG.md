@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed implementation of `UI_functions.scrub_candiate_filename` to replace removed characters with `'_'` - this means 'Ni/' and 'Ni' will render non-identically as 'Ni_' and 'Ni'
 - Factored out `create_app_data__init__` from `create_app_settings_file`.
 - Use development branch as target for pyup.io dependency updates.
+- Update dependencies. 
 
 - Progress conforming all path passing to use `Path` objects - in particular casting path str to `Path` before returning from GUI filedialogs. `load_chart_save_folder` now also returns `Path` object.
 ### Depreciated
