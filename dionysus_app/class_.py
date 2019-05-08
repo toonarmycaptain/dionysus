@@ -23,11 +23,6 @@ class Class:
         Cleaned string safe to use in file names and paths.
 
     students : list[Student]
-
-
-    Methods
-    -------
-
     """
 
     def __init__(self, name: str, students: List[Student] = None):
