@@ -19,15 +19,6 @@ class Student:
 
     avatar_filename : sre or None
         Filename of student's avatar.
-
-
-    Methods
-    -------
-    json_dict()
-        Returns a JSON serialisable dictionary of student's data.
-
-    from_json_dict(json_data)
-        Returns a Student object instantiated from provided dict.
     """
 
     def __init__(self, name: str, **kwargs: Any):
