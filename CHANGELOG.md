@@ -20,9 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - data (eg avatars) that is `None` is not saved to disk, but inferred on instantiation.
 - Changed implementation of `UI_functions.scrub_candiate_filename` to replace removed characters with `'_'` - this means 'Ni/' and 'Ni' will render non-identically as 'Ni_' and 'Ni'
 - Factored out `create_app_data__init__` from `create_app_settings_file`.
-- Progress changing all path passing to use `Path` objects - in particular casting path str to `Path` before returning from GUI filedialogs. 
+
+- Progress conforming all path passing to use `Path` objects - in particular casting path str to `Path` before returning from GUI filedialogs. `load_chart_save_folder` now also returns `Path` object.
 ### Depreciated
 - `class_functions.create_student_list_dict`: unused function loads class from disk to return an enumerated student list. Function is thus unnecessary when replaced by one-lined: `{numeral: student.name for numeral, student in enumerate(c.students, start=1)}`
+### Fixed
+- Rectified error where settings_dict was initialised with a string, not dict.
 
 ## [0.3.3-alpha] - 2019-03-04
 ### Added
