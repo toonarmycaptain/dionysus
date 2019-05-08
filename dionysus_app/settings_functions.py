@@ -60,7 +60,7 @@ def set_default_chart_save_location(user_set: bool):
     new_chart_save_folder_path = Path(new_default_save_location, CHART_SAVE_FOLDER_NAME)
 
     # Initialise and save chart save location.
-    definitions.DEFAULT_CHART_SAVE_FOLDER = str(new_chart_save_folder_path)
+    definitions.DEFAULT_CHART_SAVE_FOLDER = new_chart_save_folder_path
     save_new_default_chart_save_location_setting(new_chart_save_folder_path)
 
     create_chart_save_folder(new_chart_save_folder_path, original_location)
