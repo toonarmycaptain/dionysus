@@ -195,6 +195,7 @@ def write_classlist_to_file(current_class: Class):
 
     return classlist_data_path
 
+
 def select_classlist():
     """
     Display list of existent classes from class_registry and allow user to select one, returning the name of the
