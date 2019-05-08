@@ -114,7 +114,8 @@ def transform_old_cld_file(filepath: Path):
 
     new_class_data_path_name = write_classlist_to_file(new_class)
 
-    print(f'Transformed {new_class.name} data file to new data format in {new_class_data_path_name}')
+    print(f'Transformed {new_class.name} data file'
+          f'to new data format in {new_class_data_path_name}')
 
 
 def data_is_new_format(old_class_data: dict):
