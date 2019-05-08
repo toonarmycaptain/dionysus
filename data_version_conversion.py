@@ -38,7 +38,8 @@ def parse_args(args: list):
     mutex_group.add_argument('--filepath',
                              '--f', type=str, help='Input single file')
     mutex_group.add_argument('--all_class_data_files',
-                             '-A', action="store_true", help='Attempts to transform all .cld files in class_data.')
+                             '-A', action="store_true",
+                             help='Attempts to transform all .cld files in class_data.')
 
     return parser.parse_args(args)
 
