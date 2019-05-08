@@ -52,7 +52,7 @@ def take_student_scores(current_class: Class):
     :param current_class: Class object
     :return: dict
     """
-    student_scores = dict()
+    student_scores: dict = dict()
     for student in current_class.students:
 
         student_score = take_score_entry(student.name)

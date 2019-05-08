@@ -52,15 +52,15 @@ def load_from_json_file(json_file_path: Union[Path, str]):
         return loaded_data
 
 
-def copy_file(origin_fullpath: str, destination_fullpath: str):
+def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]):
     """
     Takes two filepaths, copying the origin file to the destination path and
     filename, doing nothing if the origin filepath doesn't exist.
 
     Converts non-string object to string in case of Path object argument.
 
-    :param origin_fullpath: str or Path
-    :param destination_fullpath: str or Path
+    :param origin_fullpath: Path or str
+    :param destination_fullpath: Path or str
     :return: None
     """
     origin_fullpath = Path(origin_fullpath)
@@ -71,15 +71,15 @@ def copy_file(origin_fullpath: str, destination_fullpath: str):
         copyfile(origin_fullpath, destination_fullpath)
 
 
-def move_file(origin_fullpath: str, destination_fullpath: str):
+def move_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]):
     """
     Takes two filepaths, copying the origin file/directory to the destination
     path and filename, doing nothing if the origin filepath doesn't exist.
 
     Converts non-string object to string in case of Path object argument.
 
-    :param origin_fullpath: str or Path
-    :param destination_fullpath: str or Path
+    :param origin_fullpath: Path or str
+    :param destination_fullpath: Path or str
     :return: None
     """
     origin_fullpath = Path(origin_fullpath)
