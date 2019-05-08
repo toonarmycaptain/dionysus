@@ -111,8 +111,8 @@ class Student:
         Instantiate a Student object from a JSON-serialisable dict.
 
         Dict must have keys corresponding to arguments to Student.__init__:
-        'name' : str
-        'avatar_filename' : str/None (optional, defaults to None).
+            'name' : str
+            'avatar_filename' : str/None (optional, defaults to None).
 
         :param student_dict: dict
         :return: Student object
