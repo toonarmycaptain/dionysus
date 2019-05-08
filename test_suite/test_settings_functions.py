@@ -109,7 +109,7 @@ class TestSetDefaultChartSaveLocation(TestCase):
             self.user_set_location_fullpath)
         mocked_create_chart_save_folder.assert_called_once_with(self.user_set_location_fullpath,
                                                                 self.mocked_DEFAULT_CHART_SAVE_FOLDER)
-        assert mocked_definitions.DEFAULT_CHART_SAVE_FOLDER == str(self.user_set_location_fullpath)
+        assert mocked_definitions.DEFAULT_CHART_SAVE_FOLDER == self.user_set_location_fullpath
 
     @patch('dionysus_app.settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER', mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
     @patch('dionysus_app.settings_functions.CHART_SAVE_FOLDER_NAME', mocked_CHART_SAVE_FOLDER_NAME)
@@ -132,7 +132,7 @@ class TestSetDefaultChartSaveLocation(TestCase):
             self.app_default_chart_save_folder_path)
         mocked_create_chart_save_folder.assert_called_once_with(self.app_default_chart_save_folder_path,
                                                                 self.mocked_DEFAULT_CHART_SAVE_FOLDER)
-        assert mocked_definitions.DEFAULT_CHART_SAVE_FOLDER == str(self.app_default_chart_save_folder_path)
+        assert mocked_definitions.DEFAULT_CHART_SAVE_FOLDER == self.app_default_chart_save_folder_path
 
 
 class TestCreateChartSaveFolder(TestCase):

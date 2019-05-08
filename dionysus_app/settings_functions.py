@@ -60,7 +60,7 @@ def set_default_chart_save_location(user_set: bool):
     new_chart_save_folder_path = Path(new_default_save_location, CHART_SAVE_FOLDER_NAME)
 
     # Initialise and save chart save location.
-    definitions.DEFAULT_CHART_SAVE_FOLDER = str(new_chart_save_folder_path)
+    definitions.DEFAULT_CHART_SAVE_FOLDER = new_chart_save_folder_path
     save_new_default_chart_save_location_setting(new_chart_save_folder_path)
 
     create_chart_save_folder(new_chart_save_folder_path, original_location)
@@ -121,7 +121,7 @@ def write_settings_to_file(settings_dict: dict):
         app_settings_file.write(write_string)
 
 
-def create_app_settings_file(settings_dict=None):
+def create_app_settings_file(settings_dict: dict=None):
     """
     Create settings file, ensuring __init__.py in containing folder.
 
@@ -129,7 +129,7 @@ def create_app_settings_file(settings_dict=None):
     write_settings_to_file (or to add to provided dict to supply unprovided
     settings) if no settings_dict argument is provided.
 
-    :param settings_dict: dict
+    :param settings_dict: dict, default: None
     :return: None
     """
     create_app_data__init__()
