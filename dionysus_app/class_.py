@@ -230,7 +230,8 @@ class Class:
     def __str__(self):
         if self.students:
             student_list_str = ', '.join([student.name for student in self.students])
-            students_stmt = f'containing {len(self.students)} students, with names: {student_list_str}'
+            students_stmt = (f'containing {len(self.students)} students, '
+                             f'with names: {student_list_str}')
         else:
             students_stmt = 'containing 0 students'
 
