@@ -106,7 +106,7 @@ class Student:
     # Alternate constructors
 
     @classmethod
-    def from_dict(cls, student_dict):
+    def from_dict(cls, student_dict: dict):
         """
         Instantiate a Student object from a JSON-serialisable dict.
 
