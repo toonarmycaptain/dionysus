@@ -14,7 +14,7 @@ import definitions
 
 from dionysus_app.chart_generator.generate_image import generate_chart_image
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
-from dionysus_app.class_functions import select_classlist, load_class_data
+from dionysus_app.class_functions import select_classlist, load_class_from_disk
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.file_functions import convert_to_json, copy_file
 from dionysus_app.UI_menus.chart_generator.create_chart_UI import (display_image_save_as,
@@ -81,9 +81,9 @@ def assemble_chart_data():
 
     class_name = select_classlist()  # TODO: warn for empty classlist
 
-    class_data_dict = load_class_data(class_name)
+    loaded_class = load_class_from_disk(class_name)
 
-    student_scores: dict = take_score_data(class_name, class_data_dict)
+    student_scores: dict = take_score_data(loaded_class)
 
     chart_name = take_chart_name()
 

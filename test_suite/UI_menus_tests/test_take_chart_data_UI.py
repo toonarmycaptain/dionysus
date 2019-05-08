@@ -1,20 +1,20 @@
 from unittest import TestCase, mock
 from unittest.mock import patch
 
+from dionysus_app.class_ import Class
 from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_score_data, take_score_entry,
                                                                       take_student_scores,
                                                                       take_custom_chart_options,
                                                                       take_chart_name,
                                                                       )
-from test_suite.testing_class_data import testing_class_data_set as test_class_data
+from test_suite.testing_class_data import test_full_class_data_set
 
 
 class TestTakeScoreData(TestCase):
     def setUp(self):
-        self.test_classname = 'the knights who say ni'
-        self.test_class_data_dict = test_class_data['loaded_dict']
+        self.test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
 
-        self.score_entry_instruction = (f"\nEnter student scores for {self.test_classname}: \n"
+        self.score_entry_instruction = (f"\nEnter student scores for {self.test_class.name}: \n"
                                         f"Type score for each student, or '_' to exclude student, and press enter.")
         self.newline_after_entry = '\n'
         self.print_calls = [self.score_entry_instruction, self.newline_after_entry]
@@ -26,11 +26,10 @@ class TestTakeScoreData(TestCase):
     def test_take_score_data(self, mocked_print, mocked_take_student_scores):
         mocked_take_student_scores.return_value = self.mock_score_avatar_dict
 
-        assert take_score_data(self.test_classname,
-                               self.test_class_data_dict) == self.mock_score_avatar_dict
+        assert take_score_data(self.test_class) == self.mock_score_avatar_dict
 
         assert mocked_print.call_args_list == [mock.call(print_call) for print_call in self.print_calls]
-        mocked_take_student_scores.called_once_with(self.test_classname, self.test_class_data_dict)
+        mocked_take_student_scores.called_once_with(self.test_class)
 
 
 class TestTakeStudentScores(TestCase):
@@ -39,13 +38,12 @@ class TestTakeStudentScores(TestCase):
     def setUp(self):
         self.mock_DEFAULT_AVATAR_PATH = 'mocked_default_avatar_path'
 
-        self.test_classname = 'the knights who say ni'
-        self.test_class_data_dict = test_class_data['loaded_dict']
+        self.test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
 
         # NB If data other than avatar in dict values, this test implementation may need to change.
-        self.avatar_paths = [f'path to {avatar[0]}' if avatar[0] is not None
+        self.avatar_paths = [f'path to {student.avatar_filename}' if student.avatar_filename is not None
                              else self.mock_DEFAULT_AVATAR_PATH
-                             for avatar in test_class_data['loaded_dict'].values()]
+                             for student in self.test_class.students]
 
         # Gives no score to one student with and without an avatar.
         self.mocked_take_score_entry_return_values = [0, 1, 3, None, 50, 99, 100, 1, 2, 3, 4, None, 6, 7, 8]
@@ -74,13 +72,12 @@ class TestTakeStudentScores(TestCase):
         mocked_take_score_entry.side_effect = self.mocked_take_score_entry_return_values
         mocked_get_avatar_path.side_effect = self.mocked_get_avatar_path_return_values
 
-        assert take_student_scores(self.test_classname,
-                                   self.test_class_data_dict) == self.test_take_student_scores_return_value
+        assert take_student_scores(self.test_class) == self.test_take_student_scores_return_value
 
-        mocked_take_score_entry.call_args_list = [mock.call(student_name) for student_name in self.test_class_data_dict]
-        mocked_get_avatar_path.call_args_list = [mock.call(self.test_classname,
-                                                           self.test_class_data_dict[student_name][0])
-                                                 for student_name in self.test_class_data_dict]
+        mocked_take_score_entry.call_args_list = [mock.call(student.name) for student in self.test_class]
+        mocked_get_avatar_path.call_args_list = [mock.call(self.test_class.name,
+                                                           student.avatar_filename)
+                                                 for student in self.test_class]
 
 
 class TestTakeScoreEntry(TestCase):

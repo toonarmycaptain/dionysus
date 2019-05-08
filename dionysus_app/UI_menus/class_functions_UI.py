@@ -1,4 +1,5 @@
 """UI elements for class_functions"""
+from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import classlist_exists
 from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
                                                 input_is_essentially_blank,
@@ -28,12 +29,14 @@ def take_classlist_name_input():
     return classlist_name
 
 
-def take_student_name_input(class_data: dict):
+def take_student_name_input(the_class: Class):
     """
-    Prompts user for student name.
-    Class data is a dict with student names as keys.
+    Prompts user for student name, checks if student name is a valid name, or
+    is already in the class, prompting to enter a different name if this is the
+    case.
 
-    :param class_data: dict
+
+    :param the_class: Class object
     :return: str
     """
     while True:
@@ -42,7 +45,7 @@ def take_student_name_input(class_data: dict):
             print('Please enter a valid student name.')
             continue
 
-        if student_name in class_data:
+        if student_name in the_class:
             print("This student is already a member of the class.")
             continue
         return student_name
@@ -59,20 +62,19 @@ def blank_class_dialogue():
         print('Please enter y for yes to create empty class, or n to return to student input.')
 
 
-def class_data_feedback(classlist_name: str, class_data_dict: dict):
+def class_data_feedback(current_class: Class):
     """
     Print classlist name and list of students as user feedback.
 
-    :param classlist_name: str
-    :param class_data_dict: dict
+    :param current_class: Class object
     :return: None
     """
-    print(f'\nClass name: {classlist_name}')
-    if not class_data_dict:
+    print(f'\nClass name: {current_class.name}')
+    if not current_class.students:
         print("No students entered.")
     else:
-        for key in class_data_dict:
-            print(key)
+        for student in current_class:
+            print(student.name)
 
 
 def display_class_selection_menu(class_options: dict):
@@ -161,7 +163,8 @@ def take_student_selection(student_options: dict):
 
 def select_avatar_file_dialogue():
     """
-    Prompts user to select an avatar file. Only displays PNG files.
+    Prompts user to select an avatar file. Currently only displays PNG files by
+    default.
     :return: str or None
     """
     dialogue_box_title = 'Select .png format avatar:'

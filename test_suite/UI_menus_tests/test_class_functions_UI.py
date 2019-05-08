@@ -5,6 +5,8 @@ from itertools import permutations
 from unittest import TestCase, mock
 from unittest.mock import patch
 
+from dionysus_app.class_ import Class
+from dionysus_app.student import Student
 from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_menu,
                                                       take_classlist_name_input,
                                                       display_student_selection_menu,
@@ -15,9 +17,10 @@ from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_me
                                                       take_student_selection,
                                                       select_avatar_file_dialogue,
                                                       )
+from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_display_class_selection_menu_output,
-                                           testing_class_data_set as test_class_data_set,
+                                           test_full_class_data_set as test_class_data_set,
                                            test_display_student_selection_menu_student_output,
                                            )
 
@@ -63,17 +66,17 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
             'mock_input_is_essentially_blank_return': False,
             'mock_classlist_exists_return': True,
             'mock_print_calls': [self.classlist_exists_response],
-            }
+        }
         self.valid_new_classname = {
             'classlist_name': 'this_is_a_valid_class_name',
             'mock_input_is_essentially_blank_return': False,
             'mock_classlist_exists_return': False,
-            }
+        }
         self.blank_classname = {
             'classlist_name': '__blank_classname__',
             'mock_input_is_essentially_blank_return': True,
             'mock_print_calls': [],
-            }
+        }
 
         self.test_case_inputs = [self.blank_classname, self.preexisting_class, self.valid_new_classname]
 
@@ -170,7 +173,7 @@ class TestTakeStudentNameInput(TestCase):
     def setUp(self):
         self.no_student_name = ''
         self.blank_student_name = '_'
-        self.preexisting_student = 'this student already exists in the class'
+        self.preexisting_student_name = 'this student already exists in the class'
         self.valid_new_student_name = 'this is a valid student_name'
 
         self.invalid_student_name_response = 'Please enter a valid student name.'
@@ -178,7 +181,7 @@ class TestTakeStudentNameInput(TestCase):
 
         self.test_case_inputs = [self.no_student_name,
                                  self.blank_student_name,
-                                 self.preexisting_student,
+                                 self.preexisting_student_name,
                                  self.valid_new_student_name,
                                  ]
 
@@ -187,13 +190,13 @@ class TestTakeStudentNameInput(TestCase):
                                  self.preexisting_student_response,
                                  ]
 
-        self.mock_class_data = {self.preexisting_student: ['some student data']}
+        self.test_class = Class(name='my_test_class', students=[Student(name=self.preexisting_student_name)])
 
     @patch('dionysus_app.UI_menus.class_functions_UI.print')
     def test_take_student_name_input(self, mocked_print):
         with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
             mock_input.side_effect = self.test_case_inputs
-            assert take_student_name_input(self.mock_class_data) == self.valid_new_student_name
+            assert take_student_name_input(self.test_class) == self.valid_new_student_name
 
             assert mocked_print.call_args_list == [mock.call(printed_string)
                                                    for printed_string in self.printed_feedback]
@@ -243,35 +246,29 @@ class TestBlankClassDialogue(TestCase):
                     mock_input.reset_mock(return_value=True, side_effect=True)
 
 
-class TestClassDataFeedback(TestCase):
-    def setUp(self):
-        # Normal class data:
-        self.test_class_name = 'the knights of the round table'
-        self.test_class_data_dict = test_class_data_set['loaded_dict']
-        # Class created without students:
-        self.empty_class_data_dict = {}
-        self.empty_class_feedback = 'No students entered.'
+class TestClassDataFeedback:
+    """
+    NB These tests are kinda fragile because of necessity to append the '\n's
+    in the correct places. Currently function is including a newline before
+    the class name, but the rest are supplied by the multiple calls to
+    print(), hence needing to include them manually when simply capturing
+    what is passed to print.
+    """
 
-    def test_class_data_feedback(self):
-        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
+    def test_class_data_feedback(self, test_full_class, capsys):
+        printed_strings = [f'\nClass name: {test_full_class.name}\n'] + [student.name + '\n' for student in
+                                                                         test_full_class]
+        class_data_feedback(test_full_class)
+        captured = capsys.readouterr().out
+        assert captured == ''.join(printed_strings)
 
-            printed_strings = [f'\nClass name: {self.test_class_name}'] + [name for name in test_class_data_set['loaded_dict']]
+    def test_class_data_feedback_with_empty_class(self, test_class_name_only, capsys):
+        empty_class_feedback = 'No students entered.'
 
-            class_data_feedback(self.test_class_name, self.test_class_data_dict)
-
-            assert mocked_print.call_args_list == [mock.call(printed_string) for printed_string in printed_strings]
-
-    def test_class_data_feedback_with_empty_class(self):
-        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
-
-            printed_strings = [f'\nClass name: {self.test_class_name}'] + [self.empty_class_feedback]
-            assert printed_strings == [f'\nClass name: {self.test_class_name}',
-                                       self.empty_class_feedback]  # ie No student names.
-
-            class_data_feedback(self.test_class_name, self.empty_class_data_dict)
-
-            assert mocked_print.call_args_list == [mock.call(printed_string)
-                                                   for printed_string in printed_strings]
+        printed_strings = [f'\nClass name: {test_class_name_only.name}\n{empty_class_feedback}\n']
+        class_data_feedback(test_class_name_only)
+        captured = capsys.readouterr().out
+        assert captured == ''.join(printed_strings)
 
 
 class TestDisplayClassSelectionMenu(TestCase):
@@ -449,7 +446,6 @@ class TestSelectAvatarFileDialogue(TestCase):
 
     @patch('dionysus_app.UI_menus.class_functions_UI.select_file_dialogue')
     def test_select_avatar_file_dialogue(self, mocked_select_file_dialogue):
-
         mocked_select_file_dialogue.return_value = self.my_avatar_path
 
         assert select_avatar_file_dialogue() == self.my_avatar_path

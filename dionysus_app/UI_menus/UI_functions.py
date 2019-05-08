@@ -4,6 +4,7 @@ UI functions: user interface functions used throughout the application.
 
 import tkinter as tk
 
+from pathlib import Path
 from tkinter import filedialog
 
 
@@ -54,18 +55,28 @@ def clean_for_filename(some_string: str):
 def scrub_candidate_filename(dirty_string: str):
     """
     Cleans string of non-alpha-numeric characters, but leaves spaces, dashes,
-    apostrophes, and underscores, stripping trailing spaces.
+    and underscores, stripping trailing spaces.
 
-    If apostrophe causes problems, will have to replace with dash or similar,
-    but they are frequently used in names, so allowing until a problem emerges.
+    Replace disallowed characters with underscores to preserve form.
+
+    >>> scrub_candidate_filename(r"Les méµoires¬de¬M. d'Ar∫@gnåñ  /\/\ 'abc∂éåß®∆˚__˙©¬ñ√ƒµ©∆∫ø'")
+    'Les méµoires_de_M_ d_Ar__gnåñ  ____ _abc_éåß________ñ_ƒµ___ø_'
+
+    # Which at least makes distinct words clear, rather than:
+    'Les méµoiresdeM dArgnåñ   abcéåßñƒµø'  # Which is completely unreadable.
+
 
     :param dirty_string: str
     :return: str
     """
-    allowed_special_characters = [' ', '_', '-', "'"]  # TODO: test if apostrophe causes problems
-    cleaned_string = "".join([c for c in dirty_string
+    allowed_special_characters = [' ', '_', '-',]
+    cleaned_string = "".join([c
                               if c.isalnum()
-                              or c in allowed_special_characters]).rstrip()
+                              or c in allowed_special_characters
+                              else '_'
+                              for c in dirty_string
+                              ]).rstrip()
+
     return cleaned_string
 
 
@@ -176,7 +187,7 @@ def select_file_dialogue(title_str=None,
 
     if filepath_str == '':
         return None
-    return filepath_str
+    return Path(filepath_str)
 
 
 def select_folder_dialogue(title_str=None, start_dir='..'):
@@ -200,7 +211,7 @@ def select_folder_dialogue(title_str=None, start_dir='..'):
 
     if dir_path_str == '':
         return None
-    return dir_path_str
+    return Path(dir_path_str)
 
 
 if __name__ == '__main__':
