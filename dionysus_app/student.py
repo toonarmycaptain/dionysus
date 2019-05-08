@@ -35,7 +35,7 @@ class Student:
         """
         self.name = name
 
-        self.avatar_filename = kwargs.get('avatar_filename')  # Equivalent to kwargs.get('avatar_filename', None)
+        self.avatar_filename = kwargs.get('avatar_filename')  # Equivalent to kwargs.get(key, None)
         # NB Assuring existence is responsibility of code instantiating/adding avatar_filename.
 
     @property
