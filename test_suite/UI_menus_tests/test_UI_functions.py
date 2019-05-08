@@ -1,11 +1,7 @@
-"""
-TestCleanForFilename, test_clean_for_filename
+""""Test UI Functions"""
 
-TestSaveAsDialogue, test_save_as_dialogue
-TestScrubCandidateFilename, test_scrub_candidate_filename
-TestSelectFileDialogue, test_select_file_dialogue
-TestSelectFolderDialogue, test_select_folder_dialogue
-"""
+import pytest
+
 from pathlib import Path
 from unittest import TestCase, mock
 from unittest.mock import patch
@@ -50,7 +46,7 @@ class TestClearScreen(TestCase):
 
 class TestInputIsEssentiallyBlank(TestCase):
     def setUp(self):
-        "Test cases: (input_value, expected_return_value)"
+        """"Test cases: (input_value, expected_return_value)"""
         self.test_cases = {
             'test_empty_string': ('', True),  # ie no input
             # Spaces
@@ -78,7 +74,7 @@ class TestInputIsEssentiallyBlank(TestCase):
                 " because nobody_expects_the _spanish_ inquisition the 2nd time", False),
             'test_combination_underscore_spaces_special_characters': (
                 " because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time", False),
-            }
+        }
 
     def test_input_is_essentially_blank(self):
         for test_case in self.test_cases:
@@ -91,7 +87,7 @@ class TestInputIsEssentiallyBlank(TestCase):
 
 class TestCleanForFilename(TestCase):
     def setUp(self):
-        "Test cases: (input_value, expected_return_value)"
+        """Test cases: (input_value, expected_return_value)"""
         self.test_cases = {
             'test_empty_string': ('', ''),  # ie no input
             # Spaces
@@ -119,8 +115,13 @@ class TestCleanForFilename(TestCase):
                 '_because_nobody_expects_the__spanish__inquisition_the_2nd_time'),
             'test_combination_underscore_spaces_special_characters': (
                 ' because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time',
-                '_because_nobody_expects_the_ing__spanish__inquisition_the_2nd__time')
-            }
+                '_because_nobody_expects_the______ing__spanish__inquisition_the_2nd_______time'),
+            # Explicitly test OS/Filesystem format prohibited characters:
+            'Test prohibited chars FAT32': (r'" * / : < > ? \ | + , . ; = [ ] ! @ ; ',
+                                            '_____________________________________'),
+            'Test prohibited characters Windows': (r'\/:*?"<>|.', '__________'),
+            'Test prohibited *nix/OSX chars': (r'*?!/.', '_____'),
+        }
 
     @patch('dionysus_app.UI_menus.UI_functions.scrub_candidate_filename')
     def test_clean_for_filename_mocking_call(self, mocked_scrub_candidate_filename):
@@ -149,46 +150,42 @@ class TestCleanForFilename(TestCase):
                 assert clean_for_filename(test_input) == expected_output
 
 
-class TestScrubCandidateFilename(TestCase):
-    def setUp(self):
-        "Test cases: (input_value, expected_return_value)"
-        self.test_cases = {
-            'test_empty_string': ('', ''),  # ie no input
-            # Spaces
-            'test_single_space': (' ', ''),  # .rstrip() will remove trailing space.
-            'test_2_spaces': ('  ', ''),
-            'test_3_spaces': ('   ', ''),
-            'test_5_spaces': ('     ', ''),
-            # Underscores
-            'test_single_underscore': ('_', '_'),
-            'test_double_underscore': ('__', '__'),
-            'test_triple_underscore': ('___', '___'),
-            'test_spaces_underscores_combo': (' _ _ _', ' _ _ _'),
-            'test_spaces_underscores_combo_trailing_space': (' _ _ _ ', ' _ _ _'),
-            'test_leading_space': (' test', ' test'),
-            'test_leading_spaces': ('   test', '   test'),
-            'test_singe_trailing_space': ('test ', 'test'),
-            'test_trailing_spaces': ('test   ', 'test'),
-            'test_leading_and_trailing_space': (' test ', ' test'),
-            'test_no_spaces': ('test', 'test'),
-            'test_sentence': ('not the Spanish inquisition', 'not the Spanish inquisition'),
-            'test_sentence_leading_and_trailing_spaces': (' not the spanish inquisition ',
-                                                          ' not the spanish inquisition'),
-            'test_combination_underscore_spaces': (
-                ' because nobody_expects_the _spanish_ inquisition the 2nd time',
-                ' because nobody_expects_the _spanish_ inquisition the 2nd time'),
-            'test_combination_underscore_spaces_special_characters': (
-                ' because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time',
-                ' because nobody_expects_the ing _spanish_ inquisition the 2nd  time')
-            }
-
-    def test_scrub_candidate_filename(self):
-        for test_case in self.test_cases:
-            with self.subTest(i=self.test_cases[test_case]):
-                test_input = self.test_cases[test_case][0]
-                expected_output = self.test_cases[test_case][1]
-
-                assert scrub_candidate_filename(test_input) == expected_output
+@pytest.mark.parametrize(
+    'test_input, expected_output',
+    [('', ''),  # test_empty_string
+     (' ', ''),  # test_single_space
+     ('  ', ''),  # test_2_spaces
+     ('   ', ''),  # test_3_spaces
+     ('     ', ''),  # test_5_spaces
+     ('_', '_'),  # test_single_underscore
+     ('__', '__'),  # test_double_underscore
+     ('___', '___'),  # test_triple_underscore
+     (' _ _ _', ' _ _ _'),  # test_spaces_underscores_combo
+     (' _ _ _ ', ' _ _ _'),  # test_spaces_underscores_combo_trailing_space
+     (' test', ' test'),  # test_leading_space
+     ('   test', '   test'),  # test_leading_spaces
+     ('test ', 'test'),  # test_singe_trailing_space
+     ('test   ', 'test'),  # test_trailing_spaces
+     (' test ', ' test'),  # test_leading_and_trailing_space
+     ('test', 'test'),  # test_no_spaces
+     ('not the Spanish inquisition', 'not the Spanish inquisition'),  # test_sentence
+     (' not the spanish inquisition ', ' not the spanish inquisition'),  # test_sentence_leading_and_trailing_spaces
+     (' because nobody_expects_the _spanish_ inquisition the 2nd time',
+      ' because nobody_expects_the _spanish_ inquisition the 2nd time'),  # test_combination_underscore_spaces
+     # test_combination_underscore_spaces_special_characters
+     (' because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time',
+      ' because nobody_expects_the _____ing _spanish_ inquisition the 2nd _____ time'),
+     # d'Artagnan's memoirs: preserving accented é, replacing apostrophe, period with underscores.
+     ("Les mémoires de M. d'Artagnan", "Les mémoires de M_ d_Artagnan"),
+     # Test prohibited chars FAT32
+     (r'" * / : < > ? \ | + , . ; = [ ] ! @ ; ', '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _'),
+     # Test prohibited characters Windows
+     (r'\/:*?"<>|.', '__________'),
+     # Test prohibited *nix/OSX chars
+     (r'*?!/.', '_____'),
+     ])
+def test_scrub_candidate_filename(test_input, expected_output):
+    assert scrub_candidate_filename(test_input) == expected_output
 
 
 @patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
@@ -422,14 +419,16 @@ class TestSelectFileDialogue(TestCase):
         self.test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
         self.test_start_dir = 'What\\is\\your\\quest'
 
-        self.test_returned_filepath_str = 'strange women lying in ponds distributing swords'
+        self.test_returned_filepath_path = Path('strange women lying in ponds distributing swords')
 
     def test_select_file_dialogue_called_without_arguments(self, mock_tkinter):
         # Tests filedialog called with default_filetypes.
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_str
+            select_filedialog.return_value = self.test_returned_filepath_path
 
-            assert select_file_dialogue() == self.test_returned_filepath_str
+            assert select_file_dialogue() == self.test_returned_filepath_path
+
+            assert isinstance(self.test_returned_filepath_path, Path)
 
             mock_tkinter.assert_called()
             select_filedialog.assert_called_once_with(title=None,
@@ -438,12 +437,14 @@ class TestSelectFileDialogue(TestCase):
 
     def test_select_file_dialogue_all_None_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_str
+            select_filedialog.return_value = self.test_returned_filepath_path
 
             assert select_file_dialogue(title_str=None,
                                         filetypes=None,
                                         start_dir=None,
-                                        ) == self.test_returned_filepath_str
+                                        ) == self.test_returned_filepath_path
+
+            assert isinstance(self.test_returned_filepath_path, Path)
 
             mock_tkinter.assert_called()
             select_filedialog.assert_called_once_with(title=None,
@@ -452,12 +453,14 @@ class TestSelectFileDialogue(TestCase):
 
     def test_select_file_dialogue_called_with_all_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_str
+            select_filedialog.return_value = self.test_returned_filepath_path
 
             assert select_file_dialogue(title_str=self.test_title_str,
                                         filetypes=self.test_filetypes,
                                         start_dir=self.test_start_dir,
-                                        ) == self.test_returned_filepath_str
+                                        ) == self.test_returned_filepath_path
+
+            assert isinstance(self.test_returned_filepath_path, Path)
 
             mock_tkinter.assert_called()
             select_filedialog.assert_called_once_with(title=self.test_title_str,
@@ -484,13 +487,15 @@ class TestSelectFolderDialogue(TestCase):
         self.test_title_str = 'First you must answer three questions'
         self.test_start_dir = 'What\\is\\your\\quest'
 
-        self.test_returned_folderpath_str = 'strange women lying in ponds distributing swords'
+        self.test_returned_folderpath_path = Path('strange women lying in ponds distributing swords')
 
     def test_select_folder_dialogue_called_without_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_str
+            select_directorydialog.return_value = self.test_returned_folderpath_path
 
-            assert select_folder_dialogue() == self.test_returned_folderpath_str
+            assert select_folder_dialogue() == self.test_returned_folderpath_path
+
+            assert isinstance(self.test_returned_folderpath_path, Path)
 
             mock_tkinter.assert_called()
             select_directorydialog.assert_called_once_with(title=None,
@@ -498,11 +503,13 @@ class TestSelectFolderDialogue(TestCase):
 
     def test_select_folder_dialogue_all_None_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_str
+            select_directorydialog.return_value = self.test_returned_folderpath_path
 
             assert select_folder_dialogue(title_str=None,
                                           start_dir=None,
-                                          ) == self.test_returned_folderpath_str
+                                          ) == self.test_returned_folderpath_path
+
+            assert isinstance(self.test_returned_folderpath_path, Path)
 
             mock_tkinter.assert_called()
             select_directorydialog.assert_called_once_with(title=None,
@@ -510,11 +517,13 @@ class TestSelectFolderDialogue(TestCase):
 
     def test_select_folder_dialogue_called_with_all_arguments(self, mock_tkinter):
         with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_str
+            select_directorydialog.return_value = self.test_returned_folderpath_path
 
             assert select_folder_dialogue(title_str=self.test_title_str,
                                           start_dir=self.test_start_dir,
-                                          ) == self.test_returned_folderpath_str
+                                          ) == self.test_returned_folderpath_path
+
+            assert isinstance(self.test_returned_folderpath_path, Path)
 
             mock_tkinter.assert_called()
             select_directorydialog.assert_called_once_with(title=self.test_title_str,

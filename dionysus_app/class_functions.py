@@ -8,15 +8,16 @@ from pathlib import Path
 
 import definitions
 
+from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
-from dionysus_app.file_functions import (convert_to_json,
-                                         load_from_json_file,
+from dionysus_app.file_functions import (load_from_json_file,
                                          copy_file,
                                          )
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
                                                       display_class_selection_menu,
+                                                      display_student_selection_menu,
                                                       select_avatar_file_dialogue,
                                                       take_class_selection,
                                                       take_classlist_name_input,
@@ -36,7 +37,7 @@ def create_classlist():
     create_classlist_data(classlist_name)
 
 
-def setup_class(classlist_name):  # TODO: change name because of clash with python 'class' keyword?
+def setup_class(classlist_name):
     """
     Setup class data storage file structure.
     Register class in class_registry index
@@ -73,42 +74,52 @@ def setup_class_data_storage(classlist_name: str):
 
 
 def create_classlist_data(class_name: str):
-    class_data = compose_classlist_dialogue(class_name)
+    new_class = compose_classlist_dialogue(class_name)
 
-    class_data_feedback(class_name, class_data)
-    write_classlist_to_file(class_name, class_data)
+    class_data_feedback(new_class)
+    write_classlist_to_file(new_class)
     time.sleep(2)  # Pause for user to look over feedback.
 
 
-def compose_classlist_dialogue(class_name):
-    while True:
-        class_data = take_class_data_input(class_name)
+def compose_classlist_dialogue(class_name: str):
+    """
+    Create class object.
 
-        if not class_data:  # Test for empty class.
+    If no students added to class, check if intended, making subsequent call to
+    take_class_data_input UI if unintended blank class returned.
+
+    :param class_name: str
+    :return: Class object
+    """
+    while True:
+        new_class = take_class_data_input(class_name)
+
+        if not new_class.students:  # Test for empty class.
             create_empty_class = blank_class_dialogue()
             if create_empty_class:
                 break
             # else: ie if not cancelled:
-            continue
+            continue  # Line skipped from coverage due to peephole optimiser.
         break  # class_data not empty
 
-    return class_data
+    return new_class
 
 
-def take_class_data_input(class_name):
+def take_class_data_input(class_name: str):
     """
-    Take student names, avatars, return dictionary of data.
+    Take student names, avatars, return Class object.
 
-    :return: dict
+    :param class_name: str
+    :return: Class
     """
-    class_data = {}
+    new_class = Class(name=class_name)
     while True:
-        student_name = take_student_name_input(class_data)
+        student_name = take_student_name_input(new_class)
         if student_name.upper() == 'END':
             break
         avatar_filename = take_student_avatar(class_name, student_name)
-        class_data[student_name] = [avatar_filename]
-    return class_data
+        new_class.add_student(name=student_name, avatar_filename=avatar_filename)
+    return new_class
 
 
 def take_student_avatar(class_name, student_name):
@@ -126,6 +137,7 @@ def take_student_avatar(class_name, student_name):
 
     cleaned_student_name = clean_for_filename(student_name)
     target_avatar_filename = f'{cleaned_student_name}.png'
+    # TODO: append hash to filename to prevent name collisions eg cleaned versions of 'a_b.jpg' and 'a b.jpg' will be identical.
 
     # TODO: process_student_avatar()
     # TODO: convert to png
@@ -158,26 +170,30 @@ def avatar_file_exists(avatar_file):
     return Path(avatar_file).expanduser().resolve().exists()
 
 
-def write_classlist_to_file(class_name: str, class_data_dict: dict):
+def write_classlist_to_file(current_class: Class):
     """
-    Write classlist data to disk with format:
+    Write classlist data to disk as JSON dict, according to Class object's
+    Class.json_dict and Class.to_json_str methods.
 
-    JSON'd class data dict  # Second line, when reading JSON back in.
+    CAUTION: conversion to JSON will convert int/float keys to strings, and
+    keep them as strings when loading.
 
-    CAUTION: conversion to JSON will convert int/float keys in score_avatar_dict
-    to strings, and keep them as strings when loading.
-
-    :param class_name: str
-    :param class_data_dict: dict
-    :return: None
+    :param current_class: Class object
+    :return: Path
     """
-    data_file = class_name + CLASSLIST_DATA_FILE_TYPE
-    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, data_file)
+    class_name = current_class.name
+    data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
+    classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, data_filename)
 
-    json_class_data = convert_to_json(class_data_dict)
+    json_class_data = current_class.to_json_str()
+
+    # Make data path if it doesn't exist.
+    classlist_data_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(classlist_data_path, 'w') as classlist_file:
         classlist_file.write(json_class_data)
+
+    return classlist_data_path
 
 
 def select_classlist():
@@ -214,7 +230,7 @@ def select_student(class_name: str):
     :return: str
     """
     student_options = create_student_list_dict(class_name)
-    display_class_selection_menu(student_options)
+    display_student_selection_menu(student_options)
 
     selected_student = take_student_selection(student_options)
 
@@ -225,32 +241,31 @@ def create_student_list_dict(class_name: str):
     """
     Create dict with enumerated students, starting at 1.
 
+    CONSIDER DEPRECIATED GOING FORWARD, as for most all use cases, class will
+    already be loaded when this is needed.
 
     :param class_name: str
     :return: dict
     """
-    class_data = load_class_data(class_name)
-    student_list_dict = {option: student_name for option, student_name in enumerate(class_data, start=1)}
+    loaded_class = load_class_from_disk(class_name)
+    student_list_dict = {option: student.name
+                         for option, student in enumerate(loaded_class.students, start=1)}
     return student_list_dict
 
 
-def load_class_data(class_name: str):
+def load_class_from_disk(class_name: str):
     """
-    Load class data from a class data ('.cld') file.
-
-    Data will be a dict with format:
-                                keys: student name
-                                values: list currently only containing the avatar filename/None.
+    Load class data from a class data ('.cld') file, return Class object.
 
     :param class_name: str
-    :return: dict
+    :return: Class object
     """
 
     class_data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
     classlist_data_path = CLASSLIST_DATA_PATH.joinpath(class_name, class_data_filename)
 
-    class_data_dict = load_from_json_file(classlist_data_path)
-    return class_data_dict
+    loaded_class = Class.from_file(classlist_data_path)
+    return loaded_class
 
 
 def load_chart_data(chart_data_path: str):
@@ -297,7 +312,3 @@ def edit_classlist():
     classlist_name = take_classlist_name_input()
     with open(classlist_name + '.txt', 'r+') as classlist_file:
         pass
-
-
-if __name__ == '__main__':
-    create_classlist()

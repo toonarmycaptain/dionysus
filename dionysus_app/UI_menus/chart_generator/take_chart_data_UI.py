@@ -1,18 +1,16 @@
 """
-Script for taking and saving data for graph.
+Script for taking and saving data for chart.
 """
 
-# score entry:
-
+from dionysus_app.class_ import Class
 from dionysus_app.class_functions import get_avatar_path
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
 
-
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 
-def take_score_data(class_name: str, class_data_dict: dict):
+def take_score_data(current_class: Class):
     """
     Prints score taking instructions, calls take_student_scores.
     Prints a newline after completion for readability.
@@ -22,14 +20,13 @@ def take_score_data(class_name: str, class_data_dict: dict):
                                  17: [Path_obj1, Path_obj2, Path_obj3]
                                  }
 
-    :param class_name: str
-    :param class_data_dict: dict
+    :param current_class: Class object
     :return: dict
     """
-    print(f"\nEnter student scores for {class_name}: \n"
+    print(f"\nEnter student scores for {current_class.name}: \n"
           f"Type score for each student, or '_' to exclude student, and press enter.")
 
-    student_scores = take_student_scores(class_name, class_data_dict)
+    student_scores = take_student_scores(current_class)
 
     # Newline between last score and 'Please enter a chart name/title: '
     print('\n')
@@ -37,7 +34,7 @@ def take_score_data(class_name: str, class_data_dict: dict):
     return student_scores
 
 
-def take_student_scores(class_name: str, class_data_dict: dict):
+def take_student_scores(current_class: Class):
     """
     UI function presenting student names from supplied class one at a
     time and taking a score for each.
@@ -52,25 +49,26 @@ def take_student_scores(class_name: str, class_data_dict: dict):
                                  17: [Path_obj1, Path_obj2, Path_obj3]
                                  }
 
-    :param class_name: str
-    :param class_data_dict: dict
+    :param current_class: Class object
     :return: dict
     """
-    student_scores = {}
-    for student_name in list(class_data_dict.keys()):
+    student_scores = dict()
+    for student in current_class.students:
 
-        student_score = take_score_entry(student_name)
+        student_score = take_score_entry(student.name)
         # add avatar to list of avatars for score
         if student_score is not None:
-            student_avatar_filename = class_data_dict[student_name][0]
-            avatar_path = get_avatar_path(class_name, student_avatar_filename)
+            student_avatar_filename = student.avatar_filename
+            avatar_path = get_avatar_path(current_class.name, student_avatar_filename)
 
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
     return student_scores
 
 
-def take_score_entry(student_name: str, minimum: int=0, maximum: int=100):
+def take_score_entry(student_name: str,
+                     minimum: int = 0,
+                     maximum: int = 100):
     """
 
     :param student_name: str
