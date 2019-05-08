@@ -4,8 +4,8 @@ File functions - functions for dealing with files and the filesystem.
 """
 
 import json
-from pathlib import Path
 
+from pathlib import Path
 from shutil import copyfile, move
 from typing import Union
 
