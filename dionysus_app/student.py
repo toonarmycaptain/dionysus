@@ -133,5 +133,6 @@ class Student:
         return repr_str
 
     def __str__(self):
-        avatar_stmt = f'avatar {self.avatar_filename}' if self.avatar_filename is not None else 'no avatar'
+        avatar_stmt = (f'avatar {self.avatar_filename}' if self.avatar_filename is not None
+                       else 'no avatar')
         return f'Student {self.name}, with {avatar_stmt}.'
