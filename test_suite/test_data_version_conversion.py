@@ -60,14 +60,16 @@ class TestParseArgs:
 
     @pytest.mark.parametrize(
         'test_args',
-        [(['-f']),
-         (['--filepath']),
-         (['--all_class_data_files', '--filepath=some.file']),  # Both args passed.
-         (['--A', '--f=some.file']),  # Both short args passed.
+        [(['-f']),  # -f passed instead of --f.
+         (['--f']),  # --f passed without filename arg.
+         (['--filepath']),  # --filepath passed without filename arg.
+         (['--all_class_data_files', '--filepath=some.file']),  # Both args passed, with file argument.
+         (['--all_class_data_files', '--filepath']),  # Both args passed, without file argument.
+         (['--A']),  # --A passed instead of -A.
+         (['-A', '--f=some.file']),  # Both short args passed, with file argument.
+         (['-A', '--f']),  # Both short args passed, without file argument.
          ])
-    def test_parse_args(self, monkeypatch, test_args):
-        # assert parse_args(test_args) == expected_returned_value
-
+    def test_parse_args_raising_exception(self, monkeypatch, test_args):
         with pytest.raises(SystemExit):
             parse_args(test_args)
 
