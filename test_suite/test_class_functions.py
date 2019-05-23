@@ -16,7 +16,6 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           create_classlist,
                                           create_classlist_data,
                                           create_class_list_dict,
-                                          create_student_list_dict,
                                           edit_classlist,
                                           get_avatar_path,
                                           load_chart_data,
@@ -454,14 +453,10 @@ class TestCreateClassListDict(TestCase):
 
 class TestSelectStudent:
     def test_select_student(self, monkeypatch):
-        test_class_name = 'some_class'
+        test_class_students = [Student(name='one'), Student(name='two'), Student(name='three')]
+        test_class = Class(name='some_class', students=test_class_students)
         test_student_options = {1: 'one', 2: 'two', 3: 'three'}
         selected_student = 'some_student'
-
-        def mocked_create_student_list_dict(class_name):
-            if class_name != test_class_name:
-                raise ValueError  # Ensure called with correct arg.
-            return test_student_options
 
         def mocked_display_student_selection_menu(class_options):
             if class_options != test_student_options:
@@ -473,12 +468,10 @@ class TestSelectStudent:
                 raise ValueError  # Ensure called with correct arg.
             return selected_student
 
-        monkeypatch.setattr(class_functions, 'create_student_list_dict', mocked_create_student_list_dict)
         monkeypatch.setattr(class_functions, 'display_student_selection_menu', mocked_display_student_selection_menu)
         monkeypatch.setattr(class_functions, 'take_student_selection', mocked_take_student_selection)
 
-        assert select_student(test_class_name) == selected_student
-
+        assert select_student(test_class) == selected_student
 
 class TestCreateStudentListDict(TestCase):
     def setUp(self):

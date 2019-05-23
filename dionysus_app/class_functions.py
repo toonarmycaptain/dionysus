@@ -221,15 +221,15 @@ def create_class_list_dict():
     return class_dict
 
 
-def select_student(class_name: str):
+def select_student(current_class: Class):
     """
     Display list of students in class and allow user to select one, returning the name of the
     selected student.
 
-    :param class_name: str
+    :param class_name: Class object
     :return: str
     """
-    student_options = create_student_list_dict(class_name)
+    student_options = {numeral: student.name for numeral, student in enumerate(current_class.students, start=1)}
     display_student_selection_menu(student_options)
 
     selected_student = take_student_selection(student_options)
