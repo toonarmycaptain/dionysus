@@ -60,14 +60,16 @@ class TestParseArgs:
 
     @pytest.mark.parametrize(
         'test_args',
-        [(['-f']),
-         (['--filepath']),
-         (['--all_class_data_files', '--filepath=some.file']),  # Both args passed.
-         (['--A', '--f=some.file']),  # Both short args passed.
+        [(['-f']),  # -f passed instead of --f.
+         (['--f']),  # --f passed without filename arg.
+         (['--filepath']),  # --filepath passed without filename arg.
+         (['--all_class_data_files', '--filepath=some.file']),  # Both args passed, with file argument.
+         (['--all_class_data_files', '--filepath']),  # Both args passed, without file argument.
+         (['--A']),  # --A passed instead of -A.
+         (['-A', '--f=some.file']),  # Both short args passed, with file argument.
+         (['-A', '--f']),  # Both short args passed, without file argument.
          ])
-    def test_parse_args(self, monkeypatch, test_args):
-        # assert parse_args(test_args) == expected_returned_value
-
+    def test_parse_args_raising_exception(self, monkeypatch, test_args):
         with pytest.raises(SystemExit):
             parse_args(test_args)
 
@@ -109,10 +111,21 @@ class TestRunScript:
 
 class TestTransformAllOldDataFiles:
     def test_transform_all_old_data_files(self, monkeypatch):
+        test_file_paths = [Path('first/path'), Path('second/path')]
+
+        def mocked_path_glob(self, cld_pattern):
+            if  cld_pattern != '**/*.cld':
+                raise ValueError
+            return (test_path for test_path in test_file_paths)
+
         def mocked_transform_old_cld_file(arg):
             if not isinstance(arg, Path):
                 raise TypeError
+            if arg not in test_file_paths:
+                raise ValueError
 
+
+        monkeypatch.setattr(data_version_conversion.Path, 'glob', mocked_path_glob)
         monkeypatch.setattr(data_version_conversion, 'transform_old_cld_file', mocked_transform_old_cld_file)
 
         assert transform_all_old_data_files() is None
