@@ -8,6 +8,8 @@ from unittest.mock import patch, mock_open
 
 from unittest import mock, TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 
+import pytest
+
 from dionysus_app import class_functions
 from dionysus_app.class_ import Class
 from dionysus_app.class_functions import (avatar_path_from_string,
@@ -452,11 +454,15 @@ class TestCreateClassListDict(TestCase):
 
 
 class TestSelectStudent:
-    def test_select_student(self, monkeypatch):
+    @pytest.mark.parametrize('selected_student_name, selected_student_students_index',
+                             [('one', 0),
+                              ('two', 1),
+                              ('three', 2),
+                             ])
+    def test_select_student(self, monkeypatch, selected_student_name, selected_student_students_index):
         test_class_students = [Student(name='one'), Student(name='two'), Student(name='three')]
         test_class = Class(name='some_class', students=test_class_students)
         test_student_options = {1: 'one', 2: 'two', 3: 'three'}
-        selected_student = 'some_student'
 
         def mocked_display_student_selection_menu(class_options):
             if class_options != test_student_options:
@@ -466,13 +472,12 @@ class TestSelectStudent:
         def mocked_take_student_selection(class_options):
             if class_options != test_student_options:
                 raise ValueError  # Ensure called with correct arg.
-            return selected_student
+            return selected_student_name
 
         monkeypatch.setattr(class_functions, 'display_student_selection_menu', mocked_display_student_selection_menu)
         monkeypatch.setattr(class_functions, 'take_student_selection', mocked_take_student_selection)
 
-        assert select_student(test_class) == selected_student
-
+        assert select_student(test_class) == test_class_students[selected_student_students_index]
 
 
 class TestLoadClassData(TestCase):
