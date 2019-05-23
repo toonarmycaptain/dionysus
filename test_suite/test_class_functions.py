@@ -473,18 +473,6 @@ class TestSelectStudent:
 
         assert select_student(test_class) == selected_student
 
-class TestCreateStudentListDict(TestCase):
-    def setUp(self):
-        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
-        self.test_class_name = self.test_class_json_dict['name']
-
-        self.test_class_object = Class.from_dict(self.test_class_json_dict)
-        self.enumerated_test_class_students_dict = test_full_class_data_set['enumerated_dict']
-
-    @patch('dionysus_app.class_functions.load_class_from_disk')
-    def test_create_student_list_dict_patching_load_class_data(self, mock_load_class_data):
-        mock_load_class_data.return_value = self.test_class_object
-        assert create_student_list_dict(self.test_class_name) == self.enumerated_test_class_students_dict
 
 
 class TestLoadClassData(TestCase):

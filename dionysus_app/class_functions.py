@@ -237,22 +237,6 @@ def select_student(current_class: Class):
     return selected_student
 
 
-def create_student_list_dict(class_name: str):
-    """
-    Create dict with enumerated students, starting at 1.
-
-    CONSIDER DEPRECIATED GOING FORWARD, as for most all use cases, class will
-    already be loaded when this is needed.
-
-    :param class_name: str
-    :return: dict
-    """
-    loaded_class = load_class_from_disk(class_name)
-    student_list_dict = {option: student.name
-                         for option, student in enumerate(loaded_class.students, start=1)}
-    return student_list_dict
-
-
 def load_class_from_disk(class_name: str):
     """
     Load class data from a class data ('.cld') file, return Class object.
