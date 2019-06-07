@@ -50,8 +50,8 @@ class TestTakeStudentScores:
         monkeypatch.setattr(create_chart, 'generate_chart_image', mocked_generate_chart_image)
         monkeypatch.setattr(create_chart, 'show_image', mocked_show_image)
         monkeypatch.setattr(create_chart, 'user_save_chart_image', mocked_user_save_chart_image)
-        def test_new_chart(self):
-            assert new_chart() is None
+
+        assert new_chart() is None
 
 
 class TestGetCustomChartOptions(TestCase):
