@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - `select_student` now uses Class object, returns Student object.
+- `file_functions` tests now all use new-style class data. 
 ### Removed
 - `class_functions.create_student_list_dict`
 

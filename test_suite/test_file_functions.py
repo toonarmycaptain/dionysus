@@ -10,7 +10,7 @@ from dionysus_app.file_functions import (convert_to_json,
                                          load_from_json_file,
                                          )
 from dionysus_app.file_functions import copy_file, move_file
-from test_suite.testing_class_data import testing_class_data_set as test_json_class_data
+from test_suite.testing_class_data import test_full_class_data_set as test_json_class_data
 
 
 class TestConvertToJson(TestCase):
@@ -32,7 +32,7 @@ class TestLoadFromJson(TestCase):
         assert load_from_json(self.json_data_to_convert) == self.converted_json_data
 
     def test_load_from_json_test_class_data(self):
-        assert load_from_json(self.test_json_class_data['json_data_string']) == self.test_json_class_data['loaded_dict']
+        assert load_from_json(self.test_json_class_data['json_str_rep']) == self.test_json_class_data['json_dict_rep']
 
 
 class TestLoadFromJsonFile(TestCase):
