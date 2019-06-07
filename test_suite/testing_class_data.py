@@ -133,8 +133,8 @@ test_full_class_data_set = {'json_str_rep': test_full_class_data_set_json_string
                             'enumerated_dict': test_full_class_data_set_enumerated_dict,
                             }
 
-"""Old style class data sets"""
-testing_class_data_set_json_string = '{\n    "Cali": [\n        "Cali_avatar.png"\n    ],\n    "Monty": ' \
+"""Depreciated old style class data sets"""
+old_style_testing_class_data_set_json_string = '{\n    "Cali": [\n        "Cali_avatar.png"\n    ],\n    "Monty": ' \
                                      '[\n        null\n    ],\n    "Abby": [\n        null\n    ],' \
                                      '\n    "Zach": [\n        "Zach_avatar.png"\n    ],\n    "Janell": ' \
                                      '[\n        null\n    ],\n    "Matthew": [\n        null\n    ],' \
@@ -145,22 +145,22 @@ testing_class_data_set_json_string = '{\n    "Cali": [\n        "Cali_avatar.png
                                      '\n    "Danielle": [\n        "Danielle.png"\n    ],\n    "Kayla": ' \
                                      '[\n        null\n    ],\n    "Jaleigh": [\n        null\n    ]\n}'
 
-testing_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 'Monty': [None], 'Abby': [None],
+old_style_testing_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 'Monty': [None], 'Abby': [None],
                                       'Zach': ['Zach_avatar.png'], 'Janell': [None], 'Matthew': [None],
                                       'Olivia': [None], 'Regina': [None], 'Ashley': ['Ashley_avatar.png'],
                                       'Alex': [None], 'Melissa': [None], 'Edgar': [None],
                                       'Danielle': ['Danielle.png'], 'Kayla': [None], 'Jaleigh': [None]
                                       }
 
-testing_class_data_set_enumerated_dict = {1: 'Cali', 2: 'Monty', 3: 'Abby', 4: 'Zach', 5: 'Janell', 6: 'Matthew',
+old_style_testing_class_data_set_enumerated_dict = {1: 'Cali', 2: 'Monty', 3: 'Abby', 4: 'Zach', 5: 'Janell', 6: 'Matthew',
                                           7: 'Olivia', 8: 'Regina', 9: 'Ashley', 10: 'Alex', 11: 'Melissa', 12: 'Edgar',
                                           13: 'Danielle', 14: 'Kayla', 15: 'Jaleigh',
                                           }
 
-testing_class_data_set = {
-    'json_data_string': testing_class_data_set_json_string,
-    'loaded_dict': testing_class_data_set_loaded_dict,
-    'enumerated_dict': testing_class_data_set_enumerated_dict,
+old_style_testing_class_data_set = {
+    'json_data_string': old_style_testing_class_data_set_json_string,
+    'loaded_dict': old_style_testing_class_data_set_loaded_dict,
+    'enumerated_dict': old_style_testing_class_data_set_enumerated_dict,
 }
 
 """
