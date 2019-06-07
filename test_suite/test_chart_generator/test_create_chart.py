@@ -4,7 +4,11 @@ from unittest.mock import patch
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (get_custom_chart_options,
                                                        new_chart,
-                                                       )
+                                                       assemble_chart_data)
+from dionysus_app.class_ import Class
+
+from test_suite.testing_class_data import test_full_class_data_set
+
 
 class TestTakeStudentScores:
     def test_new_chart(self, monkeypatch):
@@ -52,6 +56,47 @@ class TestTakeStudentScores:
         monkeypatch.setattr(create_chart, 'user_save_chart_image', mocked_user_save_chart_image)
 
         assert new_chart() is None
+
+
+class TestAssembleChartData:
+    def test_assemble_chart_data(self, monkeypatch):
+        test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
+        test_class_name = test_class.name
+        test_chart_name = 'my_chart'
+        test_chart_filename = test_chart_name
+        mock_score_avatar_dict = {'scores': 'list of avatars'}
+        mock_chart_params = {'some': 'chart_params'}
+
+        def mocked_select_classlist():
+            return test_class_name
+
+        def mocked_load_class_from_disk(class_name):
+            assert class_name == test_class_name
+            return test_class
+
+        def mocked_take_score_data(class_obj):
+            assert class_obj is test_class
+            return mock_score_avatar_dict
+
+        def mocked_take_chart_name():
+            return test_chart_name
+
+        def mocked_clean_for_filename(chart_name):
+            assert chart_name == test_chart_name
+            return test_chart_name
+
+        def mocked_set_chart_params():
+            return mock_chart_params
+
+        monkeypatch.setattr(create_chart, 'select_classlist', mocked_select_classlist)
+        monkeypatch.setattr(create_chart, 'load_class_from_disk', mocked_load_class_from_disk)
+        monkeypatch.setattr(create_chart, 'take_score_data', mocked_take_score_data)
+        monkeypatch.setattr(create_chart, 'take_chart_name', mocked_take_chart_name)
+        monkeypatch.setattr(create_chart, 'clean_for_filename', mocked_clean_for_filename)
+        monkeypatch.setattr(create_chart, 'set_chart_params', mocked_set_chart_params)
+
+        assert assemble_chart_data() == (
+            test_class_name, test_chart_name, test_chart_filename, mock_score_avatar_dict, mock_chart_params)
 
 
 class TestGetCustomChartOptions(TestCase):
