@@ -458,7 +458,7 @@ class TestSelectStudent:
                              [('one', 0),
                               ('two', 1),
                               ('three', 2),
-                             ])
+                              ])
     def test_select_student(self, monkeypatch, selected_student_name, selected_student_students_index):
         test_class_students = [Student(name='one'), Student(name='two'), Student(name='three')]
         test_class = Class(name='some_class', students=test_class_students)

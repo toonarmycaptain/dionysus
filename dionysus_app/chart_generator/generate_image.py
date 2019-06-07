@@ -17,12 +17,12 @@ from dionysus_app.data_folder import DataFolder
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 
-def generate_chart_image(chart_data_dict: dict):
+def generate_chart_image(chart_data_dict: dict) -> Path:
     """
-    Create the chart image with given input.
+    Create the chart image with given input, return image Path.
 
     :param chart_data_dict: dict
-    :return: None
+    :return: Path object
     """
     fig = plt.figure(figsize=(16, 9))  # set proportion/size in inches,
     ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
@@ -49,7 +49,7 @@ def set_axis(x_min: int=0, x_max: int=100, x_step: int=10):
     plt.yticks([])
 
 
-def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
+def add_avatar_to_plot(ax, avatar_path, xy_coords: list) -> None:
     """
     Takes an image path and adds that image to the ax given, at each set of coordinates in the list supplied.
 
@@ -60,7 +60,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list):
     :param ax:
     :param avatar_path: Path object
     :param xy_coords: list - list of tuples (x, y)
-    :return:
+    :return: None
     """
     valid_avatar_path = validate_avatar(avatar_path)
 
