@@ -15,11 +15,11 @@ class TestTakeStudentScores:
         test_score_avatar_dict = {'test_student_scores': 'test student avatars'}
 
         test_chart_data_dict = {'class_name': test_class_name,
-                           'chart_name': test_chart_name,
-                           'chart_default_filename': test_chart_default_filename,
-                           'chart_params': test_chart_params,
-                           'score-avatar_dict': test_score_avatar_dict,
-                           }
+                                'chart_name': test_chart_name,
+                                'chart_default_filename': test_chart_default_filename,
+                                'chart_params': test_chart_params,
+                                'score-avatar_dict': test_score_avatar_dict,
+                                }
 
         test_chart_image_location = 'some image location'
 
@@ -60,7 +60,6 @@ class TestGetCustomChartOptions(TestCase):
 
     @patch('dionysus_app.chart_generator.create_chart.take_custom_chart_options')
     def test_get_custom_chart_options(self, mock_custom_chart_options):
-
         assert get_custom_chart_options(self.test_default_params) == self.test_default_params
 
         mock_custom_chart_options.assert_called_once()
