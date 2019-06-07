@@ -480,7 +480,7 @@ class TestSelectStudent:
         assert select_student(test_class) == test_class_students[selected_student_students_index]
 
 
-class TestLoadClassData(TestCase):
+class TestLoadClassFromDisk(TestCase):
     mock_CLASSLIST_DATA_PATH = Path('.')
     mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
@@ -574,3 +574,7 @@ class TestEditClasslist(TestCase):
         mocked_open = mock_open()
         with patch('dionysus_app.class_functions.open', mocked_open):
             assert edit_classlist() is None
+
+
+class TestLoad_class_from_disk(TestCase):
+    pass
