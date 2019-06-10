@@ -6,14 +6,14 @@ from PIL import Image, ImageTk
 from dionysus_app.UI_menus.UI_functions import save_as_dialogue
 
 
-def save_chart_dialogue(default_chart_name: str, class_save_folder_path):
+def save_chart_dialogue(default_chart_name: str, class_save_folder_path: Path):
     """
     Calls save as dialogue to get user input for chart image file save
     name and location. Supplies defaults, returns user chosen path
     string.
 
     :param default_chart_name: str
-    :param class_save_folder_path: Path or str
+    :param class_save_folder_path: Path
     :return: str
     """
     class_save_folder_str = str(class_save_folder_path)
@@ -25,18 +25,18 @@ def save_chart_dialogue(default_chart_name: str, class_save_folder_path):
     return save_chart_path_str
 
 
-def display_image_save_as(chart_image_path: str):
+def display_image_save_as(chart_image_path: Path):
     """
     Displays the given image path in a window titled with the filename.
     Supplies a button "Save as" below, which quits the window. Save as
     dialogue is called separately (ideally directly subsequently, from
     a UI perspective.
 
-    :param chart_image_path: str or Path object.
+    :param chart_image_path: Path object.
     :return: None
     """
     root = tk.Tk()
-    root.title(Path(chart_image_path).name)  # Adding Path() allows string or Path object.
+    root.title(chart_image_path.name)
     root.geometry("960x580")  # Half dimensions, about a quarter of full image.
 
     image_display = ImageDisplay(image_path=chart_image_path, master=root)
@@ -46,7 +46,7 @@ def display_image_save_as(chart_image_path: str):
 
 
 class ImageDisplay(tk.Frame):
-    def __init__(self, image_path=None, master=None):
+    def __init__(self, image_path: Path = None, master=None):
         super().__init__(master)
         self.master = master
 
