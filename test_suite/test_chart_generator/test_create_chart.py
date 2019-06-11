@@ -1,6 +1,3 @@
-from unittest import TestCase
-from unittest.mock import patch
-
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        get_custom_chart_options,
@@ -169,12 +166,17 @@ class TestSetChartParams:
         assert set_chart_params() == test_params
 
 
-class TestGetCustomChartOptions(TestCase):
-    def setUp(self):
-        self.test_default_params = {'default param': 'my default param value'}
+class TestGetCustomChartOptions:
+    def test_get_custom_chart_options(self, monkeypatch):
+        test_default_params = {'default param': 'my default param value'}
 
-    @patch('dionysus_app.chart_generator.create_chart.take_custom_chart_options')
-    def test_get_custom_chart_options(self, mock_custom_chart_options):
-        assert get_custom_chart_options(self.test_default_params) == self.test_default_params
+        take_custom_chart_options_mock = {'called': False}
 
-        mock_custom_chart_options.assert_called_once()
+        def mocked_take_custom_chart_options():
+            take_custom_chart_options_mock['called'] = True
+
+        monkeypatch.setattr(create_chart, 'take_custom_chart_options', mocked_take_custom_chart_options)
+
+        assert get_custom_chart_options(test_default_params) == test_default_params
+
+        assert take_custom_chart_options_mock['called']
