@@ -80,18 +80,21 @@ class TestAssembleChartData:
             return test_class_name
 
         def mocked_load_class_from_disk(class_name):
-            assert class_name == test_class_name
+            if class_name != test_class_name:
+                raise ValueError
             return test_class
 
         def mocked_take_score_data(class_obj):
-            assert class_obj is test_class
+            if class_obj is not test_class:
+                raise ValueError
             return mock_score_avatar_dict
 
         def mocked_take_chart_name():
             return test_chart_name
 
         def mocked_clean_for_filename(chart_name):
-            assert chart_name == test_chart_name
+            if chart_name != test_chart_name:
+                raise ValueError
             return test_chart_name
 
         def mocked_set_chart_params():
@@ -127,14 +130,19 @@ class TestWriteChartDataToFile:
         assert test_file_folder.exists()
 
         def mocked_sanitise_avatar_path_objects(file_chart_data_dict):
-            assert file_chart_data_dict == test_chart_data_dict
+            if file_chart_data_dict != test_chart_data_dict:
+                raise ValueError('The dict of chart data did not contain expected items.')
             # file_chart_data_dict should be a deepcopy, not a reference to the original chart_data_dict.
-            assert file_chart_data_dict is not test_chart_data_dict
+            if file_chart_data_dict is test_chart_data_dict:
+                raise ValueError("A reference to the original chart data dict was passed. \n"
+                                 "An exact (deep)copy should be passed, because sanitise_avatar_path_objects \n"
+                                 "will mutate ('sanitise') the dict passed to it.\n")
 
             return file_chart_data_dict
 
         def mocked_convert_to_json(json_safe_dict):
-            assert json_safe_dict == test_chart_data_dict
+            if json_safe_dict != test_chart_data_dict:
+                raise ValueError
             return test_text_written_to_file
 
         monkeypatch.setattr(create_chart, 'CLASSLIST_DATA_PATH', tmp_path)
