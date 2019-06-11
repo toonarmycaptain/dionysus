@@ -234,7 +234,8 @@ def select_student(current_class: Class):
 
     selected_student_name = take_student_selection(student_options)
 
-    return next(student for student in current_class.students if student.name == selected_student_name)
+    return next(student for student in current_class.students
+                if student.name == selected_student_name)
 
 
 def load_class_from_disk(class_name: str):
