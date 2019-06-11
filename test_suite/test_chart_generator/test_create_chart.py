@@ -13,7 +13,7 @@ from dionysus_app.data_folder import CHART_DATA_FILE_TYPE
 from test_suite.testing_class_data import test_full_class_data_set
 
 
-class TestTakeStudentScores:
+class TestNewChart:
     def test_new_chart(self, monkeypatch):
         test_class_name = 'test_class_name'
         test_chart_name = 'test_chart_name'
