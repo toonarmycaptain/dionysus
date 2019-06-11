@@ -1,12 +1,18 @@
-from unittest import TestCase
-from unittest.mock import patch
-
 from dionysus_app.chart_generator import create_chart
-from dionysus_app.chart_generator.create_chart import (get_custom_chart_options,
+from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
+                                                       get_custom_chart_options,
                                                        new_chart,
+                                                       set_chart_params,
+                                                       write_chart_data_to_file,
                                                        )
+from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
+from dionysus_app.class_ import Class
+from dionysus_app.data_folder import CHART_DATA_FILE_TYPE
 
-class TestTakeStudentScores:
+from test_suite.testing_class_data import test_full_class_data_set
+
+
+class TestNewChart:
     def test_new_chart(self, monkeypatch):
         test_class_name = 'test_class_name'
         test_chart_name = 'test_chart_name'
@@ -15,16 +21,20 @@ class TestTakeStudentScores:
         test_score_avatar_dict = {'test_student_scores': 'test student avatars'}
 
         test_chart_data_dict = {'class_name': test_class_name,
-                           'chart_name': test_chart_name,
-                           'chart_default_filename': test_chart_default_filename,
-                           'chart_params': test_chart_params,
-                           'score-avatar_dict': test_score_avatar_dict,
-                           }
+                                'chart_name': test_chart_name,
+                                'chart_default_filename': test_chart_default_filename,
+                                'chart_params': test_chart_params,
+                                'score-avatar_dict': test_score_avatar_dict,
+                                }
 
         test_chart_image_location = 'some image location'
 
         def mocked_assemble_chart_data():
-            return test_class_name, test_chart_name, test_chart_default_filename, test_score_avatar_dict, test_chart_params
+            return (test_class_name,
+                    test_chart_name,
+                    test_chart_default_filename,
+                    test_score_avatar_dict,
+                    test_chart_params)
 
         def mocked_write_chart_data_to_file(chart_data_dict):
             if chart_data_dict != test_chart_data_dict:
@@ -50,17 +60,123 @@ class TestTakeStudentScores:
         monkeypatch.setattr(create_chart, 'generate_chart_image', mocked_generate_chart_image)
         monkeypatch.setattr(create_chart, 'show_image', mocked_show_image)
         monkeypatch.setattr(create_chart, 'user_save_chart_image', mocked_user_save_chart_image)
-        def test_new_chart(self):
-            assert new_chart() is None
+
+        assert new_chart() is None
 
 
-class TestGetCustomChartOptions(TestCase):
-    def setUp(self):
-        self.test_default_params = {'default param': 'my default param value'}
+class TestAssembleChartData:
+    def test_assemble_chart_data(self, monkeypatch):
+        test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
+        test_class_name = test_class.name
+        test_chart_name = 'my_chart'
+        test_chart_filename = test_chart_name
+        mock_score_avatar_dict = {'scores': 'list of avatars'}
+        mock_chart_params = {'some': 'chart_params'}
 
-    @patch('dionysus_app.chart_generator.create_chart.take_custom_chart_options')
-    def test_get_custom_chart_options(self, mock_custom_chart_options):
+        def mocked_select_classlist():
+            return test_class_name
 
-        assert get_custom_chart_options(self.test_default_params) == self.test_default_params
+        def mocked_load_class_from_disk(class_name):
+            if class_name != test_class_name:
+                raise ValueError
+            return test_class
 
-        mock_custom_chart_options.assert_called_once()
+        def mocked_take_score_data(class_obj):
+            if class_obj is not test_class:
+                raise ValueError
+            return mock_score_avatar_dict
+
+        def mocked_take_chart_name():
+            return test_chart_name
+
+        def mocked_clean_for_filename(chart_name):
+            if chart_name != test_chart_name:
+                raise ValueError
+            return test_chart_name
+
+        def mocked_set_chart_params():
+            return mock_chart_params
+
+        monkeypatch.setattr(create_chart, 'select_classlist', mocked_select_classlist)
+        monkeypatch.setattr(create_chart, 'load_class_from_disk', mocked_load_class_from_disk)
+        monkeypatch.setattr(create_chart, 'take_score_data', mocked_take_score_data)
+        monkeypatch.setattr(create_chart, 'take_chart_name', mocked_take_chart_name)
+        monkeypatch.setattr(create_chart, 'clean_for_filename', mocked_clean_for_filename)
+        monkeypatch.setattr(create_chart, 'set_chart_params', mocked_set_chart_params)
+
+        assert assemble_chart_data() == (
+            test_class_name, test_chart_name, test_chart_filename, mock_score_avatar_dict, mock_chart_params)
+
+
+class TestWriteChartDataToFile:
+    def test_write_chart_data_to_file(self, monkeypatch, tmp_path):
+        test_chart_data_dict = {'class_name': 'test_class_name',
+                                'chart_name': 'test_chart_name',
+                                'chart_default_filename': 'test_default_chart_filename',
+                                'chart_params': {'some': 'params'},
+                                'score-avatar_dict': {'some student': 'scores'}
+                                }
+        test_filename = test_chart_data_dict['chart_default_filename'] + CHART_DATA_FILE_TYPE
+        test_file_folder = tmp_path.joinpath(test_chart_data_dict['class_name'], 'chart_data')
+        test_file_folder.mkdir(parents=True, exist_ok=True)
+        test_filepath = test_file_folder.joinpath(test_filename)
+
+        test_text_written_to_file = 'A JSON string.'
+
+        assert tmp_path.exists()
+        assert test_file_folder.exists()
+
+        def mocked_sanitise_avatar_path_objects(file_chart_data_dict):
+            if file_chart_data_dict != test_chart_data_dict:
+                raise ValueError('The dict of chart data did not contain expected items.')
+            # file_chart_data_dict should be a deepcopy, not a reference to the original chart_data_dict.
+            if file_chart_data_dict is test_chart_data_dict:
+                raise ValueError("A reference to the original chart data dict was passed. \n"
+                                 "An exact (deep)copy should be passed, because sanitise_avatar_path_objects \n"
+                                 "will mutate ('sanitise') the dict passed to it.\n")
+
+            return file_chart_data_dict
+
+        def mocked_convert_to_json(json_safe_dict):
+            if json_safe_dict != test_chart_data_dict:
+                raise ValueError
+            return test_text_written_to_file
+
+        monkeypatch.setattr(create_chart, 'CLASSLIST_DATA_PATH', tmp_path)
+        monkeypatch.setattr(create_chart, 'sanitise_avatar_path_objects', mocked_sanitise_avatar_path_objects)
+        monkeypatch.setattr(create_chart, 'convert_to_json', mocked_convert_to_json)
+        write_chart_data_to_file(test_chart_data_dict)
+
+        assert test_filepath.exists()
+        with open(test_filepath, 'r') as test_file:
+            assert test_file.read() == test_text_written_to_file
+
+
+class TestSetChartParams:
+    def test_set_chart_params(self, monkeypatch):
+        test_params = {'some': 'params'}
+
+        def mocked_get_custom_chart_options(default_options):
+            if default_options != DEFAULT_CHART_PARAMS:
+                raise ValueError
+            return test_params
+
+        monkeypatch.setattr(create_chart, 'get_custom_chart_options', mocked_get_custom_chart_options)
+
+        assert set_chart_params() == test_params
+
+
+class TestGetCustomChartOptions:
+    def test_get_custom_chart_options(self, monkeypatch):
+        test_default_params = {'default param': 'my default param value'}
+
+        take_custom_chart_options_mock = {'called': False}
+
+        def mocked_take_custom_chart_options():
+            take_custom_chart_options_mock['called'] = True
+
+        monkeypatch.setattr(create_chart, 'take_custom_chart_options', mocked_take_custom_chart_options)
+
+        assert get_custom_chart_options(test_default_params) == test_default_params
+
+        assert take_custom_chart_options_mock['called']

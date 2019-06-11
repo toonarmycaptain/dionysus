@@ -8,6 +8,8 @@ from unittest.mock import patch, mock_open
 
 from unittest import mock, TestCase  # this is needed to use mock.call, since from mock import call causes an error.
 
+import pytest
+
 from dionysus_app import class_functions
 from dionysus_app.class_ import Class
 from dionysus_app.class_functions import (avatar_path_from_string,
@@ -16,7 +18,6 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           create_classlist,
                                           create_classlist_data,
                                           create_class_list_dict,
-                                          create_student_list_dict,
                                           edit_classlist,
                                           get_avatar_path,
                                           load_chart_data,
@@ -453,15 +454,15 @@ class TestCreateClassListDict(TestCase):
 
 
 class TestSelectStudent:
-    def test_select_student(self, monkeypatch):
-        test_class_name = 'some_class'
+    @pytest.mark.parametrize('selected_student_name, selected_student_students_index',
+                             [('one', 0),
+                              ('two', 1),
+                              ('three', 2),
+                              ])
+    def test_select_student(self, monkeypatch, selected_student_name, selected_student_students_index):
+        test_class_students = [Student(name='one'), Student(name='two'), Student(name='three')]
+        test_class = Class(name='some_class', students=test_class_students)
         test_student_options = {1: 'one', 2: 'two', 3: 'three'}
-        selected_student = 'some_student'
-
-        def mocked_create_student_list_dict(class_name):
-            if class_name != test_class_name:
-                raise ValueError  # Ensure called with correct arg.
-            return test_student_options
 
         def mocked_display_student_selection_menu(class_options):
             if class_options != test_student_options:
@@ -471,30 +472,15 @@ class TestSelectStudent:
         def mocked_take_student_selection(class_options):
             if class_options != test_student_options:
                 raise ValueError  # Ensure called with correct arg.
-            return selected_student
+            return selected_student_name
 
-        monkeypatch.setattr(class_functions, 'create_student_list_dict', mocked_create_student_list_dict)
         monkeypatch.setattr(class_functions, 'display_student_selection_menu', mocked_display_student_selection_menu)
         monkeypatch.setattr(class_functions, 'take_student_selection', mocked_take_student_selection)
 
-        assert select_student(test_class_name) == selected_student
+        assert select_student(test_class) == test_class_students[selected_student_students_index]
 
 
-class TestCreateStudentListDict(TestCase):
-    def setUp(self):
-        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
-        self.test_class_name = self.test_class_json_dict['name']
-
-        self.test_class_object = Class.from_dict(self.test_class_json_dict)
-        self.enumerated_test_class_students_dict = test_full_class_data_set['enumerated_dict']
-
-    @patch('dionysus_app.class_functions.load_class_from_disk')
-    def test_create_student_list_dict_patching_load_class_data(self, mock_load_class_data):
-        mock_load_class_data.return_value = self.test_class_object
-        assert create_student_list_dict(self.test_class_name) == self.enumerated_test_class_students_dict
-
-
-class TestLoadClassData(TestCase):
+class TestLoadClassFromDisk(TestCase):
     mock_CLASSLIST_DATA_PATH = Path('.')
     mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
 
@@ -588,3 +574,7 @@ class TestEditClasslist(TestCase):
         mocked_open = mock_open()
         with patch('dionysus_app.class_functions.open', mocked_open):
             assert edit_classlist() is None
+
+
+class TestLoad_class_from_disk(TestCase):
+    pass

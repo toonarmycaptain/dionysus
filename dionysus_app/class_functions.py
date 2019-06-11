@@ -221,36 +221,21 @@ def create_class_list_dict():
     return class_dict
 
 
-def select_student(class_name: str):
+def select_student(current_class: Class):
     """
-    Display list of students in class and allow user to select one, returning the name of the
-    selected student.
+    Display list of students in class and allow user to select one, returning
+    the selected Student object.
 
-    :param class_name: str
-    :return: str
+    :param current_class: Class object
+    :return: Student_object
     """
-    student_options = create_student_list_dict(class_name)
+    student_options = {numeral: student.name for numeral, student in enumerate(current_class.students, start=1)}
     display_student_selection_menu(student_options)
 
-    selected_student = take_student_selection(student_options)
+    selected_student_name = take_student_selection(student_options)
 
-    return selected_student
-
-
-def create_student_list_dict(class_name: str):
-    """
-    Create dict with enumerated students, starting at 1.
-
-    CONSIDER DEPRECIATED GOING FORWARD, as for most all use cases, class will
-    already be loaded when this is needed.
-
-    :param class_name: str
-    :return: dict
-    """
-    loaded_class = load_class_from_disk(class_name)
-    student_list_dict = {option: student.name
-                         for option, student in enumerate(loaded_class.students, start=1)}
-    return student_list_dict
+    return next(student for student in current_class.students
+                if student.name == selected_student_name)
 
 
 def load_class_from_disk(class_name: str):

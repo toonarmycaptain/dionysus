@@ -181,14 +181,14 @@ def sanitise_avatar_path_objects(data_dict: dict):
     return data_dict
 
 
-def user_save_chart_image(chart_data_dict: dict, image_location: str):
+def user_save_chart_image(chart_data_dict: dict, image_location: Path):
     """
     Ask user for save location, defaulting to user default save folder
     for class, with default chart filename. Copies image file from app's
     save folder to users.
 
     :param chart_data_dict: dict
-    :param image_location: str or Path object
+    :param image_location: Path object
     :return: None
     """
     class_name = chart_data_dict['class_name']
@@ -199,12 +199,12 @@ def user_save_chart_image(chart_data_dict: dict, image_location: str):
     copy_image_to_user_save_loc(image_location, save_chart_pathname)
 
 
-def copy_image_to_user_save_loc(app_image_location, user_save_location):
+def copy_image_to_user_save_loc(app_image_location: Path, user_save_location: Path):
     """
     Copies image from app_data location to user selected location.
 
-    :param app_image_location: str or Path object
-    :param user_save_location: str or Path object
+    :param app_image_location: Path object
+    :param user_save_location: Path object
     :return: None
     """
     copy_file(app_image_location, user_save_location)
@@ -254,11 +254,11 @@ def get_class_save_folder_path(class_name: str):
     return class_save_folder_path
 
 
-def show_image(image_location: str):
+def show_image(image_location: Path):
     """
     Calls show_image UI.
 
-    :param image_location: str or Path object.
+    :param image_location: Path object.
     :return: None
     """
     display_image_save_as(image_location)

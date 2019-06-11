@@ -152,6 +152,7 @@ def take_student_selection(student_options: dict):
             break
 
         except (KeyError, ValueError):
+            # Case where user typed in name of student.
             if chosen_option in student_options.values():
                 selected_student = chosen_option
                 break

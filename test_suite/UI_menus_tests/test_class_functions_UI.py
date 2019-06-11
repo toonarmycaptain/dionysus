@@ -394,7 +394,7 @@ class TestTakeStudentSelection(TestCase):
         self.valid_numerical_inputs = [(str(key), self.test_class_student_options[key])
                                        for key in self.test_class_student_options.keys()]
         # Exact class name
-        self.valid_string_inputs = [(class_name, class_name) for class_name in self.test_class_student_options.values()]
+        self.valid_string_inputs = [(student_name, student_name) for student_name in self.test_class_student_options.values()]
 
         self.blank_junk_inputs = [self.no_input,
                                   self.space_input,
