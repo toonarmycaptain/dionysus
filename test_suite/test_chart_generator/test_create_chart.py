@@ -1,11 +1,15 @@
+from pathlib import Path
+
 from unittest import TestCase
 from unittest.mock import patch
 
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (get_custom_chart_options,
                                                        new_chart,
-                                                       assemble_chart_data)
+                                                       write_chart_data_to_file
+                                                       )
 from dionysus_app.class_ import Class
+from dionysus_app.data_folder import CHART_DATA_FILE_TYPE
 
 from test_suite.testing_class_data import test_full_class_data_set
 
@@ -97,6 +101,45 @@ class TestAssembleChartData:
 
         assert assemble_chart_data() == (
             test_class_name, test_chart_name, test_chart_filename, mock_score_avatar_dict, mock_chart_params)
+
+
+class TestWriteChartDataToFile:
+    def test_write_chart_data_to_file(self, monkeypatch, tmp_path):
+        test_chart_data_dict = {'class_name': 'test_class_name',
+                                'chart_name': 'test_chart_name',
+                                'chart_default_filename': 'test_default_chart_filename',
+                                'chart_params': {'some': 'params'},
+                                'score-avatar_dict': {'some student': 'scores'}
+                                }
+        test_filename = test_chart_data_dict['chart_default_filename'] + CHART_DATA_FILE_TYPE
+        test_file_folder = tmp_path.joinpath(test_chart_data_dict['class_name'], 'chart_data')
+        test_file_folder.mkdir(parents=True, exist_ok=True)
+        test_filepath = test_file_folder.joinpath(test_filename)
+
+        test_text_written_to_file = 'A JSON string.'
+
+        assert tmp_path.exists()
+        assert test_file_folder.exists()
+
+        def mocked_sanitise_avatar_path_objects(file_chart_data_dict):
+            assert file_chart_data_dict == test_chart_data_dict
+            # file_chart_data_dict should be a deepcopy, not a reference to the original chart_data_dict.
+            assert file_chart_data_dict is not test_chart_data_dict
+
+            return file_chart_data_dict
+
+        def mocked_convert_to_json(json_safe_dict):
+            assert json_safe_dict == test_chart_data_dict
+            return test_text_written_to_file
+
+        monkeypatch.setattr(create_chart, 'CLASSLIST_DATA_PATH', tmp_path)
+        monkeypatch.setattr(create_chart, 'sanitise_avatar_path_objects', mocked_sanitise_avatar_path_objects)
+        monkeypatch.setattr(create_chart, 'convert_to_json', mocked_convert_to_json)
+        write_chart_data_to_file(test_chart_data_dict)
+
+        assert test_filepath.exists()
+        with open(test_filepath, 'r') as test_file:
+            assert test_file.read() == test_text_written_to_file
 
 
 class TestGetCustomChartOptions(TestCase):
