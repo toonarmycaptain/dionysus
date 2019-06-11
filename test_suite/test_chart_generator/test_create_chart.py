@@ -31,7 +31,11 @@ class TestNewChart:
         test_chart_image_location = 'some image location'
 
         def mocked_assemble_chart_data():
-            return test_class_name, test_chart_name, test_chart_default_filename, test_score_avatar_dict, test_chart_params
+            return (test_class_name,
+                    test_chart_name,
+                    test_chart_default_filename,
+                    test_score_avatar_dict,
+                    test_chart_params)
 
         def mocked_write_chart_data_to_file(chart_data_dict):
             if chart_data_dict != test_chart_data_dict:
