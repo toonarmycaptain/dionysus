@@ -226,7 +226,7 @@ def select_student(current_class: Class):
     Display list of students in class and allow user to select one, returning
     the selected Student object.
 
-    :param class_name: Class object
+    :param current_class: Class object
     :return: Student_object
     """
     student_options = {numeral: student.name for numeral, student in enumerate(current_class.students, start=1)}
