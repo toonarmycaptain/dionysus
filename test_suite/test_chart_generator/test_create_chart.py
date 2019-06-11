@@ -4,7 +4,8 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from dionysus_app.chart_generator import create_chart
-from dionysus_app.chart_generator.create_chart import (get_custom_chart_options,
+from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
+                                                       get_custom_chart_options,
                                                        new_chart,
                                                        write_chart_data_to_file
                                                        )
