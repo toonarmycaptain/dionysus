@@ -5,8 +5,10 @@ from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        get_custom_chart_options,
                                                        new_chart,
-                                                       write_chart_data_to_file
+                                                       set_chart_params,
+                                                       write_chart_data_to_file,
                                                        )
+from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.class_ import Class
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE
 
@@ -143,6 +145,20 @@ class TestWriteChartDataToFile:
         assert test_filepath.exists()
         with open(test_filepath, 'r') as test_file:
             assert test_file.read() == test_text_written_to_file
+
+
+class TestSetChartParams:
+    def test_set_chart_params(self, monkeypatch):
+        test_params = {'some': 'params'}
+
+        def mocked_get_custom_chart_options(default_options):
+            if default_options != DEFAULT_CHART_PARAMS:
+                raise ValueError
+            return test_params
+
+        monkeypatch.setattr(create_chart, 'get_custom_chart_options', mocked_get_custom_chart_options)
+
+        assert set_chart_params() == test_params
 
 
 class TestGetCustomChartOptions(TestCase):
