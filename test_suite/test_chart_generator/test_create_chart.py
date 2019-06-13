@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        get_custom_chart_options,
                                                        new_chart,
+                                                       sanitise_avatar_path_objects,
                                                        set_chart_params,
                                                        write_chart_data_to_file,
                                                        )
@@ -180,3 +183,47 @@ class TestGetCustomChartOptions:
         assert get_custom_chart_options(test_default_params) == test_default_params
 
         assert take_custom_chart_options_mock['called']
+
+
+class TestSanitiseAvatarPathObjects:
+    def test_santise_avatar_path_objects(self):
+        mock_default_avatar_path = Path('default/path')
+        str_mock_default_avatar_path = str(mock_default_avatar_path)
+        test_data_dict = {
+            'class_name': "test_class_name",
+            'chart_name': "test_chart_name",
+            'chart_default_filename': "test_chart_default_filename",
+            'chart_params': {"some": "chart", "default": "params"},
+            'score-avatar_dict': {0: [Path('path to Cali_avatar.png')],
+                                  1: [mock_default_avatar_path, mock_default_avatar_path],
+                                  3: [mock_default_avatar_path, mock_default_avatar_path],
+                                  50: [mock_default_avatar_path],
+                                  99: [mock_default_avatar_path],
+                                  100: [mock_default_avatar_path],
+                                  2: [Path('path to Ashley_avatar.png')],
+                                  4: [mock_default_avatar_path],
+                                  6: [Path('path to Danielle.png')],
+                                  7: [mock_default_avatar_path],
+                                  8: [mock_default_avatar_path]
+                                  },
+        }
+        test_returned_sanitised_data_dict = {
+            'class_name': "test_class_name",
+            'chart_name': "test_chart_name",
+            'chart_default_filename': "test_chart_default_filename",
+            'chart_params': {"some": "chart", "default": "params"},
+            'score-avatar_dict': {0: ['path to Cali_avatar.png'],
+                                  1: [str_mock_default_avatar_path, str_mock_default_avatar_path],
+                                  3: [str_mock_default_avatar_path, str_mock_default_avatar_path],
+                                  50: [str_mock_default_avatar_path],
+                                  99: [str_mock_default_avatar_path],
+                                  100: [str_mock_default_avatar_path],
+                                  2: ['path to Ashley_avatar.png'],
+                                  4: [str_mock_default_avatar_path],
+                                  6: ['path to Danielle.png'],
+                                  7: [str_mock_default_avatar_path],
+                                  8: [str_mock_default_avatar_path]
+                                  },
+        }
+
+        assert sanitise_avatar_path_objects(test_data_dict) == test_returned_sanitised_data_dict
