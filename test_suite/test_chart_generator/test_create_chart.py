@@ -7,6 +7,7 @@ from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        sanitise_avatar_path_objects,
                                                        set_chart_params,
                                                        write_chart_data_to_file,
+                                                       user_save_chart_image,
                                                        )
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.class_ import Class
@@ -227,3 +228,28 @@ class TestSanitiseAvatarPathObjects:
         }
 
         assert sanitise_avatar_path_objects(test_data_dict) == test_returned_sanitised_data_dict
+
+
+class TestUserSaveChartImage:
+    def test_user_save_chart_image(self, monkeypatch):
+        test_chart_data_dict = {'class_name': 'my_test_class',
+                                'chart_default_filename': 'my_test_default_chart_filename'
+                                }
+        test_image_location = Path('my/test/image/location')
+
+        test_user_pathname = 'my/path'
+
+        def mocked_get_user_save_chart_pathname(class_name, default_chart_name):
+            if (class_name, default_chart_name) != (
+                    test_chart_data_dict['class_name'], test_chart_data_dict['chart_default_filename']):
+                raise ValueError
+            return test_user_pathname
+
+        def mocked_copy_image_to_user_save_loc(image_location, save_chart_pathname):
+            if image_location != test_image_location and save_chart_pathname != test_user_pathname:
+                raise ValueError
+
+        monkeypatch.setattr(create_chart, 'get_user_save_chart_pathname', mocked_get_user_save_chart_pathname)
+        monkeypatch.setattr(create_chart, 'copy_image_to_user_save_loc', mocked_copy_image_to_user_save_loc)
+
+        assert user_save_chart_image(test_chart_data_dict, test_image_location) is None
