@@ -2,6 +2,7 @@ from pathlib import Path
 
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
+                                                       copy_image_to_user_save_loc,
                                                        get_custom_chart_options,
                                                        new_chart,
                                                        sanitise_avatar_path_objects,
@@ -253,3 +254,18 @@ class TestUserSaveChartImage:
         monkeypatch.setattr(create_chart, 'copy_image_to_user_save_loc', mocked_copy_image_to_user_save_loc)
 
         assert user_save_chart_image(test_chart_data_dict, test_image_location) is None
+
+
+class TestCopyImageToUserSaveLoc:
+    def test_copy_image_to_user_save_loc(self, monkeypatch):
+        test_app_image_location = Path('test/app/image/location')
+        test_user_save_location = Path('test/user/save/location')
+
+        def mocked_copy_file(app_image_location, user_save_location):
+            if (app_image_location, user_save_location) != (
+                    test_app_image_location, test_user_save_location):
+                raise ValueError
+
+        monkeypatch.setattr(create_chart, 'copy_file', mocked_copy_file)
+
+        assert copy_image_to_user_save_loc(test_app_image_location, test_user_save_location) is None
