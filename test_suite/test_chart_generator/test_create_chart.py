@@ -4,6 +4,7 @@ from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        copy_image_to_user_save_loc,
                                                        get_custom_chart_options,
+                                                       get_user_save_chart_pathname,
                                                        new_chart,
                                                        sanitise_avatar_path_objects,
                                                        set_chart_params,
@@ -269,3 +270,30 @@ class TestCopyImageToUserSaveLoc:
         monkeypatch.setattr(create_chart, 'copy_file', mocked_copy_file)
 
         assert copy_image_to_user_save_loc(test_app_image_location, test_user_save_location) is None
+
+
+class TestGetUserSaveChartPathname:
+    def test_get_user_save_chart_pathname(self, monkeypatch):
+        test_class_name = 'my_test_class'
+        test_default_chart_name = 'my_test_chart_name'
+
+        test_class_save_folder_path = Path('path/to/test/class/save/folder')
+        test_save_chart_path_str = r'test/save/chart/path/str'
+
+        def mocked_create_class_save_folder(class_name):
+            if class_name is not test_class_name:
+                raise ValueError
+            return test_class_save_folder_path
+
+        def mocked_save_chart_dialogue(default_chart_name, class_save_folder_path):
+            if (default_chart_name, class_save_folder_path) != (
+                    test_default_chart_name, test_class_save_folder_path):
+                raise ValueError
+            return test_save_chart_path_str
+
+        monkeypatch.setattr(create_chart, 'create_class_save_folder', mocked_create_class_save_folder)
+        monkeypatch.setattr(create_chart, 'save_chart_dialogue', mocked_save_chart_dialogue)
+
+
+
+        assert get_user_save_chart_pathname(test_class_name, test_default_chart_name) == test_save_chart_path_str
