@@ -262,7 +262,3 @@ def show_image(image_location: Path):
     :return: None
     """
     display_image_save_as(image_location)
-
-
-if __name__ == '__main__':
-    pass
