@@ -1,12 +1,18 @@
 from pathlib import Path
 
+import definitions
+from definitions import DEFAULT_CHART_SAVE_FOLDER
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        copy_image_to_user_save_loc,
+                                                       create_class_save_folder,
+                                                       get_class_save_folder_path,
                                                        get_custom_chart_options,
+                                                       get_user_save_chart_pathname,
                                                        new_chart,
                                                        sanitise_avatar_path_objects,
                                                        set_chart_params,
+                                                       show_image,
                                                        write_chart_data_to_file,
                                                        user_save_chart_image,
                                                        )
@@ -269,3 +275,74 @@ class TestCopyImageToUserSaveLoc:
         monkeypatch.setattr(create_chart, 'copy_file', mocked_copy_file)
 
         assert copy_image_to_user_save_loc(test_app_image_location, test_user_save_location) is None
+
+
+class TestGetUserSaveChartPathname:
+    def test_get_user_save_chart_pathname(self, monkeypatch):
+        test_class_name = 'my_test_class'
+        test_default_chart_name = 'my_test_chart_name'
+
+        test_class_save_folder_path = Path('path/to/test/class/save/folder')
+        test_save_chart_path_str = r'test/save/chart/path/str'
+
+        def mocked_create_class_save_folder(class_name):
+            if class_name is not test_class_name:
+                raise ValueError
+            return test_class_save_folder_path
+
+        def mocked_save_chart_dialogue(default_chart_name, class_save_folder_path):
+            if (default_chart_name, class_save_folder_path) != (
+                    test_default_chart_name, test_class_save_folder_path):
+                raise ValueError
+            return test_save_chart_path_str
+
+        monkeypatch.setattr(create_chart, 'create_class_save_folder', mocked_create_class_save_folder)
+        monkeypatch.setattr(create_chart, 'save_chart_dialogue', mocked_save_chart_dialogue)
+
+        assert get_user_save_chart_pathname(test_class_name, test_default_chart_name) == test_save_chart_path_str
+
+
+class TestCreateClassSaveFolder:
+    def test_create_class_save_folder(self, tmp_path, monkeypatch):
+        test_class_name = 'my_test_class_name'
+        test_class_save_folder_path = tmp_path.joinpath(test_class_name)
+
+        def mocked_get_class_save_folder_path(class_name):
+            if class_name != test_class_name:
+                raise ValueError
+            return test_class_save_folder_path
+
+        monkeypatch.setattr(create_chart, 'get_class_save_folder_path', mocked_get_class_save_folder_path)
+
+        assert create_class_save_folder(test_class_name) == test_class_save_folder_path
+
+        assert test_class_save_folder_path.exists()
+
+
+class TestGetClassSaveFolderPath:
+    def test_get_class_save_folder_path(self, monkeypatch):
+
+        monkeypatch.setattr(definitions, 'DEFAULT_CHART_SAVE_FOLDER', Path('my.DEFAULT/CHART/SAVE/FOLDER'))
+
+        test_class_name = 'my_test_class_name'
+        test_class_save_folder_path = definitions.DEFAULT_CHART_SAVE_FOLDER.joinpath(test_class_name)
+
+        assert get_class_save_folder_path(test_class_name) == test_class_save_folder_path
+
+
+class TestShowImage:
+    def test_show_image(self, monkeypatch):
+        test_image_location = Path('my/test/image/path')
+
+        display_image_save_as_mock = {'called': False}
+
+        def mocked_display_image_save_as(image_location):
+            if image_location != test_image_location:
+                raise ValueError
+            display_image_save_as_mock['called'] = True
+
+        monkeypatch.setattr(create_chart, 'display_image_save_as', mocked_display_image_save_as)
+
+        assert show_image(test_image_location) is None
+
+        assert display_image_save_as_mock['called']
