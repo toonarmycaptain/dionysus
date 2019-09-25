@@ -16,8 +16,7 @@ class Student:
     path_safe_name : str
         Cleaned string safe to use in file names and paths.
 
-
-    avatar_filename : sre or None
+    avatar_filename : str or None
         Filename of student's avatar.
     """
 
