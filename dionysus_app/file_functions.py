@@ -10,7 +10,7 @@ from shutil import copyfile, move
 from typing import Union
 
 
-def convert_to_json(data_to_convert):
+def convert_to_json(data_to_convert: dict) -> str:
     """
     Serialise data in JSON format, return as JSON string.
 
@@ -25,7 +25,7 @@ def convert_to_json(data_to_convert):
     return converted_data
 
 
-def load_from_json(data_to_convert: str):
+def load_from_json(data_to_convert: str) -> dict:
     """
     Convert data from JSON to python object.
 
@@ -39,7 +39,7 @@ def load_from_json(data_to_convert: str):
     return converted_data
 
 
-def load_from_json_file(json_file_path: Union[Path, str]):
+def load_from_json_file(json_file_path: Union[Path, str]) -> dict:
     """
     Take a filepath and load json from that file.
 
@@ -52,7 +52,7 @@ def load_from_json_file(json_file_path: Union[Path, str]):
         return loaded_data
 
 
-def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]):
+def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]) -> None:
     """
     Takes two filepaths, copying the origin file to the destination path and
     filename, doing nothing if the origin filepath doesn't exist.
@@ -71,7 +71,7 @@ def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Pat
         copyfile(origin_fullpath, destination_fullpath)
 
 
-def move_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]):
+def move_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]) -> None:
     """
     Takes two filepaths, copying the origin file/directory to the destination
     path and filename, doing nothing if the origin filepath doesn't exist.

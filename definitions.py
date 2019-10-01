@@ -1,10 +1,10 @@
 import os
 
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Iterable
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # Global root directory.
 
-REGISTRY: Optional[List] = None
+REGISTRY: List[str] = []
 
-DEFAULT_CHART_SAVE_FOLDER: Optional[Path] = None  # Path object.
+DEFAULT_CHART_SAVE_FOLDER: Path = Path('.')  # Path object.

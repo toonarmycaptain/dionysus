@@ -24,7 +24,7 @@ class DataFolder(Enum):
     DEFAULT_AVATAR = CHART_GENERATOR + 'default_avatar.png'
 
     @staticmethod
-    def generate_rel_path(path):
+    def generate_rel_path(path: str) -> Path:
         """
         Returns a abs path from relative path.
         eg for APP_DATA use:
@@ -40,8 +40,8 @@ class DataFolder(Enum):
         :return: Path object.
         """
         if not path:
-            return Path.cwd().as_uri()
+            return Path.cwd()
 
-        path = path.split('/')
-        path.insert(0, ROOT_DIR)
-        return Path(*path).resolve()
+        path_parts = path.split('/')
+        path_parts.insert(0, ROOT_DIR)
+        return Path(*path_parts).resolve()

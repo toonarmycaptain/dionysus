@@ -3,6 +3,7 @@ Functions dealing with the class registry.
 """
 
 import definitions
+from typing import List
 
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 
@@ -10,7 +11,7 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
 
 
-def cache_class_registry():
+def cache_class_registry() -> List[str]:
     """
     Initialises CLASS_REGISTRY global variable and writes registry to
     disk.
@@ -23,7 +24,7 @@ def cache_class_registry():
     return registry  # return value unused on startup
 
 
-def generate_registry_from_filesystem():
+def generate_registry_from_filesystem() -> List[str]:
     """
     Searches class_data folder for .cld files and returns a list of the
     file names without the extension.
@@ -35,7 +36,7 @@ def generate_registry_from_filesystem():
     return registry_list
 
 
-def write_registry_to_disk(registry_list: list):
+def write_registry_to_disk(registry_list: list) -> None:
     """
     Write registry list from cache list to disk.
 
@@ -47,7 +48,7 @@ def write_registry_to_disk(registry_list: list):
             registry_file.write(f'{classlist_name}\n')
 
 
-def register_class(classlist_name):
+def register_class(classlist_name: str) -> None:
     """
     Register class in class_registry file.
     Create if registry non-existent.
@@ -62,7 +63,7 @@ def register_class(classlist_name):
         registry.write(f'{classlist_name}\n')
 
 
-def classlist_exists(classlist_name: str):
+def classlist_exists(classlist_name: str) -> bool:
     """
     Checks if there an entry in CLASS_REGISTRY for the given
     classlist_name.
@@ -73,7 +74,7 @@ def classlist_exists(classlist_name: str):
     return classlist_name in definitions.REGISTRY
 
 
-def check_registry_on_exit():
+def check_registry_on_exit() -> None:
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != definitions.REGISTRY:
         write_registry_to_disk(definitions.REGISTRY)
 
