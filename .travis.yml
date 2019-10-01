@@ -37,5 +37,6 @@ script:
     - coverage xml -i
     - python-codacy-coverage -r coverage.xml
     - codecov
+    - mypy --ignore-missing-imports .
 
 after_success: coveralls
