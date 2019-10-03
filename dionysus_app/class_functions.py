@@ -5,7 +5,7 @@ Functions for creating, editing, dealing with classes.
 import time
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import definitions
 
@@ -68,7 +68,7 @@ def setup_class_data_storage(classlist_name: str) -> None:
     """
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
     chart_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'chart_data')
-    user_chart_save_folder = definitions.DEFAULT_CHART_SAVE_FOLDER.joinpath(classlist_name)
+    user_chart_save_folder = definitions.DEFAULT_CHART_SAVE_FOLDER.joinpath(classlist_name)  # type: ignore[union-attr]
 
     avatar_path.mkdir(exist_ok=True, parents=True)
     chart_path.mkdir(exist_ok=True, parents=True)
@@ -162,7 +162,7 @@ def copy_avatar_to_app_data(classlist_name: str, avatar_filename: str, save_file
     copy_file(avatar_filename, save_avatar_path)
 
 
-def avatar_file_exists(avatar_file: str) -> bool:
+def avatar_file_exists(avatar_file: Union[str, Path]) -> bool:
     """
     Checks if provided file exists.
 
@@ -219,7 +219,7 @@ def create_class_list_dict() -> dict:
 
     :return: dict
     """
-    class_dict = {option: class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
+    class_dict = {option: class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}  # type: ignore[arg-type]
     return class_dict
 
 

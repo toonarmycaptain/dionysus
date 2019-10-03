@@ -345,7 +345,7 @@ class TestFromFile:
 class TestClassRepr:
     @pytest.mark.parametrize('class_object',
                              [Class(name='name_only_class'),
-                              Class.from_dict(test_full_class_data_set['json_dict_rep']),
+                              Class.from_dict(test_full_class_data_set['json_dict_rep']),  # type: ignore[arg-type]
                               ])
     def test_repr(self, class_object):
         assert repr(class_object) == (f'{class_object.__class__.__module__}'
@@ -361,8 +361,8 @@ class TestClassStr:
         'expected_str',
         [(Class(name='name_only_class'),
           f"Class {'name_only_class'}, containing 0 students."),
-         (Class.from_dict(test_full_class_data_set['json_dict_rep']),
-          f"Class {Class.from_dict(test_full_class_data_set['json_dict_rep']).name}, "
+         (Class.from_dict(test_full_class_data_set['json_dict_rep']),  # type: ignore[arg-type]
+          f"Class {Class.from_dict(test_full_class_data_set['json_dict_rep']).name}, "  # type: ignore[arg-type]
           f"containing {len(Class.from_dict(test_full_class_data_set['json_dict_rep']).students)} students, "
           f"with names: {', '.join([student.name for student in Class.from_dict(test_full_class_data_set['json_dict_rep']).students])}."),
          ])

@@ -7,7 +7,7 @@ import json
 
 from pathlib import Path
 from shutil import copyfile, move
-from typing import Union
+from typing import Union, Any
 
 
 def convert_to_json(data_to_convert: dict) -> str:
@@ -25,7 +25,7 @@ def convert_to_json(data_to_convert: dict) -> str:
     return converted_data
 
 
-def load_from_json(data_to_convert: str) -> dict:
+def load_from_json(data_to_convert: str) -> Any:
     """
     Convert data from JSON to python object.
 
@@ -39,7 +39,7 @@ def load_from_json(data_to_convert: str) -> dict:
     return converted_data
 
 
-def load_from_json_file(json_file_path: Union[Path, str]) -> dict:
+def load_from_json_file(json_file_path: Union[Path, str]) -> Any:
     """
     Take a filepath and load json from that file.
 

@@ -155,7 +155,7 @@ class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
     """This is necessary to mock multiple returns from take_class_data_input."""
 
     def setUp(self) -> None:
-        self.full_class_return = Class.from_dict(test_full_class_data_set['json_dict_rep'])
+        self.full_class_return = Class.from_dict(test_full_class_data_set['json_dict_rep'])  # type: ignore[arg-type]
         self.empty_class_return = Class(name=self.full_class_return.name)
 
     @patch('dionysus_app.class_functions.blank_class_dialogue')
