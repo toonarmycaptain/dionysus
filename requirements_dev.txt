@@ -7,4 +7,4 @@ codecov==2.0.15
 coverage==4.5.4
 coveralls==1.8.2
 mypy==0.730
-pytest-cov==2.7.1
+pytest-cov==2.8.0
