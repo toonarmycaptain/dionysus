@@ -89,7 +89,7 @@ def display_class_selection_menu(class_options: dict):
         print(f'{key}. {class_name}')
 
 
-def take_class_selection(class_options: dict):
+def take_class_selection(class_options: dict, class_name:str = ""):
     """
     Takes a dict with form i: 'class name', where i is an integer.
 
@@ -103,10 +103,17 @@ def take_class_selection(class_options: dict):
     :return: str
     """
     while True:
-        chosen_option = input('Select class: ')
+
+        chosen_option=0
+        if class_name == "":
+            chosen_option = input('Select class: ')
 
         try:
-            selected_class = class_options[int(chosen_option)]
+
+            if class_name != "":
+                selected_class:str = str(class_options[int((list(class_options.keys())[list(class_options.values()).index(class_name)]))])
+            else:
+                selected_class = class_options[int(chosen_option)]
             break
 
         except (KeyError, ValueError):

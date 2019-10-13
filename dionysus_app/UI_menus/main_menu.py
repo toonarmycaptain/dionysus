@@ -1,7 +1,12 @@
 """
 Application main menu.
 """
+
+import glob
+import os
+
 from dionysus_app.class_functions import create_classlist
+from dionysus_app.class_functions import select_classlist
 from dionysus_app.chart_generator.create_chart import new_chart
 from dionysus_app.UI_menus.edit_class_data_UI import edit_class_data
 from dionysus_app.UI_menus.settings_menu import run_settings_menu
@@ -45,7 +50,21 @@ def take_main_menu_input():
         chosen_option = input('>>> ')
 
         if chosen_option in possible_options:
-            possible_options[chosen_option]()
+
+            if chosen_option == "1": #if the selected option was create a class 
+
+                class_name:str = possible_options[chosen_option]() 
+                ans:str = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
+
+                while ans.upper() not in ("Y", "N"):
+                    print("Not valid answer, please try it again")
+                    ans = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
+                if ans.upper() == 'Y':
+                    new_chart(class_name)
+
+            else:
+                possible_options[chosen_option]()
+
             break  # Exit loop when chosen action finishes. Returns None.
         if chosen_option.upper() == 'Q':
             return True  # Quit app.
