@@ -215,11 +215,12 @@ def select_classlist() -> str:
 
 def create_class_list_dict() -> dict:
     """
-    Create dict with enumerated classes, starting at 1.
+    Create dict with 
+    erated classes, starting at 1.
 
     :return: dict
     """
-    class_dict = {option: class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}  # type: ignore[arg-type]
+    class_dict = {option: class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
     return class_dict
 
 
