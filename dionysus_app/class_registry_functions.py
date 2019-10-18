@@ -63,15 +63,19 @@ def register_class(classlist_name: str) -> None:
         registry.write(f'{classlist_name}\n')
 
 
-def classlist_exists(classlist_name: str) -> bool:
+def classlist_exists(classlist_name: str):
     """
     Checks if there an entry in CLASS_REGISTRY for the given
     classlist_name.
 
     :param classlist_name: str
     :return: bool
+    :raises ValueError: If registry is None/uninitialised.
     """
-    return classlist_name in definitions.REGISTRY
+    if definitions.REGISTRY is not None:
+        return classlist_name in definitions.REGISTRY
+    else:
+        raise ValueError("RegistryError: Registry uninitialised.")
 
 
 def check_registry_on_exit() -> None:
