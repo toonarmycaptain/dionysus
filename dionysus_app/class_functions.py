@@ -68,7 +68,7 @@ def setup_class_data_storage(classlist_name: str) -> None:
     """
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
     chart_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'chart_data')
-    user_chart_save_folder = definitions.DEFAULT_CHART_SAVE_FOLDER.joinpath(classlist_name)  # type: ignore[union-attr]
+    user_chart_save_folder = definitions.DEFAULT_CHART_SAVE_FOLDER.joinpath(classlist_name)
 
     avatar_path.mkdir(exist_ok=True, parents=True)
     chart_path.mkdir(exist_ok=True, parents=True)
