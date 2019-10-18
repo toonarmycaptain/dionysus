@@ -56,7 +56,7 @@ def register_class(classlist_name: str) -> None:
     :param classlist_name: str
     :return: None
     """
-    definitions.REGISTRY.append(classlist_name)  # type: ignore[union-attr]
+    definitions.REGISTRY.append(classlist_name)
 
     # open class registry, create if does not exist.
     with open(CLASS_REGISTRY_PATH, 'a+') as registry:
@@ -71,13 +71,12 @@ def classlist_exists(classlist_name: str) -> bool:
     :param classlist_name: str
     :return: bool
     """
-    return classlist_name in definitions.REGISTRY  # type: ignore[operator]
+    return classlist_name in definitions.REGISTRY
 
 
 def check_registry_on_exit() -> None:
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != definitions.REGISTRY:
-        write_registry_to_disk(definitions.REGISTRY)  # type: ignore[arg-type]
-
+        write_registry_to_disk(definitions.REGISTRY)
 
 if __name__ == '__main__':
     pass
