@@ -33,7 +33,7 @@ install:
 
 # command to run tests
 script:
-    - pytest --cov
+    - pytest --cov --mypy
     - coverage xml -i
     - python-codacy-coverage -r coverage.xml
     - codecov

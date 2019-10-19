@@ -3,6 +3,7 @@ Functions dealing with the class registry.
 """
 
 import definitions
+from typing import List
 
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 
@@ -10,7 +11,7 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
 
 
-def cache_class_registry():
+def cache_class_registry() -> List[str]:
     """
     Initialises CLASS_REGISTRY global variable and writes registry to
     disk.
@@ -23,7 +24,7 @@ def cache_class_registry():
     return registry  # return value unused on startup
 
 
-def generate_registry_from_filesystem():
+def generate_registry_from_filesystem() -> List[str]:
     """
     Searches class_data folder for .cld files and returns a list of the
     file names without the extension.
@@ -35,7 +36,7 @@ def generate_registry_from_filesystem():
     return registry_list
 
 
-def write_registry_to_disk(registry_list: list):
+def write_registry_to_disk(registry_list: list) -> None:
     """
     Write registry list from cache list to disk.
 
@@ -47,14 +48,18 @@ def write_registry_to_disk(registry_list: list):
             registry_file.write(f'{classlist_name}\n')
 
 
-def register_class(classlist_name):
+def register_class(classlist_name: str) -> None:
     """
     Register class in class_registry file.
     Create if registry non-existent.
 
     :param classlist_name: str
     :return: None
+    :raises ValueError: If registry is None/uninitialised.
     """
+    if definitions.REGISTRY is None:
+        raise ValueError("RegistryError: Registry uninitialised.")
+
     definitions.REGISTRY.append(classlist_name)
 
     # open class registry, create if does not exist.
@@ -69,11 +74,24 @@ def classlist_exists(classlist_name: str):
 
     :param classlist_name: str
     :return: bool
+    :raises ValueError: If registry is None/uninitialised.
     """
+    if definitions.REGISTRY is None:
+        raise ValueError("RegistryError: Registry uninitialised.")
+
     return classlist_name in definitions.REGISTRY
 
 
-def check_registry_on_exit():
+def check_registry_on_exit() -> None:
+    """
+    Writes registry to disk on exit if the existing file doesn't match the cached.
+
+    :return: None
+    :raises ValueError: If registry is None/uninitialised.
+    """
+    if definitions.REGISTRY is None:
+        raise ValueError("RegistryError: Registry uninitialised.")
+
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != definitions.REGISTRY:
         write_registry_to_disk(definitions.REGISTRY)
 

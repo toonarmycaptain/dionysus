@@ -5,10 +5,12 @@ Functions for creating, editing, dealing with classes.
 import time
 
 from pathlib import Path
+from typing import Optional, Union
 
 import definitions
 
 from dionysus_app.class_ import Class
+from dionysus_app.student import Student
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import (load_from_json_file,
@@ -37,7 +39,7 @@ def create_classlist():
     create_classlist_data(classlist_name)
 
 
-def setup_class(classlist_name):
+def setup_class(classlist_name: str) -> None:
     """
     Setup class data storage file structure.
     Register class in class_registry index
@@ -49,7 +51,7 @@ def setup_class(classlist_name):
     register_class(classlist_name)
 
 
-def setup_class_data_storage(classlist_name: str):
+def setup_class_data_storage(classlist_name: str) -> None:
     """
     Setup data storage for new classes.
 
@@ -60,12 +62,22 @@ def setup_class_data_storage(classlist_name: str):
                 chart_data/  # store chart data sets
                 avatars/  # store avatars for class
 
+    Raises ValueError on uninitialised DEFAULT_CHART_SAVE_FOLDER value: value
+    should be previously set in:
+    run_app
+        app_init
+            app_config
+                app_start_set_default_chart_save_location
+
 
     :param classlist_name: str
     :return: None
+    :raises ValueError: If DEFAULT_CHART_SAVE_FOLDER is None/uninitialised.
     """
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
     chart_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'chart_data')
+    if definitions.DEFAULT_CHART_SAVE_FOLDER is None:
+        raise ValueError("Uninitialised DEFAULT_CHART_SAVE_FOLDER")
     user_chart_save_folder = definitions.DEFAULT_CHART_SAVE_FOLDER.joinpath(classlist_name)
 
     avatar_path.mkdir(exist_ok=True, parents=True)
@@ -73,7 +85,7 @@ def setup_class_data_storage(classlist_name: str):
     user_chart_save_folder.mkdir(exist_ok=True, parents=True)
 
 
-def create_classlist_data(class_name: str):
+def create_classlist_data(class_name: str) -> None:
     new_class = compose_classlist_dialogue(class_name)
 
     class_data_feedback(new_class)
@@ -81,7 +93,7 @@ def create_classlist_data(class_name: str):
     time.sleep(2)  # Pause for user to look over feedback.
 
 
-def compose_classlist_dialogue(class_name: str):
+def compose_classlist_dialogue(class_name: str) -> Class:
     """
     Create class object.
 
@@ -105,7 +117,7 @@ def compose_classlist_dialogue(class_name: str):
     return new_class
 
 
-def take_class_data_input(class_name: str):
+def take_class_data_input(class_name: str) -> Class:
     """
     Take student names, avatars, return Class object.
 
@@ -122,7 +134,7 @@ def take_class_data_input(class_name: str):
     return new_class
 
 
-def take_student_avatar(class_name, student_name):
+def take_student_avatar(class_name: str, student_name: str) -> Optional[str]:
     """
     Prompts user for path to avatar file.
 
@@ -146,7 +158,7 @@ def take_student_avatar(class_name, student_name):
     return target_avatar_filename
 
 
-def copy_avatar_to_app_data(classlist_name, avatar_filename, save_filename):
+def copy_avatar_to_app_data(classlist_name: str, avatar_filename: str, save_filename: str) -> None:
     """
     Copies given avatar image to classlist_name/avatars/ with given save_filename.
     No need to pre-check if file exists because it could not be selected if it did not exist.
@@ -160,7 +172,7 @@ def copy_avatar_to_app_data(classlist_name, avatar_filename, save_filename):
     copy_file(avatar_filename, save_avatar_path)
 
 
-def avatar_file_exists(avatar_file):
+def avatar_file_exists(avatar_file: Union[str, Path]) -> bool:
     """
     Checks if provided file exists.
 
@@ -170,7 +182,7 @@ def avatar_file_exists(avatar_file):
     return Path(avatar_file).expanduser().resolve().exists()
 
 
-def write_classlist_to_file(current_class: Class):
+def write_classlist_to_file(current_class: Class) -> Path:
     """
     Write classlist data to disk as JSON dict, according to Class object's
     Class.json_dict and Class.to_json_str methods.
@@ -196,7 +208,7 @@ def write_classlist_to_file(current_class: Class):
     return classlist_data_path
 
 
-def select_classlist():
+def select_classlist() -> str:
     """
     Display list of existent classes from class_registry and allow user to select one, returning the name of the
     selected class.
@@ -211,17 +223,21 @@ def select_classlist():
     return selected_class
 
 
-def create_class_list_dict():
+def create_class_list_dict() -> dict:
     """
     Create dict with enumerated classes, starting at 1.
 
     :return: dict
+    :raises ValueError: If registry is None/uninitialised.
     """
+
+    if definitions.REGISTRY is None:
+        raise ValueError("RegistryError: Registry uninitialised.")
     class_dict = {option: class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
     return class_dict
 
 
-def select_student(current_class: Class):
+def select_student(current_class: Class) -> Student:
     """
     Display list of students in class and allow user to select one, returning
     the selected Student object.
@@ -238,7 +254,7 @@ def select_student(current_class: Class):
                 if student.name == selected_student_name)
 
 
-def load_class_from_disk(class_name: str):
+def load_class_from_disk(class_name: str) -> Class:
     """
     Load class data from a class data ('.cld') file, return Class object.
 
@@ -253,7 +269,7 @@ def load_class_from_disk(class_name: str):
     return loaded_class
 
 
-def load_chart_data(chart_data_path: str):
+def load_chart_data(chart_data_path: str) -> dict:
     """
     Load class data from chart data ('.cdf') file.
 
@@ -264,7 +280,7 @@ def load_chart_data(chart_data_path: str):
     return chart_data_dict
 
 
-def get_avatar_path(class_name, student_avatar):
+def get_avatar_path(class_name: str, student_avatar: str) -> Path:
     """
     Take value from 'avatar' in list of student data, return path for student avatar or default avatar path if student
     has no avatar.
@@ -278,7 +294,7 @@ def get_avatar_path(class_name, student_avatar):
     return avatar_path_from_string(class_name, student_avatar)
 
 
-def avatar_path_from_string(class_name, avatar_filename):
+def avatar_path_from_string(class_name: str, avatar_filename: str) -> Path:
     """
     Take class name and student's avatar filename, return a Path object to the avatar image file.
 
@@ -289,7 +305,7 @@ def avatar_path_from_string(class_name, avatar_filename):
     return CLASSLIST_DATA_PATH.joinpath(class_name, 'avatars', avatar_filename)
 
 
-def edit_classlist():
+def edit_classlist() -> None:
     """
      similarly to create classlist: for edit classlist -
     :return:
