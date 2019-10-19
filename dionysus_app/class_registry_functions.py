@@ -55,7 +55,11 @@ def register_class(classlist_name: str) -> None:
 
     :param classlist_name: str
     :return: None
+    :raises ValueError: If registry is None/uninitialised.
     """
+    if definitions.REGISTRY is None:
+        raise ValueError("RegistryError: Registry uninitialised.")
+
     definitions.REGISTRY.append(classlist_name)
 
     # open class registry, create if does not exist.
@@ -72,15 +76,25 @@ def classlist_exists(classlist_name: str):
     :return: bool
     :raises ValueError: If registry is None/uninitialised.
     """
-    if definitions.REGISTRY is not None:
-        return classlist_name in definitions.REGISTRY
-    else:
+    if definitions.REGISTRY is None:
         raise ValueError("RegistryError: Registry uninitialised.")
+
+    return classlist_name in definitions.REGISTRY
 
 
 def check_registry_on_exit() -> None:
+    """
+    Writes registry to disk on exit if the existing file doesn't match the cached.
+
+    :return: None
+    :raises ValueError: If registry is None/uninitialised.
+    """
+    if definitions.REGISTRY is None:
+        raise ValueError("RegistryError: Registry uninitialised.")
+
     if open(CLASS_REGISTRY_PATH, 'r').readlines() != definitions.REGISTRY:
         write_registry_to_disk(definitions.REGISTRY)
+
 
 if __name__ == '__main__':
     pass
