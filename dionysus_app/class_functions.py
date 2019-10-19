@@ -62,12 +62,22 @@ def setup_class_data_storage(classlist_name: str) -> None:
                 chart_data/  # store chart data sets
                 avatars/  # store avatars for class
 
+    Raises ValueError on uninitialised DEFAULT_CHART_SAVE_FOLDER value: value
+    should be previously set in:
+    run_app
+        app_init
+            app_config
+                app_start_set_default_chart_save_location
+
 
     :param classlist_name: str
     :return: None
+    :raises ValueError: If DEFAULT_CHART_SAVE_FOLDER is None/uninitialised.
     """
     avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars')
     chart_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'chart_data')
+    if definitions.DEFAULT_CHART_SAVE_FOLDER is None:
+        raise ValueError("Uninitialised DEFAULT_CHART_SAVE_FOLDER")
     user_chart_save_folder = definitions.DEFAULT_CHART_SAVE_FOLDER.joinpath(classlist_name)
 
     avatar_path.mkdir(exist_ok=True, parents=True)
@@ -215,11 +225,14 @@ def select_classlist() -> str:
 
 def create_class_list_dict() -> dict:
     """
-    Create dict with 
-    erated classes, starting at 1.
+    Create dict with enumerated classes, starting at 1.
 
     :return: dict
+    :raises ValueError: If registry is None/uninitialised.
     """
+
+    if definitions.REGISTRY is None:
+        raise ValueError("RegistryError: Registry uninitialised.")
     class_dict = {option: class_name for option, class_name in enumerate(definitions.REGISTRY, start=1)}
     return class_dict
 
