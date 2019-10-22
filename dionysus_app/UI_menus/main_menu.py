@@ -41,9 +41,7 @@ def take_main_menu_input():
         '9': run_settings_menu,
         }
 
-    while True:
-        chosen_option = input('>>> ')
-
+    while chosen_option := input('>>> '):
         if chosen_option in possible_options:
             possible_options[chosen_option]()
             break  # Exit loop when chosen action finishes. Returns None.
