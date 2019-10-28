@@ -78,15 +78,19 @@ def class_data_feedback(current_class: Class):
 
 
 def create_chart_with_new_class(class_name: str):
-
-        ans: str = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
-
-        while ans.upper() not in ("Y", "N"):
-            print("Not valid answer, please try it again")
-            ans = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
-        if ans.upper() == 'Y':
-            return True
-
+    """
+    Asks user if they want to create a new chart with the class they just
+    created, returning True/False.
+    :param class_name: str
+    :return:
+    """
+    while True:
+        ans = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
+        if ans.upper() in ("Y", "N"):
+            if ans.upper() == 'Y':
+                return True
+            return False
+        print("Not valid answer, please try it again")
 
 def display_class_selection_menu(class_options: dict):
     """
