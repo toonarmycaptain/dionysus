@@ -77,7 +77,7 @@ def class_data_feedback(current_class: Class):
             print(student.name)
 
 
-def create_chart_with_new_class(class_name: str):
+def create_chart_with_new_class_dialogue(class_name: str):
     """
     Asks user if they want to create a new chart with the class they just
     created, returning True/False.
