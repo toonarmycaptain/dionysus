@@ -29,10 +29,9 @@ from dionysus_app.UI_menus.UI_functions import clean_for_filename
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 
-def new_chart(class_name:str = ""):
+def new_chart(class_name: str = None):
     """
-    Take class name selection (if the user dont comes with an already defined class to make a chart), 
-    chart name, score data, chart parameters from
+    Take class name selection, chart name, score data, chart parameters from
     assemble_chart_data, form into chart_data_dict with key-value format:
         chart_data_dict = {
                     'class_name': class_name,  # str
@@ -44,6 +43,9 @@ def new_chart(class_name:str = ""):
 
     Then write this data to disk as *.cdf (ChartDataFile), generate and save the chart.
 
+    NB Skips class name selection if class_name provided.
+
+    :param class_name: str = None
     :return: None
     """
     class_name, chart_name, chart_default_filename, student_scores, chart_params = assemble_chart_data(class_name)
@@ -64,11 +66,12 @@ def new_chart(class_name:str = ""):
     user_save_chart_image(chart_data_dict, chart_image_location)
 
 
-def assemble_chart_data(class_name_:str = ""):
+def assemble_chart_data(class_name: str = None):
     """
     Collect data/user input for new chart.
 
-    Get classname from user, load class data, take chart data from user.
+    Get classname from user, if not provided, load class data,
+    take chart data from user.
 
     Return values for chart_data_dict assembly:
     class_name: str
@@ -77,10 +80,11 @@ def assemble_chart_data(class_name_:str = ""):
     student_scores: dict
     chart_params: dict
 
+    :param class_name: str = None
     :return: tuple(str, str, str, dict, dict)
     """
-
-    class_name = select_classlist(class_name_)  # TODO: warn for empty classlist
+    if not class_name:
+        class_name = select_classlist()  # TODO: warn for empty classlist
 
     loaded_class = load_class_from_disk(class_name)
 
