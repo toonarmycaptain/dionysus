@@ -13,11 +13,12 @@ from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
-from dionysus_app.file_functions import (load_from_json_file,
-                                         copy_file,
+from dionysus_app.file_functions import (copy_file,
+                                         load_from_json_file,
                                          )
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
+                                                      create_chart_with_new_class_dialogue,
                                                       display_class_selection_menu,
                                                       display_student_selection_menu,
                                                       select_avatar_file_dialogue,
@@ -37,6 +38,8 @@ def create_classlist():
 
     setup_class(classlist_name)
     create_classlist_data(classlist_name)
+
+    create_chart_with_new_class(classlist_name)
 
 
 def setup_class(classlist_name: str) -> None:
@@ -179,7 +182,7 @@ def avatar_file_exists(avatar_file: Union[str, Path]) -> bool:
     :param avatar_file: str
     :return: bool
     """
-    return Path(avatar_file).expanduser().resolve().exists()
+    return Path(avatar_file).exists()
 
 
 def write_classlist_to_file(current_class: Class) -> Path:
@@ -206,6 +209,13 @@ def write_classlist_to_file(current_class: Class) -> Path:
         classlist_file.write(json_class_data)
 
     return classlist_data_path
+
+
+
+def create_chart_with_new_class(classlist_name):
+    if create_chart_with_new_class_dialogue(classlist_name):
+        from dionysus_app.chart_generator.create_chart import new_chart
+        new_chart(classlist_name)
 
 
 def select_classlist() -> str:
