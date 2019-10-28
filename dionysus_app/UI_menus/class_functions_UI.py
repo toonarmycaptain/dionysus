@@ -1,4 +1,6 @@
 """UI elements for class_functions"""
+from typing import Union
+
 from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import classlist_exists
 from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
@@ -118,7 +120,7 @@ def take_class_selection(class_options: dict):
     :return: str
     """
     while True:
-        chosen_option=0
+        chosen_option: Union[int, str] = 0
         chosen_option = input('Select class: ')
 
         try:
