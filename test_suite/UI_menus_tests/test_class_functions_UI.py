@@ -7,15 +7,15 @@ from unittest.mock import patch
 
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
-from dionysus_app.UI_menus.class_functions_UI import (display_class_selection_menu,
-                                                      take_classlist_name_input,
-                                                      display_student_selection_menu,
-                                                      take_student_name_input,
-                                                      blank_class_dialogue,
+from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
-                                                      take_class_selection,
-                                                      take_student_selection,
+                                                      display_class_selection_menu,
+                                                      display_student_selection_menu,
                                                       select_avatar_file_dialogue,
+                                                      take_classlist_name_input,
+                                                      take_class_selection,
+                                                      take_student_name_input,
+                                                      take_student_selection,
                                                       )
 from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
@@ -138,7 +138,8 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
 
                 print(f'mock_blank_calls: {[mock.call(test_input) for test_input in input_strings]}')
                 print(f'mock blank returns: {mock_input_is_essentially_blank_returns}')
-                print(f"mock exists calls: {[mock.call(test_input) for test_input in input_strings if test_input is not self.blank_classname['classlist_name']]}")
+                print(
+                    f"mock exists calls: {[mock.call(test_input) for test_input in input_strings if test_input is not self.blank_classname['classlist_name']]}")
                 print(f'mock exists returns: {mock_classlist_exists_returns}')
                 print(f'mock print call lists {mock_print_call_lists}')
                 print(f'mock print calls: {mock_print_calls}')
@@ -161,7 +162,8 @@ class TestTakeClasslistNameInputMockingAllCalls(TestCase):
                        for test_input in input_strings
                        if test_input is not self.blank_classname['classlist_name']])
                 assert mock_classlist_exists.call_args_list == [mock.call(test_input) for test_input in input_strings
-                                                                if test_input is not self.blank_classname['classlist_name']]
+                                                                if test_input is not self.blank_classname[
+                                                                    'classlist_name']]
                 assert mock_clean_for_filename.assert_called_once_with(self.valid_new_classname['classlist_name'])
 
                 # Reset the mock functions after each test sequence:
@@ -394,7 +396,8 @@ class TestTakeStudentSelection(TestCase):
         self.valid_numerical_inputs = [(str(key), self.test_class_student_options[key])
                                        for key in self.test_class_student_options.keys()]
         # Exact class name
-        self.valid_string_inputs = [(student_name, student_name) for student_name in self.test_class_student_options.values()]
+        self.valid_string_inputs = [(student_name, student_name) for student_name in
+                                    self.test_class_student_options.values()]
 
         self.blank_junk_inputs = [self.no_input,
                                   self.space_input,
