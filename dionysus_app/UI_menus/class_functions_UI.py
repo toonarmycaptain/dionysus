@@ -77,6 +77,17 @@ def class_data_feedback(current_class: Class):
             print(student.name)
 
 
+def create_chart_with_new_class(class_name: str):
+
+        ans: str = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
+
+        while ans.upper() not in ("Y", "N"):
+            print("Not valid answer, please try it again")
+            ans = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
+        if ans.upper() == 'Y':
+            return True
+
+
 def display_class_selection_menu(class_options: dict):
     """
     Print "Select class from list:" followed by numbered option list.

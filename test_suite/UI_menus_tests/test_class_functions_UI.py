@@ -1,5 +1,7 @@
 import unittest
 
+import pytest
+
 from itertools import permutations
 
 from unittest import TestCase, mock
@@ -9,6 +11,7 @@ from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
+                                                      create_chart_with_new_class,
                                                       display_class_selection_menu,
                                                       display_student_selection_menu,
                                                       select_avatar_file_dialogue,
@@ -271,6 +274,22 @@ class TestClassDataFeedback:
         class_data_feedback(test_class_name_only)
         captured = capsys.readouterr().out
         assert captured == ''.join(printed_strings)
+
+
+class TestCreateChartWithNewClass:
+    @pytest.mark.parametrize(
+        'inputs, returned_value',
+        [([bad_input, good_input], return_value)
+         for bad_input in ['0', '1', '7', 'a', 'z', 'something', '/', '*', '\n', ]
+         for good_input, return_value in [('n', None),
+                                          ('N', None),
+                                          ('y', True),
+                                          ('Y', True), ]
+         ]
+    )
+    def test_create_chart_with_new_class(self, inputs, returned_value):
+        with mock.patch('builtins.input', side_effect=inputs):
+            assert create_chart_with_new_class('some class') is returned_value
 
 
 class TestDisplayClassSelectionMenu(TestCase):

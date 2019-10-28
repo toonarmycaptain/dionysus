@@ -45,21 +45,7 @@ def take_main_menu_input():
         chosen_option = input('>>> ')
 
         if chosen_option in possible_options:
-
-            if chosen_option == "1": #if the selected option was create a class 
-
-                class_name:str = possible_options[chosen_option]() 
-                ans:str = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
-
-                while ans.upper() not in ("Y", "N"):
-                    print("Not valid answer, please try it again")
-                    ans = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
-                if ans.upper() == 'Y':
-                    new_chart(class_name)
-
-            else:
-                possible_options[chosen_option]()
-
+            possible_options[chosen_option]()
             break  # Exit loop when chosen action finishes. Returns None.
         if chosen_option.upper() == 'Q':
             return True  # Quit app.
