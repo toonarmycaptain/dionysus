@@ -11,7 +11,7 @@ from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
-                                                      create_chart_with_new_class,
+                                                      create_chart_with_new_class_dialogue,
                                                       display_class_selection_menu,
                                                       display_student_selection_menu,
                                                       select_avatar_file_dialogue,
@@ -289,7 +289,7 @@ class TestCreateChartWithNewClass:
     )
     def test_create_chart_with_new_class(self, inputs, returned_value):
         with mock.patch('builtins.input', side_effect=inputs):
-            assert create_chart_with_new_class('some class') is returned_value
+            assert create_chart_with_new_class_dialogue('some class') is returned_value
 
 
 class TestDisplayClassSelectionMenu(TestCase):
