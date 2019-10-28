@@ -254,7 +254,11 @@ def get_class_save_folder_path(class_name: str):
 
     :param class_name: str
     :return: Path object
+    :raises ValueError: If DEFAULT_CHART_SAVE_FOLDER is None/uninitialised.
     """
+    if definitions.DEFAULT_CHART_SAVE_FOLDER is None:
+        raise ValueError("Uninitialised DEFAULT_CHART_SAVE_FOLDER")
+
     class_save_folder_path = Path(definitions.DEFAULT_CHART_SAVE_FOLDER).joinpath(class_name)
     return class_save_folder_path
 

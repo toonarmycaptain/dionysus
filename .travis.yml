@@ -1,10 +1,8 @@
 language: python
-sudo: false
-dist: xenial
 
 os:
-    - windows
     - linux
+    - windows
 
 
 cache: pip
@@ -12,18 +10,13 @@ cache: pip
 python:
     - "3.6"
     - "3.7"
+    - "3.8"
 
 
 matrix:
-    include:  # Workaround for python 3.7.
-        - python: "3.7"
-          dist: xenial
-          sudo: required
-
     fast_finish: true
     allow_failures:
         - os: windows  # allow failure on Win until Travis-Win supports python.
-#        - python: "3.7"  # Travis CI not supporting 3.7 yet
 
 
 install:
@@ -33,7 +26,7 @@ install:
 
 # command to run tests
 script:
-    - pytest --cov
+    - pytest --cov --mypy
     - coverage xml -i
     - python-codacy-coverage -r coverage.xml
     - codecov

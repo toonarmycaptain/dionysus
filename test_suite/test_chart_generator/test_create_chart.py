@@ -343,6 +343,11 @@ class TestGetClassSaveFolderPath:
         assert get_class_save_folder_path(test_class_name) == test_class_save_folder_path
 
 
+def test_get_class_save_folder_path(monkeypatch):
+    monkeypatch.setattr(create_chart.definitions, 'DEFAULT_CHART_SAVE_FOLDER', None)
+    with pytest.raises(ValueError):
+        get_class_save_folder_path('some_class')
+
 class TestShowImage:
     def test_show_image(self, monkeypatch):
         test_image_location = Path('my/test/image/path')

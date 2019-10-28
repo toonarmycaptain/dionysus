@@ -77,7 +77,7 @@ def assign_avatar_coords(band_avatar_dict, chart_params: dict = None):
     if not chart_params:
         chart_params = DEFAULT_CHART_PARAMS  # pull values from DEFAULT_CHART_PARAMS dict
 
-    avatar_xy_dict = {}
+    avatar_xy_dict: dict = {}
     col_max_avatars, init_vert_offset, horiz_offset, vert_offset = (
                                     chart_params['column_max_avatars'],
                                     chart_params['init_vertical_offset'],

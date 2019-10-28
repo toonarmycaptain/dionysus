@@ -27,15 +27,21 @@ class TestDataFolder(TestCase):
 
     def test_generate_data_path_defaults(self):
         os.chdir(ROOT_DIR)
-        cwd_path = Path.cwd().as_uri()  # cwd path OS agnostic for assertion
-        for path in self.default_paths:
-            path_result = DataFolder.generate_rel_path(path).as_uri()
-            assert path in path_result and cwd_path in path_result
+        cwd_path = Path.cwd()
+        for rel_path_str in self.default_paths:
+            path_result = DataFolder.generate_rel_path(rel_path_str)
+            
+            # Assert relative app paths in generated absolute paths:
+            assert rel_path_str in path_result.as_uri()
+            # Assert cwd in generated absolute paths:
+            assert cwd_path.as_uri() in path_result.as_uri()
 
     def test_generate_data_path_None(self):
-        path_result = DataFolder.generate_rel_path(None)
-        cwd_path = Path.cwd().as_uri()  # cwd path OS agnostic for assertion
-        assert cwd_path in path_result
+        # Should return current working directory:
+        none_path_result = DataFolder.generate_rel_path(None)
+        cwd_path = Path.cwd()
+        
+        assert cwd_path == none_path_result
 
 
 class TestDataFolderPathsExist(TestCase):

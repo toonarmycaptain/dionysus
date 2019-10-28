@@ -10,7 +10,7 @@ from unittest import mock, TestCase  # this is needed to use mock.call, since fr
 
 import pytest
 
-from dionysus_app import class_functions
+from dionysus_app import class_functions, class_registry_functions
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.class_ import Class
 from dionysus_app.class_functions import (avatar_path_from_string,
@@ -106,6 +106,12 @@ class TestSetupClassDataStorage(TestCase):
             mkdir_calls = [mock.call(directory_path, exist_ok=True, parents=True)
                            for directory_path in self.created_directory_paths]
             assert mock_mkdir.mock_calls == mkdir_calls
+
+
+def test_setup_class_data_storage_raising_error(monkeypatch):
+    monkeypatch.setattr(class_registry_functions.definitions, 'DEFAULT_CHART_SAVE_FOLDER', None)
+    with pytest.raises(ValueError):
+        setup_class_data_storage('some_class')
 
 
 class TestCreateClasslistData(TestCase):
@@ -484,6 +490,12 @@ class TestCreateClassListDict(TestCase):
     @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
     def test_create_class_list_dict_patching_REGISTRY(self):
         assert create_class_list_dict() == self.enumerated_class_registry
+
+
+def test_create_class_list_dict(monkeypatch):
+    monkeypatch.setattr(class_functions.definitions, 'REGISTRY', None)
+    with pytest.raises(ValueError):
+        create_class_list_dict()
 
 
 class TestSelectStudent:
