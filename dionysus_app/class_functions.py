@@ -198,7 +198,7 @@ def write_classlist_to_file(current_class: Class):
     return classlist_data_path
 
 
-def select_classlist(class_name:str = ""):
+def select_classlist():
     """
     Display list of existent classes from class_registry and allow user to select one, returning the name of the
     selected class.
@@ -206,10 +206,9 @@ def select_classlist(class_name:str = ""):
     :return: str
     """
     class_options = create_class_list_dict()
-    if class_name == "":
-        display_class_selection_menu(class_options)  # TODO: Select class or redirect to create new class.
+    display_class_selection_menu(class_options)  # TODO: Select class or redirect to create new class.
 
-    selected_class = take_class_selection(class_options,class_name)
+    selected_class = take_class_selection(class_options)
 
     return selected_class
 
