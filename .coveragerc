@@ -7,3 +7,4 @@ omit =
      *.md
      test_suite/*
      venv/*
+     *_env/*
