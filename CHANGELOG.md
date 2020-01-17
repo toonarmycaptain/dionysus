@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Improved test coverage.
+- Type hinting across application. 
+- mypy check to added to CI.
+- Python 3.8 compatibility and CI integration.
+- Runtime guards raising a meaningful `ValueError` on uninitialised `definitions.REGISTRY`, `definitions.DEFAULT_CHART_SAVE_FOLDER`. NB this should only happen when tests are run without config.
+- Option to go directly from creating a class to chart with that class. 
 ### Changed
 - `select_student` now uses Class object, returns Student object.
-- `file_functions` tests now all use new-style class data. 
+- `file_functions` tests now all use new-style class data.
 ### Depreciated
 - Use of old-style data format in `testing_class_data` 
 ### Removed
