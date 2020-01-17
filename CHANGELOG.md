@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use of old-style data format in `testing_class_data` 
 ### Removed
 - `class_functions.create_student_list_dict`
+- defunct `test_create_classlist.py`, dependency on `pexpect`.
 
 ## [0.4.0-alpha] - 2019-05-22
 ### Added
