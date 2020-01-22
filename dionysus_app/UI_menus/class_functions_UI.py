@@ -79,20 +79,23 @@ def class_data_feedback(current_class: Class):
             print(student.name)
 
 
-def create_chart_with_new_class_dialogue(class_name: str):
+def create_chart_with_new_class_dialogue() -> bool:
     """
     Asks user if they want to create a new chart with the class they just
     created, returning True/False.
-    :param class_name: str
-    :return:
+
+
+    :return: bool
     """
+    valid_responses = {"Y": True,
+                       "N": False
+                       }
     while True:
-        ans = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
-        if ans.upper() in ("Y", "N"):
-            if ans.upper() == 'Y':
-                return True
-            return False
-        print("Not valid answer, please try it again")
+        response = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
+        if response.upper() in valid_responses:
+            return valid_responses[response.upper()]
+        print("Invalid response, please try again.")
+
 
 def display_class_selection_menu(class_options: dict):
     """
@@ -120,7 +123,7 @@ def take_class_selection(class_options: dict):
     :return: str
     """
     while True:
-        chosen_option: Union[int, str] = 0
+        chosen_option: Union[int, str]
         chosen_option = input('Select class: ')
 
         try:

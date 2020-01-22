@@ -212,7 +212,7 @@ def write_classlist_to_file(current_class: Class) -> Path:
 
 
 def create_chart_with_new_class(classlist_name):
-    if create_chart_with_new_class_dialogue(classlist_name):
+    if create_chart_with_new_class_dialogue():
         from dionysus_app.chart_generator.create_chart import new_chart
         new_chart(classlist_name)
 
@@ -289,10 +289,11 @@ def load_chart_data(chart_data_path: str) -> dict:
     return chart_data_dict
 
 
-def get_avatar_path(class_name: str, student_avatar: str) -> Path:
+def get_avatar_path(class_name: str, student_avatar: str = None) -> Path:
     """
     Take value from 'avatar' in list of student data, return path for student avatar or default avatar path if student
     has no avatar.
+    Defaults to default avatar if none provided.
 
     :param class_name: str
     :param student_avatar: str or None

@@ -435,9 +435,7 @@ class TestCreateChartWithNewClass:
                               ('Class choosing not to create chart immediately', False),
                               ])
     def test_create_chart_with_new_class(self, monkeypatch, test_classname, chose_to_create_chart_from_class):
-        def mocked_create_chart_with_new_class_dialogue(test_class_name):
-            if test_class_name != test_classname:
-                raise ValueError
+        def mocked_create_chart_with_new_class_dialogue():
             return chose_to_create_chart_from_class
 
         def mocked_new_chart(test_class_name):
@@ -584,6 +582,10 @@ class TestGetAvatarPath(TestCase):
     @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
     def test_get_avatar_path_when_None(self):
         assert get_avatar_path(self.my_class_name, None) == self.mock_DEFAULT_AVATAR_PATH
+
+    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
+    def test_get_avatar_path_when_called_with_no_avatar_arg(self):
+        assert get_avatar_path(self.my_class_name) == self.mock_DEFAULT_AVATAR_PATH
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
