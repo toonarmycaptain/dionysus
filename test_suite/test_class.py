@@ -217,7 +217,7 @@ class TestAddStudent:
         test_class_name_only.add_student(name=test_student_with_avatar.name,
                                          avatar_filename=test_student_with_avatar.avatar_filename)
 
-        assert len(test_class_name_only.students) is 1
+        assert len(test_class_name_only.students) == 1
         # Test student attributes are as expected
         assert test_class_name_only.students[0].name == test_student_with_avatar.name
         assert test_class_name_only.students[0].avatar_filename == test_student_with_avatar.avatar_filename
