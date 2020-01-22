@@ -583,6 +583,10 @@ class TestGetAvatarPath(TestCase):
     def test_get_avatar_path_when_None(self):
         assert get_avatar_path(self.my_class_name, None) == self.mock_DEFAULT_AVATAR_PATH
 
+    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
+    def test_get_avatar_path_when_called_with_no_avatar_arg(self):
+        assert get_avatar_path(self.my_class_name) == self.mock_DEFAULT_AVATAR_PATH
+
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
     def test_get_avatar_path_returning_avatar_path_from_string(self):

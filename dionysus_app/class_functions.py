@@ -289,10 +289,11 @@ def load_chart_data(chart_data_path: str) -> dict:
     return chart_data_dict
 
 
-def get_avatar_path(class_name: str, student_avatar: str) -> Path:
+def get_avatar_path(class_name: str, student_avatar: str = None) -> Path:
     """
     Take value from 'avatar' in list of student data, return path for student avatar or default avatar path if student
     has no avatar.
+    Defaults to default avatar if none provided.
 
     :param class_name: str
     :param student_avatar: str or None
