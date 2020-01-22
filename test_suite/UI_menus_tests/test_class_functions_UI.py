@@ -1,11 +1,10 @@
 import unittest
 
-import pytest
-
 from itertools import permutations
-
 from unittest import TestCase, mock
 from unittest.mock import patch
+
+import pytest
 
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student

@@ -1,9 +1,9 @@
 """
 Functions dealing with the class registry.
 """
+from typing import List
 
 import definitions
-from typing import List
 
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 
