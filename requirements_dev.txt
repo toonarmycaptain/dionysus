@@ -1,4 +1,4 @@
-pexpect==4.7.0
+pexpect==4.8.0
 pytest==5.3.4
 
 # Running tests on Travis
