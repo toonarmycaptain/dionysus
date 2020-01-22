@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Updated dependencies.
 - Improved test coverage.
 - Type hinting across application. 
 - mypy check to added to CI.
