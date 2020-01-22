@@ -280,7 +280,7 @@ class TestCreateChartWithNewClass:
     @pytest.mark.parametrize(
         'inputs, returned_value',
         [([bad_input, good_input], return_value)
-         for bad_input in ['0', '1', '7', 'a', 'z', 'something', '/', '*', '\n', ]
+         for bad_input in ['0', '1', '7', 'a', 'z', 'something', '/', '*', '\n', '', ]
          for good_input, return_value in [('n', False),
                                           ('N', False),
                                           ('y', True),
@@ -289,7 +289,7 @@ class TestCreateChartWithNewClass:
     )
     def test_create_chart_with_new_class(self, inputs, returned_value):
         with mock.patch('builtins.input', side_effect=inputs):
-            assert create_chart_with_new_class_dialogue('some class') is returned_value
+            assert create_chart_with_new_class_dialogue() is returned_value
 
 
 class TestDisplayClassSelectionMenu(TestCase):

@@ -435,9 +435,7 @@ class TestCreateChartWithNewClass:
                               ('Class choosing not to create chart immediately', False),
                               ])
     def test_create_chart_with_new_class(self, monkeypatch, test_classname, chose_to_create_chart_from_class):
-        def mocked_create_chart_with_new_class_dialogue(test_class_name):
-            if test_class_name != test_classname:
-                raise ValueError
+        def mocked_create_chart_with_new_class_dialogue():
             return chose_to_create_chart_from_class
 
         def mocked_new_chart(test_class_name):

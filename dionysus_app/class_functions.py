@@ -212,7 +212,7 @@ def write_classlist_to_file(current_class: Class) -> Path:
 
 
 def create_chart_with_new_class(classlist_name):
-    if create_chart_with_new_class_dialogue(classlist_name):
+    if create_chart_with_new_class_dialogue():
         from dionysus_app.chart_generator.create_chart import new_chart
         new_chart(classlist_name)
 
