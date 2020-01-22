@@ -122,7 +122,7 @@ def write_settings_to_file(settings_dict: dict) -> None:
         app_settings_file.write(write_string)
 
 
-def create_app_settings_file(settings_dict: dict=None) -> None:
+def create_app_settings_file(settings_dict: dict = None) -> None:
     """
     Create settings file, ensuring __init__.py in containing folder.
 
