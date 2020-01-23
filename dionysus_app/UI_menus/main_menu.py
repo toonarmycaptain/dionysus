@@ -31,7 +31,7 @@ def take_main_menu_input():
     options. If 'Q' is entered to quit app, returns True, triggering the
     flag in run_main_menu, breaking that loop, and proceeding to app
     quit/shutdown code.
-     
+
     :return: None
     """
     possible_options = {
