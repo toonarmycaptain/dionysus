@@ -10,11 +10,13 @@ from unittest import mock, TestCase  # this is needed to use mock.call, since fr
 
 import pytest
 
-from dionysus_app import class_functions
+from dionysus_app import class_functions, class_registry_functions
+from dionysus_app.chart_generator import create_chart
 from dionysus_app.class_ import Class
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           compose_classlist_dialogue,
                                           copy_avatar_to_app_data,
+                                          create_chart_with_new_class,
                                           create_classlist,
                                           create_classlist_data,
                                           create_class_list_dict,
@@ -39,24 +41,29 @@ from test_suite.testing_class_data import (testing_registry_data_set as test_reg
                                            )
 
 
-class TestCreateClasslist(TestCase):
-    def setUp(self):
-        self.classlist_name = 'the_flying_circus'
+class TestCreateClasslist:
+    def test_create_classlist(self, monkeypatch, test_classname='the_flying_circus'):
 
-    @patch('dionysus_app.class_functions.take_classlist_name_input')
-    @patch('dionysus_app.class_functions.setup_class')
-    @patch('dionysus_app.class_functions.create_classlist_data')
-    def test_create_classlist(self,
-                              mock_create_classlist_data,
-                              mock_setup_class,
-                              mock_take_classlist_name_input
-                              ):
-        mock_take_classlist_name_input.return_value = self.classlist_name
+        def mocked_take_classlist_name_input():
+            return test_classname
 
+        def mocked_setup_class(test_class_name):
+            if test_class_name != test_classname:
+                raise ValueError
+
+        def mocked_create_classlist_data(test_class_name):
+            if test_class_name != test_classname:
+                raise ValueError
+
+        def mocked_create_chart_with_new_class(test_class_name):
+            if test_class_name != test_classname:
+                raise ValueError
+
+        monkeypatch.setattr(class_functions, 'take_classlist_name_input', mocked_take_classlist_name_input)
+        monkeypatch.setattr(class_functions, 'setup_class', mocked_setup_class)
+        monkeypatch.setattr(class_functions, 'create_classlist_data', mocked_create_classlist_data)
+        monkeypatch.setattr(class_functions, 'create_chart_with_new_class', mocked_create_chart_with_new_class)
         assert create_classlist() is None
-        mock_take_classlist_name_input.assert_called_once_with()
-        mock_setup_class.assert_called_once_with(self.classlist_name)
-        mock_create_classlist_data.assert_called_once_with(self.classlist_name)
 
 
 class TestSetupClass(TestCase):
@@ -99,6 +106,12 @@ class TestSetupClassDataStorage(TestCase):
             mkdir_calls = [mock.call(directory_path, exist_ok=True, parents=True)
                            for directory_path in self.created_directory_paths]
             assert mock_mkdir.mock_calls == mkdir_calls
+
+
+def test_setup_class_data_storage_raising_error(monkeypatch):
+    monkeypatch.setattr(class_registry_functions.definitions, 'DEFAULT_CHART_SAVE_FOLDER', None)
+    with pytest.raises(ValueError):
+        setup_class_data_storage('some_class')
 
 
 class TestCreateClasslistData(TestCase):
@@ -416,6 +429,30 @@ class TestWriteClasslistToFileMockingOpen(TestCase):
             opened_test_class_data_file.write.assert_called_with(self.test_class_object.to_json_str())
 
 
+class TestCreateChartWithNewClass:
+    @pytest.mark.parametrize('test_classname, chose_to_create_chart_from_class',
+                             [('Class choosing to create chart immediately', True),
+                              ('Class choosing not to create chart immediately', False),
+                              ])
+    def test_create_chart_with_new_class(self, monkeypatch, test_classname, chose_to_create_chart_from_class):
+        def mocked_create_chart_with_new_class_dialogue():
+            return chose_to_create_chart_from_class
+
+        def mocked_new_chart(test_class_name):
+            if test_class_name != test_classname:
+                raise ValueError
+            if not chose_to_create_chart_from_class:
+                raise ValueError(f'create_chart wrongly called for class {test_class_name}')
+
+        # Mock create_chart_with_new_class_dialogue in original location, due to import at runtime
+        # rather than at top of class_functions module.
+        monkeypatch.setattr(class_functions, 'create_chart_with_new_class_dialogue',
+                            mocked_create_chart_with_new_class_dialogue)
+        monkeypatch.setattr(create_chart, 'new_chart', mocked_new_chart)
+
+        assert create_chart_with_new_class(test_classname) is None
+
+
 class TestSelectClasslist:
     def test_select_classlist(self, monkeypatch):
         test_class_options = {1: 'one', 2: 'two', 3: 'three'}
@@ -451,6 +488,12 @@ class TestCreateClassListDict(TestCase):
     @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
     def test_create_class_list_dict_patching_REGISTRY(self):
         assert create_class_list_dict() == self.enumerated_class_registry
+
+
+def test_create_class_list_dict(monkeypatch):
+    monkeypatch.setattr(class_functions.definitions, 'REGISTRY', None)
+    with pytest.raises(ValueError):
+        create_class_list_dict()
 
 
 class TestSelectStudent:
@@ -539,6 +582,10 @@ class TestGetAvatarPath(TestCase):
     @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
     def test_get_avatar_path_when_None(self):
         assert get_avatar_path(self.my_class_name, None) == self.mock_DEFAULT_AVATAR_PATH
+
+    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
+    def test_get_avatar_path_when_called_with_no_avatar_arg(self):
+        assert get_avatar_path(self.my_class_name) == self.mock_DEFAULT_AVATAR_PATH
 
     @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
     @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)

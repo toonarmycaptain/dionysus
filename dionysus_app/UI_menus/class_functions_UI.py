@@ -1,4 +1,6 @@
 """UI elements for class_functions"""
+from typing import Union
+
 from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import classlist_exists
 from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
@@ -77,6 +79,24 @@ def class_data_feedback(current_class: Class):
             print(student.name)
 
 
+def create_chart_with_new_class_dialogue() -> bool:
+    """
+    Asks user if they want to create a new chart with the class they just
+    created, returning True/False.
+
+
+    :return: bool
+    """
+    valid_responses = {"Y": True,
+                       "N": False
+                       }
+    while True:
+        response = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
+        if response.upper() in valid_responses:
+            return valid_responses[response.upper()]
+        print("Invalid response, please try again.")
+
+
 def display_class_selection_menu(class_options: dict):
     """
     Print "Select class from list:" followed by numbered option list.
@@ -103,6 +123,7 @@ def take_class_selection(class_options: dict):
     :return: str
     """
     while True:
+        chosen_option: Union[int, str]
         chosen_option = input('Select class: ')
 
         try:

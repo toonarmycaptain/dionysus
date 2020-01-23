@@ -55,7 +55,7 @@ def assign_avatars_to_bands(score_avatar_dict: dict):
     return band_dict
 
 
-def assign_avatar_coords(band_avatar_dict, chart_params=DEFAULT_CHART_PARAMS):
+def assign_avatar_coords(band_avatar_dict, chart_params: dict = None):
     """
     Take dict of bands 0-100 by 10 with int values as keys, lists of
     avatar Paths as values.
@@ -74,7 +74,10 @@ def assign_avatar_coords(band_avatar_dict, chart_params=DEFAULT_CHART_PARAMS):
     :param chart_params: dict
     :return: dict
     """
-    avatar_xy_dict = {}
+    if not chart_params:
+        chart_params = DEFAULT_CHART_PARAMS  # pull values from DEFAULT_CHART_PARAMS dict
+
+    avatar_xy_dict: dict = {}
     col_max_avatars, init_vert_offset, horiz_offset, vert_offset = (
                                     chart_params['column_max_avatars'],
                                     chart_params['init_vertical_offset'],

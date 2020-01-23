@@ -27,7 +27,7 @@ APP_SETTINGS_FILE = DataFolder.generate_rel_path(DataFolder.APP_SETTINGS.value)
 CHART_SAVE_FOLDER_NAME = 'dionysus_charts'
 
 
-def app_start_set_default_chart_save_location():
+def app_start_set_default_chart_save_location() -> None:
     """
     Prints welcome statement asking user if they would like to set a
     default chart save location.
@@ -42,7 +42,7 @@ def app_start_set_default_chart_save_location():
         set_default_chart_save_location(user_set=False)
 
 
-def set_default_chart_save_location(user_set: bool):
+def set_default_chart_save_location(user_set: bool) -> None:
     """
     Set and save default_chart_save_location, taking user input, or defaulting
     to original location. Creates chart save folder.
@@ -67,7 +67,7 @@ def set_default_chart_save_location(user_set: bool):
 
 
 def create_chart_save_folder(new_path: Union[Path, str],
-                             original_location: Union[Path, str] = None):
+                             original_location: Union[Path, str] = None) -> None:
     """
     Create a new chart_save_folder, moving files from old location, if
     it exists.
@@ -84,7 +84,8 @@ def create_chart_save_folder(new_path: Union[Path, str],
     new_path.mkdir(parents=True, exist_ok=True)
 
 
-def move_chart_save_folder(original_location: Union[Path, str], new_location: Union[Path, str]):
+def move_chart_save_folder(original_location: Union[Path, str],
+                           new_location: Union[Path, str]) -> None:
     """
     Tests if the supplied path to the original chart save folder exists, moving
     to the supplied new location if it does. Otherwise does nothing.
@@ -98,7 +99,7 @@ def move_chart_save_folder(original_location: Union[Path, str], new_location: Un
         move_file(original_location, new_location)
 
 
-def save_new_default_chart_save_location_setting(new_location: Union[Path, str]):
+def save_new_default_chart_save_location_setting(new_location: Union[Path, str]) -> None:
     """
     Save new default chart save location to settings.
 
@@ -109,7 +110,7 @@ def save_new_default_chart_save_location_setting(new_location: Union[Path, str])
     edit_app_settings_file(new_setting)
 
 
-def write_settings_to_file(settings_dict: dict):
+def write_settings_to_file(settings_dict: dict) -> None:
     """
     Writes settings dict to file, overwriting any previous settings file.
 
@@ -121,7 +122,7 @@ def write_settings_to_file(settings_dict: dict):
         app_settings_file.write(write_string)
 
 
-def create_app_settings_file(settings_dict: dict=None):
+def create_app_settings_file(settings_dict: dict = None) -> None:
     """
     Create settings file, ensuring __init__.py in containing folder.
 
@@ -140,7 +141,7 @@ def create_app_settings_file(settings_dict: dict=None):
     write_settings_to_file(settings_dict)
 
 
-def create_app_data__init__():
+def create_app_data__init__() -> None:
     """
     Create __init__.py in app_data so that settings.py may be imported.
 
@@ -152,7 +153,7 @@ def create_app_data__init__():
         init_py.write('"""__init__.py so that settings.py may be imported."""')
 
 
-def edit_app_settings_file(new_settings: dict):
+def edit_app_settings_file(new_settings: dict) -> None:
     """
     Writes settings to settings file.
 
@@ -176,7 +177,7 @@ def edit_app_settings_file(new_settings: dict):
     write_settings_to_file(dionysus_settings)
 
 
-def load_chart_save_folder():
+def load_chart_save_folder() -> Path:
     """
     Return location for chart save folder.
     Import in function as module level import would error functions run before/

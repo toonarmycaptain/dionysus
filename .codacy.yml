@@ -1,7 +1,7 @@
 engines:
     pylint:
         enabled: true
-        python_version: 3.7
+        python_version: 3.8
 exclude_paths:
     - '**.md'
     - '**.yml'
