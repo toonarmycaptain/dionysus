@@ -68,7 +68,8 @@ def set_default_chart_save_location(user_set: bool) -> None:
 
 
 def create_chart_save_folder(new_path: Union[Path, str],
-                             original_location: Union[Path, str] = None) -> None:
+                             original_location: Union[Path, str] = None,
+                             ) -> None:
     """
     Create a new chart_save_folder, moving files from old location, if
     it exists.

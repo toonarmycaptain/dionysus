@@ -86,7 +86,7 @@ def classlist_exists(classlist_name: str):
 
 def check_registry_on_exit() -> None:
     """
-    Writes registry to disk on exit if the existing file doesn't match the cached.
+    Writes registry to disk on exit if the existing file doesn't match cached.
 
     :return: None
     :raises ValueError: If registry is None/uninitialised.
