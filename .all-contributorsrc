@@ -6,13 +6,27 @@
   "commit": false,
   "contributors": [
     {
+
       "login": "Ginkooo",
       "name": "Piotr Czajka",
       "avatar_url": "https://avatars3.githubusercontent.com/u/11911709?v=4",
       "profile": "https://github.com/Ginkooo",
       "contributions": [
         "code",
-        "test"
+        "test",]
+    },
+    {
+      "login": "toonarmycaptain",
+      "name": "toonarmycaptain",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/29956894?v=4",
+      "profile": "https://github.com/toonarmycaptain",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "maintenance"
+
       ]
     }
   ],
