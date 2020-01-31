@@ -1,0 +1,28 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "toonarmycaptain",
+      "name": "toonarmycaptain",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/29956894?v=4",
+      "profile": "https://github.com/toonarmycaptain",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "dionysus",
+  "projectOwner": "toonarmycaptain",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
