@@ -49,7 +49,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/destag"><img src="https://avatars2.githubusercontent.com/u/16159069?v=4" width="100px;" alt=""/><br /><sub><b>Przemysław Pietras</b></sub></a><br /><a href="#infra-destag" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/destag"><img src="https://avatars2.githubusercontent.com/u/16159069?v=4" width="100px;" alt=""/><br /><sub><b>Przemysław Pietras</b></sub></a><br /><a href="#infra-destag" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=destag" title="Documentation">📖</a></td>
   </tr>
 </table>
 
