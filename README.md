@@ -49,6 +49,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
+    <td align="center"><a href="https://github.com/destag"><img src="https://avatars2.githubusercontent.com/u/16159069?v=4" width="100px;" alt=""/><br /><sub><b>Przemysław Pietras</b></sub></a><br /><a href="#infra-destag" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=destag" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/malexanderboyd"><img src="https://avatars2.githubusercontent.com/u/2465264?v=4" width="100px;" alt=""/><br /><sub><b>M. Alex Boyd</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/Ginkooo"><img src="https://avatars3.githubusercontent.com/u/11911709?v=4" width="100px;" alt=""/><br /><sub><b>Piotr Czajka</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/toonarmycaptain"><img src="https://avatars3.githubusercontent.com/u/29956894?v=4" width="100px;" alt=""/><br /><sub><b>toonarmycaptain</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Documentation">📖</a> <a href="#design-toonarmycaptain" title="Design">🎨</a> <a href="#ideas-toonarmycaptain" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-toonarmycaptain" title="Maintenance">🚧</a></td>
@@ -59,5 +60,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

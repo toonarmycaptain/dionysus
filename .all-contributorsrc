@@ -6,6 +6,15 @@
   "commit": false,
   "contributors": [
     {
+      "login": "destag",
+      "name": "Przemysław Pietras",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/16159069?v=4",
+      "profile": "https://github.com/destag",
+      "contributions": [
+        "infra",
+        "doc"]
+    },
+    {
       "login": "malexanderboyd",
       "name": "M. Alex Boyd",
       "avatar_url": "https://avatars2.githubusercontent.com/u/2465264?v=4",
