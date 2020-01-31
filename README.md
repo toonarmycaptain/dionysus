@@ -1,6 +1,6 @@
 ## dionysus - Avatar chart generator
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Build Status](https://travis-ci.org/toonarmycaptain/dionysus.svg?branch=master)](https://travis-ci.org/toonarmycaptain/dionysus) 
 [![CircleCI](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master.svg?style=svg)](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master) 
@@ -55,6 +55,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/malexanderboyd"><img src="https://avatars2.githubusercontent.com/u/2465264?v=4" width="100px;" alt=""/><br /><sub><b>M. Alex Boyd</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/Ginkooo"><img src="https://avatars3.githubusercontent.com/u/11911709?v=4" width="100px;" alt=""/><br /><sub><b>Piotr Czajka</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/toonarmycaptain"><img src="https://avatars3.githubusercontent.com/u/29956894?v=4" width="100px;" alt=""/><br /><sub><b>toonarmycaptain</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Documentation">📖</a> <a href="#design-toonarmycaptain" title="Design">🎨</a> <a href="#ideas-toonarmycaptain" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-toonarmycaptain" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/AbdullahElagha"><img src="https://avatars3.githubusercontent.com/u/20312723?v=4" width="100px;" alt=""/><br /><sub><b>AbdullahElagha</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=AbdullahElagha" title="Documentation">📖</a></td>
   </tr>
 </table>
 
