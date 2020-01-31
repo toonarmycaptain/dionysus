@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "Ginkooo",
+      "name": "Piotr Czajka",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/11911709?v=4",
+      "profile": "https://github.com/Ginkooo",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "dionysus",
+  "projectOwner": "toonarmycaptain",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
