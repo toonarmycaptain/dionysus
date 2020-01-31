@@ -6,7 +6,15 @@
   "commit": false,
   "contributors": [
     {
-
+      "login": "malexanderboyd",
+      "name": "M. Alex Boyd",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2465264?v=4",
+      "profile": "https://github.com/malexanderboyd",
+      "contributions": [
+        "code",
+        "test"]
+    },
+    {
       "login": "Ginkooo",
       "name": "Piotr Czajka",
       "avatar_url": "https://avatars3.githubusercontent.com/u/11911709?v=4",
@@ -26,7 +34,6 @@
         "design",
         "ideas",
         "maintenance"
-
       ]
     }
   ],
