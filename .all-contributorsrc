@@ -6,6 +6,14 @@
   "commit": false,
   "contributors": [
     {
+      "login": "HCamberos",
+      "name": "HCamberos",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/56201325?v=4",
+      "profile": "https://github.com/HCamberos",
+      "contributions": [
+        "code"]
+    },
+    {
       "login": "mbarakaja",
       "name": "José María Domínguez",
       "avatar_url": "https://avatars0.githubusercontent.com/u/7861175?v=4",
