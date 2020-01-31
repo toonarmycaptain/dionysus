@@ -1,4 +1,7 @@
 ## dionysus - Avatar chart generator
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Build Status](https://travis-ci.org/toonarmycaptain/dionysus.svg?branch=master)](https://travis-ci.org/toonarmycaptain/dionysus) 
 [![CircleCI](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master.svg?style=svg)](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master) 
 [![Build status](https://ci.appveyor.com/api/projects/status/yb33uwd13tkv7l79?svg=true)](https://ci.appveyor.com/project/toonarmycaptain/dionysus) 
@@ -36,3 +39,22 @@ Either click on `app_main.py` in the project folder, or navigate to the folder a
 #### Versioning
 As much as possible this project will follow [Semantic Versioning](https://semver.org/).
    
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/toonarmycaptain"><img src="https://avatars3.githubusercontent.com/u/29956894?v=4" width="100px;" alt=""/><br /><sub><b>toonarmycaptain</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Documentation">📖</a> <a href="#design-toonarmycaptain" title="Design">🎨</a> <a href="#ideas-toonarmycaptain" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-toonarmycaptain" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
