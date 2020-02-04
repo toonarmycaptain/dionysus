@@ -376,7 +376,7 @@ class TestWriteClasslistToFile(TestCase):
         # Assert precondition:
         assert not os.path.exists(self.test_class_data_file_path)
 
-        assert write_classlist_to_file(self.test_class_object) == self.test_class_data_file_path
+        assert write_classlist_to_file(self.test_class_object) is None
 
         assert isinstance(self.test_class_data_file_path, Path)
 
@@ -417,7 +417,7 @@ class TestWriteClasslistToFileMockingOpen(TestCase):
         mocked_open = mock_open()
         with patch('dionysus_app.class_functions.open', mocked_open), \
              patch('dionysus_app.class_functions.Path.mkdir', autospec=True) as mocked_mkdir:
-            assert write_classlist_to_file(self.test_class_object) == self.test_class_data_file_path
+            assert write_classlist_to_file(self.test_class_object) is None
 
             assert isinstance(self.test_class_data_file_path, Path)
 

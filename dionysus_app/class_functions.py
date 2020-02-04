@@ -185,7 +185,7 @@ def avatar_file_exists(avatar_file: Union[str, Path]) -> bool:
     return Path(avatar_file).exists()
 
 
-def write_classlist_to_file(current_class: Class) -> Path:
+def write_classlist_to_file(current_class: Class) -> None:
     """
     Write classlist data to disk as JSON dict, according to Class object's
     Class.json_dict and Class.to_json_str methods.
@@ -208,7 +208,6 @@ def write_classlist_to_file(current_class: Class) -> Path:
     with open(classlist_data_path, 'w') as classlist_file:
         classlist_file.write(json_class_data)
 
-    return classlist_data_path
 
 
 def create_chart_with_new_class(classlist_name):
