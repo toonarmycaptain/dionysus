@@ -42,26 +42,30 @@ from test_suite.testing_class_data import (testing_registry_data_set as test_reg
 
 
 class TestCreateClasslist:
-    def test_create_classlist(self, monkeypatch, test_classname='the_flying_circus'):
-
+    def test_create_classlist(self, monkeypatch, test_full_class):
         def mocked_take_classlist_name_input():
-            return test_classname
+            return test_full_class.name
 
-        def mocked_setup_class(test_class_name):
-            if test_class_name != test_classname:
+        def mocked_compose_classlist_dialogue(test_class_name):
+            if test_class_name != test_full_class.name:
+                raise ValueError
+            return test_full_class
+
+        def mocked_create_classlist_data(test_class):
+            if test_class != test_full_class:
                 raise ValueError
 
-        def mocked_create_classlist_data(test_class_name):
-            if test_class_name != test_classname:
-                raise ValueError
+        def mocked_time_sleep(seconds):
+            pass
 
         def mocked_create_chart_with_new_class(test_class_name):
-            if test_class_name != test_classname:
+            if test_class_name != test_full_class.name:
                 raise ValueError
 
         monkeypatch.setattr(class_functions, 'take_classlist_name_input', mocked_take_classlist_name_input)
-        monkeypatch.setattr(class_functions, 'setup_class', mocked_setup_class)
+        monkeypatch.setattr(class_functions, 'compose_classlist_dialogue', mocked_compose_classlist_dialogue)
         monkeypatch.setattr(class_functions, 'create_classlist_data', mocked_create_classlist_data)
+        monkeypatch.setattr(class_functions.time, 'sleep', mocked_time_sleep)
         monkeypatch.setattr(class_functions, 'create_chart_with_new_class', mocked_create_chart_with_new_class)
         assert create_classlist() is None
 
@@ -114,52 +118,57 @@ def test_setup_class_data_storage_raising_error(monkeypatch):
         setup_class_data_storage('some_class')
 
 
-class TestCreateClasslistData(TestCase):
-    def setUp(self):
-        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
-        self.test_classname = self.test_class_json_dict['name']
-        self.test_class_object = Class.from_dict(self.test_class_json_dict)
+class TestCreateClasslistData:
+    def test_create_classlist_data(self, monkeypatch, test_full_class):
+        def mocked_setup_class(test_class_name):
+            if test_class_name != test_full_class.name:
+                raise ValueError
 
-    @patch('dionysus_app.class_functions.compose_classlist_dialogue')
-    @patch('dionysus_app.class_functions.class_data_feedback')
-    @patch('dionysus_app.class_functions.write_classlist_to_file')
-    @patch('dionysus_app.class_functions.time.sleep')
-    def test_create_classlist_data(self,
-                                   mock_time_sleep,
-                                   mock_write_classlist_to_file,
-                                   mock_class_data_feedback,
-                                   mock_compose_classlist_dialogue):
-        mock_compose_classlist_dialogue.return_value = self.test_class_object
-        assert create_classlist_data(self.test_classname) is None
+        def mocked_write_classlist_to_file(test_class):
+            if test_class != test_full_class:
+                raise ValueError
 
-        mock_compose_classlist_dialogue.assert_called_once_with(self.test_classname)
-        mock_class_data_feedback.assert_called_once_with(self.test_class_object)
-        mock_write_classlist_to_file.assert_called_once_with(self.test_class_object)
-        mock_time_sleep.assert_called_once_with(2)
+        monkeypatch.setattr(class_functions, 'setup_class', mocked_setup_class)
+        monkeypatch.setattr(class_functions, 'write_classlist_to_file', mocked_write_classlist_to_file)
+
+        assert create_classlist_data(test_full_class) is None
 
 
 class TestComposeClasslistDialogue:
     def test_compose_classlist_dialogue_full_class(self, monkeypatch, test_full_class):
-        def mocked_take_class_data_input(class_name):
+        def mocked_take_class_data_input(test_class_name):
+            if test_class_name != test_full_class.name:
+                raise ValueError
             return test_full_class
 
         def mocked_blank_class_dialogue():
             raise ValueError  # Should not be called.
 
+        def mocked_class_data_feedback(test_class):
+            if test_class != test_full_class:
+                raise ValueError
+
         monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
         monkeypatch.setattr(class_functions, 'blank_class_dialogue', mocked_blank_class_dialogue)
-
+        monkeypatch.setattr(class_functions, 'class_data_feedback', mocked_class_data_feedback)
         assert compose_classlist_dialogue(test_full_class.name).json_dict() == test_full_class.json_dict()
 
     def test_compose_classlist_dialogue_create_empty_class(self, monkeypatch, test_class_name_only):
-        def mocked_take_class_data_input(class_name):
+        def mocked_take_class_data_input(test_class_name):
+            if test_class_name != test_class_name_only.name:
+                raise ValueError
             return test_class_name_only
 
         def mocked_blank_class_dialogue():
             return True
 
+        def mocked_class_data_feedback(test_class):
+            if test_class != test_class_name_only:
+                raise ValueError
+
         monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
         monkeypatch.setattr(class_functions, 'blank_class_dialogue', mocked_blank_class_dialogue)
+        monkeypatch.setattr(class_functions, 'class_data_feedback', mocked_class_data_feedback)
 
         assert compose_classlist_dialogue(test_class_name_only.name).json_dict() == test_class_name_only.json_dict()
 

@@ -33,11 +33,21 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 DEFAULT_AVATAR_PATH = DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
 
 
-def create_classlist():
+def create_classlist() -> None:
+    """
+    Create a new class, then give option to create a chart with new class.
+
+    Calls UI elements to collect new class' data, then writes data to persistence.
+
+    :return: None
+    """
     classlist_name = take_classlist_name_input()  # TODO: Option to cancel creation at class name entry stage
 
-    setup_class(classlist_name)
-    create_classlist_data(classlist_name)
+    new_class = compose_classlist_dialogue(classlist_name)
+
+    create_classlist_data(new_class)  # Future: Call to Database.create_class(new_class)
+    time.sleep(2)  # Pause for user to look over feedback.
+
 
     create_chart_with_new_class(classlist_name)
 
@@ -48,9 +58,9 @@ def setup_class(classlist_name: str) -> None:
     Register class in class_registry index
 
     :param classlist_name:
-    :return:
+    :return: None
     """
-    setup_class_data_storage(classlist_name)
+    setup_class_data_storage(classlist_name)  # Database.create_class
     register_class(classlist_name)
 
 
@@ -88,17 +98,24 @@ def setup_class_data_storage(classlist_name: str) -> None:
     user_chart_save_folder.mkdir(exist_ok=True, parents=True)
 
 
-def create_classlist_data(class_name: str) -> None:
-    new_class = compose_classlist_dialogue(class_name)
+def create_classlist_data(new_class: Class) -> None:
+    """
+    Creates class data in persistence.
+    Calls setup_class to create any needed files, then writes data to file.
 
-    class_data_feedback(new_class)
+    :param new_class: Class object
+    :return: None
+    """
+    setup_class(new_class.name)  # -> functionality moves to (ie function called by) JSONDatabase.create_class
     write_classlist_to_file(new_class)
-    time.sleep(2)  # Pause for user to look over feedback.
 
 
 def compose_classlist_dialogue(class_name: str) -> Class:
     """
-    Create class object.
+    Call UI elements to collect new class data.
+    Provide feedback to user reflecting new class composition.
+
+    Creates class object.
 
     If no students added to class, check if intended, making subsequent call to
     take_class_data_input UI if unintended blank class returned.
@@ -116,6 +133,8 @@ def compose_classlist_dialogue(class_name: str) -> Class:
             # else: ie if not cancelled:
             continue  # Line skipped from coverage due to peephole optimiser.
         break  # class_data not empty
+
+    class_data_feedback(new_class)
 
     return new_class
 
