@@ -70,9 +70,8 @@ def scrub_candidate_filename(dirty_string: str):
     :return: str
     """
     allowed_special_characters = [' ', '_', '-', ]
-    cleaned_string = "".join([c
-                              if c.isalnum()
-                              or c in allowed_special_characters
+    cleaned_string = "".join([c if c.isalnum()
+                                   or c in allowed_special_characters
                               else '_'
                               for c in dirty_string
                               ]).rstrip()
