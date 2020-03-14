@@ -6,9 +6,10 @@ import tkinter as tk
 
 from pathlib import Path
 from tkinter import filedialog
+from typing import Optional, Union, List, Tuple
 
 
-def clear_screen(num_lines=50):
+def clear_screen(num_lines: int = 50) -> None:
     clear_seq = '\n' * num_lines
 
     print(clear_seq)
@@ -17,7 +18,7 @@ def clear_screen(num_lines=50):
 # User input and string processing functions:
 
 
-def input_is_essentially_blank(subject_string: str):
+def input_is_essentially_blank(subject_string: str) -> bool:
     """
     Return True if string is empty or primarily composed of spaces, underscores,
     special characters (eg brackets, punctuation).
@@ -35,7 +36,7 @@ def input_is_essentially_blank(subject_string: str):
     return False
 
 
-def clean_for_filename(some_string: str):
+def clean_for_filename(some_string: str) -> str:
     """
     Cleans a string for use as a filename.
     eg student or classlist name
@@ -52,7 +53,7 @@ def clean_for_filename(some_string: str):
     return cleaned_filename
 
 
-def scrub_candidate_filename(dirty_string: str):
+def scrub_candidate_filename(dirty_string: str) -> str:
     """
     Cleans string of non-alpha-numeric characters, but leaves spaces, dashes,
     and underscores, stripping trailing spaces.
@@ -79,12 +80,12 @@ def scrub_candidate_filename(dirty_string: str):
     return cleaned_string
 
 
-def save_as_dialogue(title_str=None,
-                     default_file_extension=None,
-                     filetypes=None,
-                     suggested_filename=None,
-                     start_dir=None
-                     ):
+def save_as_dialogue(title_str: str = None,
+                     default_file_extension: str = None,
+                     filetypes: List[Tuple[str, str]] = None,
+                     suggested_filename: str = None,
+                     start_dir: Union[Path, str] = '..'
+                     ) -> Optional[Path]:
     """
     Prompts user to select a directory and filename to save a file to.
     Calls tkinter filedialog.asksaveasfilename with title (if provided), and
@@ -113,7 +114,10 @@ def save_as_dialogue(title_str=None,
 
     Returns None instead of empty string if no file is selected.
 
-
+    Default starting directory is directory above application directory.
+    If start_dir is unresolvable, or '' or None, the dialog will default to
+    starting at the last directory selected.
+    See https://www.tcl.tk/man/tcl8.6/TkCmd/chooseDirectory.htm
 
     NB When default_file_extension is given, but not in filetypes, if
     the first filetype in filetypes is NOT ("all files", "*.*"), that
@@ -124,9 +128,9 @@ def save_as_dialogue(title_str=None,
     :param title_str: str
     :param default_file_extension: list
     :param suggested_filename: str
-    :param filetypes: list
-    :param start_dir: str
-    :return: str
+    :param filetypes: List[Tuple[str, str]]
+    :param start_dir: Path or str
+    :return: Path
     """
     root = tk.Tk()
     root.withdraw()
@@ -149,13 +153,13 @@ def save_as_dialogue(title_str=None,
 
     if filepath_str == '':
         return None
-    return filepath_str
+    return Path(filepath_str)
 
 
-def select_file_dialogue(title_str=None,
-                         filetypes=None,
-                         start_dir=None,
-                         ):
+def select_file_dialogue(title_str: str = None,
+                         filetypes: List[Tuple[str, str]] = None,
+                         start_dir: Union[Path, str] = '..',
+                         ) -> Optional[Path]:
     """
     Prompts user to select a file. Calls tkinter filedialog.askopenfilename
     with title (if provided), and filetype argument (if provided) eg '*.png'.
@@ -163,15 +167,21 @@ def select_file_dialogue(title_str=None,
     filetypes is a list of tuples with 2 values, a label and a pattern
     eg for png and all files: [('.png', '*.png'), ("all files", "*.*")]
 
+    Default starting directory is directory above application directory.
+    If start_dir is unresolvable, or '' or None, the dialog will default to
+    starting at the last directory selected on recent versions of Windows,
+    current working directory on old Windows/other OS.
+    See https://www.tcl.tk/man/tcl8.6/TkCmd/chooseDirectory.htm
+
     Returns None instead of empty string if no file is selected.
 
     NB If no title is passed to filedialog.askopenfilename, the window
     title will be "Open".
 
     :param title_str: str
-    :param filetypes: list
+    :param filetypes: List[Tuple[str, str]]
     :param start_dir: str
-    :return: str
+    :return: Path or None
     """
     root = tk.Tk()
     root.withdraw()
@@ -189,19 +199,22 @@ def select_file_dialogue(title_str=None,
     return Path(filepath_str)
 
 
-def select_folder_dialogue(title_str=None, start_dir='..'):
+def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = '..'):
     """
     Prompts user to select a file. Calls tkinter filedialog.askopenfilename
     with title (if provided), and filetype argument (if provided) eg '*.png'.
 
-    filetypes is a list of tuples with 2 values, a label and a pattern
-    eg for png and all files: [('.png', '*.png'), ("all files", "*.*")]
+    Default starting directory is directory above application directory.
+    If start_dir is unresolvable, or '' or None, the dialog will default to
+    starting at the last directory selected on recent versions of Windows,
+    current working directory on old Windows/other OS.
+    See https://www.tcl.tk/man/tcl8.6/TkCmd/chooseDirectory.htm
 
     Returns None instead of empty string if no file is selected.
 
     :param title_str: str
-    :param start_dir: str - Path for dialogue to start in.
-    :return: str
+    :param start_dir: Path or str - Path for dialogue to start in.
+    :return: Path
     """
     root = tk.Tk()
     root.withdraw()
