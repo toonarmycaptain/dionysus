@@ -1,70 +1,65 @@
-import os
-from unittest import TestCase
-from unittest.mock import patch
+import pytest
 
-from dionysus_app.data_folder import DataFolder
+from pathlib import Path
+
+from dionysus_app import data_folder, initialise_app
 from dionysus_app.initialise_app import (app_config,
                                          data_folder_check,
                                          app_init,
                                          )
 
 
-class TestAppConfig(TestCase):
-    def setUp(self):
-        pass
+class TestAppConfig:
+    def test_app_config_no_settings_file(self, monkeypatch):
+        def mocked_path_exists(path):
+            return False
 
-    @patch('dionysus_app.initialise_app.app_start_set_default_chart_save_location')
-    @patch('dionysus_app.initialise_app.os.path.exists')
-    def test_app_config_no_settings_file(self,
-                                         mocked_os_path_exists,
-                                         mocked_app_start_set_default_chart_save_location,
-                                         ):
-        mocked_os_path_exists.return_value = True
+        def mocked_app_start_set_default_chart_save_location():
+            pass
+
+        monkeypatch.setattr(initialise_app.Path, 'exists', mocked_path_exists)
+        monkeypatch.setattr(initialise_app, 'app_start_set_default_chart_save_location',
+                            mocked_app_start_set_default_chart_save_location)
+        assert app_config() is None
+
+    def test_app_config_settings_file_exists(self, monkeypatch):
+        def mocked_path_exists(path):
+            return True
+
+        def mocked_app_start_set_default_chart_save_location():
+            raise ValueError('Should not be called if settings file exists.')
+
+        monkeypatch.setattr(initialise_app.Path, 'exists', mocked_path_exists)
+        monkeypatch.setattr(initialise_app, 'app_start_set_default_chart_save_location', mocked_app_start_set_default_chart_save_location)
 
         assert app_config() is None
 
-        assert mocked_app_start_set_default_chart_save_location.called_once_with()
 
-    @patch('dionysus_app.initialise_app.app_start_set_default_chart_save_location')
-    @patch('dionysus_app.initialise_app.os.path.exists')
-    def test_app_config_settings_file_exists(self,
-                                             mocked_os_path_exists,
-                                             mocked_app_start_set_default_chart_save_location,
-                                             ):
-        mocked_os_path_exists.return_value = False
-
-        assert app_config() is None
-
-        assert mocked_app_start_set_default_chart_save_location.not_called()
-
-
-class TestDataFolderCheck(TestCase):
-
-    def setUp(self):
-        self.default_paths = [
-            r'./dionysus_app/app_data',
-            r'./dionysus_app/app_data/class_data',
-            ]
-
-    def test_data_folder_check_default(self):
-        os.chdir(os.path.join(os.getcwd(), '.'))
-        data_folder_check()
-        for path in self.default_paths:
-            data_folder_path = DataFolder.generate_rel_path(path)
-            assert os.path.exists(data_folder_path)
+class TestDataFolderCheck:
+    @pytest.mark.parametrize(
+        'default_path',
+        [r'./dionysus_app/app_data',
+         r'./dionysus_app/app_data/class_data',
+         ])
+    def test_data_folder_check_default(self, monkeypatch, tmpdir,
+                                       default_path):
+        monkeypatch.setattr(data_folder, 'ROOT_DIR', tmpdir)
+        assert data_folder_check() is None
+        assert Path(tmpdir, default_path).exists()
 
 
-class TestAppInit(TestCase):
-    def setUp(self):
-        pass
+class TestAppInit:
+    def test_app_init(self, monkeypatch):
+        data_folder_check_mock, app_config_mock = {'called': False}, {'called': False}
 
-    @patch('dionysus_app.initialise_app.app_config')
-    @patch('dionysus_app.initialise_app.data_folder_check')
-    def test_app_init(self,
-                      mocked_data_folder_check,
-                      mocked_app_config,
-                      ):
+        def mocked_data_folder_check():
+            data_folder_check_mock['called'] = True
+
+        def mocked_app_config():
+            app_config_mock['called'] = True
+
+        monkeypatch.setattr(initialise_app, 'app_config', mocked_app_config)
+        monkeypatch.setattr(initialise_app, 'data_folder_check', mocked_data_folder_check)
+
         assert app_init() is None
-
-        mocked_data_folder_check.assert_called_once_with()
-        mocked_app_config.assert_called_once_with()
+        assert data_folder_check_mock['called'] and app_config_mock['called']

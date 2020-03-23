@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.settings_functions import APP_SETTINGS_FILE, app_start_set_default_chart_save_location
@@ -11,7 +11,7 @@ def app_config() -> None:
     Set user default chart save folder.
     """
 
-    if not os.path.exists(APP_SETTINGS_FILE):
+    if not Path.exists(APP_SETTINGS_FILE):
         app_start_set_default_chart_save_location()
 
 
@@ -38,3 +38,7 @@ def app_init() -> None:
 
 if __name__ == '__main__':
     pass
+
+
+### Add temp to DataFolder? check empty on startup if [list comp files in temp]: delete them.
+# Create/clear and create temp folder on startup. Clear/clear and recreate on exit.
