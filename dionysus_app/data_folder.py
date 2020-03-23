@@ -16,6 +16,8 @@ class DataFolder(Enum):
 
     CLASS_DATA = APP_DATA + 'class_data/'
 
+    TEMP_DIR = APP_DATA + 'temp/'
+
     CLASS_REGISTRY = APP_DATA + 'class_registry.index'
 
     APP_SETTINGS = APP_DATA + 'settings.py'
