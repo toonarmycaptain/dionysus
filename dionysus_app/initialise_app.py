@@ -38,7 +38,3 @@ def app_init() -> None:
 
 if __name__ == '__main__':
     pass
-
-
-### Add temp to DataFolder? check empty on startup if [list comp files in temp]: delete them.
-# Create/clear and create temp folder on startup. Clear/clear and recreate on exit.
