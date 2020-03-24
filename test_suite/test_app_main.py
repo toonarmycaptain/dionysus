@@ -1,53 +1,62 @@
 """Test app_main."""
-import os
+import sys
 
-from unittest import TestCase
-from unittest.mock import patch
+import app_main
 
 from app_main import quit_app, run_app
 
 
-class TestQuitApp(TestCase):
-    @patch('app_main.sys.exit')
-    @patch('app_main.check_registry_on_exit')
-    def test_quit_app(self, mock_check_registry_on_exit, mock_exit_call):
+class TestQuitApp:
+    def test_quit_app(self, monkeypatch):
+        check_registry_on_exit_mock, exit_mock = {'called': False}, {'called': False}
+
+        def mocked_check_registry_on_exit():
+            check_registry_on_exit_mock['called'] = True
+
+        def mocked_sys_exit():
+            exit_mock['called'] = True
+
+        monkeypatch.setattr(app_main, 'check_registry_on_exit', mocked_check_registry_on_exit)
+        monkeypatch.setattr(app_main.sys, 'exit', mocked_sys_exit)
+
         assert quit_app() is None
-        mock_check_registry_on_exit.assert_called_once()
-        mock_exit_call.assert_called_once()
+        assert exit_mock['called'] and check_registry_on_exit_mock['called']
 
 
-class TestRunApp(TestCase):
-    def setUp(self):
-        self.initial_cwd = os.getcwd()  # For resetting after tests.
-        self.app_main_cwd = os.path.abspath('.//')  # Current location of app_main.
+class TestRunApp:
+    def test_run_app_sets_cwd_correctly(self, monkeypatch):
+        os_chdir_mock, app_init_mock = {'called': False}, {'called': False}
+        cache_class_registry_mock, load_chart_save_folder_mock = {'called': False}, {'called': False}
+        run_main_menu_mock, quit_app_mock = {'called': False}, {'called': False}
 
-    @patch('app_main.app_init')
-    @patch('app_main.cache_class_registry')
-    @patch('app_main.load_chart_save_folder')
-    @patch('app_main.run_main_menu')
-    @patch('app_main.quit_app')
-    def test_run_app_sets_cwd_correctly(self,
-                                        mocked_app_init,
-                                        mocked_cache_class_registry,
-                                        mocked_load_chart_save_folder,
-                                        mocked_run_main_menu,
-                                        mocked_quit_app,
-                                        ):
-        """
-        Check that run_app sets cwd to location of app_main.
-        At present this is the folder above test_suite where
-        test_app_main.py is located, hence testing against '..//'.
-        """
+        def mocked_os_chdir(path):
+            if path is not sys.path[0]:
+                raise ValueError('run_app did not change cwd to dir containing app_main.')
+            os_chdir_mock['called'] = True
+
+        def mocked_app_init():
+            app_init_mock['called'] = True
+
+        def mocked_cache_class_registry():
+            cache_class_registry_mock['called'] = True
+
+        def mocked_load_chart_save_folder():
+            load_chart_save_folder_mock['called'] = True
+
+        def mocked_run_main_menu():
+            run_main_menu_mock['called'] = True
+
+        def mocked_quit_app():
+            quit_app_mock['called'] = True
+
+        monkeypatch.setattr(app_main.os, 'chdir', mocked_os_chdir)
+        monkeypatch.setattr(app_main, 'app_init', mocked_app_init)
+        monkeypatch.setattr(app_main, 'cache_class_registry', mocked_cache_class_registry)
+        monkeypatch.setattr(app_main, 'load_chart_save_folder', mocked_load_chart_save_folder)
+        monkeypatch.setattr(app_main, 'run_main_menu', mocked_run_main_menu)
+        monkeypatch.setattr(app_main, 'quit_app', mocked_quit_app)
 
         assert run_app() is None
 
-        assert os.getcwd() == self.app_main_cwd  # Ensure run_app changed cwd to location of app_main.
-
-        mocked_app_init.assert_called_once_with()
-        mocked_cache_class_registry.assert_called_once_with()
-        mocked_load_chart_save_folder.assert_called_once_with()
-        mocked_run_main_menu.assert_called_once_with()
-        mocked_quit_app.assert_called_once_with()
-
-    def tearDown(self):
-        os.chdir(self.initial_cwd)  # Reset cwd if changed by tests.
+        assert all([os_chdir_mock['called'], app_init_mock['called'], cache_class_registry_mock['called'],
+                    load_chart_save_folder_mock['called'], run_main_menu_mock['called'], quit_app_mock['called']])
