@@ -5,9 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- `temp` directory created in `APP_DATA` by data_folder_check() on app start and removed on app exit (if it contains files). 
+- `NewClass` subclass of `Class` using `temp` directory to hold files before writing to database.
+    - Initially holds avatars. 
 ### Changed
 - Separate UI/logic/persistence concerns in `create_classlist`. 
-- `create_classlist_data` takes a `Class` object. 
+    - New functions `move_avatars_to_class_data`, `move_avatar_to_class_data` utilise `NewClass` to move all of the avatars from temp to database.
+- `create_classlist_data` takes a `NewClass` object. 
 - More tests converted to Pytest style tests.
 
 ## [0.5.0-alpha] - 2020-01-23

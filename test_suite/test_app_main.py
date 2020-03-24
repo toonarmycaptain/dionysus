@@ -8,19 +8,23 @@ from app_main import quit_app, run_app
 
 class TestQuitApp:
     def test_quit_app(self, monkeypatch):
-        check_registry_on_exit_mock, exit_mock = {'called': False}, {'called': False}
+        check_registry_on_exit_mock, clear_temp_mock, exit_mock = {'called': False}, {'called': False}, {'called': False}
 
         def mocked_check_registry_on_exit():
             check_registry_on_exit_mock['called'] = True
+
+        def mocked_clear_temp():
+            clear_temp_mock['called'] = True
 
         def mocked_sys_exit():
             exit_mock['called'] = True
 
         monkeypatch.setattr(app_main, 'check_registry_on_exit', mocked_check_registry_on_exit)
+        monkeypatch.setattr(app_main, 'clear_temp', mocked_clear_temp)
         monkeypatch.setattr(app_main.sys, 'exit', mocked_sys_exit)
 
         assert quit_app() is None
-        assert exit_mock['called'] and check_registry_on_exit_mock['called']
+        assert exit_mock['called'] and clear_temp_mock['called'] and check_registry_on_exit_mock['called']
 
 
 class TestRunApp:
@@ -58,5 +62,9 @@ class TestRunApp:
 
         assert run_app() is None
 
-        assert all([os_chdir_mock['called'], app_init_mock['called'], cache_class_registry_mock['called'],
-                    load_chart_save_folder_mock['called'], run_main_menu_mock['called'], quit_app_mock['called']])
+        assert all([os_chdir_mock['called'],
+                    app_init_mock['called'],
+                    cache_class_registry_mock['called'],
+                    load_chart_save_folder_mock['called'],
+                    run_main_menu_mock['called'], quit_app_mock['called']
+                    ])

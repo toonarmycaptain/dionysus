@@ -1,11 +1,14 @@
+import os
+
 import pytest
 
 from pathlib import Path
 
 from dionysus_app import data_folder, initialise_app
 from dionysus_app.initialise_app import (app_config,
-                                         data_folder_check,
                                          app_init,
+                                         clear_temp,
+                                         data_folder_check,
                                          )
 
 
@@ -30,7 +33,8 @@ class TestAppConfig:
             raise ValueError('Should not be called if settings file exists.')
 
         monkeypatch.setattr(initialise_app.Path, 'exists', mocked_path_exists)
-        monkeypatch.setattr(initialise_app, 'app_start_set_default_chart_save_location', mocked_app_start_set_default_chart_save_location)
+        monkeypatch.setattr(initialise_app, 'app_start_set_default_chart_save_location',
+                            mocked_app_start_set_default_chart_save_location)
 
         assert app_config() is None
 
@@ -47,6 +51,46 @@ class TestDataFolderCheck:
         monkeypatch.setattr(data_folder, 'ROOT_DIR', tmpdir)
         assert data_folder_check() is None
         assert Path(tmpdir, default_path).exists()
+
+
+class TestClearTemp:
+    def test_clear_temp_files_cleared(self, monkeypatch, tmpdir):
+        test_temp_dir = Path(tmpdir, 'temp_dir')
+        test_temp_dir.mkdir(parents=True)  # Make temp_dir.
+        Path(test_temp_dir, 'some_dir').mkdir(parents=True)  # Make file in test_temp_dir.
+        assert os.listdir(test_temp_dir)  # File in test_temp_dir.
+
+        monkeypatch.setattr(initialise_app, 'TEMP_DIR', test_temp_dir)
+
+        assert clear_temp() is None
+        assert not test_temp_dir.exists()
+
+    def test_clear_temp_dir_nonexistent(self, monkeypatch, tmpdir):
+        test_temp_dir = Path(tmpdir, 'temp_dir')
+        assert not test_temp_dir.exists()  # No temp dir.
+
+        def mocked_rmtree(path):
+            raise ValueError("rmtree should not be called temp directory doesn't exist.")
+
+        monkeypatch.setattr(initialise_app, 'TEMP_DIR', test_temp_dir)
+        monkeypatch.setattr(initialise_app.shutil, 'rmtree', mocked_rmtree)
+
+        assert clear_temp() is None
+        assert not test_temp_dir.exists()
+
+    def test_clear_temp_no_files_not_removed(self, monkeypatch, tmpdir):
+        test_temp_dir = Path(tmpdir, 'temp_dir')
+        test_temp_dir.mkdir(parents=True)  # Make temp_dir
+        assert not os.listdir(test_temp_dir)  # No files in test_temp_dir.
+
+        def mocked_rmtree(path):
+            raise ValueError("rmtree should not be called when no files in temp directory.")
+
+        monkeypatch.setattr(initialise_app, 'TEMP_DIR', test_temp_dir)
+        monkeypatch.setattr(initialise_app.shutil, 'rmtree', mocked_rmtree)
+
+        assert clear_temp() is None
+        assert test_temp_dir.exists()  # Directory not removed as already empty.
 
 
 class TestAppInit:
