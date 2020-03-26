@@ -1,5 +1,6 @@
 """UI elements for class_functions"""
-from typing import Union
+from pathlib import Path
+from typing import Optional, Union
 
 from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import classlist_exists
@@ -183,7 +184,7 @@ def take_student_selection(student_options: dict):
     return selected_student
 
 
-def select_avatar_file_dialogue():
+def select_avatar_file_dialogue() -> Optional[Path]:
     """
     Prompts user to select an avatar file. Currently only displays PNG files by
     default.
