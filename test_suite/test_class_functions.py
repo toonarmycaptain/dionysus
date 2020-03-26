@@ -12,10 +12,9 @@ import pytest
 
 from dionysus_app import class_functions, class_registry_functions
 from dionysus_app.chart_generator import create_chart
-from dionysus_app.class_ import Class
+from dionysus_app.class_ import Class, NewClass
 from dionysus_app.class_functions import (avatar_path_from_string,
                                           compose_classlist_dialogue,
-                                          copy_avatar_to_app_data,
                                           create_chart_with_new_class,
                                           create_classlist,
                                           create_classlist_data,
@@ -24,6 +23,8 @@ from dionysus_app.class_functions import (avatar_path_from_string,
                                           get_avatar_path,
                                           load_chart_data,
                                           load_class_from_disk,
+                                          move_avatar_to_class_data,
+                                          move_avatars_to_class_data,
                                           select_classlist,
                                           select_student,
                                           setup_class,
@@ -128,10 +129,91 @@ class TestCreateClasslistData:
             if test_class != test_full_class:
                 raise ValueError
 
+        def mocked_copy_avatars_to_class_data(test_class):
+            if test_class != test_full_class:
+                raise ValueError
+
         monkeypatch.setattr(class_functions, 'setup_class', mocked_setup_class)
         monkeypatch.setattr(class_functions, 'write_classlist_to_file', mocked_write_classlist_to_file)
+        monkeypatch.setattr(class_functions, 'move_avatars_to_class_data', mocked_copy_avatars_to_class_data)
 
         assert create_classlist_data(test_full_class) is None
+
+
+class TestMoveAvatarsToClassData:
+    @pytest.mark.parametrize(
+        'test_new_class, calls_to_mock_move_avatars_to_class_data',
+        [(NewClass('test empty class'), []),  # No students
+         # All students have avatar_filename
+         (NewClass.from_dict({'name': 'test_class',
+                              'students': [{'name': 'Cali', 'avatar_filename': 'Cali_avatar.png'},
+                                           {'name': 'Zach', 'avatar_filename': 'Zach_avatar.png'},
+                                           {'name': 'Ashley', 'avatar_filename': 'Ashley_avatar.png'},
+                                           {'name': 'Danielle', 'avatar_filename': 'Danielle.png'}, ]}),
+          ['Cali_avatar.png',
+           'Zach_avatar.png',
+           'Ashley_avatar.png',
+           'Danielle.png',
+           ]),
+         # Some students have avatar_filename
+         (NewClass.from_dict(test_full_class_data_set['json_dict_rep']), ['Cali_avatar.png',
+                                                                          'Zach_avatar.png',
+                                                                          'Ashley_avatar.png',
+                                                                          'Danielle.png',
+                                                                          ]
+          ),
+         # No students have avatar_filename
+         (NewClass.from_dict({'name': 'test_class',
+                              'students': [{'name': 'Cali'},
+                                           {'name': 'Zach'},
+                                           {'name': 'Ashley'},
+                                           {'name': 'Danielle'}, ]}),
+          []),
+         ])
+    def test_move_avatars_to_class_data(self, monkeypatch,
+                                        test_new_class, calls_to_mock_move_avatars_to_class_data):
+        moved_avatars = []
+
+        def mock_move_avatar_to_class_data(test_class: NewClass, avatar_filename: str):
+            moved_avatars.append(avatar_filename)
+
+        monkeypatch.setattr(class_functions, 'move_avatar_to_class_data', mock_move_avatar_to_class_data)
+
+        assert move_avatars_to_class_data(test_new_class) is None
+        assert moved_avatars == calls_to_mock_move_avatars_to_class_data
+
+
+class TestMoveAvatarToClassData:
+    def test_move_avatar_to_class_data(self, monkeypatch, tmpdir):
+        test_class = NewClass('test_class')
+        test_filename = 'test avatar filename'
+
+        def mock_move_file(origin_path: Path, destination_path: Path):
+            if origin_path != Path(test_class.temp_dir, 'avatars', test_filename):
+                raise ValueError("Origin path incorrect.")
+            if destination_path != Path(tmpdir, test_class.name, 'avatars', test_filename):
+                raise ValueError("Destination path incorrect")
+
+        monkeypatch.setattr(class_functions, 'move_file', mock_move_file)
+        monkeypatch.setattr(class_functions, 'CLASSLIST_DATA_PATH', Path(tmpdir))
+
+        assert move_avatar_to_class_data(test_class, test_filename) is None
+
+    def test_move_avatar_to_class_data_avatar_preexisting(self, monkeypatch, tmpdir):
+        test_class = NewClass('test_class')
+        # Make existing avatar in tmpdir test_class class data:
+        destination_avatar_path = Path(tmpdir, test_class.name, 'avatars', 'test_avatar_filename')
+        Path.mkdir(destination_avatar_path.parent, parents=True)
+        with open(destination_avatar_path, 'w'):
+            pass
+
+        def mock_move_file(origin_path: Path, destination_path: Path):
+            raise ValueError("Move file should not be called.")
+
+        monkeypatch.setattr(class_functions, 'move_file', mock_move_file)
+        monkeypatch.setattr(class_functions, 'CLASSLIST_DATA_PATH', Path(tmpdir))
+
+        assert move_avatar_to_class_data(test_class, destination_avatar_path.name) is None
 
 
 class TestComposeClasslistDialogue:
@@ -216,6 +298,8 @@ class TestTakeClassDataInput(TestCase):
 
 class TestTakeStudentAvatar:
     def test_take_student_avatar_no_avatar(self, monkeypatch):
+        test_class = NewClass('some_class')
+
         def mocked_select_avatar_file_dialogue():
             return None  # No file selected
 
@@ -223,140 +307,57 @@ class TestTakeStudentAvatar:
 
         # Ensure calls to other funcs will cause error.
         monkeypatch.delattr(class_functions, 'clean_for_filename')
-        monkeypatch.delattr(class_functions, 'copy_avatar_to_app_data')
+        monkeypatch.delattr(class_functions, 'copy_file')
 
-        assert take_student_avatar('some class', 'some student') is None
+        assert take_student_avatar(test_class, 'some student') is None
 
     def test_take_student_avatar_pre_clean_name(self, monkeypatch):
-        test_class_name = 'some class'
+        test_class = NewClass('some_class')
         test_student_name = 'clean name'
-        test_avatar_filename = 'avatar file name'
+        test_avatar_filepath = Path('avatar file name')
         cleaned_student_name = 'file name was already clean'
         returned_filename = f'{cleaned_student_name}.png'
 
         def mocked_select_avatar_file_dialogue():
-            return test_avatar_filename
+            return test_avatar_filepath
 
         def mocked_clean_for_filename(student_name):
             if student_name != test_student_name:
                 raise ValueError  # Ensure called with correct arg.
             return cleaned_student_name
 
-        def mocked_copy_avatar_to_app_data(class_name, avatar_filename, target_filename):
-            if (class_name, avatar_filename, target_filename) != (
-                    test_class_name, test_avatar_filename, returned_filename):
+        def mocked_copy_file(avatar_filepath, destination_filepath):
+            if (avatar_filepath, destination_filepath) != (
+                    test_avatar_filepath, test_class.temp_avatars_dir.joinpath(returned_filename)):
                 raise ValueError  # Ensure called with correct args.
             return None
 
         monkeypatch.setattr(class_functions, 'select_avatar_file_dialogue', mocked_select_avatar_file_dialogue)
         monkeypatch.setattr(class_functions, 'clean_for_filename', mocked_clean_for_filename)
-        monkeypatch.setattr(class_functions, 'copy_avatar_to_app_data', mocked_copy_avatar_to_app_data)
+        monkeypatch.setattr(class_functions, 'copy_file', mocked_copy_file)
 
-        assert take_student_avatar(test_class_name, test_student_name) == returned_filename
+        assert take_student_avatar(test_class, test_student_name) == returned_filename
 
     def test_take_student_avatar_dirty_name(self, monkeypatch):
-        test_class_name = 'some class'
+        test_class = NewClass('some_class')
         test_student_name = r'very unsafe */^@ :$ name'
-        test_avatar_filename = 'avatar file name'
+        test_avatar_filepath = Path('avatar file name')
 
         returned_filename = f'{clean_for_filename(test_student_name)}.png'
 
         def mocked_select_avatar_file_dialogue():
-            return test_avatar_filename
+            return test_avatar_filepath
 
-        def mocked_copy_avatar_to_app_data(class_name, avatar_filename, target_filename):
-            if (class_name, avatar_filename, target_filename) != (
-                    test_class_name, test_avatar_filename, returned_filename):
+        def mocked_copy_file(avatar_filepath, destination_filepath):
+            if (avatar_filepath, destination_filepath) != (
+                    test_avatar_filepath, test_class.temp_avatars_dir.joinpath(returned_filename)):
                 raise ValueError  # Ensure called with correct args.
             return None
 
         monkeypatch.setattr(class_functions, 'select_avatar_file_dialogue', mocked_select_avatar_file_dialogue)
-        monkeypatch.setattr(class_functions, 'copy_avatar_to_app_data', mocked_copy_avatar_to_app_data)
+        monkeypatch.setattr(class_functions, 'copy_file', mocked_copy_file)
 
-        assert take_student_avatar(test_class_name, test_student_name) == returned_filename
-
-
-class TestCopyAvatarToAppData(TestCase):
-    mock_CLASSLIST_DATA_PATH = Path('.')
-    mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
-
-    # Need to mock globals in setUp call of setup_class_data_storage
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('dionysus_app.class_functions.definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
-    def setUp(self):
-        self.mock_CLASSLIST_DATA_PATH = Path('.')
-        self.mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
-
-        # arguments to copy_avatar_to_app_data
-        self.test_classlist_name = 'arthurs_knights'
-        self.test_avatar_filename = 'sir_lancelot_the_looker.image'
-        self.copied_avatar_save_filename = 'sir_lancelot.png'
-
-        # create test file and structure.
-        with open(self.test_avatar_filename, 'w+') as avatar_file:
-            pass
-
-        # Setup test class storage,
-        setup_class_data_storage(self.test_classlist_name)
-        self.test_class_datafolder_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_classlist_name)
-        self.test_class_avatar_subfolder_path = self.test_class_datafolder_path.joinpath('avatars')
-        self.test_class_chart_data_subfolder_path = self.test_class_datafolder_path.joinpath('chart_data')
-
-        self.copied_avatar_filepath = self.test_class_avatar_subfolder_path.joinpath(self.copied_avatar_save_filename)
-
-        # assert test preconditions met
-        assert os.path.exists(self.test_avatar_filename)
-        assert os.path.exists(self.test_class_avatar_subfolder_path)
-
-        assert not os.path.exists(self.copied_avatar_filepath)
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('dionysus_app.class_functions.definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
-    def test_copy_avatar_to_app_data(self):
-        copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename, self.copied_avatar_save_filename)
-        assert os.path.exists(self.copied_avatar_filepath)
-
-    def tearDown(self):
-        os.remove(self.test_avatar_filename)  # Remove test avatar file
-        assert not os.path.exists(self.test_avatar_filename)
-
-        # Remove tree created in setup_class_data_storage
-        shutil.rmtree(self.test_class_datafolder_path)
-        assert not os.path.exists(self.test_class_datafolder_path)
-        shutil.rmtree(self.mock_DEFAULT_CHART_SAVE_FOLDER)
-        assert not os.path.exists(self.mock_DEFAULT_CHART_SAVE_FOLDER)
-
-
-class TestCopyAvatarToAppDataMockingCopyfile(TestCase):
-    mock_CLASSLIST_DATA_PATH = Path('.')
-    mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
-
-    def setUp(self):
-        self.mock_CLASSLIST_DATA_PATH = Path('.')
-        self.mock_DEFAULT_CHART_SAVE_FOLDER = Path('my_charts')
-
-        # arguments to copy_avatar_to_app_data
-        self.test_classlist_name = 'arthurs_knights'
-        self.test_avatar_filename = 'sir_lancelot_the_looker.image'
-        self.copied_avatar_save_filename = 'sir_lancelot.png'
-
-        # Setup test class storage paths
-        self.test_class_datafolder_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_classlist_name)
-        self.test_class_avatar_subfolder_path = self.test_class_datafolder_path.joinpath('avatars')
-        self.test_class_chart_data_subfolder_path = self.test_class_datafolder_path.joinpath('chart_data')
-
-        self.copied_avatar_filepath = self.test_class_avatar_subfolder_path.joinpath(self.copied_avatar_save_filename)
-
-        # assert test preconditions met
-        assert not os.path.exists(self.copied_avatar_filepath)
-
-    @patch('definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    def test_copy_avatar_to_app_data_copy_file_mocked(self):
-        with patch('dionysus_app.class_functions.copy_file') as mocked_copy_file:
-            copy_avatar_to_app_data(self.test_classlist_name, self.test_avatar_filename,
-                                    self.copied_avatar_save_filename)
-            mocked_copy_file.assert_called_once_with(self.test_avatar_filename, self.copied_avatar_filepath)
+        assert take_student_avatar(test_class, test_student_name) == returned_filename
 
 
 class TestWriteClasslistToFile(TestCase):

@@ -9,13 +9,13 @@ from typing import Optional, Union
 
 import definitions
 
-from dionysus_app.class_ import Class
+from dionysus_app.class_ import Class, NewClass
 from dionysus_app.student import Student
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import (copy_file,
                                          load_from_json_file,
-                                         )
+                                         move_file)
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
                                                       create_chart_with_new_class_dialogue,
@@ -47,7 +47,6 @@ def create_classlist() -> None:
 
     create_classlist_data(new_class)  # Future: Call to Database.create_class(new_class)
     time.sleep(2)  # Pause for user to look over feedback.
-
 
     create_chart_with_new_class(classlist_name)
 
@@ -98,7 +97,7 @@ def setup_class_data_storage(classlist_name: str) -> None:
     user_chart_save_folder.mkdir(exist_ok=True, parents=True)
 
 
-def create_classlist_data(new_class: Class) -> None:
+def create_classlist_data(new_class: NewClass) -> None:
     """
     Creates class data in persistence.
     Calls setup_class to create any needed files, then writes data to file.
@@ -108,9 +107,38 @@ def create_classlist_data(new_class: Class) -> None:
     """
     setup_class(new_class.name)  # -> functionality moves to (ie function called by) JSONDatabase.create_class
     write_classlist_to_file(new_class)
+    move_avatars_to_class_data(new_class)
 
 
-def compose_classlist_dialogue(class_name: str) -> Class:
+def move_avatars_to_class_data(new_class: NewClass) -> None:
+    """
+    Move avatars from NewClass.temp_dir  to new class' avatars directory.
+
+    :param new_class: NewClass
+    :return: None
+    """
+    for avatar_file in [student.avatar_filename for student in new_class.students
+                        if student.avatar_filename]:
+        move_avatar_to_class_data(new_class, avatar_file)
+
+
+def move_avatar_to_class_data(new_class: NewClass, avatar_filename: str) -> None:
+    """
+    Moves avatar from NewClass.temp_dir to new class' avatars directory.
+    Will not repeat moves of same filename if image already exists in avatars
+    directory, to avoid repeated overwrite with same file.
+
+    :param new_class: NewClass
+    :param avatar_filename: str
+    :return: None
+    """
+    origin_path = new_class.temp_avatars_dir.joinpath(avatar_filename)
+    destination_path = CLASSLIST_DATA_PATH.joinpath(new_class.name, 'avatars', avatar_filename)
+    if not destination_path.exists():  # Avatar not already in database/class data.
+        move_file(origin_path, destination_path)
+
+
+def compose_classlist_dialogue(class_name: str) -> NewClass:
     """
     Call UI elements to collect new class data.
     Provide feedback to user reflecting new class composition.
@@ -139,28 +167,30 @@ def compose_classlist_dialogue(class_name: str) -> Class:
     return new_class
 
 
-def take_class_data_input(class_name: str) -> Class:
+def take_class_data_input(class_name: str) -> NewClass:
     """
     Take student names, avatars, return Class object.
 
     :param class_name: str
     :return: Class
     """
-    new_class = Class(name=class_name)
+    new_class = NewClass(name=class_name)
     while True:
         student_name = take_student_name_input(new_class)
         if student_name.upper() == 'END':
             break
-        avatar_filename = take_student_avatar(class_name, student_name)
+        avatar_filename = take_student_avatar(new_class, student_name)
         new_class.add_student(name=student_name, avatar_filename=avatar_filename)
     return new_class
 
 
-def take_student_avatar(class_name: str, student_name: str) -> Optional[str]:
+def take_student_avatar(new_class: NewClass, student_name: str) -> Optional[str]:
     """
+    Get avatar for student:
     Prompts user for path to avatar file.
+    Copies avatar file to temp dir for class.
 
-    :param class_name: str
+    :param new_class: NewClass class object
     :param student_name: str
     :return: str or None
     """
@@ -175,23 +205,8 @@ def take_student_avatar(class_name: str, student_name: str) -> Optional[str]:
 
     # TODO: process_student_avatar()
     # TODO: convert to png
-    copy_avatar_to_app_data(class_name, avatar_file, target_avatar_filename)
-
+    copy_file(avatar_file, new_class.temp_avatars_dir.joinpath(target_avatar_filename))
     return target_avatar_filename
-
-
-def copy_avatar_to_app_data(classlist_name: str, avatar_filename: str, save_filename: str) -> None:
-    """
-    Copies given avatar image to classlist_name/avatars/ with given save_filename.
-    No need to pre-check if file exists because it could not be selected if it did not exist.
-
-    :param classlist_name: str
-    :param avatar_filename: str or Path
-    :param save_filename: str or Path
-    :return: None
-    """
-    save_avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars', save_filename)
-    copy_file(avatar_filename, save_avatar_path)
 
 
 def avatar_file_exists(avatar_file: Union[str, Path]) -> bool:
