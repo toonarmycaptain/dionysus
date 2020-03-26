@@ -1,8 +1,12 @@
 """Tests for class.py"""
+import os
+
 import pytest
 
+from pathlib import Path
+
 from dionysus_app import class_
-from dionysus_app.class_ import Class
+from dionysus_app.class_ import Class, NewClass
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
 
@@ -363,3 +367,34 @@ class TestClassStr:
          ])
     def test_str(self, class_object, expected_str):
         assert str(class_object) == expected_str
+
+
+class TestNewClass:
+    def test_new_class_temp_dir_created(self, monkeypatch, tmpdir):
+        test_temp_dir = Path(tmpdir, 'temp_dir')
+        test_temp_dir.mkdir(parents=True)  # Make temp_dir.
+        assert not os.listdir(test_temp_dir)  # Nothing in test_temp_dir.
+
+        monkeypatch.setattr(class_, 'TEMP_DIR', test_temp_dir)
+
+        test_class = NewClass("Sir Robin's baboons")
+
+        assert test_class.temp_dir.exists()
+        assert test_class.temp_dir.name in os.listdir(test_temp_dir)
+        # Check temp_avatars_dir
+        assert test_class.temp_avatars_dir.exists()
+        # noinspection PyTypeChecker
+        assert test_class.temp_avatars_dir.name in os.listdir(test_class.temp_dir)
+
+    def test_new_class_temp_dir_deleted_on_deletion(self, monkeypatch, tmpdir):
+        test_temp_dir = Path(tmpdir, 'temp_dir')
+        test_temp_dir.mkdir(parents=True)  # Make temp_dir.
+        assert not os.listdir(test_temp_dir)  # Nothing in test_temp_dir.
+
+        monkeypatch.setattr(class_, 'TEMP_DIR', test_temp_dir)
+
+        test_class = NewClass("Sir Robin's baboons")
+        assert test_class.temp_dir.exists() and os.listdir(test_temp_dir)  # Class temp dir in test_temp_dir.
+        del test_class  # NB May throw an (ignored) Exception because the class is garbage collected before this line.
+        # No class temp dir in test_temp_dir:
+        assert not os.listdir(test_temp_dir)
