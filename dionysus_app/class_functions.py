@@ -243,7 +243,14 @@ def write_classlist_to_file(current_class: Class) -> None:
         classlist_file.write(json_class_data)
 
 
-def create_chart_with_new_class(classlist_name):
+def create_chart_with_new_class(classlist_name: str) -> None:
+    """
+    Prompt to create a chart with a newly created class, call new_chart with
+    newly created class if user desires.
+
+    :param classlist_name: str
+    :return: None
+    """
     if create_chart_with_new_class_dialogue():
         from dionysus_app.chart_generator.create_chart import new_chart
         new_chart(classlist_name)
