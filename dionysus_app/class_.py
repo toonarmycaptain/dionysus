@@ -250,12 +250,13 @@ class NewClass(Class):
     This temp directory is garbage collected with the object upon object
     destruction.
 
-    Temp directory is prefixed with the class' name, plus a hash, and contains
-    a subdirectory named 'avatars' to hold avatars before writing to database:
+    Temp directory is prefixed with the class' path_safe_name, plus a hash, and
+    contains a subdirectory named 'avatars' to hold avatars before writing to
+    database:
 
-    TEMP_DIR
-    ├── class_name+hash
-    |   ├── avatars
+            TEMP_DIR
+            ├── class_path_safe_name+hash
+            |   ├── avatars
 
     NB: In future may be subclassed or housed in Database objects to allow database
     specific implementation.
@@ -276,7 +277,7 @@ class NewClass(Class):
 
         # Create class temp directory.
         Path.mkdir(TEMP_DIR, exist_ok=True, parents=True)  # Ensure path exists.
-        self.temp_dir: Path = Path(tempfile.mkdtemp(prefix=self.name, dir=TEMP_DIR))
+        self.temp_dir: Path = Path(tempfile.mkdtemp(prefix=self._path_safe_name, dir=TEMP_DIR))
         # Create avatars directory within class temp directory.
         self.temp_avatars_dir: Path = self.temp_dir.joinpath('avatars')
         Path.mkdir(self.temp_avatars_dir)

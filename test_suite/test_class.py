@@ -423,3 +423,13 @@ class TestNewClass:
         del test_class  # NB May throw an (ignored) Exception because the class is garbage collected before this line.
         # No class temp dir in test_temp_dir:
         assert not os.listdir(test_temp_dir)
+
+    def test_new_class_uses_path_safe_name(self):
+        # Ensure class name has disallowed characters - validate test.
+        test_new_class = NewClass("S|r Røbin's ß@boon$")
+        assert test_new_class.name != test_new_class.path_safe_name
+
+        # Ensure class_name_with_disallowed chars in temp dir path.
+        assert test_new_class.name not in str(test_new_class.temp_dir)
+        # Ensure path_safe_name is in temp dir path.
+        assert test_new_class.path_safe_name in str(test_new_class.temp_dir)
