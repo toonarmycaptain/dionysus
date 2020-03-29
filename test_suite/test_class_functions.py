@@ -60,7 +60,7 @@ class TestCreateClasslist:
             pass
 
         def mocked_create_chart_with_new_class(test_class_name):
-            if test_class_name != test_full_class.name:
+            if test_class_name != test_full_class:
                 raise ValueError
 
         monkeypatch.setattr(class_functions, 'take_classlist_name_input', mocked_take_classlist_name_input)
