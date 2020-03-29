@@ -38,6 +38,31 @@ def test_full_class():
     return test_full_class
 
 
+@pytest.fixture()
+def test_new_class_name_only():
+    """Returns empty NewClass instantiated with name only."""
+    test_new_class_name_only = NewClass(test_class_name_only_data_set['json_dict_rep']['name'])
+
+    # Add attributes to test expected output.
+    test_new_class_name_only.json_str_rep = test_class_name_only_data_set['json_str_rep']
+    test_new_class_name_only.json_dict_rep = test_class_name_only_data_set['json_dict_rep']
+
+    return test_new_class_name_only
+
+
+@pytest.fixture()
+def test_full_new_class():
+    """Returns empty NewClass instantiated with students."""
+    test_full_new_class = NewClass(test_full_class_data_set['json_dict_rep']['name'])
+    for student in test_full_class_data_set['json_dict_rep']['students']:
+        test_full_new_class.add_student(Student(**student))
+
+    test_full_new_class.json_str_rep = test_full_class_data_set['json_str_rep']
+    test_full_new_class.json_dict_rep = test_full_class_data_set['json_dict_rep']
+
+    return test_full_new_class
+
+
 @pytest.mark.parametrize(
     'class_name, class_list_arg, list_of_students',
     [('slightly silly', ['silly', 'sillier', 'silliest'], ['silly', 'sillier', 'silliest']),
