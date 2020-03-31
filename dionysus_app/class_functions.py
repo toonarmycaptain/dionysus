@@ -228,7 +228,7 @@ def write_classlist_to_file(current_class: Class) -> None:
     keep them as strings when loading.
 
     :param current_class: Class object
-    :return: Path
+    :return: None
     """
     class_name = current_class.name
     data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
