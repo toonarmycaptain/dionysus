@@ -117,7 +117,6 @@ def transform_old_cld_file(filepath: Path):
     new_filename = class_name + CLASSLIST_DATA_FILE_TYPE
     new_class_data_path_name = CLASSLIST_DATA_PATH.joinpath(class_name, new_filename)
 
-
     print(f'Transformed {new_class.name} data file '
           f'to new data format in {new_class_data_path_name}')
 
