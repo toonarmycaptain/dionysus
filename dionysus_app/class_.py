@@ -1,11 +1,14 @@
 """Class for class data."""
 import json
+import shutil
+import tempfile
 
 from pathlib import Path
 from typing import Any, List, Union
 
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
+from dionysus_app.settings_functions import TEMP_DIR
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 
@@ -236,3 +239,53 @@ class Class:
             students_stmt = 'containing 0 students'
 
         return f'Class {self.name}, {students_stmt}.'
+
+
+class NewClass(Class):
+    """
+    Subclass of Class for creating new classes, machinery to facilitate
+    creation of new classes in database.
+
+    Adds temp directory for class to cache files before writing to database.
+    This temp directory is garbage collected with the object upon object
+    destruction.
+
+    Temp directory is prefixed with the class' path_safe_name, plus a hash, and
+    contains a subdirectory named 'avatars' to hold avatars before writing to
+    database:
+
+            TEMP_DIR
+            ├── class_path_safe_name+hash
+            |   ├── avatars
+
+    NB: In future may be subclassed or housed in Database objects to allow database
+    specific implementation.
+    ...
+
+    Attributes
+    ----------
+    As for baseclass Class.
+
+    temp_dir: Path
+        Path to class' temp directory.
+
+    temp_avatars_dir: Path
+        Path to avatars folder in class' temp directory.
+    """
+    def __init__(self, name: str, students: List[Student] = None):
+        super().__init__(name, students)
+
+        # Create class temp directory.
+        Path.mkdir(TEMP_DIR, exist_ok=True, parents=True)  # Ensure path exists.
+        self.temp_dir: Path = Path(tempfile.mkdtemp(prefix=self._path_safe_name, dir=TEMP_DIR))
+        # Create avatars directory within class temp directory.
+        self.temp_avatars_dir: Path = self.temp_dir.joinpath('avatars')
+        Path.mkdir(self.temp_avatars_dir)
+
+    def __del__(self) -> None:
+        """
+        Temp folder garbage collected with object.
+
+        :return: None
+        """
+        shutil.rmtree(self.temp_dir)

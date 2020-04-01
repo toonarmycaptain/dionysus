@@ -275,7 +275,7 @@ class TestClassDataFeedback:
         assert captured == ''.join(printed_strings)
 
 
-class TestCreateChartWithNewClass:
+class TestCreateChartWithNewClassDialogue:
     @pytest.mark.parametrize(
         'inputs, returned_value',
         [([bad_input, good_input], return_value)
@@ -286,7 +286,7 @@ class TestCreateChartWithNewClass:
                                           ('Y', True), ]
          ]
     )
-    def test_create_chart_with_new_class(self, inputs, returned_value):
+    def test_create_chart_with_new_class_dialogue(self, inputs, returned_value):
         with mock.patch('builtins.input', side_effect=inputs):
             assert create_chart_with_new_class_dialogue() is returned_value
 

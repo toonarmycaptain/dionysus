@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 import definitions
-from definitions import DEFAULT_CHART_SAVE_FOLDER
+
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        copy_image_to_user_save_loc,
@@ -19,25 +19,29 @@ from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
                                                        user_save_chart_image,
                                                        )
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
-from dionysus_app.class_ import Class
+from dionysus_app.class_ import Class, NewClass
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE
 
+from test_suite.test_class import test_full_class
 from test_suite.testing_class_data import test_full_class_data_set
 
 
 class TestNewChart:
-    @pytest.mark.parametrize('classname_from_create_class',
+    @pytest.mark.parametrize('class_from_create_class',
                              [None,
-                              'test_class_name',  # Pass in test_class_name.
+                              Class.from_dict(test_full_class_data_set['json_dict_rep']),  # Pass in test_class
+                              NewClass.from_dict(test_full_class_data_set['json_dict_rep'])  # NewClass obj
                               ])
-    def test_new_chart(self, monkeypatch, classname_from_create_class):
-        test_class_name = 'test_class_name'
+    def test_new_chart(self, monkeypatch, class_from_create_class, test_full_class):
+        # Test class either passed, or instantiated if None is passed.
+        test_class = class_from_create_class or test_full_class
+
         test_chart_name = 'test_chart_name'
         test_chart_default_filename = 'test_chart_default_filename'
         test_chart_params = {'test_chart_params': 'some chart params'}
         test_score_avatar_dict = {'test_student_scores': 'test student avatars'}
 
-        test_chart_data_dict = {'class_name': test_class_name,
+        test_chart_data_dict = {'class_name': test_class.name,
                                 'chart_name': test_chart_name,
                                 'chart_default_filename': test_chart_default_filename,
                                 'chart_params': test_chart_params,
@@ -46,11 +50,18 @@ class TestNewChart:
 
         test_chart_image_location = 'some image location'
 
-        def mocked_assemble_chart_data(class_name):
-            if class_name is not classname_from_create_class:
-                raise ValueError('None or a classname should be passed in here.')
-            return (test_class_name,
-                    test_chart_name,
+        def mocked_select_classlist():
+            if class_from_create_class:
+                raise ValueError('Function should not be called if class is passed.')
+            return test_class.name
+
+        def mocked_load_class_from_disk(class_name):
+            if class_from_create_class:
+                raise ValueError('Function should not be called if class is passed.')
+            return test_class
+
+        def mocked_assemble_chart_data(class_obj):
+            return (test_chart_name,
                     test_chart_default_filename,
                     test_score_avatar_dict,
                     test_chart_params)
@@ -74,40 +85,30 @@ class TestNewChart:
             if chart_image_location != test_chart_image_location:
                 raise ValueError
 
+        monkeypatch.setattr(create_chart, 'select_classlist', mocked_select_classlist)
+        monkeypatch.setattr(create_chart, 'load_class_from_disk', mocked_load_class_from_disk)
         monkeypatch.setattr(create_chart, 'assemble_chart_data', mocked_assemble_chart_data)
         monkeypatch.setattr(create_chart, 'write_chart_data_to_file', mocked_write_chart_data_to_file)
         monkeypatch.setattr(create_chart, 'generate_chart_image', mocked_generate_chart_image)
         monkeypatch.setattr(create_chart, 'show_image', mocked_show_image)
         monkeypatch.setattr(create_chart, 'user_save_chart_image', mocked_user_save_chart_image)
 
-        assert new_chart(classname_from_create_class) is None
+        assert new_chart(class_from_create_class) is None
 
 
 class TestAssembleChartData:
-    @pytest.mark.parametrize('classname_from_create_class',
-                             [None,
-                              test_full_class_data_set['json_dict_rep']['name'],  # Pass in name from test class.
+    @pytest.mark.parametrize('class_from_create_class',
+                             [Class.from_dict(test_full_class_data_set['json_dict_rep']),  # Pass in test_class
+                              NewClass.from_dict(test_full_class_data_set['json_dict_rep'])  # NewClass obj
                               ])
-    def test_assemble_chart_data(self, monkeypatch, classname_from_create_class):
-        test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
-        test_class_name = test_class.name
+    def test_assemble_chart_data(self, monkeypatch, class_from_create_class):
         test_chart_name = 'my_chart'
         test_chart_filename = test_chart_name
         mock_score_avatar_dict = {'scores': 'list of avatars'}
         mock_chart_params = {'some': 'chart_params'}
 
-        def mocked_select_classlist():
-            if classname_from_create_class:
-                raise ValueError('Select classlist called despite class already given.')
-            return test_class_name
-
-        def mocked_load_class_from_disk(class_name):
-            if class_name != test_class_name:
-                raise ValueError
-            return test_class
-
         def mocked_take_score_data(class_obj):
-            if class_obj is not test_class:
+            if class_obj is not class_from_create_class:
                 raise ValueError
             return mock_score_avatar_dict
 
@@ -122,15 +123,13 @@ class TestAssembleChartData:
         def mocked_set_chart_params():
             return mock_chart_params
 
-        monkeypatch.setattr(create_chart, 'select_classlist', mocked_select_classlist)
-        monkeypatch.setattr(create_chart, 'load_class_from_disk', mocked_load_class_from_disk)
         monkeypatch.setattr(create_chart, 'take_score_data', mocked_take_score_data)
         monkeypatch.setattr(create_chart, 'take_chart_name', mocked_take_chart_name)
         monkeypatch.setattr(create_chart, 'clean_for_filename', mocked_clean_for_filename)
         monkeypatch.setattr(create_chart, 'set_chart_params', mocked_set_chart_params)
 
-        assert assemble_chart_data(classname_from_create_class) == (
-            test_class_name, test_chart_name, test_chart_filename, mock_score_avatar_dict, mock_chart_params)
+        assert assemble_chart_data(class_from_create_class) == (
+            test_chart_name, test_chart_filename, mock_score_avatar_dict, mock_chart_params)
 
 
 class TestWriteChartDataToFile:
@@ -347,6 +346,7 @@ def test_get_class_save_folder_path(monkeypatch):
     monkeypatch.setattr(create_chart.definitions, 'DEFAULT_CHART_SAVE_FOLDER', None)
     with pytest.raises(ValueError):
         get_class_save_folder_path('some_class')
+
 
 class TestShowImage:
     def test_show_image(self, monkeypatch):

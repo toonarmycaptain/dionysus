@@ -14,6 +14,7 @@ import definitions
 
 from dionysus_app.chart_generator.generate_image import generate_chart_image
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
+from dionysus_app.class_ import Class
 from dionysus_app.class_functions import select_classlist, load_class_from_disk
 from dionysus_app.data_folder import CHART_DATA_FILE_TYPE, DataFolder
 from dionysus_app.file_functions import convert_to_json, copy_file
@@ -29,10 +30,11 @@ from dionysus_app.UI_menus.UI_functions import clean_for_filename
 CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
 
-def new_chart(class_name: str = None):
+def new_chart(loaded_class: Class = None):
     """
-    Take class name selection, chart name, score data, chart parameters from
-    assemble_chart_data, form into chart_data_dict with key-value format:
+    Prompts user to select class if not provided by caller.
+    Take chart name, score data, chart parameters from assemble_chart_data,
+    form into chart_data_dict with key-value format:
         chart_data_dict = {
                     'class_name': class_name,  # str
                     'chart_name': chart_name,  # str
@@ -43,14 +45,16 @@ def new_chart(class_name: str = None):
 
     Then write this data to disk as *.cdf (ChartDataFile), generate and save the chart.
 
-    NB Skips class name selection if class_name provided.
-
-    :param class_name: str = None
+    :param loaded_class: Class = None
     :return: None
     """
-    class_name, chart_name, chart_default_filename, student_scores, chart_params = assemble_chart_data(class_name)
+    if not loaded_class:
+        class_name = select_classlist()  # TODO: warn for empty classlist
+        loaded_class = load_class_from_disk(class_name)
 
-    chart_data_dict = {'class_name': class_name,  # str
+    chart_name, chart_default_filename, student_scores, chart_params = assemble_chart_data(loaded_class)
+
+    chart_data_dict = {'class_name': loaded_class.name,  # str
                        'chart_name': chart_name,  # str
                        'chart_default_filename': chart_default_filename,  # str
                        'chart_params': chart_params,  # dict
@@ -66,7 +70,7 @@ def new_chart(class_name: str = None):
     user_save_chart_image(chart_data_dict, chart_image_location)
 
 
-def assemble_chart_data(class_name: str = None):
+def assemble_chart_data(loaded_class: Class):
     """
     Collect data/user input for new chart.
 
@@ -74,20 +78,15 @@ def assemble_chart_data(class_name: str = None):
     take chart data from user.
 
     Return values for chart_data_dict assembly:
-    class_name: str
+    loaded_class: Class
     chart_name: str
     chart_filename: str
     student_scores: dict
     chart_params: dict
 
-    :param class_name: str = None
-    :return: tuple(str, str, str, dict, dict)
+    :param loaded_class: str = None
+    :return: tuple(str, str, dict, dict)
     """
-    if not class_name:
-        class_name = select_classlist()  # TODO: warn for empty classlist
-
-    loaded_class = load_class_from_disk(class_name)
-
     student_scores: dict = take_score_data(loaded_class)
 
     chart_name = take_chart_name()
@@ -97,7 +96,7 @@ def assemble_chart_data(class_name: str = None):
     chart_params = set_chart_params()
     # chart options here or before score entry, setting chart params, min, max scores etc
 
-    return class_name, chart_name, chart_filename,  student_scores, chart_params
+    return chart_name, chart_filename, student_scores, chart_params
 
 
 def write_chart_data_to_file(chart_data_dict: dict):
@@ -134,7 +133,7 @@ def write_chart_data_to_file(chart_data_dict: dict):
     chart_filename = file_chart_data_dict['chart_default_filename']
     chart_data_file = chart_filename + CHART_DATA_FILE_TYPE
     chart_data_filepath = CLASSLIST_DATA_PATH.joinpath(
-            file_chart_data_dict['class_name'], 'chart_data', chart_data_file)
+        file_chart_data_dict['class_name'], 'chart_data', chart_data_file)
 
     # Convert data_dict to JSON-safe form.
     json_safe_chart_data_dict = sanitise_avatar_path_objects(file_chart_data_dict)

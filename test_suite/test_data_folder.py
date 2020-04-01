@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 from pathlib import Path
 from unittest import TestCase
 
@@ -10,38 +12,29 @@ from dionysus_app.initialise_app import data_folder_check
 from dionysus_app.settings_functions import write_settings_to_file
 
 
-class TestDataFolder(TestCase):
-
-    def setUp(self):
-        # set correct cwd:
-        os.chdir(ROOT_DIR)
-        self.default_paths = [
-            r'/dionysus_app'  
-            r'/dionysus_app/app_data',
-            r'/dionysus_app/app_data/class_data',
-            r'/dionysus_app/app_data/class/registry.index',
-            r'/dionysus_app/app_data/settings.py',
-            r'/dionysus_app/chart_generator',
-            r'/dionysus_app/chart_generator/default_avatar.png',
-            ]
-
-    def test_generate_data_path_defaults(self):
+class TestDataFolder:
+    @pytest.mark.parametrize('relative_path_str',
+                             [r'/dionysus_app'
+                              r'/dionysus_app/app_data',
+                              r'/dionysus_app/app_data/class_data',
+                              r'/dionysus_app/app_data/class/registry.index',
+                              r'/dionysus_app/app_data/settings.py',
+                              r'/dionysus_app/chart_generator',
+                              r'/dionysus_app/chart_generator/default_avatar.png',
+                              ])
+    def test_generate_data_path_defaults(self, relative_path_str):
         os.chdir(ROOT_DIR)
         cwd_path = Path.cwd()
-        for rel_path_str in self.default_paths:
-            path_result = DataFolder.generate_rel_path(rel_path_str)
-            
-            # Assert relative app paths in generated absolute paths:
-            assert rel_path_str in path_result.as_uri()
-            # Assert cwd in generated absolute paths:
-            assert cwd_path.as_uri() in path_result.as_uri()
+        path_result = DataFolder.generate_rel_path(relative_path_str)
+
+        # Assert relative app paths in generated absolute paths:
+        assert relative_path_str in path_result.as_uri()
+        # Assert cwd in generated absolute paths:
+        assert cwd_path.as_uri() in path_result.as_uri()
 
     def test_generate_data_path_None(self):
         # Should return current working directory:
-        none_path_result = DataFolder.generate_rel_path(None)
-        cwd_path = Path.cwd()
-        
-        assert cwd_path == none_path_result
+        assert DataFolder.generate_rel_path(None) == Path.cwd()
 
 
 class TestDataFolderPathsExist(TestCase):

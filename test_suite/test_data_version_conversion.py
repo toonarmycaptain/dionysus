@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 import data_version_conversion
+
 from data_version_conversion import (CLASSLIST_DATA_PATH,
                                      data_is_new_format,
                                      file_from_gui_dialogue,
@@ -114,7 +115,7 @@ class TestTransformAllOldDataFiles:
         test_file_paths = [Path('first/path'), Path('second/path')]
 
         def mocked_path_glob(self, cld_pattern):
-            if  cld_pattern != '**/*.cld':
+            if cld_pattern != '**/*.cld':
                 raise ValueError
             return (test_path for test_path in test_file_paths)
 
@@ -123,7 +124,6 @@ class TestTransformAllOldDataFiles:
                 raise TypeError
             if arg not in test_file_paths:
                 raise ValueError
-
 
         monkeypatch.setattr(data_version_conversion.Path, 'glob', mocked_path_glob)
         monkeypatch.setattr(data_version_conversion, 'transform_old_cld_file', mocked_transform_old_cld_file)
@@ -203,7 +203,9 @@ class TestTransformOldCldFile:
 
     def test_transform_old_cld_file_genuine_old_file(self, monkeypatch, test_class_name_only, capsys):
 
-        test_filepath = Path(f'hi//I//do//{test_class_name_only.path_safe_name}.yay')
+        mocked_CLASSLIST_DATA_PATH = Path(f'hi//I//do//')
+        test_filepath = Path(mocked_CLASSLIST_DATA_PATH).joinpath(test_class_name_only.path_safe_name,
+                                                                  f'{test_class_name_only.path_safe_name}.yay')
         new_data_filepath = test_filepath.parent.joinpath(
             test_class_name_only.path_safe_name + CLASSLIST_DATA_FILE_TYPE)
 
@@ -241,6 +243,7 @@ class TestTransformOldCldFile:
         monkeypatch.setattr(data_version_conversion, 'data_is_new_format', mocked_data_is_new_format)
         monkeypatch.setattr(data_version_conversion, 'transform_data', mocked_transform_data)
         monkeypatch.setattr(data_version_conversion, 'write_classlist_to_file', mocked_write_classlist_to_file)
+        monkeypatch.setattr(data_version_conversion, 'CLASSLIST_DATA_PATH', mocked_CLASSLIST_DATA_PATH)
 
         assert transform_old_cld_file(test_filepath) is None
 

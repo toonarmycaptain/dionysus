@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0-alpha] - 2020-04-01
+### Added
+- Implemented `temp` directory created in `APP_DATA` by `data_folder_check` on app start and removed on app exit (if it contains files). 
+- `NewClass` subclass of `Class` using `temp` directory to hold files before writing to database.
+    - Initially holds avatars as user enters during class creation. 
+- Add [AllContributors](https://allcontributors.org/) badge to `README.md`, recognising project contributors, `.all-contributorsrc` with contributer data. 
+### Changed
+- Separate UI/logic/persistence concerns in `create_classlist`. 
+    - New functions `move_avatars_to_class_data`, `move_avatar_to_class_data` utilise `NewClass` to move avatars from `temp` to database.
+    - `write_classlist_to_file` now returns `None` instead of the path written to. Future persistence layer may be a Database rather than a path.
+- `create_classlist_data` takes a `NewClass` object. 
+- Refactor `new_chart`/`assemble_chart_data` to take `Class`/`NewClass` object instead of a class name.
+    - Supports passing in class directly from `create_class` without reloading class from database.
+    - Move logic prompting user to choose a class from `assemble_chart_data` to `new_chart`.
+- More tests converted to Pytest style tests, test coverage improved (eg `class_registry_functions.py`).
+- Improved type hinting, extend passing/use of `Path`s rather than strings/`os/path` (eg in `UI_functions.py`, `initialise_app.py`).
+
 ## [0.5.0-alpha] - 2020-01-23
 ### Added
 - Improved test coverage, type hinting across application. 

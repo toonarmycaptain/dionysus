@@ -3,9 +3,9 @@
 import pytest
 
 from pathlib import Path
-from unittest import TestCase, mock
 from unittest.mock import patch
 
+from dionysus_app.UI_menus import UI_functions
 from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
                                                 clear_screen,
                                                 input_is_essentially_blank,
@@ -16,138 +16,109 @@ from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
                                                 )
 
 
-class TestClearScreen(TestCase):
-    def setUp(self):
-        self.test_arguments = 1, 5, 99
-        self.expected_print_calls = ['\n',
-                                     5 * '\n',
-                                     99 * '\n',
-                                     ]
-        self.default_argument = 50
-        self.default_argument_print_call = 50 * '\n'
-
-    def test_clear_screen(self):
+class TestClearScree:
+    @pytest.mark.parametrize(
+        'test_input, expected_print_output',
+        [(50, 50 * '\n'),
+         (1, '\n'),
+         (5, 5 * '\n'),
+         (99, 99 * '\n'),
+         ])
+    def test_clear_screen(self, test_input, expected_print_output):
         with patch('dionysus_app.UI_menus.UI_functions.print') as mocked_print:
-            for argument in self.test_arguments:
-                clear_screen(argument)
+            clear_screen(test_input)
 
-            print_calls = [mock.call(printed_str) for printed_str in self.expected_print_calls]
-
-            mocked_print.assert_has_calls(print_calls)  # Test calls.
-            assert mocked_print.call_args_list == print_calls  # Test calls made in order.
-
-    def test_clear_screen_default_argument(self):
-        with patch('dionysus_app.UI_menus.UI_functions.print') as mocked_print:
-            clear_screen()
-
-            print_call = self.default_argument_print_call
-            mocked_print.assert_called_once_with(print_call)
+            mocked_print.assert_called_once_with(expected_print_output)
 
 
-class TestInputIsEssentiallyBlank(TestCase):
-    def setUp(self):
-        """"Test cases: (input_value, expected_return_value)"""
-        self.test_cases = {
-            'test_empty_string': ('', True),  # ie no input
-            # Spaces
-            'test_single_space': (' ', True),
-            'test_2_spaces': ('  ', True),
-            'test_3_spaces': ('   ', True),
-            'test_5_spaces': ('     ', True),
-            # Underscores
-            'test_single_underscore': ('_', True),
-            'test_2_underscores': ('__', True),
-            'test_3_underscores': ('___', True),
-            'test_5_underscores': ('_____', True),
+class TestInputIsEssentiallyBlank:
+    @pytest.mark.parametrize(
+        'test_input, expected_return_value',
+        [('', True),  # empty string, ie no input.
+         # Spaces
+         (' ', True),  # single space
+         ('  ', True),  # 2_spaces
+         ('   ', True),  # 3_spaces
+         ('     ', True),  # 5_spaces
+         # Underscores
+         ('_', True),  # single underscore
+         ('__', True),  # 2 underscores
+         ('___', True),  # 3 underscores
+         ('_____', True),  # 5 underscores
 
-            'test_only_special_characters': ('''~`!@#$%^&*()-_+{}[]|\\:;"',.<>?/''', True),
-            'test_singe_leading_space': (' test', False),
-            'test_spaces_underscores_combo': (' _ _ _', True),
-            'test_leading_spaces': ('   test', False),
-            'test_singe_trailing_space': ('test ', False),
-            'test_trailing_spaces': ('test   ', False),
-            'test_leading_and_trailing_space': (' test ', False),
-            'test_no_spaces': ('test', False),
-            'test_sentence': ('not the Spanish inquisition', False),
-            'test_sentence_leading_and_trailing_spaces': (' not the spanish inquisition ', False),
-            'test_combination_underscore_spaces': (
-                " because nobody_expects_the _spanish_ inquisition the 2nd time", False),
-            'test_combination_underscore_spaces_special_characters': (
-                " because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time", False),
-        }
-
-    def test_input_is_essentially_blank(self):
-        for test_case in self.test_cases:
-            with self.subTest(i=self.test_cases[test_case]):
-                test_input = self.test_cases[test_case][0]
-                expected_output = self.test_cases[test_case][1]
-
-                assert input_is_essentially_blank(test_input) == expected_output
+         ('''~`!@#$%^&*()-_+{}[]|\\:;"',.<>?/''', True),  # only_special_characters
+         (' test', False),  # singe leading space
+         (' _ _ _', True),  # spaces underscores combo
+         ('   test', False),  # leading spaces
+         ('test ', False),  # singe trailing space
+         ('test   ', False),  # trailing spaces
+         (' test ', False),  # leading and trailing space
+         ('test', False),  # no spaces
+         ('not the Spanish inquisition', False),  # sentence
+         (' not the spanish inquisition ', False),  # sentence leading and trailing spaces
+         # test_combination underscore spaces
+         (" because nobody_expects_the _spanish_ inquisition the 2nd time", False),
+         # combination underscore spaces special characters
+         (" because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time", False),
+         ])
+    def test_input_is_essentially_blank(self, test_input, expected_return_value):
+        assert input_is_essentially_blank(test_input) == expected_return_value
 
 
-class TestCleanForFilename(TestCase):
-    def setUp(self):
-        """Test cases: (input_value, expected_return_value)"""
-        self.test_cases = {
-            'test_empty_string': ('', ''),  # ie no input
-            # Spaces
-            'test_single_space': (' ', ''),  # .rstrip() will remove trailing space.
-            'test_2_spaces': ('  ', ''),
-            'test_3_spaces': ('   ', ''),
-            'test_5_spaces': ('     ', ''),
-            # Underscores
-            'test_single_underscore': ('_', '_'),
-            'test_double_underscore': ('__', '__'),
-            'test_triple_underscore': ('___', '___'),
-            'test_spaces_underscores_combo': (' _ _ _', '______'),
-            'test_spaces_underscores_combo_trailing_space': (' _ _ _ ', '______'),
-            'test_leading_space': (' test', '_test'),
-            'test_leading_spaces': ('   test', '___test'),
-            'test_singe_trailing_space': ('test ', 'test'),
-            'test_trailing_spaces': ('test   ', 'test'),
-            'test_leading_and_trailing_space': (' test ', '_test'),
-            'test_no_spaces': ('test', 'test'),
-            'test_sentence': ('not the Spanish inquisition', 'not_the_Spanish_inquisition'),
-            'test_sentence_leading_and_trailing_spaces': (' not the spanish inquisition ',
-                                                          '_not_the_spanish_inquisition'),
-            'test_combination_underscore_spaces': (
-                ' because nobody_expects_the _spanish_ inquisition the 2nd time',
-                '_because_nobody_expects_the__spanish__inquisition_the_2nd_time'),
-            'test_combination_underscore_spaces_special_characters': (
-                ' because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time',
-                '_because_nobody_expects_the______ing__spanish__inquisition_the_2nd_______time'),
-            # Explicitly test OS/Filesystem format prohibited characters:
-            'Test prohibited chars FAT32': (r'" * / : < > ? \ | + , . ; = [ ] ! @ ; ',
-                                            '_____________________________________'),
-            'Test prohibited characters Windows': (r'\/:*?"<>|.', '__________'),
-            'Test prohibited *nix/OSX chars': (r'*?!/.', '_____'),
-        }
-
-    @patch('dionysus_app.UI_menus.UI_functions.scrub_candidate_filename')
-    def test_clean_for_filename_mocking_call(self, mocked_scrub_candidate_filename):
+@pytest.mark.parametrize(
+    'test_input, expected_return_value',
+    [('', ''),  # empty string, ie no input
+     # Spaces
+     (' ', ''),  # .rstrip() will remove trailing space, single_space
+     ('  ', ''),  # 2 spaces
+     ('   ', ''),  # 3 spaces
+     ('     ', ''),  # 5 spaces
+     # Underscores
+     ('_', '_'),  # single underscore
+     ('__', '__'),  # double underscore
+     ('___', '___'),  # triple underscore
+     (' _ _ _', '______'),  # spaces underscores combo
+     (' _ _ _ ', '______'),  # spaces underscores combo trailing space
+     (' test', '_test'),  # leading space
+     ('   test', '___test'),  # leading spaces
+     ('test ', 'test'),  # singe trailing space
+     ('test   ', 'test'),  # trailing spaces
+     (' test ', '_test'),  # leading and trailing space
+     ('test', 'test'),  # no spaces
+     ('not the Spanish inquisition', 'not_the_Spanish_inquisition'),  # sentence
+     (' not the spanish inquisition ',  # sentence leading and trailing spaces
+      '_not_the_spanish_inquisition'),
+     # Combination underscore spaces.
+     (' because nobody_expects_the _spanish_ inquisition the 2nd time',
+      '_because_nobody_expects_the__spanish__inquisition_the_2nd_time'),
+     # Combination underscore spaces special characters.
+     (' because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time',
+      '_because_nobody_expects_the______ing__spanish__inquisition_the_2nd_______time'),
+     # Explicitly test OS/Filesystem format prohibited characters:
+     # Prohibited chars FAT32:
+     (r'" * / : < > ? \ | + , . ; = [ ] ! @ ; ', '_____________________________________'),
+     # Prohibited characters Windows:
+     (r'\/:*?"<>|.', '__________'),
+     # Prohibited characters *nix/OSX chars:
+     (r'*?!/.', '_____'),
+     ])
+class TestCleanForFilename:
+    def test_clean_for_filename_mocking_call(self, monkeypatch,
+                                             test_input, expected_return_value):
         """
         Mock call to scrub_candidate_filename.
-        Essentially an input .replace(' ', '_') operation.
+        Essentially an input .replace(' ', '_') operation, unless behaviour changes.
         """
-        for test_case in self.test_cases:
-            with self.subTest(i=self.test_cases[test_case]):
-                test_input = self.test_cases[test_case][0]
-                expected_output = test_input.replace(' ', '_')
+        def mocked_scrub_candidate_filename(test_string):
+            assert test_string == test_input
+            return test_input
 
-                # Have scrub_candidate_filename return input_string.
-                mocked_scrub_candidate_filename.return_value = test_input
-                assert clean_for_filename(test_input) == expected_output
+        monkeypatch.setattr(UI_functions, 'scrub_candidate_filename', mocked_scrub_candidate_filename)
 
-                mocked_scrub_candidate_filename.assert_called_once_with(test_input)
-                mocked_scrub_candidate_filename.reset_mock(return_value=True, side_effect=True)
+        assert clean_for_filename(test_input) == test_input.replace(' ', '_')
 
-    def test_clean_for_filename_unmocked(self):
-        for test_case in self.test_cases:
-            with self.subTest(i=self.test_cases[test_case]):
-                test_input = self.test_cases[test_case][0]
-                expected_output = self.test_cases[test_case][1]
-
-                assert clean_for_filename(test_input) == expected_output
+    def test_clean_for_filename_unmocked(self, test_input, expected_return_value):
+        assert clean_for_filename(test_input) == expected_return_value
 
 
 @pytest.mark.parametrize(
@@ -188,353 +159,211 @@ def test_scrub_candidate_filename(test_input, expected_output):
     assert scrub_candidate_filename(test_input) == expected_output
 
 
+# Patching Tk doesn't affect test but not doing so slows down test 10x.
+# Pass to test func as mock_tk
 @patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
-class TestSaveAsDialogue(TestCase):
-    def setUp(self):
-        self.default_filetypes = [("all files", "*.*")]
-        self.test_returned_filepath_str = "my save file"
+class TestSaveAsDialogue:
+    @pytest.mark.parametrize(
+        'save_as_dialog_args, expected_filedialog_args, test_filename, returned_filepath',
+        [({}, {}, "my save file", Path("my save file")),  # No args.
+         pytest.param({}, {'filetypes': 'should be the default', 'initialdir': 'starting directory: ".." '},
+                      "my_save_file", Path("my_save_file"),
+                      marks=pytest.mark.xfail(reason="Test diagnostic.")),
+         ({'title_str': None,  # None args passed to save_as_dialog
+           'default_file_extension': None,
+           'filetypes': None,
+           'suggested_filename': None,
+           'start_dir': None},
+          {'initialdir': None},  # None dir passed on, default_filetypes subst by func.
+          "my_save_file", Path("my_save_file")),
+         # Title string.
+         ({'title_str': "Save your super_file_as:"},
+          {'title': "Save your super_file_as:"},
+          "my_save_file", Path("my_save_file")),
+         # Default extension.
+         ({'default_file_extension': '.some_ext'},
+          {'defaultextension': '.some_ext'},
+          "my_save_file", Path("my_save_file.some_ext")),
+         # Passing all files works same as no arg, since all files is default.
+         ({'filetypes': [("all files", "*.*")]},
+          {},
+          "my_save_file", Path("my_save_file")),
+         # Pass a filetype with no default, and it becomes default extension.
+         ({'filetypes': [('some ext', '*.some_ext')]},
+          {'filetypes': [('some ext', '*.some_ext')],
+           'defaultextension': '.some_ext'},
+          "my_save_file", Path("my_save_file.some_ext")),
+         # Test default extension and filetype
+         ({'filetypes': [('some ext', '*.some_ext')],
+           'default_file_extension': '.some_ext'},
+          {'filetypes': [('some ext', '*.some_ext')],
+           'defaultextension': '.some_ext'},
+          "my_save_file", Path("my_save_file.some_ext")),
+         # Test default extension different from first filetype
+         ({'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
+           'default_file_extension': '.b_ext'},
+          {'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
+           'defaultextension': '.b_ext'},
+          "my_save_file", Path("my_save_file.b_ext")),
+         # Test default extension is default/first of multiple filetypes.
+         ({'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')]},
+          {'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
+           'defaultextension': '.a_ext'},
+          "my_save_file", Path("my_save_file.a_ext")),
+         # Test no default extension when multiple filetypes passed with all files first.
+         ({'filetypes': [("all files", "*.*"), ('a ext', '*.a_ext'), ('b ext', '*.b_ext')]},
+          {'filetypes': [("all files", "*.*"), ('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
+           'defaultextension': None},
+          "my_save_file", Path("my_save_file")),
+         # Test default extension when multiple filetypes passed with all files not first.
+         ({'filetypes': [('a ext', '*.a_ext'), ("all files", "*.*"), ('b ext', '*.b_ext')]},
+          {'filetypes': [('a ext', '*.a_ext'), ("all files", "*.*"), ('b ext', '*.b_ext')],
+           'defaultextension': '.a_ext'},
+          "my_save_file", Path("my_save_file.a_ext")),
+         # Test passing default filename, with user using default.
+         ({'suggested_filename': 'save as this'},
+          {'initialfile': 'save as this'},
+          "save as this", Path("save as this")),
+         # Test passing default filename, but returning another.
+         ({'suggested_filename': 'save as this'},
+          {'initialfile': 'save as this'},
+          "user filename", Path("user filename")),
+         # Test passing str starting directory.
+         ({'start_dir': 'some start dir'},
+          {'initialdir': 'some start dir'},
+          "my_save_file", Path("my_save_file")),
+         # Test passing Path starting directory.
+         ({'start_dir': Path('some start dir')},
+          {'initialdir': Path('some start dir')},
+          "my_save_file", Path("my_save_file")),
+         # Test no user input returns None.
+         ({}, {}, '', None),
+         ])
+    def test_save_as_dialogue(self, mock_tk, monkeypatch,
+                              save_as_dialog_args,
+                              expected_filedialog_args,
+                              test_filename,
+                              returned_filepath):
+        default_filetypes = [("all files", "*.*")]
+        default_start_dir = '..'
 
-    def test_save_as_dialogue_no_arguments(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-            assert save_as_filedialog.return_value == save_as_dialogue()
+        def mocked_filedialog_asksaveasfilename(title,
+                                                defaultextension,
+                                                filetypes,
+                                                initialfile,
+                                                initialdir,
+                                                ):
+            """
+            Test arguments passed to filedialog are as expected, subbing with defaults save_as_dialogue
+            will supply if no value is passed (equivalent to expecting the default).
+            """
+            assert title == expected_filedialog_args.get('title', None)
+            assert defaultextension == expected_filedialog_args.get('defaultextension', None)
+            assert filetypes == expected_filedialog_args.get('filetypes', default_filetypes)
+            assert initialfile == expected_filedialog_args.get('initialfile', None)
+            assert initialdir == expected_filedialog_args.get('initialdir', default_start_dir)
 
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None
-                                                       )
+            return test_filename + (expected_filedialog_args.get('defaultextension', '') or '')
 
-    def test_save_as_dialogue_all_None_arguments(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            save_as_filedialog.return_value = self.test_returned_filepath_str
+        monkeypatch.setattr(UI_functions.filedialog, 'asksaveasfilename', mocked_filedialog_asksaveasfilename)
 
-            assert save_as_dialogue(title_str=None,
-                                    default_file_extension=None,
-                                    filetypes=None,
-                                    suggested_filename=None,
-                                    start_dir=None
-                                    ) == save_as_filedialog.return_value
+        assert returned_filepath == save_as_dialogue(**save_as_dialog_args)
 
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None,
-                                                       )
 
-    def test_save_as_dialogue_with_title_str(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            title_string = "Save your super_file_as:"
+# Patching Tk doesn't affect test but not doing so slows down test 10x.
+# Pass to test func as mock_tk
+@patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
+class TestSelectFileDialogue:
+    @pytest.mark.parametrize(
+        'select_file_dialogue_args, expected_askopenfilename_args, test_filename, returned_filepath',
+        [({}, {}, "my save file", Path("my save file")),  # No args.
+         pytest.param({}, {'filetype': 'should be the default', 'initialdir': 'starting directory: ".." '},
+                      "my_save_file", Path("some_other_file"),
+                      marks=pytest.mark.xfail(reason="Test diagnostic.")),
+         ({'title_str': None,  # None args passed to select_file_dialog
+           'filetypes': None,
+           'start_dir': None},
+          {'initialdir': None},  # None dir passed on, default_filetypes subst by func.
+          "my_save_file", Path("my_save_file")),
+         # All args passed to select_file_dialog
+         ({'title_str': 'Some title string',
+           'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
+           'start_dir': Path(r'start/here')},
+          {'title': 'Some title string',
+           'filetype': [('some ext', '*.some_ext'), ('all files', '*.*')],
+           'initialdir': Path(r'start/here')},
+          "my save file", Path("my save file")),
+         # No user input/cancel (ie filename = '') returns None
+         ({}, {}, '', None)
+         ])
+    def test_select_file_dialogue(self, mock_tk, monkeypatch,
+                                  select_file_dialogue_args,
+                                  expected_askopenfilename_args,
+                                  test_filename,
+                                  returned_filepath):
+        default_filetypes = [("all files", "*.*")]
+        default_start_dir = '..'
 
-            save_as_filedialog.return_value = self.test_returned_filepath_str
+        def mocked_filedialog_askopenfilename(title,
+                                              filetype,
+                                              initialdir,
+                                              ):
+            """
+            Test arguments passed to filedialog are as expected, subbing with defaults save_as_dialogue
+            will supply if no value is passed (equivalent to expecting the default).
+            """
+            assert title == expected_askopenfilename_args.get('title', None)
+            assert filetype == expected_askopenfilename_args.get('filetype', default_filetypes)
+            assert initialdir == expected_askopenfilename_args.get('initialdir', default_start_dir)
 
-            assert save_as_dialogue(title_str=title_string) == save_as_filedialog.return_value
+            return test_filename + (expected_askopenfilename_args.get('defaultextension', '') or '')
 
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=title_string,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None,
-                                                       )
+        monkeypatch.setattr(UI_functions.filedialog, 'askopenfilename', mocked_filedialog_askopenfilename)
 
-    def test_save_as_dialogue_with_default_extension_some_ext(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_default_extension = '.some_ext'
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(default_file_extension=test_default_extension) == save_as_filedialog.return_value
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension='.some_ext',
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None
-                                                       )
-
-    def test_save_as_dialogue_with_filetypes_all_files(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_filetypes = [("all files", "*.*")]
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(filetypes=test_filetypes) == save_as_filedialog.return_value
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None
-                                                       )
-
-    def test_save_as_dialogue_with_filetypes_some_ext(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_filetypes = [('some ext', '*.some_ext')]
-            test_default_extension = '.some_ext'
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(default_file_extension=test_default_extension,
-                                    filetypes=test_filetypes
-                                    ) == self.test_returned_filepath_str
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=test_default_extension,
-                                                       filetypes=test_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None,
-                                                       )
-
-    def test_save_as_dialogue_with_filetypes_all_files_plus_some_ext(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_filetypes = [('all files', '*.*'), ('some ext', '*.some_ext')]
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(filetypes=test_filetypes) == self.test_returned_filepath_str
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=test_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None,
-                                                       )
-
-    def test_save_as_dialogue_with_filetypes_some_ext_plus_all_files(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
-            test_default_extension = '.some_ext'
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(default_file_extension=test_default_extension,
-                                    filetypes=test_filetypes,
-                                    ) == save_as_filedialog.return_value
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=test_default_extension,
-                                                       filetypes=test_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None,
-                                                       )
-
-    def test_save_as_dialogue_with_filetypes_some_ext_no_default(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
-            test_default_extension = '.some_ext'
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(filetypes=test_filetypes,
-                                    ) == save_as_filedialog.return_value
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=test_default_extension,
-                                                       filetypes=test_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None,
-                                                       )
-
-    def test_save_as_dialogue_with_suggested_filename(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_suggested_filename = 'you should call your save file THIS'
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(suggested_filename=test_suggested_filename) == self.test_returned_filepath_str
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=test_suggested_filename,
-                                                       )
-
-    def test_save_as_dialogue_with_start_dir_str(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_start_dir = 'where to start?'
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(start_dir=test_start_dir) == self.test_returned_filepath_str
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=test_start_dir,
-                                                       initialfile=None,
-                                                       )
-
-    def test_save_as_dialogue_with_start_dir_Path(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            test_start_dir = 'where to start?'
-            test_start_dir_path = Path(test_start_dir)
-
-            save_as_filedialog.return_value = self.test_returned_filepath_str
-
-            assert save_as_dialogue(start_dir=test_start_dir_path) == self.test_returned_filepath_str
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=test_start_dir_path,
-                                                       initialfile=None,
-                                                       )
-
-    def test_save_as_dialogue_no_input_returns_None(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.asksaveasfilename') as save_as_filedialog:
-            save_as_filedialog.return_value = ''
-
-            assert save_as_dialogue() is None
-
-            mock_tkinter.assert_called()
-            save_as_filedialog.assert_called_once_with(title=None,
-                                                       defaultextension=None,
-                                                       filetypes=self.default_filetypes,
-                                                       initialdir=None,
-                                                       initialfile=None,
-                                                       )
+        assert returned_filepath == select_file_dialogue(**select_file_dialogue_args)
 
 
 @patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
-class TestSelectFileDialogue(TestCase):
-    def setUp(self):
-        self.test_default_filetypes = [('all files', '*.*')]
+class TestSelectFolderDialogue:
+    @pytest.mark.parametrize(
+        'select_folder_dialogue_args, expected_askdirectory_args, test_path, returned_path',
+        [({}, {}, "my save dir", Path("my save dir")),  # No args.
+         pytest.param({}, {'initialdir': 'starting directory: ".." '},
+                      "my_save_dir", Path("some_other_dir"),
+                      marks=pytest.mark.xfail(reason="Test diagnostic.")),
+         # None args passed to select_file_dialog
+         ({'title_str': None,
+           'start_dir': None},
+          {'initialdir': None},  # None dir passed on.
+          "my_save_dir", Path("my_save_dir")),
+         # # All args passed to select_file_dialog
+         ({'title_str': 'Some title string',
+           'start_dir': Path(r'start/here')},
+          {'title': 'Some title string',
+           'initialdir': Path(r'start/here')},
+          "my save dir", Path("my save dir")),
+         # No user input/cancel (ie filename = '') returns None
+         ({}, {}, '', None)
+         ])
+    def test_select_folder_dialogue(self, mock_tk, monkeypatch,
+                                    select_folder_dialogue_args,
+                                    expected_askdirectory_args,
+                                    test_path,
+                                    returned_path):
+        default_start_dir = '..'
 
-        self.test_title_str = 'First you must answer three questions'
-        self.test_filetypes = [('some ext', '*.some_ext'), ('all files', '*.*')]
-        self.test_start_dir = 'What\\is\\your\\quest'
+        def mocked_filedialog_askdirectory(title,
+                                           initialdir,
+                                           ):
+            """
+            Test arguments passed to filedialog are as expected, subbing with defaults save_as_dialogue
+            will supply if no value is passed (equivalent to expecting the default).
+            """
+            assert title == expected_askdirectory_args.get('title', None)
+            assert initialdir == expected_askdirectory_args.get('initialdir', default_start_dir)
 
-        self.test_returned_filepath_path = Path('strange women lying in ponds distributing swords')
+            return test_path
 
-    def test_select_file_dialogue_called_without_arguments(self, mock_tkinter):
-        # Tests filedialog called with default_filetypes.
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_path
+        monkeypatch.setattr(UI_functions.filedialog, 'askdirectory', mocked_filedialog_askdirectory)
 
-            assert select_file_dialogue() == self.test_returned_filepath_path
-
-            assert isinstance(self.test_returned_filepath_path, Path)
-
-            mock_tkinter.assert_called()
-            select_filedialog.assert_called_once_with(title=None,
-                                                      filetype=self.test_default_filetypes,
-                                                      initialdir=None)
-
-    def test_select_file_dialogue_all_None_arguments(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_path
-
-            assert select_file_dialogue(title_str=None,
-                                        filetypes=None,
-                                        start_dir=None,
-                                        ) == self.test_returned_filepath_path
-
-            assert isinstance(self.test_returned_filepath_path, Path)
-
-            mock_tkinter.assert_called()
-            select_filedialog.assert_called_once_with(title=None,
-                                                      filetype=self.test_default_filetypes,
-                                                      initialdir=None)
-
-    def test_select_file_dialogue_called_with_all_arguments(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = self.test_returned_filepath_path
-
-            assert select_file_dialogue(title_str=self.test_title_str,
-                                        filetypes=self.test_filetypes,
-                                        start_dir=self.test_start_dir,
-                                        ) == self.test_returned_filepath_path
-
-            assert isinstance(self.test_returned_filepath_path, Path)
-
-            mock_tkinter.assert_called()
-            select_filedialog.assert_called_once_with(title=self.test_title_str,
-                                                      filetype=self.test_filetypes,
-                                                      initialdir=self.test_start_dir)
-
-    def test_select_file_dialogue_no_input_returns_None(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askopenfilename') as select_filedialog:
-            select_filedialog.return_value = ''
-
-            assert select_file_dialogue() is None
-
-            mock_tkinter.assert_called()
-            select_filedialog.assert_called_once_with(title=None,
-                                                      filetype=self.test_default_filetypes,
-                                                      initialdir=None)
-
-
-@patch('dionysus_app.UI_menus.UI_functions.tk.Tk')
-class TestSelectFolderDialogue(TestCase):
-    def setUp(self):
-        self.test_default_start_dir = '..'
-
-        self.test_title_str = 'First you must answer three questions'
-        self.test_start_dir = 'What\\is\\your\\quest'
-
-        self.test_returned_folderpath_path = Path('strange women lying in ponds distributing swords')
-
-    def test_select_folder_dialogue_called_without_arguments(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_path
-
-            assert select_folder_dialogue() == self.test_returned_folderpath_path
-
-            assert isinstance(self.test_returned_folderpath_path, Path)
-
-            mock_tkinter.assert_called()
-            select_directorydialog.assert_called_once_with(title=None,
-                                                           initialdir=self.test_default_start_dir)
-
-    def test_select_folder_dialogue_all_None_arguments(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_path
-
-            assert select_folder_dialogue(title_str=None,
-                                          start_dir=None,
-                                          ) == self.test_returned_folderpath_path
-
-            assert isinstance(self.test_returned_folderpath_path, Path)
-
-            mock_tkinter.assert_called()
-            select_directorydialog.assert_called_once_with(title=None,
-                                                           initialdir=None)
-
-    def test_select_folder_dialogue_called_with_all_arguments(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = self.test_returned_folderpath_path
-
-            assert select_folder_dialogue(title_str=self.test_title_str,
-                                          start_dir=self.test_start_dir,
-                                          ) == self.test_returned_folderpath_path
-
-            assert isinstance(self.test_returned_folderpath_path, Path)
-
-            mock_tkinter.assert_called()
-            select_directorydialog.assert_called_once_with(title=self.test_title_str,
-                                                           initialdir=self.test_start_dir)
-
-    def test_select_folder_dialogue_no_input_returns_None(self, mock_tkinter):
-        with patch('dionysus_app.UI_menus.UI_functions.filedialog.askdirectory') as select_directorydialog:
-            select_directorydialog.return_value = ''
-
-            assert select_folder_dialogue() is None
-
-            mock_tkinter.assert_called()
-            select_directorydialog.assert_called_once_with(title=None,
-                                                           initialdir=self.test_default_start_dir)
+        assert returned_path == select_folder_dialogue(**select_folder_dialogue_args)

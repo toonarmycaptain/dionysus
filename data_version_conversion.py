@@ -7,7 +7,7 @@ from pathlib import Path
 
 from dionysus_app.class_ import Class
 from dionysus_app.class_functions import write_classlist_to_file
-from dionysus_app.data_folder import DataFolder
+from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import load_from_json_file
 from dionysus_app.student import Student
 from dionysus_app.UI_menus.UI_functions import select_file_dialogue
@@ -112,7 +112,10 @@ def transform_old_cld_file(filepath: Path):
     class_name = filepath.stem
     new_class = transform_data(class_name, old_class_data)
 
-    new_class_data_path_name = write_classlist_to_file(new_class)
+    write_classlist_to_file(new_class)
+
+    new_filename = class_name + CLASSLIST_DATA_FILE_TYPE
+    new_class_data_path_name = CLASSLIST_DATA_PATH.joinpath(class_name, new_filename)
 
     print(f'Transformed {new_class.name} data file '
           f'to new data format in {new_class_data_path_name}')

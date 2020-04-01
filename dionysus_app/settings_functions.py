@@ -21,6 +21,7 @@ from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_def
                                                          )
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
+TEMP_DIR = DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value)
 APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
 APP_SETTINGS_FILE = DataFolder.generate_rel_path(DataFolder.APP_SETTINGS.value)
 

@@ -13,10 +13,12 @@ CLASS_REGISTRY_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.val
 
 def cache_class_registry() -> List[str]:
     """
-    Initialises CLASS_REGISTRY global variable and writes registry to
-    disk.
+    Generate registry from class files on disk, then write to disk, returning
+    freshly generated registry.
 
-    :return: list
+    Typically used on app start to get value for CLASS_REGISTRY global variable
+
+    :return: List[str]
     """
 
     registry = generate_registry_from_filesystem()

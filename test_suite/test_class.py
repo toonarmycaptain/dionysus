@@ -1,10 +1,12 @@
 """Tests for class.py"""
+import os
+
 import pytest
 
-from unittest import TestCase
-from unittest.mock import patch
+from pathlib import Path
 
-from dionysus_app.class_ import Class
+from dionysus_app import class_
+from dionysus_app.class_ import Class, NewClass
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
 
@@ -36,6 +38,31 @@ def test_full_class():
     return test_full_class
 
 
+@pytest.fixture()
+def test_new_class_name_only():
+    """Returns empty NewClass instantiated with name only."""
+    test_new_class_name_only = NewClass(test_class_name_only_data_set['json_dict_rep']['name'])
+
+    # Add attributes to test expected output.
+    test_new_class_name_only.json_str_rep = test_class_name_only_data_set['json_str_rep']
+    test_new_class_name_only.json_dict_rep = test_class_name_only_data_set['json_dict_rep']
+
+    return test_new_class_name_only
+
+
+@pytest.fixture()
+def test_full_new_class():
+    """Returns empty NewClass instantiated with students."""
+    test_full_new_class = NewClass(test_full_class_data_set['json_dict_rep']['name'])
+    for student in test_full_class_data_set['json_dict_rep']['students']:
+        test_full_new_class.add_student(Student(**student))
+
+    test_full_new_class.json_str_rep = test_full_class_data_set['json_str_rep']
+    test_full_new_class.json_dict_rep = test_full_class_data_set['json_dict_rep']
+
+    return test_full_new_class
+
+
 @pytest.mark.parametrize(
     'class_name, class_list_arg, list_of_students',
     [('slightly silly', ['silly', 'sillier', 'silliest'], ['silly', 'sillier', 'silliest']),
@@ -55,65 +82,62 @@ def test_class_student_list_instantiation_no_list_arg():
 
 
 class TestClassNamePathSafeName:
-    """
-    Test Class name and path_safe_name properties.
-    """
+    """Test Class name and path_safe_name properties."""
 
-    def setup_method(self):
-        """
-        Setup class name and name for change.
-        """
+    def test_name_getter(self):
+        test_name = "The Knights of the Round-table: we don't say 'Ni!'"
+        assert Class(test_name).name == test_name
 
-        self.test_name = "The Knights of the Round-table: we don't say 'Ni!'"
-        self.test_path_safe_name = "The_Knights_of_the_Round-table__we_don_t_say__Ni__"
+    def test_path_safe_name_getter(self):
+        assert Class("The Knights of the Round-table: we don't say 'Ni!'"
+                     ).path_safe_name == "The_Knights_of_the_Round-table__we_don_t_say__Ni__"
 
-        self.test_changed_name = 'Adaptable Knights: We now say Ni!, but we dont have to.'
-        self.test_changed_path_safe_name = 'Adaptable_Knights__We_now_say_Ni___but_we_dont_have_to_'
+    def test_path_safe_name_getter_mocking_calls(self, monkeypatch):
+        mock_path_safe_name = "Something completely different."
 
-    def test_name_getter(self, test_class_name_only):
-        assert test_class_name_only.name == self.test_name
+        def mocked_clean_for_filename(class_name):
+            return mock_path_safe_name
 
-    def test_path_safe_name_getter(self, test_class_name_only):
-        assert test_class_name_only.path_safe_name == self.test_path_safe_name
+        monkeypatch.setattr(class_, 'clean_for_filename', mocked_clean_for_filename)
 
-    def test_name_setter_unmocked(self, test_class_name_only):
-        assert test_class_name_only.name != self.test_changed_name
-        assert test_class_name_only.path_safe_name != self.test_changed_path_safe_name
+        assert Class("The Knights of the Round-table: we don't say 'Ni!'").path_safe_name == mock_path_safe_name
 
-        # Change name
-        test_class_name_only.name = self.test_changed_name
+    def test_name_setter(self):
+        test_name = "The Knights of the Round-table: we don't say 'Ni!'"
 
-        assert test_class_name_only.name == self.test_changed_name
-        #  Assert name change carried over to path_safe_name attribute.
-        assert test_class_name_only.path_safe_name == self.test_changed_path_safe_name
+        test_changed_name = 'Adaptable Knights: We now say Ni!, but we dont have to.'
+        test_changed_path_safe_name = 'Adaptable_Knights__We_now_say_Ni___but_we_dont_have_to_'
 
+        test_class = Class(test_name)
 
-class TestClassNameMocked(TestCase):
-    def setUp(self):
-        self.test_name = "The Knights of the Round-table: we don't say 'Ni!'"
-        self.test_path_safe_name = "The_Knights_of_the_Round-table_we_don't_say__Ni__"
-
-        self.test_class = Class(self.test_name)
-
-        self.test_changed_name = 'Adaptable Knights: We now say Ni!, but we dont have to.'
-        self.test_changed_path_safe_name = 'Adaptable_Knights__We_now_say_Ni___but_we_dont_have_to_'
-
-    @patch('dionysus_app.class_.clean_for_filename')
-    def test_name_setter_mocked(self, mocked_clean_for_filename):
-        # Assert name, path_safe_name initial value != changed value
-        assert self.test_class.name != self.test_changed_name
-        assert self.test_class.path_safe_name != self.test_changed_path_safe_name
-
-        mocked_clean_for_filename.return_value = self.test_changed_path_safe_name
+        # Original test_class attributes not equal to changed:
+        assert (test_class.name, test_class.path_safe_name) != (test_changed_name, test_changed_path_safe_name)
 
         # Change name
-        self.test_class.name = self.test_changed_name
+        test_class.name = test_changed_name
 
-        assert self.test_class.name == self.test_changed_name
-        #  Assert name change carried over to path_safe_name attribute.
-        assert self.test_class.path_safe_name == self.test_changed_path_safe_name
+        assert (test_class.name, test_class.path_safe_name) == (test_changed_name, test_changed_path_safe_name)
 
-        mocked_clean_for_filename.assert_called_once_with(self.test_changed_name)
+    def test_name_setter_mocking_calls(self, monkeypatch):
+        test_name = "The Knights of the Round-table: we don't say 'Ni!'"
+
+        test_changed_name = 'Adaptable Knights: We now say Ni!, but we dont have to.'
+        mock_changed_path_safe_name = "Adaptable_Knights: We're Niiiearly completely un!safe?!$"
+
+        test_class = Class(test_name)
+
+        # Original test_class attributes not equal to changed:
+        assert (test_class.name, test_class.path_safe_name) != (test_changed_name, mock_changed_path_safe_name)
+
+        def mocked_clean_for_filename(class_name):
+            return mock_changed_path_safe_name
+
+        monkeypatch.setattr(class_, 'clean_for_filename', mocked_clean_for_filename)
+
+        # Change name
+        test_class.name = test_changed_name
+
+        assert (test_class.name, test_class.path_safe_name) == (test_changed_name, mock_changed_path_safe_name)
 
 
 class TestContainsMethod:
@@ -368,3 +392,44 @@ class TestClassStr:
          ])
     def test_str(self, class_object, expected_str):
         assert str(class_object) == expected_str
+
+
+class TestNewClass:
+    def test_new_class_temp_dir_created(self, monkeypatch, tmpdir):
+        test_temp_dir = Path(tmpdir, 'temp_dir')
+        test_temp_dir.mkdir(parents=True)  # Make temp_dir.
+        assert not os.listdir(test_temp_dir)  # Nothing in test_temp_dir.
+
+        monkeypatch.setattr(class_, 'TEMP_DIR', test_temp_dir)
+
+        test_class = NewClass("Sir Robin's baboons")
+
+        assert test_class.temp_dir.exists()
+        assert test_class.temp_dir.name in os.listdir(test_temp_dir)
+        # Check temp_avatars_dir
+        assert test_class.temp_avatars_dir.exists()
+        # noinspection PyTypeChecker
+        assert test_class.temp_avatars_dir.name in os.listdir(test_class.temp_dir)
+
+    def test_new_class_temp_dir_deleted_on_deletion(self, monkeypatch, tmpdir):
+        test_temp_dir = Path(tmpdir, 'temp_dir')
+        test_temp_dir.mkdir(parents=True)  # Make temp_dir.
+        assert not os.listdir(test_temp_dir)  # Nothing in test_temp_dir.
+
+        monkeypatch.setattr(class_, 'TEMP_DIR', test_temp_dir)
+
+        test_class = NewClass("Sir Robin's baboons")
+        assert test_class.temp_dir.exists() and os.listdir(test_temp_dir)  # Class temp dir in test_temp_dir.
+        del test_class  # NB May throw an (ignored) Exception because the class is garbage collected before this line.
+        # No class temp dir in test_temp_dir:
+        assert not os.listdir(test_temp_dir)
+
+    def test_new_class_uses_path_safe_name(self):
+        # Ensure class name has disallowed characters - validate test.
+        test_new_class = NewClass("S|r Røbin's ß@boon$")
+        assert test_new_class.name != test_new_class.path_safe_name
+
+        # Ensure class_name_with_disallowed chars in temp dir path.
+        assert test_new_class.name not in str(test_new_class.temp_dir)
+        # Ensure path_safe_name is in temp dir path.
+        assert test_new_class.path_safe_name in str(test_new_class.temp_dir)

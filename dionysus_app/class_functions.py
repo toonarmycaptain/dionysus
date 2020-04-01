@@ -9,13 +9,13 @@ from typing import Optional, Union
 
 import definitions
 
-from dionysus_app.class_ import Class
+from dionysus_app.class_ import Class, NewClass
 from dionysus_app.student import Student
 from dionysus_app.class_registry_functions import register_class
 from dionysus_app.data_folder import DataFolder, CLASSLIST_DATA_FILE_TYPE
 from dionysus_app.file_functions import (copy_file,
                                          load_from_json_file,
-                                         )
+                                         move_file)
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
                                                       create_chart_with_new_class_dialogue,
@@ -33,13 +33,22 @@ CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 DEFAULT_AVATAR_PATH = DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
 
 
-def create_classlist():
+def create_classlist() -> None:
+    """
+    Create a new class, then give option to create a chart with new class.
+
+    Calls UI elements to collect new class' data, then writes data to persistence.
+
+    :return: None
+    """
     classlist_name = take_classlist_name_input()  # TODO: Option to cancel creation at class name entry stage
 
-    setup_class(classlist_name)
-    create_classlist_data(classlist_name)
+    new_class: NewClass = compose_classlist_dialogue(classlist_name)
 
-    create_chart_with_new_class(classlist_name)
+    create_classlist_data(new_class)  # Future: Call to Database.create_class(new_class)
+    time.sleep(2)  # Pause for user to look over feedback.
+
+    create_chart_with_new_class(new_class)
 
 
 def setup_class(classlist_name: str) -> None:
@@ -48,9 +57,9 @@ def setup_class(classlist_name: str) -> None:
     Register class in class_registry index
 
     :param classlist_name:
-    :return:
+    :return: None
     """
-    setup_class_data_storage(classlist_name)
+    setup_class_data_storage(classlist_name)  # Database.create_class
     register_class(classlist_name)
 
 
@@ -88,17 +97,53 @@ def setup_class_data_storage(classlist_name: str) -> None:
     user_chart_save_folder.mkdir(exist_ok=True, parents=True)
 
 
-def create_classlist_data(class_name: str) -> None:
-    new_class = compose_classlist_dialogue(class_name)
-
-    class_data_feedback(new_class)
-    write_classlist_to_file(new_class)
-    time.sleep(2)  # Pause for user to look over feedback.
-
-
-def compose_classlist_dialogue(class_name: str) -> Class:
+def create_classlist_data(new_class: NewClass) -> None:
     """
-    Create class object.
+    Creates class data in persistence.
+    Calls setup_class to create any needed files, then writes data to file.
+
+    :param new_class: Class object
+    :return: None
+    """
+    setup_class(new_class.name)  # -> functionality moves to (ie function called by) JSONDatabase.create_class
+    write_classlist_to_file(new_class)
+    move_avatars_to_class_data(new_class)
+
+
+def move_avatars_to_class_data(new_class: NewClass) -> None:
+    """
+    Move avatars from NewClass.temp_dir  to new class' avatars directory.
+
+    :param new_class: NewClass
+    :return: None
+    """
+    for avatar_file in [student.avatar_filename for student in new_class.students
+                        if student.avatar_filename]:
+        move_avatar_to_class_data(new_class, avatar_file)
+
+
+def move_avatar_to_class_data(new_class: NewClass, avatar_filename: str) -> None:
+    """
+    Moves avatar from NewClass.temp_dir to new class' avatars directory.
+    Will not repeat moves of same filename if image already exists in avatars
+    directory, to avoid repeated overwrite with same file.
+
+    :param new_class: NewClass
+    :param avatar_filename: str
+    :return: None
+    """
+    origin_path = new_class.temp_avatars_dir.joinpath(avatar_filename)
+    destination_path = CLASSLIST_DATA_PATH.joinpath(new_class.name, 'avatars', avatar_filename)
+    if not destination_path.exists():  # Avatar not already in database/class data.
+        move_file(origin_path, destination_path)
+
+
+def compose_classlist_dialogue(class_name: str) -> NewClass:
+    """
+    Call UI elements to collect new class data.
+    Provide feedback to user reflecting new class composition.
+
+    Creates class object.
 
     If no students added to class, check if intended, making subsequent call to
     take_class_data_input UI if unintended blank class returned.
@@ -117,31 +162,35 @@ def compose_classlist_dialogue(class_name: str) -> Class:
             continue  # Line skipped from coverage due to peephole optimiser.
         break  # class_data not empty
 
+    class_data_feedback(new_class)
+
     return new_class
 
 
-def take_class_data_input(class_name: str) -> Class:
+def take_class_data_input(class_name: str) -> NewClass:
     """
     Take student names, avatars, return Class object.
 
     :param class_name: str
     :return: Class
     """
-    new_class = Class(name=class_name)
+    new_class = NewClass(name=class_name)
     while True:
         student_name = take_student_name_input(new_class)
         if student_name.upper() == 'END':
             break
-        avatar_filename = take_student_avatar(class_name, student_name)
+        avatar_filename = take_student_avatar(new_class, student_name)
         new_class.add_student(name=student_name, avatar_filename=avatar_filename)
     return new_class
 
 
-def take_student_avatar(class_name: str, student_name: str) -> Optional[str]:
+def take_student_avatar(new_class: NewClass, student_name: str) -> Optional[str]:
     """
+    Get avatar for student:
     Prompts user for path to avatar file.
+    Copies avatar file to temp dir for class.
 
-    :param class_name: str
+    :param new_class: NewClass class object
     :param student_name: str
     :return: str or None
     """
@@ -156,23 +205,8 @@ def take_student_avatar(class_name: str, student_name: str) -> Optional[str]:
 
     # TODO: process_student_avatar()
     # TODO: convert to png
-    copy_avatar_to_app_data(class_name, avatar_file, target_avatar_filename)
-
+    copy_file(avatar_file, new_class.temp_avatars_dir.joinpath(target_avatar_filename))
     return target_avatar_filename
-
-
-def copy_avatar_to_app_data(classlist_name: str, avatar_filename: str, save_filename: str) -> None:
-    """
-    Copies given avatar image to classlist_name/avatars/ with given save_filename.
-    No need to pre-check if file exists because it could not be selected if it did not exist.
-
-    :param classlist_name: str
-    :param avatar_filename: str or Path
-    :param save_filename: str or Path
-    :return: None
-    """
-    save_avatar_path = CLASSLIST_DATA_PATH.joinpath(classlist_name, 'avatars', save_filename)
-    copy_file(avatar_filename, save_avatar_path)
 
 
 def avatar_file_exists(avatar_file: Union[str, Path]) -> bool:
@@ -185,7 +219,7 @@ def avatar_file_exists(avatar_file: Union[str, Path]) -> bool:
     return Path(avatar_file).exists()
 
 
-def write_classlist_to_file(current_class: Class) -> Path:
+def write_classlist_to_file(current_class: Class) -> None:
     """
     Write classlist data to disk as JSON dict, according to Class object's
     Class.json_dict and Class.to_json_str methods.
@@ -194,7 +228,7 @@ def write_classlist_to_file(current_class: Class) -> Path:
     keep them as strings when loading.
 
     :param current_class: Class object
-    :return: Path
+    :return: None
     """
     class_name = current_class.name
     data_filename = class_name + CLASSLIST_DATA_FILE_TYPE
@@ -208,13 +242,18 @@ def write_classlist_to_file(current_class: Class) -> Path:
     with open(classlist_data_path, 'w') as classlist_file:
         classlist_file.write(json_class_data)
 
-    return classlist_data_path
 
+def create_chart_with_new_class(new_class: NewClass) -> None:
+    """
+    Prompt to create a chart with a newly created class, call new_chart with
+    newly created class if user desires.
 
-def create_chart_with_new_class(classlist_name):
+    :param new_class: NewClass
+    :return: None
+    """
     if create_chart_with_new_class_dialogue():
         from dionysus_app.chart_generator.create_chart import new_chart
-        new_chart(classlist_name)
+        new_chart(new_class)
 
 
 def select_classlist() -> str:

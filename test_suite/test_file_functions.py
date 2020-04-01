@@ -1,10 +1,9 @@
-import os
-import shutil
-
 from pathlib import Path
-from unittest import TestCase
 from unittest.mock import patch, mock_open
 
+import pytest
+
+from dionysus_app import file_functions
 from dionysus_app.file_functions import (convert_to_json,
                                          load_from_json,
                                          load_from_json_file,
@@ -13,169 +12,159 @@ from dionysus_app.file_functions import copy_file, move_file
 from test_suite.testing_class_data import test_full_class_data_set as test_json_class_data
 
 
-class TestConvertToJson(TestCase):
-    def setUp(self):
-        self.data_to_convert = {1: 'a', 'b': 2, 3: 'c', 'd': 4}
-        self.json_converted_data = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
+@pytest.fixture
+def test_file():
+    """
+    Return function that creates an arbitrary at a text file, test_file.txt in
+    a given directory, return the path of the file.
+    """
 
-    def test_convert_to_json(self):
-        assert convert_to_json(self.data_to_convert) == self.json_converted_data
+    def create_file(test_path):
+        test_filepath = Path(test_path, 'test_file.txt')
+        with open(test_filepath, 'w') as test_file:
+            test_file.write('This is a placeholder file.')
+        if not test_filepath.exists():
+            raise FileNotFoundError('This file should exist now.')
+        return test_filepath
 
-
-class TestLoadFromJson(TestCase):
-    def setUp(self):
-        self.json_data_to_convert = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
-        self.converted_json_data = {"1": 'a', 'b': 2, "3": 'c', 'd': 4}
-        self.test_json_class_data = test_json_class_data
-
-    def test_load_from_json(self):
-        assert load_from_json(self.json_data_to_convert) == self.converted_json_data
-
-    def test_load_from_json_test_class_data(self):
-        assert load_from_json(self.test_json_class_data['json_str_rep']) == self.test_json_class_data['json_dict_rep']
+    return create_file
 
 
-class TestLoadFromJsonFile(TestCase):
-    def setUp(self):
-        self.test_file_json_data_to_convert = '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'
-        self.mock_file_path = Path('test_file_path')
-        self.converted_json_data = {"1": 'a', 'b': 2, "3": 'c', 'd': 4}
+def test_test_file_fixture(tmpdir, test_file):
+    tf = test_file(tmpdir)
 
-    def test_load_from_json_file(self):
-        with patch('dionysus_app.file_functions.open', mock_open(read_data=self.test_file_json_data_to_convert)):
-            assert load_from_json_file(self.mock_file_path) == self.converted_json_data
+    assert isinstance(tf, Path)
+    assert tf.exists()
+    assert open(tf).read() == 'This is a placeholder file.'
 
 
-class TestCopyFile(TestCase):
-    def setUp(self):
-        self.original_filename = 'just_a_naughty_boy.png'
-        self.new_folder_name = 'not_the_messiah'
-
-        self.original_path = self.original_filename
-        self.destination_path = os.path.join(self.new_folder_name, self.original_filename)
-
-        with open(self.original_filename, 'w+') as good_file:
-            pass
-
-        os.mkdir(self.new_folder_name)
-
-    def test_copy_file(self):
-        assert os.path.exists(self.original_filename)
-        assert not os.path.exists(self.destination_path)
-        copy_file(self.original_path, self.destination_path)
-        assert os.path.exists(self.destination_path)
-
-    def tearDown(self):
-        os.remove(self.original_filename)  # remove new file
-        assert not os.path.exists(self.original_filename)
-        shutil.rmtree(self.new_folder_name)  # remove new dir
-        assert not os.path.exists(self.new_folder_name)
+class TestConvertToJson:
+    @pytest.mark.parametrize(
+        'loaded_object, json_str',
+        [({"1": 'a', 'b': 2, "3": 'c', 'd': 4}, '{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}'),
+         (test_json_class_data['json_dict_rep'], test_json_class_data['json_str_rep']),
+         ])
+    def test_convert_to_json(self, loaded_object, json_str):
+        assert convert_to_json(loaded_object) == json_str
 
 
-class TestCopyFileMockingCopyfile(TestCase):
-    def setUp(self):
-        self.original_filename = 'just_a_naughty_boy.png'
-        self.new_folder_name = 'not_the_messiah'
-
-        self.original_path = self.original_filename
-        self.destination_path = os.path.join(self.new_folder_name, self.original_filename)
-
-    @patch('dionysus_app.file_functions.copyfile')
-    @patch('dionysus_app.file_functions.Path.exists')
-    def test_copy_file_mocking_copyfile(self, mock_path_exists, mock_copyfile):
-        mock_path_exists.return_value = True  # Assume the path exists.
-
-        copy_file(self.original_path, self.destination_path)
-
-        mock_copyfile.assert_called_once_with(self.original_path, str(self.destination_path))
+class TestLoadFromJson:
+    @pytest.mark.parametrize(
+        'json_str, loaded_object',
+        [('{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}',
+          {"1": 'a', 'b': 2, "3": 'c', 'd': 4}),
+         (test_json_class_data['json_str_rep'],
+          test_json_class_data['json_dict_rep']),
+         ])
+    def test_load_from_json(self, json_str, loaded_object):
+        assert load_from_json(json_str) == loaded_object
 
 
-class TestMoveFile(TestCase):
-    def setUp(self):
-        self.original_filename = 'just_a_naughty_boy.png'
-        self.new_folder_name = 'not_the_messiah'
-
-        self.original_path = self.original_filename
-        self.destination_path = os.path.join(self.new_folder_name, self.original_filename)
-
-        with open(self.original_filename, 'w+') as test_file:
-            pass
-
-        os.mkdir(self.new_folder_name)
-
-    def test_move_file(self):
-        assert os.path.exists(self.original_filename)
-        assert not os.path.exists(self.destination_path)
-        move_file(self.original_path, self.destination_path)
-        assert os.path.exists(self.destination_path)
-        assert not os.path.exists(self.original_path)
-
-    def tearDown(self):
-        shutil.rmtree(self.new_folder_name)
-        assert not os.path.exists(self.new_folder_name)
-        assert not os.path.exists(self.original_filename)
+class TestLoadFromJsonFile:
+    @pytest.mark.parametrize(
+        'json_file_data, loaded_object',
+        [('{\n    "1": "a",\n    "b": 2,\n    "3": "c",\n    "d": 4\n}',
+          {"1": 'a', 'b': 2, "3": 'c', 'd': 4}),
+         (test_json_class_data['json_str_rep'],
+          test_json_class_data['json_dict_rep']),
+         ])
+    def test_load_from_json_file(self, json_file_data, loaded_object):
+        mock_file_path = Path('test_file_path')
+        with patch('dionysus_app.file_functions.open', mock_open(read_data=json_file_data)):
+            assert load_from_json_file(mock_file_path) == loaded_object
 
 
-class TestMoveFileMockingMove(TestCase):
-    def setUp(self):
-        self.original_filename = 'just_a_naughty_boy.png'
-        self.new_folder_name = 'not_the_messiah'
+class TestCopyFile:
+    def test_copy_file(self, tmpdir, test_file, monkeypatch):
+        def mocked_copyfile(origin, destination):
+            # Test copyfile called with expected arguments.
+            assert (origin, destination) == (str(original_filepath), str(destination_filepath))
 
-        self.original_path = self.original_filename
-        self.destination_path = os.path.join(self.new_folder_name, self.original_filename)
+        original_filepath = test_file(tmpdir)
 
-    @patch('dionysus_app.file_functions.move')
-    @patch('dionysus_app.file_functions.Path.exists')
-    def test_move_file_mocking_move(self, mock_path_exists, mock_move):
-        mock_path_exists.return_value = True  # Assume the path exists.
+        destination_filepath = Path('some destination')
+        monkeypatch.setattr(file_functions, 'copyfile', mocked_copyfile)
 
-        move_file(self.original_path, self.destination_path)
-        mock_move.assert_called_once_with(self.original_path, self.destination_path)
+        assert not Path.exists(destination_filepath)
+        copy_file(original_filepath, destination_filepath)
 
-    @patch('dionysus_app.file_functions.move')
-    @patch('dionysus_app.file_functions.Path.exists')
-    def test_move_file_mocking_move_non_existent_origin(self, mock_path_exists, mock_move):
-        mock_path_exists.return_value = False  # Assume the path exists.
+    def test_copy_file_copies_file(self, tmpdir, test_file):
+        original_filepath = test_file(tmpdir)
+        original_filename = original_filepath.name
 
-        move_file(self.original_path, self.destination_path)
-        mock_move.assert_not_called()
+        destination_dir = Path(tmpdir, 'new_directory')
+        Path.mkdir(destination_dir)
+        destination_filepath = Path(destination_dir, original_filename)
+
+        assert not Path.exists(destination_filepath)
+        copy_file(original_filepath, destination_filepath)
+
+        # Assert file in destination and still in origin.
+        assert Path.exists(destination_filepath) and Path.exists(original_filepath)
+
+    def test_copy_file_non_existent_original(self, monkeypatch):
+        def mocked_copyfile(origin, destination):
+            # Should not be called.
+            raise NotImplementedError
+
+        monkeypatch.setattr(file_functions, 'copyfile', mocked_copyfile)
+
+        copy_file('Non-existent origin', 'No destination')
 
 
-class TestMoveDirectoryWithFileInIt(TestCase):
-    def setUp(self):
-        # Origin file, folder.
-        self.original_filename = 'just_a_naughty_boy.png'
-        self.original_folder_name = 'not_the_messiah'
+class TestMoveFile:
+    def test_move_file(self, tmpdir, test_file, monkeypatch):
+        def mocked_move(origin, destination):
+            # Test copyfile called with expected arguments.
+            assert (origin, destination) == (str(original_filepath), str(destination_filepath))
 
-        self.original_file_path = os.path.join(self.original_folder_name, self.original_filename)
+        original_filepath = test_file(tmpdir)
+        destination_filepath = Path('some destination')
 
-        # Destination folder, filepath.
-        self.destination_folder_name = 'a_boy_named_brian'
-        self.destination_path = os.path.join(self.destination_folder_name, self.original_file_path)
+        monkeypatch.setattr(file_functions, 'move', mocked_move)
 
-        # Make origin folder, file, destination folder.
-        os.mkdir(self.original_folder_name)
-        with open(self.original_file_path, 'w+') as test_file:
-            pass
-        os.mkdir(self.destination_folder_name)
+        assert not Path.exists(destination_filepath)
+        move_file(original_filepath, destination_filepath)
 
-        # test setUp
-        # confirm original files and folders exist
-        assert os.path.exists(self.original_folder_name)
-        assert os.path.exists(self.original_file_path)
-        assert os.path.exists(self.destination_folder_name)
+    def test_move_file_moves_file(self, tmpdir, test_file):
+        original_filepath = test_file(tmpdir)
+        original_filename = original_filepath.name
 
-        # Confirm target not in destination folder:
-        # Folder in new location.
-        assert not os.path.exists(os.path.join(self.destination_folder_name, self.original_folder_name))
-        assert not os.path.exists(self.destination_path)  # File in destination_folder/original_folder/file.
+        destination_dir = Path(tmpdir, 'new_directory')
+        Path.mkdir(destination_dir)
+        destination_filepath = Path(destination_dir, original_filename)
 
-    def test_move_file_directory_containing_file(self):
-        move_file(self.original_folder_name, self.destination_folder_name)
-        assert os.path.exists(self.destination_path)
-        assert not os.path.exists(self.original_file_path)
-        assert not os.path.exists(self.original_folder_name)
+        assert not Path.exists(destination_filepath)
+        move_file(original_filepath, destination_filepath)
 
-    def tearDown(self):
-        shutil.rmtree(self.destination_folder_name)
-        assert not os.path.exists(self.destination_folder_name)
+        # Assert file in destination and not in origin.
+        assert Path.exists(destination_filepath) and not Path.exists(original_filepath)
+
+    def test_move_file_non_existent_original(self, monkeypatch):
+        def mocked_move(origin, destination):
+            # Should not be called.
+            raise NotImplementedError
+
+        monkeypatch.setattr(file_functions, 'move', mocked_move)
+
+        move_file('Non-existent origin', 'No destination')
+
+    def test_move_file_directory_containing_file(self, tmpdir, test_file):
+        # Create directory with file in it.
+        original_dirname = 'original_dir'
+        original_dir = Path(tmpdir, original_dirname)
+        Path.mkdir(original_dir)
+        original_filepath = test_file(original_dir)
+        original_filename = original_filepath.name
+
+        destination_dir = Path(tmpdir, 'new_directory')
+        Path.mkdir(destination_dir)
+        destination_filepath = Path(destination_dir, original_dirname, original_filename)
+
+        assert not Path.exists(destination_filepath)
+        # Move original folder with file in it.
+        move_file(original_dir, destination_dir)
+
+        # Assert original directory no longer exists, file in destination and not in origin.
+        assert not Path.exists(original_dir)
+        assert Path.exists(destination_filepath) and not Path.exists(original_filepath)
