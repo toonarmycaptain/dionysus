@@ -80,6 +80,28 @@ def scrub_candidate_filename(dirty_string: str) -> str:
     return cleaned_string
 
 
+def ask_user_bool(question: str, invalid_input_response: str=None) -> bool:
+    """
+    Get user input, return a bool response.
+    Optional additional instruction on invalid input.
+
+    :param question: str
+    :param invalid_input_response: str
+    :return: bool
+    """
+    valid_responses = {"Y": True,
+                       "YES": True,
+                       "N": False,
+                       "NO": False,
+                       }
+    while True:
+        response = input(question)
+        if response.upper() in valid_responses:
+            return valid_responses[response.upper()]
+        if invalid_input_response:
+            print(invalid_input_response)
+
+
 def save_as_dialogue(title_str: str = None,
                      default_file_extension: str = None,
                      filetypes: List[Tuple[str, str]] = None,

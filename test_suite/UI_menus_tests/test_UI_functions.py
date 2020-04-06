@@ -3,10 +3,12 @@
 import pytest
 
 from pathlib import Path
+from unittest import mock
 from unittest.mock import patch
 
 from dionysus_app.UI_menus import UI_functions
-from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
+from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
+                                                clean_for_filename,
                                                 clear_screen,
                                                 input_is_essentially_blank,
                                                 save_as_dialogue,
@@ -109,6 +111,7 @@ class TestCleanForFilename:
         Mock call to scrub_candidate_filename.
         Essentially an input .replace(' ', '_') operation, unless behaviour changes.
         """
+
         def mocked_scrub_candidate_filename(test_string):
             assert test_string == test_input
             return test_input
@@ -157,6 +160,41 @@ class TestCleanForFilename:
      ])
 def test_scrub_candidate_filename(test_input, expected_output):
     assert scrub_candidate_filename(test_input) == expected_output
+
+
+# ask_user_bool test cases:
+# Blank or junk inputs:
+no_user_input = ''
+space_input = ' '
+underscore_input = '_'
+junk_input_knights = 'the knights who say ni'
+junk_input_questions = ('First you must answer three questions: \n'
+                        'What is your name?\n'
+                        'What is your quest?\n'
+                        'What is your favourite colour?')
+# Valid inputs:
+# 'No' inputs:
+n_input = 'n', False
+N_input = 'N', False
+no_input = 'no', False
+NO_input = 'NO', False
+# 'Yes' inputs:
+y_input = 'y', True
+Y_input = 'Y', True
+yes_input = 'yes', True
+YES_input = 'YES', True
+
+blank_junk_inputs = [no_user_input, space_input, underscore_input, junk_input_knights, junk_input_questions]
+valid_inputs = [n_input, N_input, no_input, NO_input, y_input, Y_input, yes_input, YES_input]
+
+class TestAskUserBool:
+    @pytest.mark.parametrize(
+        'test_inputs, return_value',
+        [[blank_junk_inputs + [valid_input[0]],
+          valid_input[1]] for valid_input in valid_inputs])
+    def test_ask_user_bool(self, test_inputs, return_value):
+        with mock.patch('builtins.input', side_effect=test_inputs):
+            assert ask_user_bool('something', 'bad answer') == return_value
 
 
 # Patching Tk doesn't affect test but not doing so slows down test 10x.

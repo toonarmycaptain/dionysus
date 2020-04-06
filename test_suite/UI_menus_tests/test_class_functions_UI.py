@@ -8,6 +8,7 @@ import pytest
 
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
+from dionysus_app.UI_menus import class_functions_UI
 from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       class_data_feedback,
                                                       create_chart_with_new_class_dialogue,
@@ -206,48 +207,20 @@ class TestTakeStudentNameInput(TestCase):
                                                    for printed_string in self.printed_feedback]
 
 
-class TestBlankClassDialogue(TestCase):
-    def setUp(self):
-        # Blank or junk inputs:
-        self.no_input = ''
-        self.space_input = ' '
-        self.blank_input = '_'
-        self.junk_input_knights = 'the knights who say ni'
-        self.junk_input_questions = ('First you must answer three questions: \n'
-                                     'What is your name?\n'
-                                     'What is your quest?\n'
-                                     'What is your favourite colour?')
-        # Valid inputs:
-        # 'No' inputs:
-        self.n_input = 'n', False
-        self.N_input = 'N', False
-        # 'Yes' inputs:
-        self.y_input = 'y', True
-        self.Y_input = 'Y', True
+class TestBlankClassDialogue:
+    @pytest.mark.parametrize('ask_user_bool_return',
+                             [True, False])
+    def test_blank_class_dialogue(self, monkeypatch,
+                                  ask_user_bool_return):
+        def mocked_ask_user_bool(question, invalid_input_response):
+            assert (question, invalid_input_response) == (
+                'Do you want to create an empty class? [Y/N] ',
+                'Please enter y for yes to create empty class, or n to return to student input.')
+            return ask_user_bool_return
 
-        self.blank_junk_inputs = [self.no_input, self.space_input, self.junk_input_knights, self.junk_input_questions]
-        self.valid_inputs = [self.n_input, self.N_input, self.y_input, self.Y_input]
+        monkeypatch.setattr(class_functions_UI, 'ask_user_bool', mocked_ask_user_bool)
 
-        # Create test sequences:
-        self.input_sets = []
-        for valid_input in self.valid_inputs:
-            test_case = [self.blank_junk_inputs + [valid_input[0]], valid_input[1]]
-            self.input_sets.append(test_case)
-
-    @patch('dionysus_app.UI_menus.class_functions_UI.print')
-    def test_blank_class_dialogue(self, mocked_print):
-        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
-            for test_case in self.input_sets:
-                with self.subTest(i=test_case):
-                    input_strings = test_case[0]
-                    expected_return = test_case[1]
-
-                    mock_input.side_effect = input_strings
-
-                    assert blank_class_dialogue() == expected_return
-
-                    # Reset the mock function after each test sequence:
-                    mock_input.reset_mock(return_value=True, side_effect=True)
+        assert blank_class_dialogue() == ask_user_bool_return
 
 
 class TestClassDataFeedback:

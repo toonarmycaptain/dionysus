@@ -4,7 +4,8 @@ from typing import Optional, Union
 
 from dionysus_app.class_ import Class
 from dionysus_app.class_registry_functions import classlist_exists
-from dionysus_app.UI_menus.UI_functions import (clean_for_filename,
+from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
+                                                clean_for_filename,
                                                 input_is_essentially_blank,
                                                 select_file_dialogue,
                                                 )
@@ -55,14 +56,9 @@ def take_student_name_input(the_class: Class):
 
 
 def blank_class_dialogue():
-    while True:
-        choice = input("Do you want to create an empty class? y/n")
-        if choice.upper() == 'Y':
-            return True
-        if choice.upper() == 'N':
-            return False
-        # TODO: Option to cancel creation here/after entering a class name (eg made typo in class name)
-        print('Please enter y for yes to create empty class, or n to return to student input.')
+    return ask_user_bool(
+        question='Do you want to create an empty class? [Y/N] ',
+        invalid_input_response='Please enter y for yes to create empty class, or n to return to student input.')
 
 
 def class_data_feedback(current_class: Class):
@@ -88,14 +84,8 @@ def create_chart_with_new_class_dialogue() -> bool:
 
     :return: bool
     """
-    valid_responses = {"Y": True,
-                       "N": False
-                       }
-    while True:
-        response = input("Do you want to create a new chart for the class you just created? [Y/N]: ")
-        if response.upper() in valid_responses:
-            return valid_responses[response.upper()]
-        print("Invalid response, please try again.")
+    return ask_user_bool(question="Do you want to create a new chart for the class you just created? [Y/N]: ",
+                         invalid_input_response="Invalid response, please try again.")
 
 
 def display_class_selection_menu(class_options: dict):

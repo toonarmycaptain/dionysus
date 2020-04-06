@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Refactor out functions asking user for yes/no input into `ask_user_bool` function, taking a `question` and optional `invalid_input_response` parameters.
+
 ## [0.6.0-alpha] - 2020-04-01
 ### Added
 - Implemented `temp` directory created in `APP_DATA` by `data_folder_check` on app start and removed on app exit (if it contains files). 
