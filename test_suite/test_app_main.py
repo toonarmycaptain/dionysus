@@ -31,7 +31,7 @@ class TestRunApp:
     def test_run_app_sets_cwd_correctly(self, monkeypatch):
         os_chdir_mock, app_init_mock = {'called': False}, {'called': False}
         cache_class_registry_mock, load_chart_save_folder_mock = {'called': False}, {'called': False}
-        run_main_menu_mock, quit_app_mock = {'called': False}, {'called': False}
+        load_database_mock, run_main_menu_mock, quit_app_mock = {'called': False}, {'called': False}, {'called': False}
 
         def mocked_os_chdir(path):
             if path is not sys.path[0]:
@@ -47,6 +47,9 @@ class TestRunApp:
         def mocked_load_chart_save_folder():
             load_chart_save_folder_mock['called'] = True
 
+        def mocked_load_database():
+            load_database_mock['called'] = True
+
         def mocked_run_main_menu():
             run_main_menu_mock['called'] = True
 
@@ -57,6 +60,7 @@ class TestRunApp:
         monkeypatch.setattr(app_main, 'app_init', mocked_app_init)
         monkeypatch.setattr(app_main, 'cache_class_registry', mocked_cache_class_registry)
         monkeypatch.setattr(app_main, 'load_chart_save_folder', mocked_load_chart_save_folder)
+        monkeypatch.setattr(app_main, 'load_database', mocked_load_database)
         monkeypatch.setattr(app_main, 'run_main_menu', mocked_run_main_menu)
         monkeypatch.setattr(app_main, 'quit_app', mocked_quit_app)
 
@@ -66,5 +70,7 @@ class TestRunApp:
                     app_init_mock['called'],
                     cache_class_registry_mock['called'],
                     load_chart_save_folder_mock['called'],
-                    run_main_menu_mock['called'], quit_app_mock['called']
+                    load_database_mock['called'],
+                    run_main_menu_mock['called'],
+                    quit_app_mock['called']
                     ])

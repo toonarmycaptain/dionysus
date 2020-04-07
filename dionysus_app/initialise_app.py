@@ -5,8 +5,11 @@ from pathlib import Path
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.settings_functions import (APP_SETTINGS_FILE,
+                                             app_start_set_database,
                                              app_start_set_default_chart_save_location,
-                                             TEMP_DIR)
+                                             TEMP_DIR,
+                                             )
+from dionysus_app.UI_menus.settings_functions_UI import welcome_to_program
 
 
 def app_config() -> None:
@@ -18,6 +21,7 @@ def app_config() -> None:
 
     if not Path.exists(APP_SETTINGS_FILE):
         welcome_to_program()
+        app_start_set_database()
         app_start_set_default_chart_save_location()
 
 

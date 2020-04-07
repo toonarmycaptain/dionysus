@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Database initialised on app_start, prompt user to set if app is being run for the first time.
 ### Changed
 - Refactor out functions asking user for yes/no input into `ask_user_bool` function, taking a `question` and optional `invalid_input_response` parameters.
 
@@ -13,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented `temp` directory created in `APP_DATA` by `data_folder_check` on app start and removed on app exit (if it contains files). 
 - `NewClass` subclass of `Class` using `temp` directory to hold files before writing to database.
     - Initially holds avatars as user enters during class creation. 
-- Add [AllContributors](https://allcontributors.org/) badge to `README.md`, recognising project contributors, `.all-contributorsrc` with contributer data. 
+- Add [AllContributors](https://allcontributors.org/) badge to `README.md`, recognising project contributors, `.all-contributorsrc` with contributor data. 
 ### Changed
 - Separate UI/logic/persistence concerns in `create_classlist`. 
     - New functions `move_avatars_to_class_data`, `move_avatar_to_class_data` utilise `NewClass` to move avatars from `temp` to database.

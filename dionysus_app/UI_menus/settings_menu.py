@@ -21,6 +21,7 @@ def settings_menu_options():
     print("Dionysus - Settings\n")
     print("Please select an option by entering the corresponding number, and press return:\n"
           "     1. Change default chart save location.\n"
+          "     2. Change database backend.\n"
           "     \n"
           "     0. Return to main menu."
           )
@@ -40,6 +41,7 @@ def take_settings_menu_input():
     """
     possible_options = {
         '1': call_set_default_chart_save_location,
+        '2': call_set_database_backend,  # Future option.
         # '0': return_to_main_menu,
         }
 
@@ -62,6 +64,12 @@ def call_set_default_chart_save_location():
     """
     set_default_chart_save_location(user_set=True)
     print('\n\n')
+
+
+def call_set_database_backend() -> None:
+    print("This feature is not yet implemented.\n"
+          "Please contact the developer and ply him with liquor, coffee, and\n"
+          "other desirables if you would like to see this feature.\n")
 
 
 def return_to_main_menu():

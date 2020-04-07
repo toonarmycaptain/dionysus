@@ -1,11 +1,15 @@
 """Test settings functions.py"""
-import os
+import pytest
 
 from pathlib import Path
-from unittest import TestCase
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, MagicMock
 
-from dionysus_app.settings_functions import (APP_SETTINGS_FILE,
+import definitions
+
+from dionysus_app import settings_functions
+from dionysus_app.settings_functions import (APP_DATA,
+                                             APP_SETTINGS_FILE,
+                                             app_start_set_database,
                                              app_start_set_default_chart_save_location,
                                              create_app_data__init__,
                                              create_app_settings_file,
@@ -14,381 +18,269 @@ from dionysus_app.settings_functions import (APP_SETTINGS_FILE,
                                              load_chart_save_folder,
                                              move_chart_save_folder,
                                              save_new_default_chart_save_location_setting,
+                                             set_database_backend,
                                              set_default_chart_save_location,
                                              write_settings_to_file,
                                              )
 
 
-class TestAppStartSetDefaultChartSaveLocation(TestCase):
-    @patch('dionysus_app.settings_functions.set_default_chart_save_location')
-    @patch('dionysus_app.settings_functions.user_decides_to_set_default_location')
-    def test_app_start_set_default_chart_save_location_user_set(
-            self,
-            mocked_user_decides_to_set_default_location,
-            mocked_set_default_chart_save_location,
-    ):
-        mocked_user_decides_to_set_default_location.return_value = True
+class TestAppStartSetDefaultChartSaveLocation:
+    @pytest.mark.parametrize('user_setting_location', [True, False])
+    def test_app_start_set_default_chart_save_location(self, monkeypatch,
+                                                       user_setting_location):
+        def mocked_set_default_chart_save_location(user_set):
+            if user_set is not user_setting_location:
+                raise ValueError('Flag for user setting location is incorrect.')
+
+        monkeypatch.setattr(settings_functions, 'user_decides_to_set_default_location', lambda: user_setting_location)
+        monkeypatch.setattr(settings_functions, 'set_default_chart_save_location',
+                            mocked_set_default_chart_save_location)
 
         assert app_start_set_default_chart_save_location() is None
 
-        mocked_user_decides_to_set_default_location.assert_called_once_with()
-        mocked_set_default_chart_save_location.assert_called_once_with(
-            user_set=mocked_user_decides_to_set_default_location.return_value)
 
-    @patch('dionysus_app.settings_functions.set_default_chart_save_location')
-    @patch('dionysus_app.settings_functions.user_decides_to_set_default_location')
-    def test_app_start_set_default_chart_save_location_app_set(
-            self,
-            mocked_user_decides_to_set_default_location,
-            mocked_set_default_chart_save_location,
-    ):
-        mocked_user_decides_to_set_default_location.return_value = False
+class TestSetDefaultChartSaveLocation:
+    @pytest.mark.parametrize('user_setting_location, user_supplied_location',
+                             [(False, False),
+                              (True, Path('a user set this location')),  # User provides location
+                              (True, False),  # User does not provide location
+                              ])
+    def test_set_default_chart_save_location(self, monkeypatch,
+                                             user_setting_location, user_supplied_location):
 
-        assert app_start_set_default_chart_save_location() is None
+        def mocked_user_set_chart_save_folder():
+            if not user_setting_location:
+                raise ValueError('Should not be called if user input is not expected.')
+            # On no user input, function returns the app default.
+            return user_supplied_location or settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER
 
-        mocked_user_decides_to_set_default_location.assert_called_once_with()
-        mocked_set_default_chart_save_location.assert_called_once_with(
-            user_set=mocked_user_decides_to_set_default_location.return_value)
+        def mocked_save_new_default_chart_save_location_setting(new_chart_save_folder_path):
+            if new_chart_save_folder_path != test_new_chart_save_location:
+                raise ValueError(f'Wrong new location path: '
+                                 f'{new_chart_save_folder_path=}!={test_new_chart_save_location}')
 
+        def mocked_create_chart_save_folder(new_chart_save_folder_path, original_location):
+            if new_chart_save_folder_path != test_new_chart_save_location:
+                raise ValueError(f'Wrong new location path: '
+                                 f'{new_chart_save_folder_path=}!={test_new_chart_save_location}')
+            if original_location != test_original_chart_save_folder_location:
+                raise ValueError(f'Wrong original chart save folder location: '
+                                 f'{original_location}!={settings_functions.definitions.DEFAULT_CHART_SAVE_FOLDER}')
 
-class TestSetDefaultChartSaveLocation(TestCase):
-    mocked_APP_DEFAULT_CHART_SAVE_FOLDER = Path('app_default')
-    mocked_DEFAULT_CHART_SAVE_FOLDER = Path('set_default_location')
-    mocked_CHART_SAVE_FOLDER_NAME = 'art_gallery'
+        monkeypatch.setattr(settings_functions, 'APP_DEFAULT_CHART_SAVE_FOLDER',
+                            Path('mock_APP_DEFAULT_CHART_SAVE_FOLDER'))
+        monkeypatch.setattr(settings_functions, 'CHART_SAVE_FOLDER_NAME', 'mocked_CHART_SAVE_FOLDER_NAME')
+        monkeypatch.setattr(settings_functions.definitions, 'DEFAULT_CHART_SAVE_FOLDER',
+                            Path('mock_APP_DEFAULT_CHART_SAVE_FOLDER'))
+        monkeypatch.setattr(settings_functions, 'user_set_chart_save_folder', mocked_user_set_chart_save_folder)
+        monkeypatch.setattr(settings_functions, 'create_chart_save_folder', mocked_create_chart_save_folder)
+        monkeypatch.setattr(settings_functions, 'save_new_default_chart_save_location_setting',
+                            mocked_save_new_default_chart_save_location_setting)
 
-    def setUp(self):
-        # Preset app default
-        self.mocked_APP_DEFAULT_CHART_SAVE_FOLDER = Path('app_default')
-        # Location in settings
-        self.mocked_DEFAULT_CHART_SAVE_FOLDER = Path('set_default_location')
-        self.mocked_CHART_SAVE_FOLDER_NAME = 'art_gallery'
+        # Original chart save folder location:
+        test_original_chart_save_folder_location = Path('mock_APP_DEFAULT_CHART_SAVE_FOLDER')
+        # Pretest definitions.
+        assert settings_functions.definitions.DEFAULT_CHART_SAVE_FOLDER == test_original_chart_save_folder_location
+        # Expected new location:
+        test_new_chart_save_location = Path(settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER,
+                                            settings_functions.CHART_SAVE_FOLDER_NAME)  # App default if no user input.
+        if user_supplied_location:
+            test_new_chart_save_location = Path.joinpath(user_supplied_location,
+                                                         settings_functions.CHART_SAVE_FOLDER_NAME)
 
-        self.app_default_chart_save_folder_path = Path(self.mocked_APP_DEFAULT_CHART_SAVE_FOLDER,
-                                                       self.mocked_CHART_SAVE_FOLDER_NAME)
-
-        self.user_supplied_location = r'britain\camelot\not_some_french_guys_house'
-        self.user_set_location_fullpath = Path(self.user_supplied_location, self.mocked_CHART_SAVE_FOLDER_NAME)
-
-    @patch('dionysus_app.settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER', mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
-    @patch('dionysus_app.settings_functions.CHART_SAVE_FOLDER_NAME', mocked_CHART_SAVE_FOLDER_NAME)
-    @patch('dionysus_app.settings_functions.definitions.DEFAULT_CHART_SAVE_FOLDER', mocked_DEFAULT_CHART_SAVE_FOLDER)
-    @patch('dionysus_app.settings_functions.create_chart_save_folder')
-    @patch('dionysus_app.settings_functions.save_new_default_chart_save_location_setting')
-    @patch('dionysus_app.settings_functions.user_set_chart_save_folder')
-    def test_set_default_chart_save_location_user_set_false(self,
-                                                            mocked_user_set_chart_save_folder,
-                                                            mocked_save_new_default_chart_save_location_setting,
-                                                            mocked_create_chart_save_folder,
-                                                            ):
-        assert set_default_chart_save_location(False) is None
-
-        mocked_user_set_chart_save_folder.assert_not_called()
-        mocked_save_new_default_chart_save_location_setting.assert_called_once_with(
-            self.app_default_chart_save_folder_path)
-        mocked_create_chart_save_folder.assert_called_once_with(self.app_default_chart_save_folder_path,
-                                                                self.mocked_DEFAULT_CHART_SAVE_FOLDER)
-
-    @patch('dionysus_app.settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER', mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
-    @patch('dionysus_app.settings_functions.CHART_SAVE_FOLDER_NAME', mocked_CHART_SAVE_FOLDER_NAME)
-    @patch('dionysus_app.settings_functions.definitions')
-    @patch('dionysus_app.settings_functions.create_chart_save_folder')
-    @patch('dionysus_app.settings_functions.save_new_default_chart_save_location_setting')
-    @patch('dionysus_app.settings_functions.user_set_chart_save_folder')
-    def test_set_default_chart_save_location_user_set_true_location_supplied(
-            self,
-            mocked_user_set_chart_save_folder,
-            mocked_save_new_default_chart_save_location_setting,
-            mocked_create_chart_save_folder,
-            mocked_definitions):
-        mocked_definitions.DEFAULT_CHART_SAVE_FOLDER = self.mocked_DEFAULT_CHART_SAVE_FOLDER
-        mocked_user_set_chart_save_folder.return_value = self.user_supplied_location
-        assert set_default_chart_save_location(True) is None
-
-        mocked_user_set_chart_save_folder.assert_called_once_with()
-        mocked_save_new_default_chart_save_location_setting.assert_called_once_with(
-            self.user_set_location_fullpath)
-        mocked_create_chart_save_folder.assert_called_once_with(self.user_set_location_fullpath,
-                                                                self.mocked_DEFAULT_CHART_SAVE_FOLDER)
-        assert mocked_definitions.DEFAULT_CHART_SAVE_FOLDER == self.user_set_location_fullpath
-
-    @patch('dionysus_app.settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER', mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
-    @patch('dionysus_app.settings_functions.CHART_SAVE_FOLDER_NAME', mocked_CHART_SAVE_FOLDER_NAME)
-    @patch('dionysus_app.settings_functions.definitions')
-    @patch('dionysus_app.settings_functions.create_chart_save_folder')
-    @patch('dionysus_app.settings_functions.save_new_default_chart_save_location_setting')
-    @patch('dionysus_app.settings_functions.user_set_chart_save_folder')
-    def test_set_default_chart_save_location_user_set_true_no_location_supplied(
-            self,
-            mocked_user_set_chart_save_folder,
-            mocked_save_new_default_chart_save_location_setting,
-            mocked_create_chart_save_folder,
-            mocked_definitions):
-        mocked_definitions.DEFAULT_CHART_SAVE_FOLDER = self.mocked_DEFAULT_CHART_SAVE_FOLDER
-        mocked_user_set_chart_save_folder.return_value = self.mocked_APP_DEFAULT_CHART_SAVE_FOLDER
-        assert set_default_chart_save_location(True) is None
-
-        mocked_user_set_chart_save_folder.assert_called_once_with()
-        mocked_save_new_default_chart_save_location_setting.assert_called_once_with(
-            self.app_default_chart_save_folder_path)
-        mocked_create_chart_save_folder.assert_called_once_with(self.app_default_chart_save_folder_path,
-                                                                self.mocked_DEFAULT_CHART_SAVE_FOLDER)
-        assert mocked_definitions.DEFAULT_CHART_SAVE_FOLDER == self.app_default_chart_save_folder_path
+        assert set_default_chart_save_location(user_setting_location) is None
+        # Runtime setting changed.
+        assert settings_functions.definitions.DEFAULT_CHART_SAVE_FOLDER == test_new_chart_save_location
 
 
-class TestCreateChartSaveFolder(TestCase):
-    def setUp(self):
-        self.test_original_location = 'mock_location'
-        self.test_new_location = 'mock_new_location'
+class TestAppStartSetDatabase:
+    @pytest.mark.parametrize('user_setting_location', [True, False])
+    def test_app_start_set_database_backend(self, monkeypatch,
+                                            user_setting_location):
+        def mocked_set_database_backend(user_set):
+            if user_set is not user_setting_location:
+                raise ValueError('Flag for user setting location is incorrect.')
 
-    @patch('dionysus_app.settings_functions.move_chart_save_folder')
-    @patch('dionysus_app.settings_functions.Path')
-    def test_create_chart_save_folder_test_correct_argument_passed_to_path(self,
-                                                                           mocked_path,
-                                                                           mocked_move_chart_save_folder,
-                                                                           ):
-        """Mocking call to path and mkdir method on Path class didn't work."""
-        assert create_chart_save_folder(self.test_new_location) is None
+        monkeypatch.setattr(settings_functions, 'user_decides_to_set_database_backend', lambda: user_setting_location)
+        monkeypatch.setattr(settings_functions, 'set_database_backend', mocked_set_database_backend)
 
-        mocked_move_chart_save_folder.assert_not_called()
-        mocked_path.assert_called_once_with(self.test_new_location)
-
-    @patch('dionysus_app.settings_functions.move_chart_save_folder')
-    @patch('dionysus_app.settings_functions.Path.mkdir')
-    def test_create_chart_save_folder_no_original(self,
-                                                  mocked_mkdir,
-                                                  mocked_move_chart_save_folder,
-                                                  ):
-        assert create_chart_save_folder(self.test_new_location) is None
-
-        mocked_move_chart_save_folder.assert_not_called()
-        mocked_mkdir.assert_called_once_with(exist_ok=True, parents=True)
-
-    @patch('dionysus_app.settings_functions.move_chart_save_folder')
-    @patch('dionysus_app.settings_functions.Path.mkdir')
-    def test_create_chart_save_folder_original_exists(self,
-                                                      mocked_mkdir,
-                                                      mocked_move_chart_save_folder,
-                                                      ):
-        assert create_chart_save_folder(self.test_new_location,
-                                        self.test_original_location) is None
-
-        mocked_move_chart_save_folder.assert_called_once_with(self.test_original_location,
-                                                              Path(self.test_new_location))
-        mocked_mkdir.assert_called_once_with(exist_ok=True, parents=True)
+        assert app_start_set_database() is None
 
 
-class TestMoveChartSaveFolder(TestCase):
-    def setUp(self):
-        self.test_original_location = 'mock_location'
-        self.test_new_location = 'mock_new_location'
+class TestSetDatabaseBackend:
+    @pytest.mark.parametrize('user_setting_backend, user_selected_backend',
+                             [(True, 'some database'),
+                              (True, False),
+                              (False, False),
+                              ])
+    def test_set_database_backend(self, monkeypatch,
+                                  user_setting_backend, user_selected_backend):
+        assert definitions.DATABASE is None  # Uninitialised runtime setting.
 
-    @patch('dionysus_app.settings_functions.Path')
-    def test_move_chart_save_folder_path_called_on_correct_argument(self,
-                                                                    mocked_path,
-                                                                    ):
-        """Mocking call to path and mkdir method on Path class didn't work."""
-        assert move_chart_save_folder(self.test_original_location,
-                                      self.test_new_location) is None
+        def mocked_edit_app_settings_file(new_setting):
+            assert new_setting['database'] == user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND
+            if new_setting['database'] != (user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND):
+                raise ValueError(
+                    f"Wrong new setting: {new_setting['database']=} "
+                    f"!= {user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND=}")
 
-        mocked_path.assert_called_once_with(self.test_original_location)
+        monkeypatch.setattr(settings_functions, 'user_set_database_backend', lambda: user_selected_backend)
+        monkeypatch.setattr(settings_functions, 'edit_app_settings_file', mocked_edit_app_settings_file)
 
-    @patch('dionysus_app.settings_functions.move_file')
-    @patch('dionysus_app.settings_functions.Path.exists')
-    def test_move_chart_save_folder_original_nonexistent(self,
-                                                         mocked_path_exists,
-                                                         mocked_move_file,
-                                                         ):
-        mocked_path_exists.return_value = False
-
-        assert move_chart_save_folder(self.test_original_location,
-                                      self.test_new_location) is None
-
-        mocked_move_file.assert_not_called()
-
-    @patch('dionysus_app.settings_functions.move_file')
-    @patch('dionysus_app.settings_functions.Path.exists')
-    def test_move_chart_save_folder_original_existent(self,
-                                                      mocked_path_exists,
-                                                      mocked_move_file,
-                                                      ):
-        mocked_path_exists.return_value = True
-
-        assert move_chart_save_folder(self.test_original_location,
-                                      self.test_new_location) is None
-
-        mocked_move_file.assert_called_once_with(self.test_original_location,
-                                                 self.test_new_location)
+        assert set_database_backend(user_setting_backend) is None
 
 
-class TestSaveNewDefaultChartSaveLocationSetting(TestCase):
-    def setUp(self):
-        self.test_new_location = Path(r'camelot\holy_grail')
-        self.test_new_setting_dict = {'user_default_chart_save_folder': str(self.test_new_location)}
+class TestCreateChartSaveFolder:
+    @pytest.mark.parametrize('test_original_location',
+                             [None,  # No original location passed.
+                              Path('some_location')  # New location.
+                              ])
+    def test_create_chart_save_folder(self, monkeypatch,
+                                      test_original_location):
+        mkdir_mock, move_chart_save_folder_mock = {'called': False}, {'called': False}
+        test_new_save_folder_path = Path('somewhere else')
 
-    @patch('dionysus_app.settings_functions.edit_app_settings_file')
-    def test_save_new_default_chart_save_location_setting(self,
-                                                          mocked_edit_app_settings_file):
-        assert save_new_default_chart_save_location_setting(self.test_new_location) is None
+        def mocked_move_chart_save_folder(original_location, new_location):
+            assert test_original_location  # Should not be called if no original location.
+            assert (original_location, new_location) == (test_original_location, test_new_save_folder_path)
+            move_chart_save_folder_mock['called'] = True
 
-        mocked_edit_app_settings_file.assert_called_once_with(self.test_new_setting_dict)
+        def mocked_mkdir(path_arg, **kwargs):
+            assert path_arg == test_new_save_folder_path
+            assert kwargs['parents'] and kwargs['exist_ok']
+            mkdir_mock['called'] = True
+
+        monkeypatch.setattr(settings_functions, 'move_chart_save_folder', mocked_move_chart_save_folder)
+        monkeypatch.setattr(settings_functions.Path, 'mkdir', mocked_mkdir)
+
+        assert create_chart_save_folder(test_new_save_folder_path, test_original_location) is None
+
+        assert mkdir_mock['called']  # Should always be called.
+        if test_original_location:
+            assert move_chart_save_folder_mock['called']
+        else:
+            assert not move_chart_save_folder_mock['called']
 
 
-class TestWriteSettingsToFile(TestCase):
-    mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+class TestMoveChartSaveFolder:
+    @pytest.mark.parametrize('original_location_exists', [True, False])
+    def test_move_chart_save_folder(self, monkeypatch,
+                                    original_location_exists):
+        test_original_save_folder_path = Path('somewhere')
+        test_new_save_folder_path = Path('somewhere else')
+        move_file_mock = {'called': False}
 
-    def setUp(self):
-        self.mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
+        def mocked_move_file(original_location, new_location):
+            assert (original_location, new_location) == (test_original_save_folder_path, test_new_save_folder_path)
+            move_file_mock['called'] = True
 
-        self.test_settings_dict = {'knight': 'sir lancelot'}
-        self.test_settings_write_str = 'dionysus_settings = ' + str(self.test_settings_dict)
+        monkeypatch.setattr(settings_functions.Path, 'exists', lambda path: original_location_exists)
+        monkeypatch.setattr(settings_functions, 'move_file', mocked_move_file)
 
-    @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
+        assert move_chart_save_folder(test_original_save_folder_path,
+                                      test_new_save_folder_path) is None
+
+        assert move_file_mock['called'] == original_location_exists
+
+
+class TestSaveNewDefaultChartSaveLocationSetting:
+    def test_save_new_default_chart_save_location_setting(self, monkeypatch):
+        test_new_location = Path(r'camelot\holy_grail')
+
+        def mocked_edit_app_settings_file(chart_setting):
+            assert chart_setting == {'user_default_chart_save_folder': str(test_new_location)}
+
+        monkeypatch.setattr(settings_functions, 'edit_app_settings_file', mocked_edit_app_settings_file)
+
+        assert save_new_default_chart_save_location_setting(test_new_location) is None
+
+
+class TestWriteSettingsToFile:
     def test_write_settings_to_file(self):
+        test_settings_dict = {'knight': 'sir lancelot'}
+
         with patch('dionysus_app.settings_functions.open', mock_open(read_data=None)) as mocked_open:
-            assert write_settings_to_file(self.test_settings_dict) is None
+            assert write_settings_to_file(test_settings_dict) is None
 
-            mocked_open.assert_called_once_with(self.mock_APP_SETTINGS_FILE, 'w+')
+            mocked_open.assert_called_once_with(APP_SETTINGS_FILE, 'w+')
             mocked_settings_file = mocked_open()
-            mocked_settings_file.write.assert_called_once_with(self.test_settings_write_str)
+            mocked_settings_file.write.assert_called_once_with(f'dionysus_settings = {test_settings_dict}')
 
 
-class TestCreateAppSettingsFile(TestCase):
-    def setUp(self):
-        self.default_blank_settings_dict = {}
-        self.test_settings_dict = {'system of government': 'Strange women lying in ponds distributing swords.'}
+class TestCreateAppSettingsFile:
+    @pytest.mark.parametrize(
+        'new_settings_dict, dict_to_write',
+        [(None, {}),  # No settings dict passed.
+         ({'Knight statement': 'Ni!'}, {'Knight statement': 'Ni!'}),
+         ])
+    def test_create_app_settings_file(self, monkeypatch,
+                                      new_settings_dict, dict_to_write):
+        create_app_data__init__mock, write_settings_to_file_mock = {'called': False}, {'called': False}
 
-    @patch('dionysus_app.settings_functions.write_settings_to_file')
-    @patch('dionysus_app.settings_functions.create_app_data__init__')
-    def test_create_app_settings_file_no_settings_dict(self,
-                                                       mocked_create_app_data__init__,
-                                                       mocked_write_settings_to_file
-                                                       ):
-        assert create_app_settings_file() is None
+        def mocked_create_app_data__init__():
+            create_app_data__init__mock['called'] = True
 
-        mocked_create_app_data__init__.assert_called_once_with()
-        mocked_write_settings_to_file.assert_called_once_with(self.default_blank_settings_dict)
+        def mocked_write_settings_to_file(settings_dict):
+            assert settings_dict == dict_to_write
+            write_settings_to_file_mock['called'] = True
 
-        # Check default settings argument passed to write_settings_to_file is a dict:
-        # call_args_list[first call][positional args][first positional arg]
-        assert isinstance(mocked_write_settings_to_file.call_args_list[0][0][0], dict)
+        monkeypatch.setattr(settings_functions, 'write_settings_to_file', mocked_write_settings_to_file)
+        monkeypatch.setattr(settings_functions, 'create_app_data__init__', mocked_create_app_data__init__)
 
-    @patch('dionysus_app.settings_functions.write_settings_to_file')
-    @patch('dionysus_app.settings_functions.create_app_data__init__')
-    def test_create_app_settings_file_with_settings_dict(self,
-                                                         mocked_create_app_data__init__,
-                                                         mocked_write_settings_to_file
-                                                         ):
-        assert create_app_settings_file(self.test_settings_dict) is None
+        assert create_app_settings_file(new_settings_dict) is None
 
-        mocked_create_app_data__init__.assert_called_once_with()
-        mocked_write_settings_to_file.assert_called_once_with(self.test_settings_dict)
+        assert create_app_data__init__mock['called'] and write_settings_to_file_mock['called']
 
 
-class TestCreateAppDataInit(TestCase):
-    mock_APP_DATA = Path(r'all\the\data')
-
-    def setUp(self):
-        self.mock_APP_DATA = Path(r'all\the\data')
-
-        self.test_init_py_filename = '__init__.py'
-        self.test_init_py_path = os.path.join(self.mock_APP_DATA, self.test_init_py_filename)
-
-        self.test_init_py_write_string = '"""__init__.py so that settings.py may be imported."""'
-
-    @patch('dionysus_app.settings_functions.APP_DATA', mock_APP_DATA)
+class TestCreateAppDataInit:
     def test_create_app_data__init__(self):
         with patch('dionysus_app.settings_functions.open', mock_open(read_data=None)) as mocked_open:
             assert create_app_data__init__() is None
 
-            mocked_open.assert_called_once_with(self.test_init_py_path, 'w+')
+            mocked_open.assert_called_once_with(Path(APP_DATA, '__init__.py'), 'w+')
             mocked_settings_file = mocked_open()
-            mocked_settings_file.write.assert_called_once_with(self.test_init_py_write_string)
+            mocked_settings_file.write.assert_called_once_with('"""__init__.py so that settings.py may be imported."""')
 
 
-class TestEditAppSettingsFile(TestCase):
-    mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
-    mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
+class TestEditAppSettingsFile:
+    @pytest.mark.parametrize(
+        'settings_file_exists, existing_settings_dict',
+        [(False, {}),  # No existing settings dict, created empty dict.
+         (True, {}),  # Existing empty settings dict.
+         (True, {'some': 'setting'}),  # Existing setting
+         (True, {'some': 'setting'}),  # Existing settings, changing setting.
+         (True, {'some': 'setting', 'system of government': 'random.random'}),
+         ])
+    def test_edit_app_settings_file(self, monkeypatch,
+                                    settings_file_exists, existing_settings_dict):
+        settings_dict_to_write = {'system of government': 'Strange women lying in ponds distributing swords.'}
 
-    def setUp(self):
-        self.mock_APP_SETTINGS_FILE = Path(r'rome\camelot\king_of_britons_castle')
-        self.mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
+        def mocked_create_app_settings_file():
+            assert not settings_file_exists  # Should not be called if file exists.
 
-        self.test_new_settings = {'my_new_setting': 'some setting'}
-        self.new_dionysus_settings_write = {**self.mock_dionysus_settings, **self.test_new_settings}
+        def mocked_write_settings_to_file(dionysus_settings):
+            assert dionysus_settings == {**existing_settings_dict, **settings_dict_to_write}
 
-        # Create file such that mocking it does not fail.
-        if not Path.exists(APP_SETTINGS_FILE):
-            self.created_app_settings = True
-            create_app_settings_file()
-        else:
-            self.created_app_settings = False
+        monkeypatch.setattr(settings_functions.Path, 'exists', lambda path: settings_file_exists)
+        monkeypatch.setattr(settings_functions, 'create_app_settings_file', mocked_create_app_settings_file)
+        monkeypatch.setattr(settings_functions, 'write_settings_to_file', mocked_write_settings_to_file)
 
-    @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
-    @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
-    @patch('dionysus_app.settings_functions.write_settings_to_file')
-    @patch('dionysus_app.settings_functions.create_app_settings_file')
-    @patch('dionysus_app.settings_functions.Path.exists')
-    def test_edit_app_settings_file_no_settings_file(self,
-                                                     mock_path_exists,
-                                                     mock_create_app_settings_file,
-                                                     mock_write_settings_to_file,
-                                                     ):
-        mock_path_exists.return_value = False
-
-        assert edit_app_settings_file(self.test_new_settings) is None
-
-        mock_path_exists.assert_called_once_with(self.mock_APP_SETTINGS_FILE)
-        # New settings file is created.
-        mock_create_app_settings_file.assert_called_once_with()
-
-        mock_write_settings_to_file.assert_called_once_with(self.new_dionysus_settings_write)
-
-    @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
-    @patch('dionysus_app.settings_functions.APP_SETTINGS_FILE', mock_APP_SETTINGS_FILE)
-    @patch('dionysus_app.settings_functions.write_settings_to_file')
-    @patch('dionysus_app.settings_functions.create_app_settings_file')
-    @patch('dionysus_app.settings_functions.Path.exists')
-    def test_edit_app_settings_file_existent_settings_file(self,
-                                                           mock_path_exists,
-                                                           mock_create_app_settings_file,
-                                                           mock_write_settings_to_file,
-                                                           ):
-        mock_path_exists.return_value = True
-
-        assert edit_app_settings_file(self.test_new_settings) is None
-
-        mock_path_exists.assert_called_once_with(self.mock_APP_SETTINGS_FILE)
-        # New settings file is not created.
-        mock_create_app_settings_file.assert_not_called()
-
-        mock_write_settings_to_file.assert_called_once_with(self.new_dionysus_settings_write)
-
-    def tearDown(self):
-        # Remove settings file if created for test.
-        if self.created_app_settings:
-            os.remove(APP_SETTINGS_FILE)
+        # Mock out app_data/settings -> dir/package may not exist in testing.
+        mocked_settings = MagicMock()
+        mocked_settings.dionysus_settings = existing_settings_dict
+        with patch.dict('sys.modules', {'dionysus_app.app_data.settings': mocked_settings}):
+            assert edit_app_settings_file(settings_dict_to_write) is None
 
 
-class TestLoadChartSaveFolder(TestCase):
-    mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
-
-    def setUp(self):
-        self.mock_dionysus_settings = {'user_default_chart_save_folder': r'some\path'}
-
-        self.test_load_chart_save_folder_return = Path(self.mock_dionysus_settings['user_default_chart_save_folder'])
-
-        # Create file such that mocking it does not fail.
-        if not Path.exists(APP_SETTINGS_FILE):
-            self.created_app_settings = True
-            create_app_settings_file()
-        else:
-            self.created_app_settings = False
-
-    @patch('dionysus_app.app_data.settings.dionysus_settings', mock_dionysus_settings)
-    def test_load_chart_save_folder(self):
-        assert load_chart_save_folder() == self.test_load_chart_save_folder_return
-
-    def tearDown(self):
-        # Remove settings file if created for test.
-        if self.created_app_settings:
-            os.remove(APP_SETTINGS_FILE)
+class TestLoadChartSaveFolder:
+    @pytest.mark.parametrize('test_setting',
+                             [r'some/path',  # *nix
+                              r'some\path',  # Windows
+                              pytest.param(None, marks=pytest.mark.xfail),
+                              ])
+    def test_load_chart_save_folder(self, test_setting):
+        # Mock out app_data/settings -> dir/package may not exist in testing.
+        mocked_settings = MagicMock()
+        mocked_settings.dionysus_settings = {'user_default_chart_save_folder': test_setting}
+        with patch.dict('sys.modules', {'dionysus_app.app_data.settings': mocked_settings}):
+            assert load_chart_save_folder() == Path(test_setting)

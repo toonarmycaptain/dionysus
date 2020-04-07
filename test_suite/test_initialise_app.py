@@ -14,29 +14,67 @@ from dionysus_app.initialise_app import (app_config,
 
 class TestAppConfig:
     def test_app_config_no_settings_file(self, monkeypatch):
+        welcome_to_program_mock = {'called': False}
+        app_start_set_database_mock = {'called': False}
+        app_start_set_default_chart_save_location_mock = {'called': False}
+
         def mocked_path_exists(path):
             return False
 
+        def mocked_welcome_to_program():
+            welcome_to_program_mock['called'] = True
+
+        def mocked_app_start_set_database():
+            app_start_set_database_mock['called'] = True
+
         def mocked_app_start_set_default_chart_save_location():
-            pass
+            app_start_set_default_chart_save_location_mock['called'] = True
 
         monkeypatch.setattr(initialise_app.Path, 'exists', mocked_path_exists)
+        monkeypatch.setattr(initialise_app, 'welcome_to_program', mocked_welcome_to_program)
+        monkeypatch.setattr(initialise_app, 'app_start_set_database', mocked_app_start_set_database)
         monkeypatch.setattr(initialise_app, 'app_start_set_default_chart_save_location',
                             mocked_app_start_set_default_chart_save_location)
+
         assert app_config() is None
+        # Assert all initial app setup functions called.
+        assert all([welcome_to_program_mock['called'],
+                    app_start_set_database_mock['called'],
+                    app_start_set_default_chart_save_location_mock['called'],
+                    ])
 
     def test_app_config_settings_file_exists(self, monkeypatch):
+        welcome_to_program_mock = {'called': False}
+        app_start_set_database_mock = {'called': False}
+        app_start_set_default_chart_save_location_mock = {'called': False}
+
         def mocked_path_exists(path):
             return True
 
+        def mocked_welcome_to_program():
+            welcome_to_program_mock['called'] = True
+            raise ValueError('Should not be called if settings file exists.')
+
+        def mocked_app_start_set_database():
+            app_start_set_database_mock['called'] = True
+            raise ValueError('Should not be called if settings file exists.')
+
         def mocked_app_start_set_default_chart_save_location():
+            app_start_set_default_chart_save_location_mock['called'] = True
             raise ValueError('Should not be called if settings file exists.')
 
         monkeypatch.setattr(initialise_app.Path, 'exists', mocked_path_exists)
+        monkeypatch.setattr(initialise_app, 'welcome_to_program', mocked_welcome_to_program)
+        monkeypatch.setattr(initialise_app, 'app_start_set_database', mocked_app_start_set_database)
         monkeypatch.setattr(initialise_app, 'app_start_set_default_chart_save_location',
                             mocked_app_start_set_default_chart_save_location)
 
         assert app_config() is None
+        # Assert no initial app setup functions called:
+        assert not any([welcome_to_program_mock['called'],
+                        app_start_set_database_mock['called'],
+                        app_start_set_default_chart_save_location_mock['called'],
+                        ])
 
 
 class TestDataFolderCheck:

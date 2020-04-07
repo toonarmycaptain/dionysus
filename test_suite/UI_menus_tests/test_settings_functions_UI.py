@@ -1,137 +1,120 @@
 """Tests for settings_functions_UI.py"""
 from pathlib import Path
-from unittest import TestCase
 from unittest.mock import patch
 
-from dionysus_app.UI_menus.settings_functions_UI import (get_user_choice_to_set_location,
+import pytest
+
+from dionysus_app.UI_menus import settings_functions_UI
+from dionysus_app.UI_menus.settings_functions_UI import (display_database_backend_options,
+                                                         get_user_choice_to_set_location,
+                                                         take_database_choice_input,
+                                                         user_decides_to_set_database_backend,
                                                          user_decides_to_set_default_location,
                                                          user_set_chart_save_folder,
+                                                         user_set_database_backend,
                                                          welcome_set_default_location_message,
+                                                         welcome_to_program,
                                                          )
 
 
-class TestWelcomeSetDefaultLocationMessage(TestCase):
-    def setUp(self):
-        self.welcome_print_stmt = (
-            'Welcome to dionysus.\n'
-            'It looks like this is your first time running the program.\n\n'
-            'Would you like to set a default location to save your charts?\n'
-            'You can do this later or change your selection in Settings.\n'
-            )
+class TestWelcomeToProgram:
+    def test_welcome_to_program(self, capsys):
+        assert welcome_to_program() is None
+        # Check message output contains keyword.
+        assert 'welcome' in capsys.readouterr().out.lower()
 
-    @patch('dionysus_app.UI_menus.settings_functions_UI.print')
-    def test_app_start_set_default_chart_save_location_user_set(
-            self, mocked_print):
+
+class TestWelcomeSetDefaultLocationMessage:
+    def test_app_start_set_default_chart_save_location_user_set(self, capsys):
         assert welcome_set_default_location_message() is None
-
-        mocked_print.assert_called_once_with(self.welcome_print_stmt)
-
-
-class TestGetUserChoiceToSetLocation(TestCase):
-    def setUp(self):
-        self.input_prompt = "Type 'Y' for Yes or 'N' for No, and press enter: "
-        self.affirmative_inputs = ['y',
-                                   'Y',
-                                   'yes',
-                                   'Yes',
-                                   'YES',
-                                   'yEs',
-                                   'YeS',
-                                   ]
-        self.negative_inputs = ['',  # Blank input/user hits return without input.
-                                ' ',
-                                '  ',
-                                'n'
-                                'N'
-                                'No',
-                                'NO',
-                                'No thanks',
-                                'Your mother was an hamster',
-                                ]
-
-    @patch('dionysus_app.UI_menus.settings_functions_UI.input')
-    def test_get_user_choice_to_set_location_affirmative(self, mocked_input):
-        for input_str in self.affirmative_inputs:
-            with self.subTest(msg=f'input of {input_str} should return True'):
-                mocked_input.return_value = input_str
-
-                assert get_user_choice_to_set_location() is True
-                mocked_input.assert_called_once_with(self.input_prompt)
-
-                mocked_input.reset_mock(return_value=True)
-
-    @patch('dionysus_app.UI_menus.settings_functions_UI.input')
-    def test_get_user_choice_to_set_location_negative(self, mocked_input):
-        for input_str in self.negative_inputs:
-            with self.subTest(msg=f'input of {input_str} should return True'):
-                mocked_input.return_value = input_str
-
-                assert get_user_choice_to_set_location() is False
-                mocked_input.assert_called_once_with(self.input_prompt)
-
-                mocked_input.reset_mock(return_value=True)
+        # Check message output contains keyword.
+        assert 'default location' in capsys.readouterr().out.lower()
 
 
-class TestUserDecidesToSetDefaultLocation(TestCase):
-    def setUp(self):
-        self.user_choices = [True, False]
+class TestGetUserChoiceToSetLocation:
+    @pytest.mark.parametrize(
+        'mocked_input, expected_return_value',
+        [('y', True),  # affirmative_inputs
+         ('Y', True),
+         ('yes', True),
+         ('Yes', True),
+         ('YES', True),
+         ('yEs', True),
+         ('YeS', True),
+         # negative_inputs
+         ('', False),  # Blank input/user hits return without input.
+         (' ', False),
+         ('  ', False),
+         ('n', False),
+         ('N', False),
+         ('No', False),
+         ('NO', False),
+         ('No thanks', False),
+         ('Your mother was an hamster', False),
+         ])
+    def test_get_user_choice_to_set_location(self, monkeypatch,
+                                             mocked_input, expected_return_value):
+        with patch('builtins.input', side_effect=[mocked_input]):
+            # Mocked input string placed inside a list because otherwise it is read one char at a time.
+            assert get_user_choice_to_set_location() is expected_return_value
 
-    @patch('dionysus_app.UI_menus.settings_functions_UI.clear_screen')
-    @patch('dionysus_app.UI_menus.settings_functions_UI.get_user_choice_to_set_location')
-    @patch('dionysus_app.UI_menus.settings_functions_UI.welcome_set_default_location_message')
-    def test_user_decides_to_set_default_location(self,
-                                                  mocked_welcome_set_default_location_message,
-                                                  mocked_get_user_choice_to_set_location,
-                                                  mocked_clear_screen,
-                                                  ):
-        for choice in self.user_choices:
-            with self.subTest(msg=f'User choice = get_user_choice_to_set_location = {choice}'):
-                mocked_get_user_choice_to_set_location.return_value = choice
 
-                assert user_decides_to_set_default_location() == choice
+class TestUserDecidesToSetDefaultLocation:
+    @pytest.mark.parametrize('user_choice', [True, False])
+    def test_user_decides_to_set_default_location(self, monkeypatch,
+                                                  user_choice):
+        monkeypatch.setattr(settings_functions_UI, 'welcome_set_default_location_message', lambda: None)
+        monkeypatch.setattr(settings_functions_UI, 'get_user_choice_to_set_location', lambda: user_choice)
+        monkeypatch.setattr(settings_functions_UI, 'clear_screen', lambda: None)
 
-                mocked_welcome_set_default_location_message.assert_called_once_with()
-                mocked_get_user_choice_to_set_location.assert_called_once_with()
-                mocked_clear_screen.assert_called_once_with()
-
-                mocked_welcome_set_default_location_message.reset_mock(return_value=True)
-                mocked_get_user_choice_to_set_location.reset_mock(return_value=True)
-                mocked_clear_screen.reset_mock(return_value=True)
+        assert user_decides_to_set_default_location() == user_choice
 
 
-class TestUserSetChartSaveFolder(TestCase):
-    mocked_APP_DEFAULT_CHART_SAVE_FOLDER = Path('app_default')
+class TestUserSetChartSaveFolder:
+    @pytest.mark.parametrize(
+        'user_folder_selection, mock_APP_DEFAULT_CHART_SAVE_FOLDER, expected_return',
+        [('', Path('app_default'), Path('app_default')),
+         (Path('camelot'), 'app default should not be used...', Path('camelot')),
+         ])
+    def test_user_set_set_chart_folder_blank_input(self, monkeypatch,
+                                                   user_folder_selection, mock_APP_DEFAULT_CHART_SAVE_FOLDER,
+                                                   expected_return):
+        monkeypatch.setattr(settings_functions_UI, 'select_folder_dialogue', lambda **args: user_folder_selection)
+        monkeypatch.setattr(settings_functions_UI, 'APP_DEFAULT_CHART_SAVE_FOLDER', mock_APP_DEFAULT_CHART_SAVE_FOLDER)
 
-    def setUp(self):
-        self.test_dialogue_message = 'Please select location for chart save folder, or press cancel to use default.'
-        # Preset app default
-        self.mocked_APP_DEFAULT_CHART_SAVE_FOLDER = Path('app_default')
+        assert user_set_chart_save_folder() == expected_return
 
-        self.test_user_location = 'camelot'
-        self.user_feedback = f'Default chart save folder set to {self.test_user_location}'
 
-    @patch('dionysus_app.UI_menus.settings_functions_UI.APP_DEFAULT_CHART_SAVE_FOLDER',
-           mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
-    @patch('dionysus_app.UI_menus.settings_functions_UI.print')
-    @patch('dionysus_app.UI_menus.settings_functions_UI.select_folder_dialogue')
-    def test_user_set_set_chart_folder_blank_input(self, mocked_select_folder_dialogue, mocked_print):
-        mocked_select_folder_dialogue.return_value = ''
+class TestUserDecidesToSetDatabaseBackend:
+    @pytest.mark.parametrize('user_input', [True, False])
+    def test_user_decides_to_set_database_backend(self, monkeypatch, user_input):
+        monkeypatch.setattr(settings_functions_UI, 'ask_user_bool', lambda **args: user_input)
 
-        assert user_set_chart_save_folder() == self.mocked_APP_DEFAULT_CHART_SAVE_FOLDER
+        assert user_decides_to_set_database_backend() is user_input
 
-        mocked_select_folder_dialogue.assert_called_once_with(title_str=self.test_dialogue_message,
-                                                              start_dir='..')
-        mocked_print.assert_not_called()
 
-    @patch('dionysus_app.UI_menus.settings_functions_UI.APP_DEFAULT_CHART_SAVE_FOLDER',
-           mocked_APP_DEFAULT_CHART_SAVE_FOLDER)
-    @patch('dionysus_app.UI_menus.settings_functions_UI.print')
-    @patch('dionysus_app.UI_menus.settings_functions_UI.select_folder_dialogue')
-    def test_user_set_set_chart_folder_user_selects_location(self, mocked_select_folder_dialogue, mocked_print):
-        mocked_select_folder_dialogue.return_value = self.test_user_location
+class TestUserSetDatabaseBackend:
+    @pytest.mark.parametrize('user_input', ['database chosen', False])
+    def test_user_set_database_backend(self, monkeypatch, user_input):
+        monkeypatch.setattr(settings_functions_UI, 'take_database_choice_input', lambda: user_input)
 
-        assert user_set_chart_save_folder() == self.test_user_location
+        assert user_set_database_backend() is user_input
 
-        mocked_select_folder_dialogue.assert_called_once_with(title_str=self.test_dialogue_message,
-                                                              start_dir='..')
-        mocked_print.assert_called_once_with(self.user_feedback)
+
+class TestDisplayDatabaseBackendOptions:
+    def test_display_database_backend_options(self, capsys):
+        assert display_database_backend_options() is None
+        # Check message output contains keyword.
+        assert 'database backend' in capsys.readouterr().out.lower()
+
+
+class TestTakeDatabaseChoiceInput:
+    @pytest.mark.parametrize(
+        'mocked_input, expected_return_value',
+        [('1', 'JSON'),  # Choose option
+         (('invalid input', '0'), False),  # Invalid input, then cancel.
+         ('0', False),
+         ])
+    def test_take_database_choice_input(self, mocked_input, expected_return_value):
+        with patch('builtins.input', side_effect=list(mocked_input)):
+            assert take_database_choice_input() == expected_return_value

@@ -16,8 +16,10 @@ import definitions
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import move_file
-from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_default_location,
+from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_database_backend,
+                                                         user_decides_to_set_default_location,
                                                          user_set_chart_save_folder,
+                                                         user_set_database_backend,
                                                          )
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
@@ -67,15 +69,47 @@ def set_default_chart_save_location(user_set: bool) -> None:
     create_chart_save_folder(new_chart_save_folder_path, original_location)
 
 
-def create_chart_save_folder(new_path: Union[Path, str],
-                             original_location: Union[Path, str] = None,
+def app_start_set_database() -> None:
+    """
+    Prints welcome statement asking user if they would like to set a
+    default chart save location.
+    Calls set_default_chart_save_location with user's choice, setting
+    save location. Clears screen.
+
+    :return: None
+    """
+    if user_decides_to_set_database_backend():
+        set_database_backend(user_set=True)
+    else:
+        set_database_backend(user_set=False)
+
+
+def set_database_backend(user_set: bool) -> None:
+    """
+    Set database backend, taking user input, or default.
+
+    :param user_set: Path or str
+    :return: None
+    """
+    database_backend: Union[str, bool] = definitions.DEFAULT_DATABASE_BACKEND
+    # Database choice selection
+    if user_set:
+        user_chosen_database = user_set_database_backend()
+        if user_chosen_database:
+            database_backend = user_chosen_database
+
+    edit_app_settings_file({'database': database_backend})
+
+
+def create_chart_save_folder(new_path: Path,
+                             original_location: Path = None,
                              ) -> None:
     """
     Create a new chart_save_folder, moving files from old location, if
     it exists.
 
-    :param new_path: Path or str
-    :param original_location: Path or str, default: None
+    :param new_path: Path
+    :param original_location: Path , default: None
     :return: None
     """
     # Create new chart save location.
@@ -86,14 +120,14 @@ def create_chart_save_folder(new_path: Union[Path, str],
     new_path.mkdir(parents=True, exist_ok=True)
 
 
-def move_chart_save_folder(original_location: Union[Path, str],
-                           new_location: Union[Path, str]) -> None:
+def move_chart_save_folder(original_location: Path,
+                           new_location: Path) -> None:
     """
     Tests if the supplied path to the original chart save folder exists, moving
     to the supplied new location if it does. Otherwise does nothing.
 
-    :param original_location: Path or str
-    :param new_location: Path or str
+    :param original_location: Path
+    :param new_location: Path
     :return: None
     """
     original_location_path = Path(original_location)

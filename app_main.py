@@ -8,8 +8,10 @@ import definitions
 
 from dionysus_app.class_registry_functions import cache_class_registry, check_registry_on_exit
 from dionysus_app.initialise_app import app_init, clear_temp
+from dionysus_app.persistence.database_functions import load_database
 from dionysus_app.settings_functions import load_chart_save_folder
 from dionysus_app.UI_menus.main_menu import run_main_menu
+
 
 
 def quit_app():
@@ -40,6 +42,8 @@ def run_app():
     definitions.REGISTRY = cache_class_registry()
 
     definitions.DEFAULT_CHART_SAVE_FOLDER = load_chart_save_folder()
+
+    definitions.DATABASE = load_database()
 
     run_main_menu()  # Startup checks successful, enter UI.
 
