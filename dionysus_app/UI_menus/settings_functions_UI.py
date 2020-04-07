@@ -9,6 +9,17 @@ APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(
     DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
 
 
+def welcome_to_program() -> None:
+    """
+    Print welcome message on first program run, preface app config.
+
+    :return: None
+    """
+    print('Welcome to dionysus.\n'
+          'It looks like this is your first time running the program.\n'
+          'Before getting started, there are some setup options: \n\n')
+
+
 def welcome_set_default_location_message():
     """
     Prints welcome message prompting user to select a folder to save
@@ -16,9 +27,7 @@ def welcome_set_default_location_message():
 
     :return: None
     """
-    print('Welcome to dionysus.\n'
-          'It looks like this is your first time running the program.\n\n'
-          'Would you like to set a default location to save your charts?\n'
+    print('Would you like to set a default location to save your charts?\n'
           'You can do this later or change your selection in Settings.\n'
           )
 

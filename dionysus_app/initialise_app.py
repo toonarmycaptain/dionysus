@@ -17,6 +17,7 @@ def app_config() -> None:
     """
 
     if not Path.exists(APP_SETTINGS_FILE):
+        welcome_to_program()
         app_start_set_default_chart_save_location()
 
 
