@@ -18,7 +18,7 @@ from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
                                                 )
 
 
-class TestClearScree:
+class TestClearScreen:
     @pytest.mark.parametrize(
         'test_input, expected_print_output',
         [(50, 50 * '\n'),
