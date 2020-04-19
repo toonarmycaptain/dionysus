@@ -6,9 +6,6 @@ Settings dict keys:
     'user_default_chart_save_folder': string path to where charts are saved.
 
 """
-
-import os
-
 from pathlib import Path
 from typing import Union
 
@@ -183,7 +180,7 @@ def create_app_data__init__() -> None:
 
     :return: None
     """
-    init_py_path = os.path.join(APP_DATA, '__init__.py')
+    init_py_path = Path(APP_DATA, '__init__.py')
 
     with open(init_py_path, 'w+') as init_py:
         init_py.write('"""__init__.py so that settings.py may be imported."""')
