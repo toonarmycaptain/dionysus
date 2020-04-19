@@ -221,7 +221,7 @@ def select_file_dialogue(title_str: str = None,
     return Path(filepath_str)
 
 
-def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = '..'):
+def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = '..') -> Optional[Path]:
     """
     Prompts user to select a file. Calls tkinter filedialog.askopenfilename
     with title (if provided), and filetype argument (if provided) eg '*.png'.
@@ -236,7 +236,7 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
 
     :param title_str: str
     :param start_dir: Path or str - Path for dialogue to start in.
-    :return: Path
+    :return: Path or None
     """
     root = tk.Tk()
     root.withdraw()
