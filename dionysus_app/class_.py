@@ -91,6 +91,10 @@ class Class:
         - and will return False even though the .__class__.__name__ and
         .__class__.__qualname__ will both return 'Student'.
 
+        NB2 if the student object is exactly equivalent to a student in the
+        class (eg same name, avatar etc), but that specific object isn't in
+        the class, the comparison will return False, instead, using the name is
+        more robust.
 
         :param item: str or Student object
         :return: Bool

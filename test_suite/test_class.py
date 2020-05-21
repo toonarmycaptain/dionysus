@@ -142,10 +142,24 @@ class TestClassNamePathSafeName:
 
 class TestContainsMethod:
     def test__contains__student_obj_in_class(self, test_student_name_only, test_class_name_only):
+        """Test that student object from class compares as `in` class."""
         assert test_class_name_only.students == []  # No students in class
         test_class_name_only.add_student(test_student_name_only)
 
         assert test_student_name_only in test_class_name_only
+
+    def test__contains__identical_but_not_actual_student_obj_in_class(self, test_student_name_only, test_class_name_only):
+        """
+        Test identical student object in class.
+        Should return False, since the specific object is not in the class.
+        eg id(test_student) != id(test_class_name_only.students[0])
+        """
+        assert test_class_name_only.students == []  # No students in class
+        name, avatar_filename = 'test_student', 'test_student_avatar'
+        test_student = Student(name=name, avatar_filename=avatar_filename)
+        test_class_name_only.add_student(name=name, avatar_filename=avatar_filename)
+
+        assert not test_student in test_class_name_only
 
     def test__contains__student_obj_not_in_empty_class(self, test_student_name_only, test_class_name_only):
         assert test_class_name_only.students == []  # No students in class
