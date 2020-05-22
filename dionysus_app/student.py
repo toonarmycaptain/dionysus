@@ -18,6 +18,18 @@ class Student:
 
     avatar_filename : str or None
         Filename of student's avatar.
+
+
+    Methods
+    _______
+    json_dict():
+        Translates Student object into JSON-serialisable dict.
+
+    Class Methods
+    _____________
+    from_dict(student_dict: dict):
+        Instantiate a Student object from a JSON-serialisable dict.
+
     """
 
     def __init__(self, name: str, **kwargs: Any):

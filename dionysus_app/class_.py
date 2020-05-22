@@ -26,9 +26,41 @@ class Class:
         Cleaned string safe to use in file names and paths.
 
     students : list[Student]
+        List of student objects for students in the class.
+
+    Methods
+    _______
+    add_student(student: Student = None, **kwargs: Any):
+        Adds a student to the class.
+
+    json_dict():
+        Translates Class object into JSON-serialisable dict.
+
+    to_json_str():
+        Converts Class in JSON-serialisable form to JSON string.
+
+    Class Methods
+    _____________
+    from_dict(class_dict: dict):
+        Instantiate Class object from JSON-serialisable dict.
+
+    from_json(json_data: str):
+        Return Class object from json string.
+
+    from_file(cdf_path: Union[Path, str]):
+        Return Class object from cdf file.
+
     """
 
     def __init__(self, name: str, students: List[Student] = None):
+        """
+        Create Class instance.
+
+        Can be instantiated with name only.
+
+        :param name: str - name of the class.
+        :param students: List[Student] - list of Student objects.
+        """
         self.name = name
         self.path_safe_name = name
 
