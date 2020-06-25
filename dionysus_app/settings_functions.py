@@ -21,14 +21,16 @@ from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_dat
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
 TEMP_DIR = DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value)
-APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
+APP_DEFAULT_CHART_SAVE_DIR = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_DIR.value)
 APP_SETTINGS_FILE = DataFolder.generate_rel_path(DataFolder.APP_SETTINGS.value)
 
-CHART_SAVE_FOLDER_NAME = 'dionysus_charts'
+CHART_SAVE_DIR_NAME = 'dionysus_charts'
 
 
 def app_start_set_default_chart_save_location() -> None:
     """
+    Print welcome, prompt user to set a default chart save location.
+
     Prints welcome statement asking user if they would like to set a
     default chart save location.
     Calls set_default_chart_save_location with user's choice, setting
@@ -44,6 +46,8 @@ def app_start_set_default_chart_save_location() -> None:
 
 def set_default_chart_save_location(user_set: bool) -> None:
     """
+    Set default_chart_save_location, based on user input, or default.
+
     Set and save default_chart_save_location, taking user input, or defaulting
     to original location. Creates chart save folder.
 
@@ -51,16 +55,16 @@ def set_default_chart_save_location(user_set: bool) -> None:
     :return: None
     """
     # Initialise default location.
-    new_default_save_location = APP_DEFAULT_CHART_SAVE_FOLDER
-    original_location = definitions.DEFAULT_CHART_SAVE_FOLDER
+    new_default_save_location = APP_DEFAULT_CHART_SAVE_DIR
+    original_location = definitions.DEFAULT_CHART_SAVE_DIR
 
     if user_set:
         new_default_save_location = user_set_chart_save_folder()
 
-    new_chart_save_folder_path = Path(new_default_save_location, CHART_SAVE_FOLDER_NAME)
+    new_chart_save_folder_path = Path(new_default_save_location, CHART_SAVE_DIR_NAME)
 
     # Initialise and save chart save location.
-    definitions.DEFAULT_CHART_SAVE_FOLDER = new_chart_save_folder_path
+    definitions.DEFAULT_CHART_SAVE_DIR = new_chart_save_folder_path
     save_new_default_chart_save_location_setting(new_chart_save_folder_path)
 
     create_chart_save_folder(new_chart_save_folder_path, original_location)
@@ -102,8 +106,7 @@ def create_chart_save_folder(new_path: Path,
                              original_location: Path = None,
                              ) -> None:
     """
-    Create a new chart_save_folder, moving files from old location, if
-    it exists.
+    Create a new chart_save_folder, move files from old location.
 
     :param new_path: Path
     :param original_location: Path , default: None
@@ -120,8 +123,11 @@ def create_chart_save_folder(new_path: Path,
 def move_chart_save_folder(original_location: Path,
                            new_location: Path) -> None:
     """
-    Tests if the supplied path to the original chart save folder exists, moving
-    to the supplied new location if it does. Otherwise does nothing.
+    Move existent chart save folder to new location.
+
+    Tests if the supplied path to the original chart save folder exists,
+    moving to the supplied new location if it does. Otherwise does
+    nothing.
 
     :param original_location: Path
     :param new_location: Path

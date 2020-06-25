@@ -52,7 +52,7 @@ class TestSetDefaultChartSaveLocation:
             if not user_setting_location:
                 raise ValueError('Should not be called if user input is not expected.')
             # On no user input, function returns the app default.
-            return user_supplied_location or settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER
+            return user_supplied_location or settings_functions.APP_DEFAULT_CHART_SAVE_DIR
 
         def mocked_save_new_default_chart_save_location_setting(new_chart_save_folder_path):
             if new_chart_save_folder_path != test_new_chart_save_location:
@@ -65,32 +65,32 @@ class TestSetDefaultChartSaveLocation:
                                  f'{new_chart_save_folder_path=}!={test_new_chart_save_location}')
             if original_location != test_original_chart_save_folder_location:
                 raise ValueError(f'Wrong original chart save folder location: '
-                                 f'{original_location}!={settings_functions.definitions.DEFAULT_CHART_SAVE_FOLDER}')
+                                 f'{original_location}!={settings_functions.definitions.DEFAULT_CHART_SAVE_DIR}')
 
-        monkeypatch.setattr(settings_functions, 'APP_DEFAULT_CHART_SAVE_FOLDER',
-                            Path('mock_APP_DEFAULT_CHART_SAVE_FOLDER'))
-        monkeypatch.setattr(settings_functions, 'CHART_SAVE_FOLDER_NAME', 'mocked_CHART_SAVE_FOLDER_NAME')
-        monkeypatch.setattr(settings_functions.definitions, 'DEFAULT_CHART_SAVE_FOLDER',
-                            Path('mock_APP_DEFAULT_CHART_SAVE_FOLDER'))
+        # monkeypatch.setattr(settings_functions, 'APP_DEFAULT_CHART_SAVE_DIR',
+        #                     Path('mock_APP_DEFAULT_CHART_SAVE_DIR'))
+        monkeypatch.setattr(settings_functions, 'CHART_SAVE_DIR_NAME', 'mocked_CHART_SAVE_DIR_NAME')
+        monkeypatch.setattr(settings_functions.definitions, 'DEFAULT_CHART_SAVE_DIR',
+                            Path('mock_APP_DEFAULT_CHART_SAVE_DIR'))
         monkeypatch.setattr(settings_functions, 'user_set_chart_save_folder', mocked_user_set_chart_save_folder)
         monkeypatch.setattr(settings_functions, 'create_chart_save_folder', mocked_create_chart_save_folder)
         monkeypatch.setattr(settings_functions, 'save_new_default_chart_save_location_setting',
                             mocked_save_new_default_chart_save_location_setting)
 
         # Original chart save folder location:
-        test_original_chart_save_folder_location = Path('mock_APP_DEFAULT_CHART_SAVE_FOLDER')
+        test_original_chart_save_folder_location = Path('mock_APP_DEFAULT_CHART_SAVE_DIR')
         # Pretest definitions.
-        assert settings_functions.definitions.DEFAULT_CHART_SAVE_FOLDER == test_original_chart_save_folder_location
+        assert settings_functions.definitions.DEFAULT_CHART_SAVE_DIR == test_original_chart_save_folder_location
         # Expected new location:
-        test_new_chart_save_location = Path(settings_functions.APP_DEFAULT_CHART_SAVE_FOLDER,
-                                            settings_functions.CHART_SAVE_FOLDER_NAME)  # App default if no user input.
+        test_new_chart_save_location = Path(settings_functions.APP_DEFAULT_CHART_SAVE_DIR,
+                                            settings_functions.CHART_SAVE_DIR_NAME)  # App default if no user input.
         if user_supplied_location:
             test_new_chart_save_location = Path.joinpath(user_supplied_location,
-                                                         settings_functions.CHART_SAVE_FOLDER_NAME)
+                                                         settings_functions.CHART_SAVE_DIR_NAME)
 
         assert set_default_chart_save_location(user_setting_location) is None
         # Runtime setting changed.
-        assert settings_functions.definitions.DEFAULT_CHART_SAVE_FOLDER == test_new_chart_save_location
+        assert settings_functions.definitions.DEFAULT_CHART_SAVE_DIR == test_new_chart_save_location
 
 
 class TestAppStartSetDatabase:
