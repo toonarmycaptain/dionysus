@@ -3,26 +3,22 @@ import os
 import pytest
 
 from pathlib import Path
-from unittest import TestCase
 
 from definitions import ROOT_DIR
-from dionysus_app.class_registry_functions import write_registry_to_disk
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.initialise_app import data_folder_check
-from dionysus_app.settings_functions import write_settings_to_file
 
 
 class TestDataFolder:
     @pytest.mark.parametrize('relative_path_str',
-                             [r'/dionysus_app'
+                             [r'/dionysus_app',
                               r'/dionysus_app/app_data',
-                              r'/dionysus_app/app_data/class_data',
-                              r'/dionysus_app/app_data/class/registry.index',
+                              r'/dionysus_app/app_data/temp',
                               r'/dionysus_app/app_data/settings.py',
                               r'/dionysus_app/chart_generator',
                               r'/dionysus_app/chart_generator/default_avatar.png',
                               ])
     def test_generate_data_path_defaults(self, relative_path_str):
+        """Key app relative paths returned as full paths."""
         os.chdir(ROOT_DIR)
         cwd_path = Path.cwd()
         path_result = DataFolder.generate_rel_path(relative_path_str)
@@ -30,50 +26,34 @@ class TestDataFolder:
         # Assert relative app paths in generated absolute paths:
         assert relative_path_str in path_result.as_uri()
         # Assert cwd in generated absolute paths:
-        assert cwd_path.as_uri() in path_result.as_uri()
+        # Use .lower() to avoid casing issue (eg Windows user capitalised in cwd_path but not path_result).
+        assert cwd_path.as_uri().lower() in path_result.as_uri().lower()
+
+    @pytest.mark.parametrize('DataFolder_attr, relative_path_str',
+                             [(DataFolder.APP.value, r'/dionysus_app'),
+                              (DataFolder.APP_DATA.value, r'/dionysus_app/app_data'),
+                              (DataFolder.TEMP_DIR.value, r'/dionysus_app/app_data/temp'),
+                              (DataFolder.APP_SETTINGS.value, r'/dionysus_app/app_data/settings.py'),
+                              (DataFolder.CHART_GENERATOR.value, r'/dionysus_app/chart_generator'),
+                              (DataFolder.DEFAULT_AVATAR.value, r'/dionysus_app/chart_generator/default_avatar.png'),
+                              ])
+    def test_generate_data_path_defaults_dot_value(self, DataFolder_attr, relative_path_str):
+        """DataFolder attrs generate full paths."""
+        os.chdir(ROOT_DIR)
+        cwd_path = Path.cwd()
+
+        # path_result = DataFolder.generate_rel_path(DataFolder.attr.value)
+        path_result = DataFolder.generate_rel_path(DataFolder_attr)
+
+        assert path_result == cwd_path.joinpath(DataFolder_attr)
+
+        # Assert relative app paths in generated absolute paths:
+        assert relative_path_str in path_result.as_uri()
+        # Assert cwd in generated absolute paths:
+        # Use .lower() to avoid casing issue (eg Windows user capitalised in cwd_path but not path_result).
+        assert cwd_path.as_uri().lower() in path_result.as_uri().lower()
+
 
     def test_generate_data_path_None(self):
-        # Should return current working directory:
+        """Passing None returns current working directory."""
         assert DataFolder.generate_rel_path(None) == Path.cwd()
-
-
-class TestDataFolderPathsExist(TestCase):
-    def setUp(self):
-        """
-        Ensure file system and key files with paths in DataFolder exist.
-
-        This only semi-circular (ie x= value; assert value = x), because
-        the files are created by the code the app would normally use to
-        create these files, and if they're creating them in a place
-        other than at the specified paths, the test *should* fail.
-        """
-        # Create app file system, key files with paths in DataFolder
-        data_folder_check()  # App data folders
-
-        # Create dummy registry file if necessary
-        self.dummy_registry_file = False
-        self.registry_path = DataFolder.generate_rel_path(DataFolder.CLASS_REGISTRY.value)
-        if not os.path.exists(self.registry_path):
-            self.dummy_registry_file = True
-            registry_list = ['A_test_class', 'Another_test_class']
-            write_registry_to_disk(registry_list)
-
-        # Create dummy settings file if necessary
-        self.dummy_settings_file = False
-        self.settings_path = DataFolder.generate_rel_path(DataFolder.APP_SETTINGS.value)
-        if not os.path.exists(self.settings_path):
-            self.dummy_settings_file = True
-            settings_dict = {'There were': 'no settings set.'}
-            write_settings_to_file(settings_dict)
-
-    def test_paths_exist(self):
-        for path in DataFolder:
-                path = DataFolder.generate_rel_path(path.value)
-                assert os.path.exists(path)
-
-    def tearDown(self):
-        # Remove dummy files.
-        if self.dummy_registry_file:
-            os.remove(self.registry_path)
-        if self.dummy_settings_file:
-            os.remove(self.settings_path)

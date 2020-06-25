@@ -5,23 +5,15 @@ from typing import Optional
 from definitions import ROOT_DIR
 
 
-CLASSLIST_DATA_FILE_TYPE = '.cld'
-CHART_DATA_FILE_TYPE = '.cdf'
-
-
 class DataFolder(Enum):
     APP = './dionysus_app/'
 
     APP_DATA = APP + 'app_data/'
 
-    CLASS_DATA = APP_DATA + 'class_data/'
-
     TEMP_DIR = APP_DATA + 'temp/'
 
-    CLASS_REGISTRY = APP_DATA + 'class_registry.index'
-
     APP_SETTINGS = APP_DATA + 'settings.py'
-    APP_DEFAULT_CHART_SAVE_FOLDER = '..'
+    APP_DEFAULT_CHART_SAVE_DIR = '..'
 
     CHART_GENERATOR = APP + 'chart_generator/'
     DEFAULT_AVATAR = CHART_GENERATOR + 'default_avatar.png'
