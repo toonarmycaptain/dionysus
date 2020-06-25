@@ -8,8 +8,8 @@ from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
                                                 select_folder_dialogue
                                                 )
 
-APP_DEFAULT_CHART_SAVE_FOLDER = DataFolder.generate_rel_path(
-    DataFolder.APP_DEFAULT_CHART_SAVE_FOLDER.value)
+APP_DEFAULT_CHART_SAVE_DIR = DataFolder.generate_rel_path(
+    DataFolder.APP_DEFAULT_CHART_SAVE_DIR.value)
 
 
 def welcome_to_program() -> None:
@@ -25,8 +25,10 @@ def welcome_to_program() -> None:
 
 def welcome_set_default_location_message() -> None:
     """
-    Prints welcome message prompting user to select a folder to save
-    charts by default, if desired.
+    Welcome message prompting user to select default save chart dir.
+
+    Prints welcome message prompting user to select a folder in which to
+    save charts by default, if desired.
 
     :return: None
     """
@@ -37,8 +39,9 @@ def welcome_set_default_location_message() -> None:
 
 def get_user_choice_to_set_location() -> bool:
     """
-    Gets user choice, returning True for some variation of Y or yes,
-    otherwise returning False.
+    Gets user choice to set default chart dir location.
+
+    Returns True for some variation of Y or yes, otherwise returning False.
 
     :return: bool
     """
@@ -52,6 +55,8 @@ def get_user_choice_to_set_location() -> bool:
 
 def user_decides_to_set_default_location() -> bool:
     """
+    Get user desire to set default chart location.
+
     Prints welcome message instructions, takes user choice to set a
     default location to save charts, clears screen for main_menu
     presentation, returns True/False.
@@ -67,8 +72,9 @@ def user_decides_to_set_default_location() -> bool:
 
 def user_set_chart_save_folder() -> Path:
     """
-    Prompt user for dir to save created charts in, returning the default if user
-    declines.
+    Prompt user for dir to save created charts in.
+
+    Returns default if user declines.
 
     :return: Path
     """
@@ -77,7 +83,7 @@ def user_set_chart_save_folder() -> Path:
     new_default_save_location = select_folder_dialogue(title_str=dialogue_message, start_dir='..')
 
     if not new_default_save_location:  # User presses cancel, doesn't select a folder.
-        return APP_DEFAULT_CHART_SAVE_FOLDER
+        return APP_DEFAULT_CHART_SAVE_DIR
     # else:
     print(f'Default chart save folder set to {new_default_save_location}')
     return new_default_save_location
@@ -96,10 +102,11 @@ def user_decides_to_set_database_backend() -> bool:
 
 def user_set_database_backend() -> Union[str, bool]:
     """
-    Display database backend choices and return user chosen option, or False if
-    none is chosen.
+    Display database backend choices and return user chosen option.
 
-    :return: str or bool
+    Returns False if none is chosen.
+
+    :return: str or False
     """
     display_database_backend_options()
     return take_database_choice_input()
@@ -121,12 +128,13 @@ def display_database_backend_options() -> None:
 
 def take_database_choice_input() -> Union[str, bool]:
     """
-    Take user choice of database backends, returning the string name of the
-    chosen backend, or False if user does not choose a backend.
+    Take user choice of database backends.
 
+    Return string name of the chosen backend, or False if user does not
+    choose a backend.
 
-    Alternate implementation that pulls the choice list from those enabled in
-    the persistence.database_functions module:
+    Alternate implementation that pulls the choice list from those
+    enabled in the persistence.database_functions module:
 
     from dionysus_app.persistence.database_functions import database_backends
     possible_options = dict(enumerate(database_backends, start=1))

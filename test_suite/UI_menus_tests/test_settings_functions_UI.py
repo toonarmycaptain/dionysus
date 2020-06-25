@@ -80,7 +80,7 @@ class TestUserSetChartSaveFolder:
                                                    user_folder_selection, mock_APP_DEFAULT_CHART_SAVE_FOLDER,
                                                    expected_return):
         monkeypatch.setattr(settings_functions_UI, 'select_folder_dialogue', lambda **args: user_folder_selection)
-        monkeypatch.setattr(settings_functions_UI, 'APP_DEFAULT_CHART_SAVE_FOLDER', mock_APP_DEFAULT_CHART_SAVE_FOLDER)
+        monkeypatch.setattr(settings_functions_UI, 'APP_DEFAULT_CHART_SAVE_DIR', mock_APP_DEFAULT_CHART_SAVE_FOLDER)
 
         assert user_set_chart_save_folder() == expected_return
 
