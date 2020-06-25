@@ -81,7 +81,6 @@ class TestDataFolderCheck:
     @pytest.mark.parametrize(
         'default_path',
         [r'./dionysus_app/app_data',
-         r'./dionysus_app/app_data/class_data',
          r'./dionysus_app/app_data/temp'
          ])
     def test_data_folder_check_default(self, monkeypatch, tmpdir,
