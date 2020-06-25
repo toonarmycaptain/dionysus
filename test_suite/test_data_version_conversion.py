@@ -8,8 +8,7 @@ import pytest
 
 import data_version_conversion
 
-from data_version_conversion import (CLASSLIST_DATA_PATH,
-                                     data_is_new_format,
+from data_version_conversion import (data_is_new_format,
                                      file_from_gui_dialogue,
                                      get_data_file,
                                      main,
@@ -20,9 +19,9 @@ from data_version_conversion import (CLASSLIST_DATA_PATH,
                                      transform_old_cld_file,
                                      )
 from dionysus_app.class_ import Class
-from dionysus_app.data_folder import CLASSLIST_DATA_FILE_TYPE
 
 from test_suite.test_class import test_class_name_only
+from test_suite.test_persistence.test_databases.test_json import empty_json_database
 
 
 class TestMain:
@@ -86,17 +85,17 @@ class TestRunScript:
           'mocked transform_all_old_data_files called'),
          ])
     def test_run_script(self, monkeypatch, test_args, expected_function):
-        def mocked_transform_all_old_data_files():
+        def mocked_transform_all_old_data_files(db):
             if expected_function != 'mocked transform_all_old_data_files called':
                 raise ValueError
 
-        def mocked_transform_old_cld_file(filepath):
+        def mocked_transform_old_cld_file(db, filepath):
             if not isinstance(filepath, Path):
                 raise TypeError
             if expected_function != 'mocked transform_old_cld_file called':
                 raise ValueError
 
-        def mocked_file_from_gui_dialogue():
+        def mocked_file_from_gui_dialogue(db):
             if expected_function != 'mocked file_from_gui_dialogue called':
                 raise ValueError
 
@@ -119,10 +118,10 @@ class TestTransformAllOldDataFiles:
                 raise ValueError
             return (test_path for test_path in test_file_paths)
 
-        def mocked_transform_old_cld_file(arg):
-            if not isinstance(arg, Path):
+        def mocked_transform_old_cld_file(db, file_path):
+            if not isinstance(file_path, Path):
                 raise TypeError
-            if arg not in test_file_paths:
+            if file_path not in test_file_paths:
                 raise ValueError
 
         monkeypatch.setattr(data_version_conversion.Path, 'glob', mocked_path_glob)
@@ -132,7 +131,7 @@ class TestTransformAllOldDataFiles:
 
 
 class TestTransformOldCldFile:
-    def test_transform_old_cld_file_nonexistent_path(self, monkeypatch, capsys):
+    def test_transform_old_cld_file_nonexistent_path(self, monkeypatch, empty_json_database, capsys):
         test_filepath = Path('hi//I//do//not//exist.oops')
         error_statement = f'File {test_filepath} does not exist.'
 
@@ -143,13 +142,13 @@ class TestTransformOldCldFile:
 
         monkeypatch.setattr(data_version_conversion.Path, 'exists', mocked_path_exists)
 
-        assert transform_old_cld_file(test_filepath) is None
+        assert transform_old_cld_file(empty_json_database, test_filepath) is None
 
         captured = capsys.readouterr().out
         assert error_statement in captured
         # 'in' workaround to avoid playing with differing newlines in statement and output.
 
-    def test_transform_old_cld_file_json_decode_error(self, monkeypatch, capsys):
+    def test_transform_old_cld_file_json_decode_error(self, monkeypatch, empty_json_database, capsys):
         test_filepath = Path('hi//I//do//exist.yay')
         error_statement = (f'Something went wrong with decoding {test_filepath}:\n'
                            f'The file might be corrupted or is not a supported format.\n')
@@ -167,12 +166,13 @@ class TestTransformOldCldFile:
         monkeypatch.setattr(data_version_conversion.Path, 'exists', mocked_path_exists)
         monkeypatch.setattr(data_version_conversion, 'load_from_json_file', mocked_load_from_json_file)
 
-        assert transform_old_cld_file(test_filepath) is None
+        assert transform_old_cld_file(empty_json_database, test_filepath) is None
 
         captured = capsys.readouterr().out
         assert captured == error_statement
 
-    def test_transform_old_cld_file_already_in_new_format(self, monkeypatch, test_class_name_only, capsys):
+    def test_transform_old_cld_file_already_in_new_format(self, monkeypatch, capsys,
+                                                          empty_json_database, test_class_name_only):
         test_filepath = Path('hi//I//do//exist.yay')
         error_statement = f'It looks like {test_filepath.name} is already in the new format.'
 
@@ -195,21 +195,23 @@ class TestTransformOldCldFile:
         monkeypatch.setattr(data_version_conversion, 'load_from_json_file', mocked_load_from_json_file)
         monkeypatch.setattr(data_version_conversion, 'data_is_new_format', mocked_data_is_new_format)
 
-        assert transform_old_cld_file(test_filepath) is None
+        assert transform_old_cld_file(empty_json_database, test_filepath) is None
 
         captured = capsys.readouterr().out
         assert error_statement in captured
         # 'in' workaround to avoid playing with differing newlines in statement and output.
 
-    def test_transform_old_cld_file_genuine_old_file(self, monkeypatch, test_class_name_only, capsys):
+    def test_transform_old_cld_file_genuine_old_file(self, monkeypatch, empty_json_database,
+                                                     test_class_name_only, capsys):
 
-        mocked_CLASSLIST_DATA_PATH = Path(f'hi//I//do//')
-        test_filepath = Path(mocked_CLASSLIST_DATA_PATH).joinpath(test_class_name_only.path_safe_name,
+
+        test_filepath = empty_json_database.class_data_path.joinpath(test_class_name_only.path_safe_name,
                                                                   f'{test_class_name_only.path_safe_name}.yay')
         new_data_filepath = test_filepath.parent.joinpath(
-            test_class_name_only.path_safe_name + CLASSLIST_DATA_FILE_TYPE)
+            test_class_name_only.path_safe_name + empty_json_database.class_data_file_type)
 
-        feedback_statement = f'Transformed {test_class_name_only.name} data file to new data format in {new_data_filepath}'
+        feedback_statement = f'Transformed {test_class_name_only.name} data file ' \
+                             f'to new data format in {new_data_filepath}'
 
         def mocked_path_exists(filepath):
             if not isinstance(filepath, Path):
@@ -233,19 +235,18 @@ class TestTransformOldCldFile:
                 raise TypeError
             return test_class_name_only
 
-        def mocked_write_classlist_to_file(test_class):
+        def mocked__write_classlist_to_file(test_class):
             if not isinstance(test_class, Class):
                 raise TypeError
             return new_data_filepath
 
+        empty_json_database._write_classlist_to_file = mocked__write_classlist_to_file
         monkeypatch.setattr(data_version_conversion.Path, 'exists', mocked_path_exists)
         monkeypatch.setattr(data_version_conversion, 'load_from_json_file', mocked_load_from_json_file)
         monkeypatch.setattr(data_version_conversion, 'data_is_new_format', mocked_data_is_new_format)
         monkeypatch.setattr(data_version_conversion, 'transform_data', mocked_transform_data)
-        monkeypatch.setattr(data_version_conversion, 'write_classlist_to_file', mocked_write_classlist_to_file)
-        monkeypatch.setattr(data_version_conversion, 'CLASSLIST_DATA_PATH', mocked_CLASSLIST_DATA_PATH)
 
-        assert transform_old_cld_file(test_filepath) is None
+        assert transform_old_cld_file(empty_json_database, test_filepath) is None
 
         captured = capsys.readouterr().out
         assert feedback_statement in captured
@@ -322,9 +323,9 @@ class TestTransformData:
                                      'student 51': ['some_pic.png'],
                                      'student 52': [None]}
 
-        self.new_format_json_str = '{\n    "name": "huge 53 student class",\n    "students": [\n        {\n            "name": "student 0",\n            "avatar_filename": "myavatar.jpg"\n        },\n        {\n            "name": "student 1"\n        },\n        {\n            "name": "student 2"\n        },\n        {\n            "name": "student 3"\n        },\n        {\n            "name": "student 4"\n        },\n        {\n            "name": "student 5"\n        },\n        {\n            "name": "student 6"\n        },\n        {\n            "name": "student 7"\n        },\n        {\n            "name": "student 8"\n        },\n        {\n            "name": "student 9"\n        },\n        {\n            "name": "student 10"\n        },\n        {\n            "name": "student 11"\n        },\n        {\n            "name": "student 12"\n        },\n        {\n            "name": "student 13"\n        },\n        {\n            "name": "student 14"\n        },\n        {\n            "name": "student 15"\n        },\n        {\n            "name": "student 16"\n        },\n        {\n            "name": "student 17"\n        },\n        {\n            "name": "student 18"\n        },\n        {\n            "name": "student 19"\n        },\n        {\n            "name": "student 20"\n        },\n        {\n            "name": "student 21"\n        },\n        {\n            "name": "student 22"\n        },\n        {\n            "name": "student 23"\n        },\n        {\n            "name": "student 24"\n        },\n        {\n            "name": "student 25"\n        },\n        {\n            "name": "student 26"\n        },\n        {\n            "name": "student 27"\n        },\n        {\n            "name": "student 28"\n        },\n        {\n            "name": "student 29"\n        },\n        {\n            "name": "student 30"\n        },\n        {\n            "name": "student 31"\n        },\n        {\n            "name": "student 32"\n        },\n        {\n            "name": "student 33"\n        },\n        {\n            "name": "student 34"\n        },\n        {\n            "name": "student 35"\n        },\n        {\n            "name": "student 36"\n        },\n        {\n            "name": "student 37"\n        },\n        {\n            "name": "student 38"\n        },\n        {\n            "name": "student 39"\n        },\n        {\n            "name": "student 40"\n        },\n        {\n            "name": "student 41"\n        },\n        {\n            "name": "student 42"\n        },\n        {\n            "name": "student 43"\n        },\n        {\n            "name": "student 44"\n        },\n        {\n            "name": "student 45"\n        },\n        {\n            "name": "student 46"\n        },\n        {\n            "name": "student 47"\n        },\n        {\n            "name": "student 48"\n        },\n        {\n            "name": "student 49",\n            "avatar_filename": "seven_squared.gif"\n        },\n        {\n            "name": "student 50"\n        },\n        {\n            "name": "student 51",\n            "avatar_filename": "some_pic.png"\n        },\n        {\n            "name": "student 52"\n        }\n    ]\n}'
+        self.new_format_json_str = '{\n    "name": "huge 53 student class",\n    "students": [\n        {\n            "name": "student 0",\n            "avatar_id": "myavatar.jpg"\n        },\n        {\n            "name": "student 1"\n        },\n        {\n            "name": "student 2"\n        },\n        {\n            "name": "student 3"\n        },\n        {\n            "name": "student 4"\n        },\n        {\n            "name": "student 5"\n        },\n        {\n            "name": "student 6"\n        },\n        {\n            "name": "student 7"\n        },\n        {\n            "name": "student 8"\n        },\n        {\n            "name": "student 9"\n        },\n        {\n            "name": "student 10"\n        },\n        {\n            "name": "student 11"\n        },\n        {\n            "name": "student 12"\n        },\n        {\n            "name": "student 13"\n        },\n        {\n            "name": "student 14"\n        },\n        {\n            "name": "student 15"\n        },\n        {\n            "name": "student 16"\n        },\n        {\n            "name": "student 17"\n        },\n        {\n            "name": "student 18"\n        },\n        {\n            "name": "student 19"\n        },\n        {\n            "name": "student 20"\n        },\n        {\n            "name": "student 21"\n        },\n        {\n            "name": "student 22"\n        },\n        {\n            "name": "student 23"\n        },\n        {\n            "name": "student 24"\n        },\n        {\n            "name": "student 25"\n        },\n        {\n            "name": "student 26"\n        },\n        {\n            "name": "student 27"\n        },\n        {\n            "name": "student 28"\n        },\n        {\n            "name": "student 29"\n        },\n        {\n            "name": "student 30"\n        },\n        {\n            "name": "student 31"\n        },\n        {\n            "name": "student 32"\n        },\n        {\n            "name": "student 33"\n        },\n        {\n            "name": "student 34"\n        },\n        {\n            "name": "student 35"\n        },\n        {\n            "name": "student 36"\n        },\n        {\n            "name": "student 37"\n        },\n        {\n            "name": "student 38"\n        },\n        {\n            "name": "student 39"\n        },\n        {\n            "name": "student 40"\n        },\n        {\n            "name": "student 41"\n        },\n        {\n            "name": "student 42"\n        },\n        {\n            "name": "student 43"\n        },\n        {\n            "name": "student 44"\n        },\n        {\n            "name": "student 45"\n        },\n        {\n            "name": "student 46"\n        },\n        {\n            "name": "student 47"\n        },\n        {\n            "name": "student 48"\n        },\n        {\n            "name": "student 49",\n            "avatar_id": "seven_squared.gif"\n        },\n        {\n            "name": "student 50"\n        },\n        {\n            "name": "student 51",\n            "avatar_id": "some_pic.png"\n        },\n        {\n            "name": "student 52"\n        }\n    ]\n}'
         self.new_format_json_dict = {'name': 'huge 53 student class',
-                                     'students': [{'name': 'student 0', 'avatar_filename': 'myavatar.jpg'},
+                                     'students': [{'name': 'student 0', 'avatar_id': 'myavatar.jpg'},
                                                   {'name': 'student 1'},
                                                   {'name': 'student 2'},
                                                   {'name': 'student 3'},
@@ -373,9 +374,9 @@ class TestTransformData:
                                                   {'name': 'student 46'},
                                                   {'name': 'student 47'},
                                                   {'name': 'student 48'},
-                                                  {'name': 'student 49', 'avatar_filename': 'seven_squared.gif'},
+                                                  {'name': 'student 49', 'avatar_id': 'seven_squared.gif'},
                                                   {'name': 'student 50'},
-                                                  {'name': 'student 51', 'avatar_filename': 'some_pic.png'},
+                                                  {'name': 'student 51', 'avatar_id': 'some_pic.png'},
                                                   {'name': 'student 52'}]}
 
     def test_transform_data_dict(self):
@@ -393,7 +394,7 @@ class TestFileFromGuiDialogue:
     def test_file_from_gui_dialogue_no_file(self, monkeypatch, capsys):
         feedback_statement = 'No file selected.'
 
-        def mocked_get_data_file():
+        def mocked_get_data_file(db):
             return None
 
         def mocked_transform_old_cld_file(filepath):
@@ -404,7 +405,7 @@ class TestFileFromGuiDialogue:
         monkeypatch.setattr(data_version_conversion, 'get_data_file', mocked_get_data_file)
         monkeypatch.setattr(data_version_conversion, 'transform_old_cld_file', mocked_transform_old_cld_file)
 
-        assert file_from_gui_dialogue() is None
+        assert file_from_gui_dialogue(empty_json_database) is None
 
         captured = capsys.readouterr().out
         assert feedback_statement in captured
@@ -413,10 +414,10 @@ class TestFileFromGuiDialogue:
     def test_file_from_gui_dialogue_given_file(self, monkeypatch):
         test_filepath = Path('some.path')
 
-        def mocked_get_data_file():
+        def mocked_get_data_file(db):
             return test_filepath
 
-        def mocked_transform_old_cld_file(filepath):
+        def mocked_transform_old_cld_file(db, filepath):
             if not isinstance(filepath, Path):
                 raise TypeError
             if filepath != test_filepath:
@@ -426,26 +427,26 @@ class TestFileFromGuiDialogue:
         monkeypatch.setattr(data_version_conversion, 'get_data_file', mocked_get_data_file)
         monkeypatch.setattr(data_version_conversion, 'transform_old_cld_file', mocked_transform_old_cld_file)
 
-        assert file_from_gui_dialogue() is None
+        assert file_from_gui_dialogue(empty_json_database) is None
 
 
 class TestGetDataFile:
-    def test_get_data_file_no_file(self, monkeypatch):
+    def test_get_data_file_no_file(self, monkeypatch, empty_json_database):
         def mocked_select_file_dialogue(title_str, filetypes, start_dir):
-            assert isinstance(title_str, str) and isinstance(filetypes, list) and start_dir is CLASSLIST_DATA_PATH
+            assert isinstance(title_str, str) and isinstance(filetypes, list) and start_dir is empty_json_database.class_data_path
             return None
 
         monkeypatch.setattr(data_version_conversion, 'select_file_dialogue', mocked_select_file_dialogue)
 
-        assert get_data_file() is None
+        assert get_data_file(empty_json_database) is None
 
-    def test_get_data_file_given_file(self, monkeypatch):
+    def test_get_data_file_given_file(self, monkeypatch, empty_json_database):
         test_filepath = Path('path/to/some.file')
 
         def mocked_select_file_dialogue(title_str, filetypes, start_dir):
-            assert isinstance(title_str, str) and isinstance(filetypes, list) and start_dir is CLASSLIST_DATA_PATH
+            assert isinstance(title_str, str) and isinstance(filetypes, list) and start_dir is empty_json_database.class_data_path
             return test_filepath
 
         monkeypatch.setattr(data_version_conversion, 'select_file_dialogue', mocked_select_file_dialogue)
 
-        assert get_data_file() == test_filepath
+        assert get_data_file(empty_json_database) == test_filepath
