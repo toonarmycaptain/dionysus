@@ -1,17 +1,18 @@
 """Tests for dionysus_app.chart_generator.process_chart_data.py"""
-from unittest import TestCase
-from dionysus_app.chart_generator.process_chart_data import assign_avatars_to_bands, assign_avatar_coords, generate_avatar_coords
+from dionysus_app.chart_generator.process_chart_data import (assign_avatars_to_bands,
+                                                             assign_avatar_coords,
+                                                             generate_avatar_coords,
+                                                             )
+
+test_score_avatar_dict = {1: ['foo', 'spam', 'dead', 'parrot'],
+                          5: ['halibut', 'patties'],
+                          8: ['original', 'recipe', 'chicken'],
+                          9: ['foo', 'spam', 'dead', 'parrot'],
+                          11: ['halibut', 'patties'],
+                          }
 
 
-class TestProcessChartData(TestCase):
-    def setUp(self):
-        self.test_score_avatar_dict = {1: ['foo', 'spam', 'dead', 'parrot'],
-                                       5: ['halibut', 'patties'],
-                                       8: ['original', 'recipe', 'chicken'],
-                                       9: ['foo', 'spam', 'dead', 'parrot'],
-                                       11: ['halibut', 'patties'],
-                                       }
-
+class TestAssignAvatarsToBands:
     def test_assign_avatars_to_bands(self):
         test_assign_avatars_to_bands_result = {0: ['foo', 'spam', 'dead', 'parrot', 'halibut', 'patties'],
                                                10: ['original', 'recipe', 'chicken', 'foo', 'spam', 'dead',
@@ -27,8 +28,10 @@ class TestProcessChartData(TestCase):
                                                100: [],
                                                }
 
-        assert assign_avatars_to_bands(self.test_score_avatar_dict) == test_assign_avatars_to_bands_result
+        assert assign_avatars_to_bands(test_score_avatar_dict) == test_assign_avatars_to_bands_result
 
+
+class TestAssignAvatarCoords:
     def test_assign_avatar_coords(self):
         test_assign_avatar_coords_result = {'foo': [(0.0, 5), (10.0, 35)],
                                             'spam': [(0.0, 15), (10.0, 45)],
@@ -40,8 +43,10 @@ class TestProcessChartData(TestCase):
                                             'recipe': [(10.0, 15)],
                                             'chicken': [(10.0, 25)]
                                             }
-        assert assign_avatar_coords(assign_avatars_to_bands(self.test_score_avatar_dict)) == test_assign_avatar_coords_result
+        assert assign_avatar_coords(assign_avatars_to_bands(test_score_avatar_dict)) == test_assign_avatar_coords_result
 
+
+class TestGenerateAvatarCoords:
     def test_generate_avatar_coords(self):
         test_generate_avatar_coords_result = {'foo': [(0.0, 5), (10.0, 35)],
                                               'spam': [(0.0, 15), (10.0, 45)],
@@ -54,4 +59,4 @@ class TestProcessChartData(TestCase):
                                               'chicken': [(10.0, 25)],
                                               }
 
-        assert generate_avatar_coords(self.test_score_avatar_dict) == test_generate_avatar_coords_result
+        assert generate_avatar_coords(test_score_avatar_dict) == test_generate_avatar_coords_result

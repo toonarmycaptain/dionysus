@@ -187,6 +187,7 @@ YES_input = 'YES', True
 blank_junk_inputs = [no_user_input, space_input, underscore_input, junk_input_knights, junk_input_questions]
 valid_inputs = [n_input, N_input, no_input, NO_input, y_input, Y_input, yes_input, YES_input]
 
+
 class TestAskUserBool:
     @pytest.mark.parametrize(
         'test_inputs, return_value',

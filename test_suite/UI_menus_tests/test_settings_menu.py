@@ -41,17 +41,18 @@ class TestTakeSettingsMenuInput:
         'valid_input, called_function, returned_value',
         [(['1'], 'call_set_default_chart_save_location', None),
          (['2'], 'call_set_database_backend', None),
-         (['0'], None, True),  # Return to menu without choosing option.
-         pytest.param(['1', ], 'call_set_database_backend', None,
+         (['0'], None, True),  # Return to menu without choosing option, None as no function called.
+         pytest.param(['1'], 'call_set_database_backend', None,
                       marks=pytest.mark.xfail(reason='Wrong function called.')),
-         pytest.param(['2'], None, True,
+         pytest.param(['2'], '', True,
                       marks=pytest.mark.xfail(reason='Function not called.')),
          pytest.param(['0'], 'call_set_default_chart_save_location', True,
                       marks=pytest.mark.xfail(reason='Return to menu, function not called.')),
          ])
     def test_take_settings_menu_input(self, monkeypatch,
                                       valid_input, called_function, returned_value):
-        called = {None: True}  # Initialise with None, as None won't be called.
+        called = {called_function: False}  # Initialise called_function as False ie not called.
+        called[None] = True  # Initialise None=True: None won't be called (reset None=True if called_function is None).
 
         # Monkeypatched functions ensure correct function was called:
         def mocked_call_set_default_chart_save_location():
