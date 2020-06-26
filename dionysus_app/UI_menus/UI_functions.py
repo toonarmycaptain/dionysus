@@ -71,13 +71,11 @@ def scrub_candidate_filename(dirty_string: str) -> str:
     :return: str
     """
     allowed_special_characters = [' ', '_', '-', ]
-    cleaned_string = "".join([c if c.isalnum()
+    return "".join([c if c.isalnum()
                                    or c in allowed_special_characters
                               else '_'
                               for c in dirty_string
                               ]).rstrip()
-
-    return cleaned_string
 
 
 def ask_user_bool(question: str, invalid_input_response: str=None) -> bool:
@@ -248,5 +246,4 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
     return Path(dir_path_str)
 
 
-if __name__ == '__main__':
-    pass
+pass

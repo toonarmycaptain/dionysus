@@ -31,9 +31,7 @@ class TestTakeClasslistNameInputSimpleTest:
 
     def test_take_classlist_name_input(self, monkeypatch, empty_generic_database):
         def mocked_class_name_exists(class_id):
-            if class_id == preexisting_classname:
-                return True
-            return False
+            return class_id == preexisting_classname
 
         test_database = empty_generic_database
         test_database.class_name_exists = mocked_class_name_exists
@@ -61,15 +59,15 @@ class TestTakeStudentNameInput:
         preexisting_student_name = 'this student already exists in the class'
         test_class = Class(name='my_test_class', students=[Student(name=preexisting_student_name)])
 
-        valid_new_student_name = 'this is a valid student name'
-
-        test_inputs = ['',  # no_student_name,
-                       '_',  # blank_student_name,
-                       preexisting_student_name,  # preexisting_student_name,
-                       valid_new_student_name,  # valid_new_student_name,
-                       ]
-
         with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+            valid_new_student_name = 'this is a valid student name'
+
+            test_inputs = ['',  # no_student_name,
+                           '_',  # blank_student_name,
+                           preexisting_student_name,  # preexisting_student_name,
+                           valid_new_student_name,  # valid_new_student_name,
+                           ]
+
             mock_input.side_effect = test_inputs
             assert take_student_name_input(test_class) == valid_new_student_name
 
@@ -187,14 +185,14 @@ class TestTakeClassSelection:
 class TestDisplayStudentSelectionMenu:
     def test_display_student_selection_menu(self):
         """User feedback rendered as expected."""
-        enumerated_classlist = test_class_data_set['enumerated_dict']
-        expected_enum_student_strings = test_display_student_selection_menu_student_output
-        expected_print_statements = ["Select student from list:", ] + expected_enum_student_strings
-
         # capture print function
         # assert captured_print_function == expected_print_statements.
         with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
+            enumerated_classlist = test_class_data_set['enumerated_dict']
             display_student_selection_menu(enumerated_classlist)
+
+            expected_enum_student_strings = test_display_student_selection_menu_student_output
+            expected_print_statements = ["Select student from list:", ] + expected_enum_student_strings
 
             print_calls = [mock.call(printed_str) for printed_str in expected_print_statements]
             assert mocked_print.call_args_list == print_calls

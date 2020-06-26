@@ -116,7 +116,7 @@ class TestTransformAllOldDataFiles:
         def mocked_path_glob(self, cld_pattern):
             if cld_pattern != '**/*.cld':
                 raise ValueError
-            return (test_path for test_path in test_file_paths)
+            return iter(test_file_paths)
 
         def mocked_transform_old_cld_file(db, file_path):
             if not isinstance(file_path, Path):

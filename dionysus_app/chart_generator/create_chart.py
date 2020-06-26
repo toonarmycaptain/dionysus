@@ -108,8 +108,7 @@ def set_chart_params() -> dict:
 
     :return: dict
     """
-    chart_params = get_custom_chart_options(DEFAULT_CHART_PARAMS)
-    return chart_params
+    return get_custom_chart_options(DEFAULT_CHART_PARAMS)
 
 
 def get_custom_chart_options(default_params: dict) -> dict:

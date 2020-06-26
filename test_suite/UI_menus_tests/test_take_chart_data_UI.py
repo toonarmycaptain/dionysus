@@ -249,8 +249,8 @@ class TestTakeScoreEntry:
          ])
     def test_take_score_entry_input_outside_custom_range(self, mocked_inputs, expected_return):
         """Test for good input outside custom range parameters."""
-        min_range, max_range = 49, 51
         with patch('builtins.input', side_effect=mocked_inputs):
+            min_range, max_range = 49, 51
             assert take_score_entry('some student name', minimum=min_range, maximum=max_range) == expected_return
 
 
@@ -266,9 +266,7 @@ class TestTakeChartName:
 
         def mocked_input_is_essentially_blank(test_chart_name):
             """Presume last input will be accepted."""
-            if test_chart_name != mocked_inputs[-1]:
-                return True
-            return False
+            return test_chart_name != mocked_inputs[-1]
 
         monkeypatch.setattr(take_chart_data_UI, 'input_is_essentially_blank', mocked_input_is_essentially_blank)
         with patch('builtins.input', side_effect=mocked_inputs):

@@ -64,10 +64,7 @@ class Class:
         self.name = name
         self.path_safe_name = name
 
-        if students:
-            self.students = students
-        else:
-            self.students = []
+        self.students = students if students else []
 
     @property
     def name(self):
@@ -194,7 +191,7 @@ class Class:
             # else:
             self.students.append(student)
 
-        elif kwargs and not student:
+        elif kwargs:
             self.students.append(Student(**kwargs))
 
     def json_dict(self):
@@ -205,10 +202,8 @@ class Class:
 
         :return: dict
         """
-        class_dict = {'name': self._name,
+        return {'name': self._name,
                       'students': [student.json_dict() for student in self.students]}
-
-        return class_dict
 
     def to_json_str(self):
         """
@@ -216,8 +211,7 @@ class Class:
 
         :return: str
         """
-        json_class_data = convert_to_json(self.json_dict())
-        return json_class_data
+        return convert_to_json(self.json_dict())
 
     # Alternate constructors
 
