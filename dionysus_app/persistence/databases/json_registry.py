@@ -163,7 +163,8 @@ class Registry:
             raise ValueError("RegistryError: Registry uninitialised.")
         # Load registry file, if it exists.
         try:
-            disk_registry_str: Optional[str] = open(self.registry_path, 'r').read()
+            with open(self.registry_path, 'r') as registry_file:
+                disk_registry_str: Optional[str] = registry_file.read()
         except FileNotFoundError:
             disk_registry_str = None
 
