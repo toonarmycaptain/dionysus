@@ -155,11 +155,11 @@ class TestContainsMethod:
         eg id(test_student) != id(test_class_name_only.students[0])
         """
         assert test_class_name_only.students == []  # No students in class
-        name, avatar_filename = 'test_student', 'test_student_avatar'
-        test_student = Student(name=name, avatar_filename=avatar_filename)
-        test_class_name_only.add_student(name=name, avatar_filename=avatar_filename)
+        name, avatar_id = 'test_student', 'test_student_avatar'
+        test_student = Student(name=name, avatar_id=avatar_id)
+        test_class_name_only.add_student(name=name, avatar_id=avatar_id)
 
-        assert not test_student in test_class_name_only
+        assert test_student not in test_class_name_only
 
     def test__contains__student_obj_not_in_empty_class(self, test_student_name_only, test_class_name_only):
         assert test_class_name_only.students == []  # No students in class
@@ -253,12 +253,12 @@ class TestAddStudent:
         assert test_class_name_only.students == []
 
         test_class_name_only.add_student(name=test_student_with_avatar.name,
-                                         avatar_filename=test_student_with_avatar.avatar_filename)
+                                         avatar_id=test_student_with_avatar.avatar_id)
 
         assert len(test_class_name_only.students) == 1
         # Test student attributes are as expected
         assert test_class_name_only.students[0].name == test_student_with_avatar.name
-        assert test_class_name_only.students[0].avatar_filename == test_student_with_avatar.avatar_filename
+        assert test_class_name_only.students[0].avatar_id == test_student_with_avatar.avatar_id
 
     @pytest.mark.parametrize('student_arg',
                              ['student name',  # string

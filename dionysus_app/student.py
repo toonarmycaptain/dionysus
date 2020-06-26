@@ -16,8 +16,8 @@ class Student:
     path_safe_name : str
         Cleaned string safe to use in file names and paths.
 
-    avatar_filename : str or None
-        Filename of student's avatar.
+    avatar_id : Any None
+        id or filename of student's avatar.
 
 
     Methods
@@ -41,13 +41,13 @@ class Student:
         :param name: The student's name.
         :type name: str
 
-        :keyword avatar_filename: Filename of student's avatar.
-        :type avatar_filename: str
+        :keyword avatar_id: Filename of student's avatar.
+        :type avatar_id: str
         """
-        self.name = name
+        self.name: str = name
 
-        self.avatar_filename = kwargs.get('avatar_filename')  # Equivalent to kwargs.get(key, None)
-        # NB Assuring existence is responsibility of code instantiating/adding avatar_filename.
+        self.avatar_id: Any = kwargs.get('avatar_id')  # Equivalent to kwargs.get(key, None)
+        # NB Assuring existence is responsibility of code instantiating/adding avatar_id.
 
     @property
     def name(self):
@@ -64,7 +64,7 @@ class Student:
         Set student name.
 
         :param name: The student's name.
-        :type name: str # TODO: change other docstrings in class to this format.
+        :type name: str
 
         :return: None
         """
@@ -78,40 +78,36 @@ class Student:
         self._name = name
 
     @property
-    def avatar_filename(self):
+    def avatar_id(self):
         """
         Get avatar path.
 
         :return: str or None
         """
-        return self._avatar_filename
+        return self._avatar_id
 
-    @avatar_filename.setter
-    def avatar_filename(self, avatar_filename: str = None):
+    @avatar_id.setter
+    def avatar_id(self, avatar_id: Any = None):
         """
-        Set _avatar_filename, defaults to None.
+        Set _avatar_id, defaults to None.
 
-        :param avatar_filename: str or None.
+        :param avatar_id: Any or None.
         :return: None
         """
-        self._avatar_filename: Union[str, None]
-        if avatar_filename:
-
-            self._avatar_filename = avatar_filename
-        else:
-            self._avatar_filename = None
+        self._avatar_id: Union[Any, None]
+        self._avatar_id = avatar_id if avatar_id else None
 
     def json_dict(self):
         """
         Translates Student object into JSON-serialisable dict.
 
-        Captures name, avatar_filename attributes.
+        Captures name, avatar_id attributes.
 
         :return: dict
         """
         json_data = {'name': self._name}
-        if self._avatar_filename:
-            json_data['avatar_filename'] = str(self._avatar_filename)
+        if self._avatar_id:
+            json_data['avatar_id'] = str(self.avatar_id)
         return json_data
 
     # Alternate constructors
@@ -121,29 +117,29 @@ class Student:
         """
         Instantiate a Student object from a JSON-serialisable dict.
 
-        Dict must have keys corresponding to arguments to Student.__init__:
+        Dict must have keys corresponding to args to Student.__init__:
             'name' : str
-            'avatar_filename' : str/None (optional, defaults to None).
+            'avatar_id' : str/None (optional, defaults to None).
 
         :param student_dict: dict
         :return: Student object
         """
         _name = student_dict['name']
-        _avatar_filename = student_dict.get('avatar_filename', None)
+        _avatar_id = student_dict.get('avatar_id', None)
         return Student(name=_name,
-                       avatar_filename=_avatar_filename,
+                       avatar_id=_avatar_id,
                        )
 
     # String representations
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
                     f'name={self._name!r}, '
-                    f'avatar_filename={self._avatar_filename!r}'
+                    f'avatar_id={self._avatar_id!r}'
                     f')'
                     )
         return repr_str
 
-    def __str__(self):
-        avatar_stmt = (f'avatar {self.avatar_filename}' if self.avatar_filename is not None
+    def __str__(self) -> str:
+        avatar_stmt = (f'avatar {self.avatar_id}' if self.avatar_id is not None
                        else 'no avatar')
         return f'Student {self.name}, with {avatar_stmt}.'
