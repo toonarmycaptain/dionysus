@@ -131,6 +131,28 @@ class TestTransformAllOldDataFiles:
 
 
 class TestTransformOldCldFile:
+    def test_transform_old_cld_file_database_not_supplied(self, monkeypatch, empty_json_database, capsys):
+        """Assert call without database arg instantiates a JSONDatabase."""
+        test_filepath = Path('hi//I//do//not//exist.oops')
+
+        json_database_mock = {'called': False}
+
+        def mocked_json_database():
+            json_database_mock['called'] = True
+            return 'a JSONDatabase instance'
+
+        def mocked_path_exists(filepath):
+            if not isinstance(filepath, Path):
+                raise TypeError
+            return False
+        monkeypatch.setattr(data_version_conversion, 'JSONDatabase', mocked_json_database)
+        monkeypatch.setattr(data_version_conversion.Path, 'exists', mocked_path_exists)
+
+        assert transform_old_cld_file(None, test_filepath) is None
+        assert json_database_mock['called']
+
+
+
     def test_transform_old_cld_file_nonexistent_path(self, monkeypatch, empty_json_database, capsys):
         test_filepath = Path('hi//I//do//not//exist.oops')
         error_statement = f'File {test_filepath} does not exist.'
