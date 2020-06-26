@@ -57,12 +57,12 @@ class TestSetDefaultChartSaveLocation:
         def mocked_save_new_default_chart_save_location_setting(new_chart_save_folder_path):
             if new_chart_save_folder_path != test_new_chart_save_location:
                 raise ValueError(f'Wrong new location path: '
-                                 f'{new_chart_save_folder_path=}!={test_new_chart_save_location}')
+                                 f'new_chart_save_folder_path={new_chart_save_folder_path}!={test_new_chart_save_location}')
 
         def mocked_create_chart_save_folder(new_chart_save_folder_path, original_location):
             if new_chart_save_folder_path != test_new_chart_save_location:
                 raise ValueError(f'Wrong new location path: '
-                                 f'{new_chart_save_folder_path=}!={test_new_chart_save_location}')
+                                 f'new_chart_save_folder_path={new_chart_save_folder_path}!={test_new_chart_save_location}')
             if original_location != test_original_chart_save_folder_location:
                 raise ValueError(f'Wrong original chart save folder location: '
                                  f'{original_location}!={settings_functions.definitions.DEFAULT_CHART_SAVE_DIR}')
@@ -121,8 +121,9 @@ class TestSetDatabaseBackend:
             assert new_setting['database'] == user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND
             if new_setting['database'] != (user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND):
                 raise ValueError(
-                    f"Wrong new setting: {new_setting['database']=} "
-                    f"!= {user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND=}")
+                    f"Wrong new setting: new_setting['database']={new_setting['database']} "
+                    f"!= (user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND)"
+                    f"= {user_selected_backend or definitions.DEFAULT_DATABASE_BACKEND}")
 
         monkeypatch.setattr(settings_functions, 'user_set_database_backend', lambda: user_selected_backend)
         monkeypatch.setattr(settings_functions, 'edit_app_settings_file', mocked_edit_app_settings_file)
