@@ -4,7 +4,7 @@ import shutil
 import tempfile
 
 from pathlib import Path
-from typing import Any, List, Union
+from typing import Any, Iterator, List, Union
 
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
@@ -14,7 +14,7 @@ from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 class Class:
     """
-    Class to contain a class' data (ie student objects) and related methods.
+    Class to contain a class' data eg student objects, related methods.
     ...
 
     Attributes
@@ -52,7 +52,7 @@ class Class:
 
     """
 
-    def __init__(self, name: str, students: List[Student] = None):
+    def __init__(self, name: str, students: List[Student] = None) -> None:
         """
         Create Class instance.
 
@@ -64,13 +64,10 @@ class Class:
         self.name = name
         self.path_safe_name = name
 
-        if students:
-            self.students = students
-        else:
-            self.students = []
+        self.students = students if students else []
 
     @property
-    def name(self):
+    def name(self) -> str:
         """
         Get class name.
 
@@ -79,7 +76,7 @@ class Class:
         return self._name
 
     @name.setter
-    def name(self, name: str):
+    def name(self, name: str) -> None:
         """
         Set class name. Also sets path_safe_name.
 
@@ -90,7 +87,7 @@ class Class:
         self.path_safe_name = self._name
 
     @property
-    def path_safe_name(self):
+    def path_safe_name(self) -> str:
         """
         Get path_safe_name: filename-safe class name string.
 
@@ -99,7 +96,7 @@ class Class:
         return self._path_safe_name
 
     @path_safe_name.setter
-    def path_safe_name(self, class_name: str):
+    def path_safe_name(self, class_name: str) -> None:
         """
         Set path_safe_name: filename-safe class name string.
 
@@ -108,28 +105,28 @@ class Class:
         """
         self._path_safe_name = clean_for_filename(class_name)
 
-    def __contains__(self, item: Union[str, Student]):
+    def __contains__(self, item: Union[str, Student]) -> bool:
         """
-        Implement use of 'in' operator for membership testing or iterating over
-        students in the class eg:
+        Implement use of 'in' operator for membership testing or
+        iterating over students in the class eg:
             name_str in instance_of_Class -> True/False
             Student_instance in instance_of_Class -> True/False
 
-        NB if Student is imported via from student import Student, or in a
-        manner other than rather than from dionysus_app.student (as it is here
-        in class_.py), the comparison, will be between:
+        NB if Student is imported via from student import Student, or in
+        a manner other than rather than from dionysus_app.student (as it
+        is here in class_.py), the comparison, will be between:
             <class 'dionysus_app.student.Student'> and
             <class 'student.Student'>
         - and will return False even though the .__class__.__name__ and
         .__class__.__qualname__ will both return 'Student'.
 
-        NB2 if the student object is exactly equivalent to a student in the
-        class (eg same name, avatar etc), but that specific object isn't in
-        the class, the comparison will return False, instead, using the name is
-        more robust.
+        NB2 if the student object is exactly equivalent to a student in
+        the class (eg same name, avatar etc), but that specific object
+        isn't in the class, the comparison will return False, instead,
+        using the name is more robust.
 
         :param item: str or Student object
-        :return: Bool
+        :return: bool
         """
         if isinstance(item, str):
             name = item
@@ -141,10 +138,11 @@ class Class:
             raise ValueError(f'Expected type str or Student: '
                              f'received type {type(item)}.')
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Student]:
         """
-        Implement use of 'for' operator for iterating over students in the
-        class eg:
+        Implement 'for' operator for iterating over students in class:
+
+        eg:
             for student in instance_of_Class: # do something
              eg print(student.name)
 
@@ -157,26 +155,27 @@ class Class:
         # for student in self.students:
         #     yield student
 
-    def add_student(self, student: Student = None, **kwargs: Any):
+    def add_student(self, student: Student = None, **kwargs: Any) -> None:
         """
         Adds a student to the class.
 
-        May be called with a student object as first argument, otherwise adds
-        a Student object instantiated with supplied named parameters to list of
-        students in class:
+        May be called with a student object as first argument, otherwise
+        adds a Student object instantiated with supplied named
+        parameters to list of students in class:
 
         Class.add_student(my_student_object)
         or
         Class.add_student(name='student_name', ...)
 
-        NB If Student object is passed to student parameter, any kwargs are
-        ignored, such that an avatar cannot be added to a student object while
-        adding it to a class.
+        NB If Student object is passed to student parameter, any kwargs
+        are ignored, such that an avatar cannot be added to a student
+        object while adding it to a class with a kwarg via this method.
 
         :param student: Student object.
         :type student: Student
 
-        :keyword name: str - Name of student, first arg to Student __init__.
+        :keyword name: str - Name of student,
+                                first arg to Student.__init__.
 
         For other keyword arguments, see Student object documentation.
 
@@ -194,35 +193,33 @@ class Class:
             # else:
             self.students.append(student)
 
-        elif kwargs and not student:
+        elif kwargs:  # and not student:
             self.students.append(Student(**kwargs))
 
-    def json_dict(self):
+    def json_dict(self) -> dict:
         """
         Translates Class object into JSON-serialisable dict.
 
-        Captures name, converts Student objects to JSON-serialisable dicts.
+        Captures name, converts Student objects to JSON-serialisable
+        dicts.
 
         :return: dict
         """
-        class_dict = {'name': self._name,
-                      'students': [student.json_dict() for student in self.students]}
+        return {'name': self._name,
+                'students': [student.json_dict() for student in self.students]}
 
-        return class_dict
-
-    def to_json_str(self):
+    def to_json_str(self) -> str:
         """
         Converts Class in JSON-serialisable form to JSON string.
 
         :return: str
         """
-        json_class_data = convert_to_json(self.json_dict())
-        return json_class_data
+        return convert_to_json(self.json_dict())
 
     # Alternate constructors
 
     @classmethod
-    def from_dict(cls, class_dict: dict):
+    def from_dict(cls, class_dict: dict) -> 'Class':
         """
         Instantiate Class object from JSON-serialisable dict.
 
@@ -234,7 +231,7 @@ class Class:
         return Class(_name, _students)
 
     @classmethod
-    def from_json(cls, json_data: str):
+    def from_json(cls, json_data: str) -> 'Class':
         """
         Return Class object from json string.
 
@@ -245,7 +242,7 @@ class Class:
         return Class.from_dict(class_dict)
 
     @classmethod
-    def from_file(cls, cdf_path: Union[Path, str]):
+    def from_file(cls, cdf_path: Union[Path, str]) -> 'Class':
         """
         Return Class object from cdf file.
 
@@ -257,7 +254,7 @@ class Class:
         return Class.from_dict(class_json)
 
     # String representations
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
                     f'name={self._name!r}, '
                     f'path_safe_name={self._path_safe_name!r}, '
@@ -282,7 +279,8 @@ class NewClass(Class):
     Subclass of Class for creating new classes, machinery to facilitate
     creation of new classes in database.
 
-    Adds temp directory for class to cache files before writing to database.
+    Adds temp directory for class to cache files before writing to
+    database.
     This temp directory is garbage collected with the object upon object
     destruction.
 
@@ -294,8 +292,8 @@ class NewClass(Class):
             ├── class_path_safe_name+hash
             |   ├── avatars
 
-    NB: In future may be subclassed or housed in Database objects to allow database
-    specific implementation.
+    NB: In future may be subclassed or housed in Database objects to
+    allow database specific implementation.
     ...
 
     Attributes
@@ -308,7 +306,8 @@ class NewClass(Class):
     temp_avatars_dir: Path
         Path to avatars folder in class' temp directory.
     """
-    def __init__(self, name: str, students: List[Student] = None):
+
+    def __init__(self, name: str, students: List[Student] = None) -> None:
         super().__init__(name, students)
 
         # Create class temp directory.

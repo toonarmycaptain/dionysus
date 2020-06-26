@@ -15,28 +15,26 @@ def convert_to_json(data_to_convert: dict) -> str:
     Serialise data in JSON format, return as JSON string.
 
     CAUTION: If dict has int keys when converted to JSON, these will be
-    converted to str keys, and remain so on json.loads, as JSON does not have
-    int keys.
+    converted to str keys, and remain so on json.loads, as JSON does not
+    have int keys.
 
     :param data_to_convert:
     :return: str
     """
-    converted_data = json.dumps(data_to_convert, indent=4)
-    return converted_data
+    return json.dumps(data_to_convert, indent=4)
 
 
 def load_from_json(data_to_convert: str) -> Any:
     """
     Convert data from JSON to python object.
 
-    CAUTION: If dict had int keys when converted to JSON, these will be str keys
-    when loaded from JSON due to JSON not having int keys.
+    CAUTION: If dict had int keys when converted to JSON, these will be
+    str keys when loaded from JSON due to JSON not having int keys.
 
     :param data_to_convert: str
     :return:
     """
-    converted_data = json.loads(data_to_convert)
-    return converted_data
+    return json.loads(data_to_convert)
 
 
 def load_from_json_file(json_file_path: Union[Path, str]) -> Any:
@@ -48,16 +46,18 @@ def load_from_json_file(json_file_path: Union[Path, str]) -> Any:
     """
     with open(json_file_path) as json_file:
         json_data = json_file.read()
-        loaded_data = load_from_json(json_data)
-        return loaded_data
+        return load_from_json(json_data)
 
 
 def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]) -> None:
     """
-    Takes two filepaths, copying the origin file to the destination path and
-    filename, doing nothing if the origin filepath doesn't exist.
+    Copy file from origin to destination.
 
-    Converts non-string object to string in case of Path object argument.
+    Takes two filepaths, copying the origin file to the destination path
+    and filename, doing nothing if the origin filepath doesn't exist.
+
+    Converts non-string object to string in case of Path object
+    argument.
 
     :param origin_fullpath: Path or str
     :param destination_fullpath: Path or str
@@ -73,6 +73,8 @@ def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Pat
 
 def move_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]) -> None:
     """
+    Move origin file to destination, do nothing if origin nonexistent.
+
     Takes two filepaths, copying the origin file/directory to the destination
     path and filename, doing nothing if the origin filepath doesn't exist.
 
