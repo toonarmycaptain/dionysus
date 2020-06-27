@@ -111,7 +111,7 @@ class TestTakeClassDataInput:
         take_student_avatar_return = 'my_student_avatar.jpg'
         test_class = Class(name=test_class_name,
                            students=[Student(name=test_take_student_name_input_returns[0],
-                                             avatar_filename=take_student_avatar_return),
+                                             avatar_id=take_student_avatar_return),
                                      ])
         test_take_student_name_input_return = (name for name in test_take_student_name_input_returns)
 

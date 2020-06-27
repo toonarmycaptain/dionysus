@@ -91,7 +91,7 @@ def take_class_data_input(class_name: str) -> NewClass:
         if student_name.upper() == 'END':
             break
         avatar_filename = take_student_avatar(new_class, student_name)
-        new_class.add_student(name=student_name, avatar_filename=avatar_filename)
+        new_class.add_student(name=student_name, avatar_id=avatar_filename)
     return new_class
 
 
