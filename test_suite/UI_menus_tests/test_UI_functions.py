@@ -18,7 +18,7 @@ from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
                                                 )
 
 
-class TestClearScree:
+class TestClearScreen:
     @pytest.mark.parametrize(
         'test_input, expected_print_output',
         [(50, 50 * '\n'),
@@ -186,6 +186,7 @@ YES_input = 'YES', True
 
 blank_junk_inputs = [no_user_input, space_input, underscore_input, junk_input_knights, junk_input_questions]
 valid_inputs = [n_input, N_input, no_input, NO_input, y_input, Y_input, yes_input, YES_input]
+
 
 class TestAskUserBool:
     @pytest.mark.parametrize(

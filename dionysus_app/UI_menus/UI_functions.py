@@ -71,16 +71,14 @@ def scrub_candidate_filename(dirty_string: str) -> str:
     :return: str
     """
     allowed_special_characters = [' ', '_', '-', ]
-    cleaned_string = "".join([c if c.isalnum()
-                                   or c in allowed_special_characters
-                              else '_'
-                              for c in dirty_string
-                              ]).rstrip()
-
-    return cleaned_string
+    return "".join([c if c.isalnum()
+                         or c in allowed_special_characters
+                    else '_'
+                    for c in dirty_string
+                    ]).rstrip()
 
 
-def ask_user_bool(question: str, invalid_input_response: str=None) -> bool:
+def ask_user_bool(question: str, invalid_input_response: str = None) -> bool:
     """
     Get user input, return a bool response.
     Optional additional instruction on invalid input.
@@ -183,16 +181,19 @@ def select_file_dialogue(title_str: str = None,
                          start_dir: Union[Path, str] = '..',
                          ) -> Optional[Path]:
     """
-    Prompts user to select a file. Calls tkinter filedialog.askopenfilename
-    with title (if provided), and filetype argument (if provided) eg '*.png'.
+    Prompt user to select a file.
+
+    Prompts user to select a file. Calls tkinter
+    filedialog.askopenfilename with title (if provided), and filetype
+    argument (if provided) eg '*.png'.
 
     filetypes is a list of tuples with 2 values, a label and a pattern
     eg for png and all files: [('.png', '*.png'), ("all files", "*.*")]
 
     Default starting directory is directory above application directory.
-    If start_dir is unresolvable, or '' or None, the dialog will default to
-    starting at the last directory selected on recent versions of Windows,
-    current working directory on old Windows/other OS.
+    If start_dir is unresolvable, or '' or None, the dialog will default
+    tonstarting at the last directory selected on recent versions of
+    Windows, current working directory on old Windows/other OS.
     See https://www.tcl.tk/man/tcl8.6/TkCmd/chooseDirectory.htm
 
     Returns None instead of empty string if no file is selected.
@@ -221,22 +222,25 @@ def select_file_dialogue(title_str: str = None,
     return Path(filepath_str)
 
 
-def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = '..'):
+def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = '..') -> Optional[Path]:
     """
-    Prompts user to select a file. Calls tkinter filedialog.askopenfilename
-    with title (if provided), and filetype argument (if provided) eg '*.png'.
+    Prompt user to select a directory.
+
+    Prompts user to select a file. Calls tkinter
+    filedialog.askopenfilename with title (if provided), and filetype
+    argument (if provided) eg '*.png'.
 
     Default starting directory is directory above application directory.
-    If start_dir is unresolvable, or '' or None, the dialog will default to
-    starting at the last directory selected on recent versions of Windows,
-    current working directory on old Windows/other OS.
+    If start_dir is unresolvable, or '' or None, the dialog will default
+    to starting at the last directory selected on recent versions of
+    Windows, current working directory on old Windows/other OS.
     See https://www.tcl.tk/man/tcl8.6/TkCmd/chooseDirectory.htm
 
     Returns None instead of empty string if no file is selected.
 
     :param title_str: str
     :param start_dir: Path or str - Path for dialogue to start in.
-    :return: Path
+    :return: Path or None
     """
     root = tk.Tk()
     root.withdraw()
@@ -246,7 +250,3 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
     if dir_path_str == '':
         return None
     return Path(dir_path_str)
-
-
-if __name__ == '__main__':
-    pass

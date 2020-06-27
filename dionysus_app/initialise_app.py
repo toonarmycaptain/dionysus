@@ -5,8 +5,11 @@ from pathlib import Path
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.settings_functions import (APP_SETTINGS_FILE,
+                                             app_start_set_database,
                                              app_start_set_default_chart_save_location,
-                                             TEMP_DIR)
+                                             TEMP_DIR,
+                                             )
+from dionysus_app.UI_menus.settings_functions_UI import welcome_to_program
 
 
 def app_config() -> None:
@@ -14,9 +17,13 @@ def app_config() -> None:
     Initialise app settings if no settings file (ie on first run).
 
     Set user default chart save folder.
+
+    :return: None
     """
 
     if not Path.exists(APP_SETTINGS_FILE):
+        welcome_to_program()
+        app_start_set_database()
         app_start_set_default_chart_save_location()
 
 
@@ -29,12 +36,11 @@ def data_folder_check() -> None:
 
     data_folders = {
         DataFolder.APP_DATA: DataFolder.generate_rel_path(DataFolder.APP_DATA.value),
-        DataFolder.CLASS_DATA: DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value),
         DataFolder.TEMP_DIR: DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value)
     }
 
-    for key in data_folders:
-        data_folders[key].mkdir(parents=True, exist_ok=True)
+    for data_path in data_folders.values():
+        data_path.mkdir(parents=True, exist_ok=True)
 
 
 def clear_temp() -> None:
@@ -57,6 +63,8 @@ def clear_temp() -> None:
 
 def app_init() -> None:
     """
+    Get filesystem ready, run app_config.
+
     Clear temp folder if it contains files.
     Ensures existence of key data folders.
     Run app_config.
@@ -66,7 +74,3 @@ def app_init() -> None:
     clear_temp()
     data_folder_check()  # Data paths need to exist before creating/editing settings file.
     app_config()
-
-
-if __name__ == '__main__':
-    pass

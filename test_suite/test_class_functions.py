@@ -1,49 +1,40 @@
 """Test functions in class_functions.py"""
-
-import os
-import shutil
-
 from pathlib import Path
 from unittest.mock import patch, mock_open
 
-from unittest import mock, TestCase  # this is needed to use mock.call, since from mock import call causes an error.
-
 import pytest
 
-from dionysus_app import class_functions, class_registry_functions
+from dionysus_app import class_functions
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.class_ import Class, NewClass
-from dionysus_app.class_functions import (avatar_path_from_string,
+from dionysus_app.class_functions import (avatar_file_exists,
                                           compose_classlist_dialogue,
                                           create_chart_with_new_class,
                                           create_classlist,
-                                          create_classlist_data,
                                           create_class_list_dict,
                                           edit_classlist,
-                                          get_avatar_path,
                                           load_chart_data,
-                                          load_class_from_disk,
-                                          move_avatar_to_class_data,
-                                          move_avatars_to_class_data,
                                           select_classlist,
                                           select_student,
-                                          setup_class,
-                                          setup_class_data_storage,
                                           take_class_data_input,
                                           take_student_avatar,
-                                          write_classlist_to_file,
                                           )
+from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.student import Student
+from dionysus_app.UI_menus.UI_functions import clean_for_filename
+from test_suite.test_persistence.test_database import empty_generic_database  # Fixture.
 from test_suite.test_class import (test_class_name_only,
                                    test_full_class)
-from dionysus_app.UI_menus.UI_functions import clean_for_filename
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_full_class_data_set,
                                            )
 
 
 class TestCreateClasslist:
-    def test_create_classlist(self, monkeypatch, test_full_class):
+    def test_create_classlist(self, monkeypatch, empty_generic_database,
+                              test_full_class):
+        test_database = empty_generic_database
+
         def mocked_take_classlist_name_input():
             return test_full_class.name
 
@@ -52,9 +43,12 @@ class TestCreateClasslist:
                 raise ValueError
             return test_full_class
 
-        def mocked_create_classlist_data(test_class):
+
+        def mocked_create_class(test_class):
             if test_class != test_full_class:
                 raise ValueError
+
+        test_database.create_class = mocked_create_class
 
         def mocked_time_sleep(seconds):
             pass
@@ -65,235 +59,76 @@ class TestCreateClasslist:
 
         monkeypatch.setattr(class_functions, 'take_classlist_name_input', mocked_take_classlist_name_input)
         monkeypatch.setattr(class_functions, 'compose_classlist_dialogue', mocked_compose_classlist_dialogue)
-        monkeypatch.setattr(class_functions, 'create_classlist_data', mocked_create_classlist_data)
+        monkeypatch.setattr(class_functions.definitions, 'DATABASE', test_database)
         monkeypatch.setattr(class_functions.time, 'sleep', mocked_time_sleep)
         monkeypatch.setattr(class_functions, 'create_chart_with_new_class', mocked_create_chart_with_new_class)
+
         assert create_classlist() is None
 
 
-class TestSetupClass(TestCase):
-    def setUp(self):
-        self.test_classlist_name = 'the_knights_who_say_ni'
-
-    @patch('dionysus_app.class_functions.setup_class_data_storage')
-    @patch('dionysus_app.class_functions.register_class')
-    def test_setup_class(self, mock_register_class, mock_setup_class_data_storage):
-        assert setup_class(self.test_classlist_name) is None
-        mock_setup_class_data_storage.assert_called_once_with(self.test_classlist_name)
-        mock_register_class.assert_called_once_with(self.test_classlist_name)
-
-
-class TestSetupClassDataStorage(TestCase):
-    mock_CLASSLIST_DATA_PATH = Path('a_shrubbery')
-    mock_DEFAULT_CHART_SAVE_FOLDER = Path('Camelot')
-
-    def setUp(self):
-        self.mock_CLASSLIST_DATA_PATH = Path('a_shrubbery')
-        self.mock_DEFAULT_CHART_SAVE_FOLDER = Path('Camelot')
-        self.test_class_name = 'the_knights_who_say_ni'
-
-        # Created paths
-        self.test_avatar_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name, 'avatars')
-        self.test_chart_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name, 'chart_data')
-        self.test_user_chart_save_folder = Path(self.mock_DEFAULT_CHART_SAVE_FOLDER).joinpath(self.test_class_name)
-
-        self.created_directory_paths = [self.test_avatar_path,
-                                        self.test_chart_path,
-                                        self.test_user_chart_save_folder,
-                                        ]
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('definitions.DEFAULT_CHART_SAVE_FOLDER', mock_DEFAULT_CHART_SAVE_FOLDER)
-    def test_setup_class_data_storage(self):
-        with patch('dionysus_app.class_functions.Path.mkdir', autospec=True) as mock_mkdir:
-            setup_class_data_storage(self.test_class_name)
-
-            mkdir_calls = [mock.call(directory_path, exist_ok=True, parents=True)
-                           for directory_path in self.created_directory_paths]
-            assert mock_mkdir.mock_calls == mkdir_calls
-
-
-def test_setup_class_data_storage_raising_error(monkeypatch):
-    monkeypatch.setattr(class_registry_functions.definitions, 'DEFAULT_CHART_SAVE_FOLDER', None)
-    with pytest.raises(ValueError):
-        setup_class_data_storage('some_class')
-
-
-class TestCreateClasslistData:
-    def test_create_classlist_data(self, monkeypatch, test_full_class):
-        def mocked_setup_class(test_class_name):
-            if test_class_name != test_full_class.name:
-                raise ValueError
-
-        def mocked_write_classlist_to_file(test_class):
-            if test_class != test_full_class:
-                raise ValueError
-
-        def mocked_copy_avatars_to_class_data(test_class):
-            if test_class != test_full_class:
-                raise ValueError
-
-        monkeypatch.setattr(class_functions, 'setup_class', mocked_setup_class)
-        monkeypatch.setattr(class_functions, 'write_classlist_to_file', mocked_write_classlist_to_file)
-        monkeypatch.setattr(class_functions, 'move_avatars_to_class_data', mocked_copy_avatars_to_class_data)
-
-        assert create_classlist_data(test_full_class) is None
-
-
-class TestMoveAvatarsToClassData:
-    @pytest.mark.parametrize(
-        'test_new_class, calls_to_mock_move_avatars_to_class_data',
-        [(NewClass('test empty class'), []),  # No students
-         # All students have avatar_filename
-         (NewClass.from_dict({'name': 'test_class',
-                              'students': [{'name': 'Cali', 'avatar_filename': 'Cali_avatar.png'},
-                                           {'name': 'Zach', 'avatar_filename': 'Zach_avatar.png'},
-                                           {'name': 'Ashley', 'avatar_filename': 'Ashley_avatar.png'},
-                                           {'name': 'Danielle', 'avatar_filename': 'Danielle.png'}, ]}),
-          ['Cali_avatar.png',
-           'Zach_avatar.png',
-           'Ashley_avatar.png',
-           'Danielle.png',
-           ]),
-         # Some students have avatar_filename
-         (NewClass.from_dict(test_full_class_data_set['json_dict_rep']), ['Cali_avatar.png',
-                                                                          'Zach_avatar.png',
-                                                                          'Ashley_avatar.png',
-                                                                          'Danielle.png',
-                                                                          ]
-          ),
-         # No students have avatar_filename
-         (NewClass.from_dict({'name': 'test_class',
-                              'students': [{'name': 'Cali'},
-                                           {'name': 'Zach'},
-                                           {'name': 'Ashley'},
-                                           {'name': 'Danielle'}, ]}),
-          []),
-         ])
-    def test_move_avatars_to_class_data(self, monkeypatch,
-                                        test_new_class, calls_to_mock_move_avatars_to_class_data):
-        moved_avatars = []
-
-        def mock_move_avatar_to_class_data(test_class: NewClass, avatar_filename: str):
-            moved_avatars.append(avatar_filename)
-
-        monkeypatch.setattr(class_functions, 'move_avatar_to_class_data', mock_move_avatar_to_class_data)
-
-        assert move_avatars_to_class_data(test_new_class) is None
-        assert moved_avatars == calls_to_mock_move_avatars_to_class_data
-
-
-class TestMoveAvatarToClassData:
-    def test_move_avatar_to_class_data(self, monkeypatch, tmpdir):
-        test_class = NewClass('test_class')
-        test_filename = 'test avatar filename'
-
-        def mock_move_file(origin_path: Path, destination_path: Path):
-            if origin_path != Path(test_class.temp_dir, 'avatars', test_filename):
-                raise ValueError("Origin path incorrect.")
-            if destination_path != Path(tmpdir, test_class.name, 'avatars', test_filename):
-                raise ValueError("Destination path incorrect")
-
-        monkeypatch.setattr(class_functions, 'move_file', mock_move_file)
-        monkeypatch.setattr(class_functions, 'CLASSLIST_DATA_PATH', Path(tmpdir))
-
-        assert move_avatar_to_class_data(test_class, test_filename) is None
-
-    def test_move_avatar_to_class_data_avatar_preexisting(self, monkeypatch, tmpdir):
-        test_class = NewClass('test_class')
-        # Make existing avatar in tmpdir test_class class data:
-        destination_avatar_path = Path(tmpdir, test_class.name, 'avatars', 'test_avatar_filename')
-        Path.mkdir(destination_avatar_path.parent, parents=True)
-        with open(destination_avatar_path, 'w'):
-            pass
-
-        def mock_move_file(origin_path: Path, destination_path: Path):
-            raise ValueError("Move file should not be called.")
-
-        monkeypatch.setattr(class_functions, 'move_file', mock_move_file)
-        monkeypatch.setattr(class_functions, 'CLASSLIST_DATA_PATH', Path(tmpdir))
-
-        assert move_avatar_to_class_data(test_class, destination_avatar_path.name) is None
-
-
 class TestComposeClasslistDialogue:
-    def test_compose_classlist_dialogue_full_class(self, monkeypatch, test_full_class):
-        def mocked_take_class_data_input(test_class_name):
-            if test_class_name != test_full_class.name:
+    @pytest.mark.parametrize(
+        'class_data, create_blank_class',
+        [([Class.from_dict(test_full_class_data_set['json_dict_rep'])], []),
+         ([Class(name='Empty class with no students')], [True]),  # Empty class created
+         pytest.param([Class(name='class with no students')], [],
+                      marks=pytest.mark.xfail(reason="No values left to return from blank_class_dialogue.")),
+         ([Class(name=Class.from_dict(test_full_class_data_set['json_dict_rep']).name),  # Empty class, then full class.
+           Class.from_dict(test_full_class_data_set['json_dict_rep'])], [False]),
+         ([Class(name="Empty class"), Class(name="Empty class")], [False, True]),  # Empty class refused then accepted.
+         ])
+    def test_compose_classlist_dialogue_full_class(self, monkeypatch,
+                                                   class_data, create_blank_class,
+                                                   test_full_class,
+                                                   ):
+        class_data_to_return = (test_class for test_class in class_data)
+
+        def mocked_take_class_data_input(class_name):
+            if class_name not in [test_class.name for test_class in class_data]:
                 raise ValueError
-            return test_full_class
+            return next(class_data_to_return)
+
+        blank_class_returns = (chosen_option for chosen_option in create_blank_class)
 
         def mocked_blank_class_dialogue():
-            raise ValueError  # Should not be called.
+            # Will raise StopIteration if no values left to return (or none to begin with).
+            return next(blank_class_returns)
 
         def mocked_class_data_feedback(test_class):
-            if test_class != test_full_class:
+            if test_class not in class_data:
                 raise ValueError
 
         monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
         monkeypatch.setattr(class_functions, 'blank_class_dialogue', mocked_blank_class_dialogue)
         monkeypatch.setattr(class_functions, 'class_data_feedback', mocked_class_data_feedback)
-        assert compose_classlist_dialogue(test_full_class.name).json_dict() == test_full_class.json_dict()
+        assert compose_classlist_dialogue(class_data[0].name).json_dict() == class_data[-1].json_dict()
 
-    def test_compose_classlist_dialogue_create_empty_class(self, monkeypatch, test_class_name_only):
-        def mocked_take_class_data_input(test_class_name):
-            if test_class_name != test_class_name_only.name:
+
+class TestTakeClassDataInput:
+    def test_take_class_data_input(self, monkeypatch):
+        test_class_name = 'my test class'
+        test_take_student_name_input_returns = ['test_student', 'END']
+        take_student_avatar_return = 'my_student_avatar.jpg'
+        test_class = Class(name=test_class_name,
+                           students=[Student(name=test_take_student_name_input_returns[0],
+                                             avatar_filename=take_student_avatar_return),
+                                     ])
+        test_take_student_name_input_return = (name for name in test_take_student_name_input_returns)
+
+        def mocked_take_student_name_input(new_class):
+            if new_class.name != test_class_name:
                 raise ValueError
-            return test_class_name_only
+            return next(test_take_student_name_input_return)
 
-        def mocked_blank_class_dialogue():
-            return True
-
-        def mocked_class_data_feedback(test_class):
-            if test_class != test_class_name_only:
+        def mocked_take_student_avatar(new_class, student_name):
+            if (new_class.name, student_name) != (test_class_name, test_take_student_name_input_returns[0]):
                 raise ValueError
+            return take_student_avatar_return
 
-        monkeypatch.setattr(class_functions, 'take_class_data_input', mocked_take_class_data_input)
-        monkeypatch.setattr(class_functions, 'blank_class_dialogue', mocked_blank_class_dialogue)
-        monkeypatch.setattr(class_functions, 'class_data_feedback', mocked_class_data_feedback)
+        monkeypatch.setattr(class_functions, 'take_student_avatar', mocked_take_student_avatar)
+        monkeypatch.setattr(class_functions, 'take_student_name_input', mocked_take_student_name_input)
 
-        assert compose_classlist_dialogue(test_class_name_only.name).json_dict() == test_class_name_only.json_dict()
-
-
-class TestComposeClasslistDialogueMockMultipleInputCalls(TestCase):
-    """This is necessary to mock multiple returns from take_class_data_input."""
-
-    def setUp(self) -> None:
-        self.full_class_return = Class.from_dict(test_full_class_data_set['json_dict_rep'])
-        self.empty_class_return = Class(name=self.full_class_return.name)
-
-    @patch('dionysus_app.class_functions.blank_class_dialogue')
-    @patch('dionysus_app.class_functions.take_class_data_input')
-    def test_compose_classlist_dialogue_empty_class(self, mock_take_class_data_input,
-                                                    mock_blank_class_dialogue):
-        mock_take_class_data_input.side_effect = [self.empty_class_return,
-                                                  self.full_class_return]
-        mock_blank_class_dialogue.return_value = False
-
-        assert compose_classlist_dialogue(self.full_class_return.name).json_dict() == self.full_class_return.json_dict()
-
-
-class TestTakeClassDataInput(TestCase):
-    """Unittest used to mock multiple returns from student_name_input."""
-
-    def setUp(self) -> None:
-        self.test_class_name = 'my test class'
-        self.test_student_name_input_returns = ['test_student', 'END']
-        self.take_student_avatar_return = 'my_student_avatar.jpg'
-
-        self.test_class = Class(name=self.test_class_name,
-                                students=[Student(name=self.test_student_name_input_returns[0],
-                                                  avatar_filename=self.take_student_avatar_return),
-                                          ])
-
-    @patch('dionysus_app.class_functions.take_student_avatar')
-    @patch('dionysus_app.class_functions.take_student_name_input')
-    def test_take_class_data_input(self, mock_take_student_name_input,
-                                   mock_take_student_avatar):
-        mock_take_student_name_input.side_effect = self.test_student_name_input_returns
-        mock_take_student_avatar.return_value = self.take_student_avatar_return
-
-        assert take_class_data_input(self.test_class_name).json_dict() == self.test_class.json_dict()
+        assert take_class_data_input(test_class_name).json_dict() == test_class.json_dict()
 
 
 class TestTakeStudentAvatar:
@@ -360,83 +195,18 @@ class TestTakeStudentAvatar:
         assert take_student_avatar(test_class, test_student_name) == returned_filename
 
 
-class TestWriteClasslistToFile(TestCase):
-    mock_CLASSLIST_DATA_PATH = Path('.')
-    mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
+class TestAvatarFileExists:
+    @pytest.mark.parametrize(
+        'path_exists, return_value',
+        [(True, True),
+         (False, False),
+         pytest.param(False, True, marks=pytest.mark.xfail),
+         pytest.param(True, False, marks=pytest.mark.xfail),
+         ])
+    def test_avatar_file_exists(self, monkeypatch, path_exists, return_value):
+        monkeypatch.setattr(class_functions.Path, 'exists', lambda x: path_exists)
 
-    def setUp(self):
-        self.mock_CLASSLIST_DATA_PATH = Path('.')
-        self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
-
-        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
-        self.test_class_name = self.test_class_json_dict['name']
-
-        self.test_class_object = Class.from_dict(self.test_class_json_dict)
-
-        # Build save file path
-        self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
-        self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
-        self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
-
-        os.makedirs(self.test_class_data_path, exist_ok=True)
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
-    def test_write_classlist_to_file(self):
-        # Assert precondition:
-        assert not os.path.exists(self.test_class_data_file_path)
-
-        assert write_classlist_to_file(self.test_class_object) is None
-
-        assert isinstance(self.test_class_data_file_path, Path)
-
-        # Assert file created:
-        assert os.path.exists(self.test_class_data_file_path)
-        # Verify file contents:
-        with open(self.test_class_data_file_path, 'r') as test_class_data_file:
-            assert test_class_data_file.read() == self.test_class_object.to_json_str()
-
-    def tearDown(self):
-        os.remove(self.test_class_data_file_path)
-        shutil.rmtree(self.test_class_data_path)
-        assert not os.path.exists(self.test_class_data_file_path)
-        assert not os.path.exists(self.test_class_data_path)
-
-
-class TestWriteClasslistToFileMockingOpen(TestCase):
-    mock_CLASSLIST_DATA_PATH = Path('.')
-    mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
-
-    def setUp(self):
-        self.mock_CLASSLIST_DATA_PATH = Path('.')
-        self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
-
-        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
-        self.test_class_name = self.test_class_json_dict['name']
-
-        self.test_class_object = Class.from_dict(self.test_class_json_dict)
-
-        # Build save file path
-        self.test_class_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
-        self.test_class_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name)
-        self.test_class_data_file_path = self.test_class_data_path.joinpath(self.test_class_filename)
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
-    def test_write_classlist_to_file_mocking_open(self):
-        mocked_open = mock_open()
-        with patch('dionysus_app.class_functions.open', mocked_open), \
-             patch('dionysus_app.class_functions.Path.mkdir', autospec=True) as mocked_mkdir:
-            assert write_classlist_to_file(self.test_class_object) is None
-
-            assert isinstance(self.test_class_data_file_path, Path)
-
-            mocked_mkdir.assert_called_once_with(self.test_class_data_file_path.parent, exist_ok=True, parents=True)
-
-            mocked_open.assert_called_once_with(self.test_class_data_file_path, 'w')
-
-            opened_test_class_data_file = mocked_open()
-            opened_test_class_data_file.write.assert_called_with(self.test_class_object.to_json_str())
+        assert avatar_file_exists('some_path') is return_value
 
 
 class TestCreateChartWithNewClass:
@@ -465,8 +235,10 @@ class TestCreateChartWithNewClass:
 
 class TestSelectClasslist:
     def test_select_classlist(self, monkeypatch):
-        test_class_options = {1: 'one', 2: 'two', 3: 'three'}
-        selected_class = 'some_class'
+        test_class_options = {1: ClassIdentifier('one', 'one'),
+                              2: ClassIdentifier('two', 'two'),
+                              3: ClassIdentifier('three', 'three')}
+        selected_class = ClassIdentifier('some_class', 'some_class')
 
         def mocked_create_class_list_dict():
             return test_class_options
@@ -485,25 +257,26 @@ class TestSelectClasslist:
         monkeypatch.setattr(class_functions, 'display_class_selection_menu', mocked_display_class_selection_menu)
         monkeypatch.setattr(class_functions, 'take_class_selection', mocked_take_class_selection)
 
-        assert select_classlist() == selected_class
+        assert select_classlist() == selected_class.id
 
 
-class TestCreateClassListDict(TestCase):
-    mock_definitions_registry = test_registry_data_set['registry_classlist']
+class TestCreateClassListDict:
+    @pytest.mark.parametrize(
+        'classes_list, enumerated_dict',
+        [(test_registry_data_set['enumerated_dict'].values(), test_registry_data_set['enumerated_dict']),
+         pytest.param(None, 'error raised!', marks=pytest.mark.xfail('ValueError("No Database found.")')),
+         ])
+    def test_create_class_list_dict_patching_REGISTRY(self, monkeypatch, empty_generic_database,
+                                                      classes_list, enumerated_dict,
+                                                      ):
+        def mocked_get_classes():
+            return classes_list
 
-    def setUp(self):
-        self.mock_definitions_registry = test_registry_data_set['registry_classlist']
-        self.enumerated_class_registry = test_registry_data_set['enumerated_dict']
+        test_database = empty_generic_database
+        test_database.get_classes = mocked_get_classes
+        monkeypatch.setattr(class_functions.definitions, 'DATABASE', test_database)
 
-    @patch('dionysus_app.class_functions.definitions.REGISTRY', mock_definitions_registry)
-    def test_create_class_list_dict_patching_REGISTRY(self):
-        assert create_class_list_dict() == self.enumerated_class_registry
-
-
-def test_create_class_list_dict(monkeypatch):
-    monkeypatch.setattr(class_functions.definitions, 'REGISTRY', None)
-    with pytest.raises(ValueError):
-        create_class_list_dict()
+        assert create_class_list_dict() == test_registry_data_set['enumerated_dict']
 
 
 class TestSelectStudent:
@@ -511,6 +284,8 @@ class TestSelectStudent:
                              [('one', 0),
                               ('two', 1),
                               ('three', 2),
+        pytest.param('one', 2, marks=pytest.mark.xfail(reason="Wrong student.")),
+
                               ])
     def test_select_student(self, monkeypatch, selected_student_name, selected_student_students_index):
         test_class_students = [Student(name='one'), Student(name='two'), Student(name='three')]
@@ -533,105 +308,17 @@ class TestSelectStudent:
         assert select_student(test_class) == test_class_students[selected_student_students_index]
 
 
-class TestLoadClassFromDisk(TestCase):
-    mock_CLASSLIST_DATA_PATH = Path('.')
-    mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
+class TestLoadChartData:
+    def test_load_chart_data(self, monkeypatch):
+        mock_load_from_json_file_return_data = {1: 'one', 2: 'two', 3: 'three'}
 
-    def setUp(self):
-        self.mock_CLASSLIST_DATA_PATH = Path('.')
-        self.mock_CLASSLIST_DATA_FILE_TYPE = '.class_data_file'
-
-        self.test_class_json_str = test_full_class_data_set['json_str_rep']
-        self.test_class_json_dict = test_full_class_data_set['json_dict_rep']
-        self.test_class_name = self.test_class_json_dict['name']
-
-        self.test_class_data_filename = self.test_class_name + self.mock_CLASSLIST_DATA_FILE_TYPE
-        self.test_classlist_data_path = self.mock_CLASSLIST_DATA_PATH.joinpath(self.test_class_name,
-                                                                               self.test_class_data_filename)
-
-        # Create class data_file
-        os.mkdir(self.test_class_name)
-        with open(self.test_classlist_data_path, 'w+') as my_test_class_data:
-            my_test_class_data.write(self.test_class_json_str)
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_FILE_TYPE', mock_CLASSLIST_DATA_FILE_TYPE)
-    def test_load_class_data_from_disk(self):
-        loaded_class = load_class_from_disk(self.test_class_name)
-        assert isinstance(loaded_class, Class)
-        assert loaded_class.json_dict() == self.test_class_json_dict
-
-    def tearDown(self):
-        shutil.rmtree(self.test_class_name)
-        assert not os.path.exists(self.test_classlist_data_path)
-        assert not os.path.exists(self.test_class_name)
+        monkeypatch.setattr(class_functions, 'load_from_json_file', lambda path: mock_load_from_json_file_return_data)
+        assert load_chart_data(Path('some chart datafile')) == mock_load_from_json_file_return_data
 
 
-class TestLoadChartData(TestCase):
-    def setUp(self):
-        self.test_chart_data_path = Path('my_test_path')
-        self.mock_load_from_json_file_return_data = {1: 'one', 2: 'two', 3: 'three'}
-
-    def test_load_chart_data(self):
-        with patch('dionysus_app.class_functions.load_from_json_file') as mock_load_from_json_file:
-            mock_load_from_json_file.return_value = self.mock_load_from_json_file_return_data
-
-            assert load_chart_data(self.test_chart_data_path) == self.mock_load_from_json_file_return_data
-
-
-class TestGetAvatarPath(TestCase):
-    mock_DEFAULT_AVATAR_PATH = Path('mocked_default_avatar_path')
-    mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
-
-    def setUp(self):
-        self.mock_DEFAULT_AVATAR_PATH = Path('mocked_default_avatar_path')
-        self.mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
-        self.my_class_name = 'my_class'
-        self.my_avatar_path = 'my_avatar_path'
-
-    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
-    def test_get_avatar_path_when_None(self):
-        assert get_avatar_path(self.my_class_name, None) == self.mock_DEFAULT_AVATAR_PATH
-
-    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
-    def test_get_avatar_path_when_called_with_no_avatar_arg(self):
-        assert get_avatar_path(self.my_class_name) == self.mock_DEFAULT_AVATAR_PATH
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    @patch('dionysus_app.class_functions.DEFAULT_AVATAR_PATH', mock_DEFAULT_AVATAR_PATH)
-    def test_get_avatar_path_returning_avatar_path_from_string(self):
-        return_val = Path(self.mock_CLASSLIST_DATA_PATH, self.my_class_name, 'avatars', self.my_avatar_path)
-        assert get_avatar_path(self.my_class_name, self.my_avatar_path) == return_val
-
-    @patch('dionysus_app.class_functions.avatar_path_from_string')
-    def test_get_avatar_path_calls_avatar_path_from_string(self, mock_avatar_path_from_string):
-        mock_avatar_path_from_string.return_value = True
-        assert get_avatar_path(self.my_class_name, self.my_avatar_path)
-
-
-class TestAvatarPathFromString(TestCase):
-    mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
-
-    def setUp(self):
-        self.mock_CLASSLIST_DATA_PATH = Path('mocked_classlist_data_path')
-
-    @patch('dionysus_app.class_functions.CLASSLIST_DATA_PATH', mock_CLASSLIST_DATA_PATH)
-    def test_avatar_path_from_string(self):
-        class_name = 'test_classname'
-        avatar_filename = 'test_avatar.file'
-
-        return_val = Path(self.mock_CLASSLIST_DATA_PATH, class_name, 'avatars', avatar_filename)
-        assert avatar_path_from_string(class_name, avatar_filename) == return_val
-
-
-class TestEditClasslist(TestCase):
-    @patch('dionysus_app.class_functions.take_classlist_name_input')
-    def test_edit_classlist(self, mocked_take_classlist_name_input):
-        mocked_take_classlist_name_input.return_value = 'some class name'
+class TestEditClasslist:
+    def test_edit_classlist(self, monkeypatch):
+        monkeypatch.setattr(class_functions, 'take_classlist_name_input', lambda: 'some class name')
         mocked_open = mock_open()
         with patch('dionysus_app.class_functions.open', mocked_open):
             assert edit_classlist() is None
-
-
-class TestLoad_class_from_disk(TestCase):
-    pass

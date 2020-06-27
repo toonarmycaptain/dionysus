@@ -18,7 +18,8 @@
 
 **dionysus** is an open source CLI app primarily aimed at teachers that charts student results for display using avatars, nicknames, or student names. 
 
-Currently in alpha release, fuller features, proper install/packaging, database backend, and a full GUI are future goals.
+Currently in alpha release, fuller features, proper install/packaging, database backend, and a full GUI/webapp are future goals.
+Supports previous;current python minor versions - currently 3.7 and 3.8.
 
 Excitedly welcoming contributors! 
 
