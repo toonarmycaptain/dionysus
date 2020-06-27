@@ -47,10 +47,7 @@ def get_user_choice_to_set_location() -> bool:
     """
     selection = input("Type 'Y' for Yes or 'N' for No, and press enter: ")
 
-    if selection.upper() == 'Y' or selection.upper() == 'YES':
-        return True
-    # else: user entered 'N' (or anything else), or pressed return without entry (which returns '')
-    return False
+    return selection.upper() in ['Y', 'YES']
 
 
 def user_decides_to_set_default_location() -> bool:
@@ -95,9 +92,10 @@ def user_decides_to_set_database_backend() -> bool:
 
     :return: bool
     """
-    return ask_user_bool(question="Would you like to select a database backend?\n"
-                                  "Type 'Y' for Yes or 'N' to use the default, and press enter [Y/N]: ",
-                         invalid_input_response='Invalid response, please try again.')
+    return ask_user_bool(
+        question="Would you like to select a database backend?\n"
+                 "Type 'Y' for Yes or 'N' to use the default, and press enter [Y/N]: ",
+        invalid_input_response='Invalid response, please try again.')
 
 
 def user_set_database_backend() -> Union[str, bool]:
@@ -119,7 +117,8 @@ def display_database_backend_options() -> None:
     :return: None
     """
     print("Dionysus - Select database backend\n")
-    print("Please select a database backend by entering the corresponding number, and press return:\n"
+    print("Please select a database backend by entering the corresponding number,"
+          " and press return:\n"
           "     1. JSON database.\n"
           "     \n"
           "     0. Cancel."

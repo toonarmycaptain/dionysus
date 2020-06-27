@@ -53,7 +53,10 @@ def new_chart(loaded_class: Class = None) -> None:
         class_id = select_classlist()  # TODO: warn for empty classlist
         loaded_class = definitions.DATABASE.load_class(class_id)
 
-    chart_name, chart_default_filename, student_scores, chart_params = assemble_chart_data(loaded_class)
+    (chart_name,
+     chart_default_filename,
+     student_scores,
+     chart_params) = assemble_chart_data(loaded_class)
 
     chart_data_dict = {'class_name': loaded_class.name,  # str
                        'chart_name': chart_name,  # str
@@ -153,7 +156,8 @@ def user_save_chart_image(chart_data_dict: dict, image_location: Path) -> None:
         copy_image_to_user_save_loc(image_location, save_chart_pathname)
 
 
-def copy_image_to_user_save_loc(app_image_location: Path, user_save_location: Path) -> None:
+def copy_image_to_user_save_loc(app_image_location: Path,
+                                user_save_location: Path) -> None:
     """
     Copies image from app_data location to user selected location.
     NB if
@@ -165,7 +169,8 @@ def copy_image_to_user_save_loc(app_image_location: Path, user_save_location: Pa
     copy_file(app_image_location, user_save_location)
 
 
-def get_user_save_chart_pathname(class_name: str, default_chart_name: str) -> Optional[Path]:
+def get_user_save_chart_pathname(class_name: str,
+                                 default_chart_name: str) -> Optional[Path]:
     """
     Gets set class save folder path, return None if user cancels save.
 

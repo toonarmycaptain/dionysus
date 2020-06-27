@@ -21,7 +21,8 @@ from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_dat
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
 TEMP_DIR = DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value)
-APP_DEFAULT_CHART_SAVE_DIR = DataFolder.generate_rel_path(DataFolder.APP_DEFAULT_CHART_SAVE_DIR.value)
+APP_DEFAULT_CHART_SAVE_DIR = DataFolder.generate_rel_path(
+    DataFolder.APP_DEFAULT_CHART_SAVE_DIR.value)
 APP_SETTINGS_FILE = DataFolder.generate_rel_path(DataFolder.APP_SETTINGS.value)
 
 CHART_SAVE_DIR_NAME = 'dionysus_charts'

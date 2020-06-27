@@ -8,7 +8,8 @@ from PIL import Image, ImageTk
 from dionysus_app.UI_menus.UI_functions import save_as_dialogue
 
 
-def save_chart_dialogue(default_chart_name: str, class_save_folder_path: Path) -> Optional[Path]:
+def save_chart_dialogue(default_chart_name: str,
+                        class_save_folder_path: Path) -> Optional[Path]:
     """
     Calls save as dialogue to get user input for chart image file save
     name and location. Supplies defaults, returns user chosen path, or
@@ -79,8 +80,8 @@ class ImageDisplay(tk.Frame):
             self.image_path = image_path
             self.pack()
             self.create_image_and_button()
-        else:
-            pass  # don't instantiate?
+        # else:
+        #     pass  # don't instantiate?
 
     def create_image_and_button(self) -> None:
         self.create_image_widget()

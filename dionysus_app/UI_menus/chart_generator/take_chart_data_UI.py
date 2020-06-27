@@ -58,7 +58,8 @@ def take_student_scores(current_class: Class) -> dict:
         # add avatar to list of avatars for score
         if student_score is not None:
             if isinstance(definitions.DATABASE, JSONDatabase):
-                avatar_path = definitions.DATABASE.get_avatar_path_class_filename(current_class.name, student.avatar_id)
+                avatar_path = definitions.DATABASE.get_avatar_path_class_filename(
+                    current_class.name, student.avatar_id)
             else:
                 avatar_path = definitions.DATABASE.get_avatar_path(student.avatar_id)
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]

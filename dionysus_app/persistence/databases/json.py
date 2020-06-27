@@ -109,23 +109,28 @@ class JSONDatabase(Database):
         :param registry: Registry
         """
         super().__init__()
-        self.app_data_path: Path = app_data_path or DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
+        self.app_data_path: Path = (app_data_path
+                                    or DataFolder.generate_rel_path(DataFolder.APP_DATA.value))
         self.class_data_path: Path = class_data_path or self.app_data_path.joinpath('class_data')
         self.class_data_file_type: str = class_data_file_type or DEFAULT_CLASSLIST_DATA_FILE_TYPE
-        self.default_chart_save_dir: Optional[Path] = default_chart_save_dir or definitions.DEFAULT_CHART_SAVE_DIR
-        self.default_avatar_path: Path = default_avatar_path or DataFolder.generate_rel_path(
-            DataFolder.DEFAULT_AVATAR.value)
+        self.default_chart_save_dir: Optional[Path] = (default_chart_save_dir
+                                                       or definitions.DEFAULT_CHART_SAVE_DIR)
+        self.default_avatar_path: Path = (
+                default_avatar_path
+                or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value))
         self.chart_data_file_type: str = chart_data_file_type or DEFAULT_CHART_DATA_FILE_TYPE
         # Create data paths:
         self.app_data_path.mkdir(parents=True, exist_ok=True)
         self.class_data_path.mkdir(parents=True, exist_ok=True)
         # Initialise class registry:
-        self._registry_path: Path = registry_path or self.app_data_path.joinpath('class_registry.index')
-        self._registry: Registry = registry or Registry(app_data_path=self.app_data_path,
-                                                        class_data_path=self.class_data_path,
-                                                        registry_path=self._registry_path,
-                                                        class_data_file_type=self.class_data_file_type
-                                                        )
+        self._registry_path: Path = (registry_path
+                                     or self.app_data_path.joinpath('class_registry.index'))
+        self._registry: Registry = (registry
+                                    or Registry(app_data_path=self.app_data_path,
+                                                class_data_path=self.class_data_path,
+                                                registry_path=self._registry_path,
+                                                class_data_file_type=self.class_data_file_type
+                                                ))
 
     def get_classes(self) -> List[ClassIdentifier]:
         """
@@ -135,7 +140,8 @@ class JSONDatabase(Database):
 
         :return: List[Tuple[str, str]]
         """
-        return [ClassIdentifier(class_name, class_name) for class_name in self._registry.list]
+        return [ClassIdentifier(class_name, class_name)
+                for class_name in self._registry.list]
 
     def class_name_exists(self, class_name: str) -> bool:
         """
@@ -210,7 +216,8 @@ class JSONDatabase(Database):
             to strings, and keep them as strings when loading.
             This could be handled if necessary by running something like:
             original_score_avatar_dict = {
-                float(score): avatar_list for score, avatar_list in dejsonified_score_avatar_dict.items()}
+                float(score): avatar_list for score, avatar_list
+                                in dejsonified_score_avatar_dict.items()}
 
             :param chart_data_dict: dict
             :return: None
@@ -254,7 +261,8 @@ class JSONDatabase(Database):
                         dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
-    def get_avatar_path_class_filename(self, class_name: str, student_avatar_filename: str = None) -> Path:
+    def get_avatar_path_class_filename(self, class_name: str,
+                                       student_avatar_filename: str = None) -> Path:
         """
         Return abs path to student avatar, or to default avatar if None.
 
@@ -369,7 +377,8 @@ class JSONDatabase(Database):
                             if student.avatar_id]:
             self._move_avatar_to_class_data(new_class, avatar_file)
 
-    def _move_avatar_to_class_data(self, new_class: NewClass, avatar_filename: str) -> None:
+    def _move_avatar_to_class_data(self, new_class: NewClass,
+                                   avatar_filename: str) -> None:
         """
         Moves avatar from NewClass.temp_dir to new class' avatars dir.
 
@@ -381,7 +390,9 @@ class JSONDatabase(Database):
         :return: None
         """
         origin_path = new_class.temp_avatars_dir.joinpath(avatar_filename)
-        destination_path = self.class_data_path.joinpath(new_class.name, 'avatars', avatar_filename)
+        destination_path = self.class_data_path.joinpath(new_class.name,
+                                                         'avatars',
+                                                         avatar_filename)
         if not destination_path.exists():  # Avatar not already in database/class data.
             move_file(origin_path, destination_path)
 

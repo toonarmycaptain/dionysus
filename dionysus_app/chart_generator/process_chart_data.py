@@ -51,7 +51,7 @@ def assign_avatars_to_bands(score_avatar_dict: dict):
     for score, avatars in score_avatar_dict.items():
         for band, avatars_in_band in band_dict.items():
             if band - 5 < score <= band + 5:  # 95-100 set greedier than 0-5
-               avatars_in_band += avatars
+                avatars_in_band += avatars
 
     return band_dict
 
@@ -80,11 +80,11 @@ def assign_avatar_coords(band_avatar_dict, chart_params: dict = None):
 
     avatar_xy_dict: dict = {}
     col_max_avatars, init_vert_offset, horiz_offset, vert_offset = (
-                                    chart_params['column_max_avatars'],
-                                    chart_params['init_vertical_offset'],
-                                    chart_params['avatar_horizontal_offset'],
-                                    chart_params['avatar_vertical_offset'],
-                                    )
+        chart_params['column_max_avatars'],
+        chart_params['init_vertical_offset'],
+        chart_params['avatar_horizontal_offset'],
+        chart_params['avatar_vertical_offset'],
+    )
 
     for band in band_avatar_dict.keys():
         num_col = (len(band_avatar_dict[band]) // col_max_avatars) + 1

@@ -67,7 +67,8 @@ def blank_class_dialogue() -> bool:
     """
     return ask_user_bool(
         question='Do you want to create an empty class? [Y/N] ',
-        invalid_input_response='Please enter y for yes to create empty class, or n to return to student input.')
+        invalid_input_response=('Please enter y for yes to create empty class,'
+                                ' or n to return to student input.'))
 
 
 def class_data_feedback(current_class: Class) -> None:
@@ -95,7 +96,8 @@ def create_chart_with_new_class_dialogue() -> bool:
 
     :return: bool
     """
-    return ask_user_bool(question="Do you want to create a new chart for the class you just created? [Y/N]: ",
+    return ask_user_bool(question=("Do you want to create a new chart"
+                                   "for the class you just created? [Y/N]: "),
                          invalid_input_response="Invalid response, please try again.")
 
 

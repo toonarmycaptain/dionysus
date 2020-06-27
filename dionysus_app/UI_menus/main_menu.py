@@ -69,6 +69,7 @@ def take_main_menu_input() -> Optional[bool]:
         print("Invalid input.")  # User input does not correspond to option or exit.
     return None
 
+
 def run_main_menu() -> None:
     """
     Display welcome blurb, start main menu.

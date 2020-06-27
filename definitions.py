@@ -24,7 +24,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # Global root directory.
 
 DEFAULT_DATABASE_BACKEND = 'JSON'
 # Ignore typehint error: DATABASE object needs to be initialised with a value
-DATABASE: 'Database' = None # type: ignore
+DATABASE: 'Database' = None  # type: ignore
 
 
 DEFAULT_CHART_SAVE_DIR: Optional[Path] = None  # Path object.

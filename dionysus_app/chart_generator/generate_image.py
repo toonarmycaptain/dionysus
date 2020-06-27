@@ -32,7 +32,8 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
     set_axis()
     ax.grid(False)  # No grid
 
-    # if custom chart parameters affecting avatar layout, pass chart_data_dict['chart_params'] to generate_avatar_coords
+    # if custom chart parameters affecting avatar layout,
+    # pass chart_data_dict['chart_params'] to generate_avatar_coords
 
     # nominally, avatar_coord_dict will be chart_data_dict['score-avatar_dict']
     avatar_coord_dict = generate_avatar_coords(chart_data_dict['score-avatar_dict'])
@@ -119,6 +120,7 @@ def add_avatars_to_plot(ax, avatar_coord_dict: dict) -> None:
 #                                             ]
 #                                        }
 #                  }
-#     # offset by 5 and increments of 10 neatly spaces .4 zoom 150px images from x axis and eachother
+#     # offset by 5 and increments of 10 neatly spaces
+#     # .4 zoom 150px images from x axis and eachother
 #
 #     generate_chart_image(data_dict)

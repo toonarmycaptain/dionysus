@@ -68,7 +68,8 @@ class ABCMetaEnforcedAttrs(abc.ABCMeta):
         obj = super(ABCMetaEnforcedAttrs, cls).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if not hasattr(obj, attr_name):
-                raise TypeError(f"Can't instantiate abstract class {type(obj)} without required attribute {attr_name}.")
+                raise TypeError(f"Can't instantiate abstract class {type(obj)}"
+                                f"without required attribute {attr_name}.")
         return obj
 
 

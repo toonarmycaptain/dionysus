@@ -63,7 +63,7 @@ class Registry:
                  ) -> None:
         """
         Constructs Registry object, with defaults for unprovided args.
-        
+
         :param registry_list: str
         :param app_data_path: Path
         :param class_data_path: Path
@@ -71,11 +71,14 @@ class Registry:
         :param registry_path: Path
         :return: None
         """
-        self.app_data_path: Path = app_data_path or DataFolder.generate_rel_path(
-            DataFolder.APP_DATA.value)
-        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath('class_data')
-        self.registry_path: Path = registry_path or self.app_data_path.joinpath('class_registry.index')
-        self.class_data_file_type: str = class_data_file_type or json_db.DEFAULT_CLASSLIST_DATA_FILE_TYPE
+        self.app_data_path: Path = (
+                app_data_path or DataFolder.generate_rel_path(DataFolder.APP_DATA.value))
+        self.class_data_path: Path = (class_data_path
+                                      or self.app_data_path.joinpath('class_data'))
+        self.registry_path: Path = (registry_path
+                                    or self.app_data_path.joinpath('class_registry.index'))
+        self.class_data_file_type: str = (class_data_file_type
+                                          or json_db.DEFAULT_CLASSLIST_DATA_FILE_TYPE)
         self.list: List[str] = registry_list or self.cache_class_registry()
 
     def cache_class_registry(self) -> List[str]:
