@@ -142,10 +142,24 @@ class TestClassNamePathSafeName:
 
 class TestContainsMethod:
     def test__contains__student_obj_in_class(self, test_student_name_only, test_class_name_only):
+        """Test that student object from class compares as `in` class."""
         assert test_class_name_only.students == []  # No students in class
         test_class_name_only.add_student(test_student_name_only)
 
         assert test_student_name_only in test_class_name_only
+
+    def test__contains__identical_but_not_actual_student_obj_in_class(self, test_student_name_only, test_class_name_only):
+        """
+        Test identical student object in class.
+        Should return False, since the specific object is not in the class.
+        eg id(test_student) != id(test_class_name_only.students[0])
+        """
+        assert test_class_name_only.students == []  # No students in class
+        name, avatar_id = 'test_student', 'test_student_avatar'
+        test_student = Student(name=name, avatar_id=avatar_id)
+        test_class_name_only.add_student(name=name, avatar_id=avatar_id)
+
+        assert test_student not in test_class_name_only
 
     def test__contains__student_obj_not_in_empty_class(self, test_student_name_only, test_class_name_only):
         assert test_class_name_only.students == []  # No students in class
@@ -239,12 +253,12 @@ class TestAddStudent:
         assert test_class_name_only.students == []
 
         test_class_name_only.add_student(name=test_student_with_avatar.name,
-                                         avatar_filename=test_student_with_avatar.avatar_filename)
+                                         avatar_id=test_student_with_avatar.avatar_id)
 
         assert len(test_class_name_only.students) == 1
         # Test student attributes are as expected
         assert test_class_name_only.students[0].name == test_student_with_avatar.name
-        assert test_class_name_only.students[0].avatar_filename == test_student_with_avatar.avatar_filename
+        assert test_class_name_only.students[0].avatar_id == test_student_with_avatar.avatar_id
 
     @pytest.mark.parametrize('student_arg',
                              ['student name',  # string

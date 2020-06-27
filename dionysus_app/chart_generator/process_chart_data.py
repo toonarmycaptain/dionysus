@@ -13,8 +13,11 @@ DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars verti
 
 def generate_avatar_coords(score_avatar_dict: dict, chart_params: dict = None):  # set chart params to a default?
     """
-    Takes score_avatar_dict - dict of scores to lists of avatar image locations for each score, returns a dictionary
-    with avatar Paths as keys, and a list of x,y coordinate tuples as values.
+    Take score_avatar_dict and transform into dict {avatar: [xy_coords]}
+
+    Takes score_avatar_dict - dict of scores to lists of avatar image
+    locations for each score, returns a dictionary with avatar Paths as
+    keys, and a list of x,y coordinate tuples as values.
 
     eg keys: avatar Path, values: list of x, y tuples eg [(80, 80), (90, 90)]
 
@@ -31,14 +34,12 @@ def generate_avatar_coords(score_avatar_dict: dict, chart_params: dict = None): 
 
     banded_avatars = assign_avatars_to_bands(score_avatar_dict)  # TODO: use DEFAULT_CHART_PARAMS values for offsets.
 
-    avatar_coord_dict = assign_avatar_coords(banded_avatars, chart_params)
-
-    return avatar_coord_dict
+    # Return avatar_coord_dict
+    return assign_avatar_coords(banded_avatars, chart_params)
 
 
 def assign_avatars_to_bands(score_avatar_dict: dict):
     """
-    Sort and ten  in order from lowest to highest.
     Iterate over scores and assign score to band (scores in bands will
     thus be in order from lowest to highest).
 
@@ -47,10 +48,10 @@ def assign_avatars_to_bands(score_avatar_dict: dict):
     """
     band_dict: dict = {band: [] for band in range(0, 101, 10)}
 
-    for score in score_avatar_dict.keys():
-        for band in band_dict:
+    for score, avatars in score_avatar_dict.items():
+        for band, avatars_in_band in band_dict.items():
             if band - 5 < score <= band + 5:  # 95-100 set greedier than 0-5
-                band_dict[band] += score_avatar_dict[score]
+                avatars_in_band += avatars
 
     return band_dict
 
@@ -79,11 +80,11 @@ def assign_avatar_coords(band_avatar_dict, chart_params: dict = None):
 
     avatar_xy_dict: dict = {}
     col_max_avatars, init_vert_offset, horiz_offset, vert_offset = (
-                                    chart_params['column_max_avatars'],
-                                    chart_params['init_vertical_offset'],
-                                    chart_params['avatar_horizontal_offset'],
-                                    chart_params['avatar_vertical_offset'],
-                                    )
+        chart_params['column_max_avatars'],
+        chart_params['init_vertical_offset'],
+        chart_params['avatar_horizontal_offset'],
+        chart_params['avatar_vertical_offset'],
+    )
 
     for band in band_avatar_dict.keys():
         num_col = (len(band_avatar_dict[band]) // col_max_avatars) + 1
