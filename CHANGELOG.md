@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.7.0-alpha] - 2020-06-26
 ### Added
 - `Database` ABC, establishing API for database objects.  
     - Subclasses cannot instantiate without implementing methods defined in `Database`.
@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Presently defaults to `JSONDatabase`, ie legacy backend.
     - Call to `DATABASE.close()` to close out database (eg write registry to disk for `JSONDatabase`, close connections etc).
 - `settings_functions` to change database backend. Actual change machinery yet to be implemented, as only JSON backend currently implemented.
-
 ### Changed
 - Refactor all code/calls dealing with persistence to `definitions.DATABASE`.
     - `Database` object responsible for creating needed paths apart from `app_data/`/`temp/`, such paths are removed from `DataFolder`.
@@ -31,9 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `class_registry_functions.py`, `test_class_registry_functions.py`: functionality moved to `Registry` object in `persistence/databases/json_registry.py`.
 ### Depreciated
-- Python 3.6 support will be removed in next minor release (ie major/minor release following v0.7.x).
+- Python 3.6 support ends with this release.
 - Python 3.7 support will soon be removed also, in `dionysus` release following release of python 3.9 - plan is to only support 2 minor releases of python at one time.
-- `JSONDatabase` might be removed at ome point, or not support new features, although it, or the data format might be kept for utility of debugging and editing.
+- `JSONDatabase` may be removed at some point, or not support new features, although it, or the data format might be kept for utility of debugging and editing.
 - `data_version_conversion.py` will not be supporting conversion from older formats than current to any future versions.
 
 ## [0.6.0-alpha] - 2020-04-01
