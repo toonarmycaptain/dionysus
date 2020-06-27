@@ -247,7 +247,4 @@ Initial alpha release! Dionysus will take class lists, and successfully produce 
 
 ### Known bugs/non-functional features:
 - setup.py is boilerplate and untested.
-- User supplied avatar does not copy to app data folder and thus does not work in app.
-- No indication of chart save location and not saving in desired/intended location in app_data/image_data/
-- Need to cut and paste/type user supplied avatar location is too awkward.
-- Preview/display of created chart does not reflect generated image accurately.
+
