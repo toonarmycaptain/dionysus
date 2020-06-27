@@ -1,16 +1,15 @@
 """
 Script for taking and saving data for chart.
 """
+from typing import Optional
 
+import definitions
 from dionysus_app.class_ import Class
-from dionysus_app.class_functions import get_avatar_path
-from dionysus_app.data_folder import DataFolder
+from dionysus_app.persistence.databases.json import JSONDatabase
 from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
 
-CLASSLIST_DATA_PATH = DataFolder.generate_rel_path(DataFolder.CLASS_DATA.value)
 
-
-def take_score_data(current_class: Class):
+def take_score_data(current_class: Class) -> dict:
     """
     Prints score taking instructions, calls take_student_scores.
     Prints a newline after completion for readability.
@@ -34,7 +33,7 @@ def take_score_data(current_class: Class):
     return student_scores
 
 
-def take_student_scores(current_class: Class):
+def take_student_scores(current_class: Class) -> dict:
     """
     UI function presenting student names from supplied class one at a
     time and taking a score for each.
@@ -58,9 +57,11 @@ def take_student_scores(current_class: Class):
         student_score = take_score_entry(student.name)
         # add avatar to list of avatars for score
         if student_score is not None:
-            student_avatar_filename = student.avatar_filename
-            avatar_path = get_avatar_path(current_class.name, student_avatar_filename)
-
+            if isinstance(definitions.DATABASE, JSONDatabase):
+                avatar_path = definitions.DATABASE.get_avatar_path_class_filename(
+                    current_class.name, student.avatar_id)
+            else:
+                avatar_path = definitions.DATABASE.get_avatar_path(student.avatar_id)
             student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
 
     return student_scores
@@ -68,7 +69,7 @@ def take_student_scores(current_class: Class):
 
 def take_score_entry(student_name: str,
                      minimum: int = 0,
-                     maximum: int = 100):
+                     maximum: int = 100) -> Optional[float]:
     """
 
     :param student_name: str
@@ -94,7 +95,7 @@ def take_score_entry(student_name: str,
         return score_float
 
 
-def take_chart_name():
+def take_chart_name() -> str:
     """
     Ask user for chart name. Ask again if name is essentially
     blank/whitespace/punctuation.
@@ -111,14 +112,10 @@ def take_chart_name():
     return chart_name
 
 
-def take_custom_chart_options():
+def take_custom_chart_options() -> None:
     pass
 
     # offer to reduce x-axis to just outside spread of data.
     # offer to use hash of student name instead of default avatar.
     # offer to put chart name (or a title distinct from chart/file name)
     # in chart.
-
-
-if __name__ == '__main__':
-    pass

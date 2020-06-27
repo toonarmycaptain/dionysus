@@ -1,23 +1,17 @@
 """Test data sets for test_class_functions.py"""
-
+from dionysus_app.persistence.database import ClassIdentifier
 # Registry
 testing_registry_list = ['First class', 'Second class', 'Third class']
-testing_registry_enumerated_dict = {1: 'First class', 2: 'Second class', 3: 'Third class'}
+testing_registry_enumerated_dict = {1: ClassIdentifier('First class', 'First class'),
+                                    2: ClassIdentifier('Second class', 'Second class'),
+                                    3: ClassIdentifier('Third class', 'Third class')}
 
 testing_registry_data_set = {'registry_classlist': testing_registry_list,
                              'enumerated_dict': testing_registry_enumerated_dict
                              }
 
-"""
-test_display_student_selection_menu_output equivalent to:
-
-for key, class_name in testing_registry_enumerated_dict.items():
-    test_display_class_selection_menu_output.append(f'{key}. {class_name}')
-"""
-test_display_class_selection_menu_output = ['1. First class', '2. Second class', '3. Third class']
 
 # new data storage formats
-
 
 # Add attributes to test expected output.
 test_class_name_only_name = "The Knights of the Round-table: we don't say 'Ni!'"
@@ -44,7 +38,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '    "students": [\n'
                                         '        {\n'
                                         '            "name": "Cali",\n'
-                                        '            "avatar_filename": "Cali_avatar.png"\n'
+                                        '            "avatar_id": "Cali_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Monty"\n'
@@ -54,7 +48,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Zach",\n'
-                                        '            "avatar_filename": "Zach_avatar.png"\n'
+                                        '            "avatar_id": "Zach_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Janell"\n'
@@ -70,7 +64,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Ashley",\n'
-                                        '            "avatar_filename": "Ashley_avatar.png"\n'
+                                        '            "avatar_id": "Ashley_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Alex"\n'
@@ -82,7 +76,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '            "name": "Edgar"\n'
                                         '        },\n        {\n'
                                         '            "name": "Danielle",\n'
-                                        '            "avatar_filename": "Danielle.png"\n'
+                                        '            "avatar_id": "Danielle.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Kayla"\n'
@@ -95,19 +89,19 @@ test_full_class_data_set_json_string = ('{\n'
                                         )
 
 test_full_class_data_set_json_dict = {'name': 'test_class',
-                                      'students': [{'name': 'Cali', 'avatar_filename': 'Cali_avatar.png'},
+                                      'students': [{'name': 'Cali', 'avatar_id': 'Cali_avatar.png'},
                                                    {'name': 'Monty'},
                                                    {'name': 'Abby'},
-                                                   {'name': 'Zach', 'avatar_filename': 'Zach_avatar.png'},
+                                                   {'name': 'Zach', 'avatar_id': 'Zach_avatar.png'},
                                                    {'name': 'Janell'},
                                                    {'name': 'Matthew'},
                                                    {'name': 'Olivia'},
                                                    {'name': 'Regina'},
-                                                   {'name': 'Ashley', 'avatar_filename': 'Ashley_avatar.png'},
+                                                   {'name': 'Ashley', 'avatar_id': 'Ashley_avatar.png'},
                                                    {'name': 'Alex'},
                                                    {'name': 'Melissa'},
                                                    {'name': 'Edgar'},
-                                                   {'name': 'Danielle', 'avatar_filename': 'Danielle.png'},
+                                                   {'name': 'Danielle', 'avatar_id': 'Danielle.png'},
                                                    {'name': 'Kayla'},
                                                    {'name': 'Jaleigh'}]}
 

@@ -6,20 +6,22 @@ import sys
 
 import definitions
 
-from dionysus_app.class_registry_functions import cache_class_registry, check_registry_on_exit
 from dionysus_app.initialise_app import app_init, clear_temp
-from dionysus_app.UI_menus.main_menu import run_main_menu
+from dionysus_app.persistence.database_functions import load_database
 from dionysus_app.settings_functions import load_chart_save_folder
+from dionysus_app.UI_menus.main_menu import run_main_menu
 
 
 def quit_app():
     """
-    Checks disk registry, rewrites if inconsistent with runtime registry
-    (eg if user has deleted files during runtime), quits application.
+    Quits application.
+
+    Perform graceful termination tasks, eg clear temp/, close/finalise
+    database (eg close connections, flush data).
 
     :return: None
     """
-    check_registry_on_exit()  # Dump cached registry to disk if different class_registry.index.
+    definitions.DATABASE.close()
     clear_temp()  # Clear temp files.
     sys.exit()
 
@@ -36,10 +38,10 @@ def run_app():
 
     app_init()
 
-    # load runtime variables
-    definitions.REGISTRY = cache_class_registry()
+    # Load runtime variables.
+    definitions.DEFAULT_CHART_SAVE_DIR = load_chart_save_folder()
 
-    definitions.DEFAULT_CHART_SAVE_FOLDER = load_chart_save_folder()
+    definitions.DATABASE = load_database()
 
     run_main_menu()  # Startup checks successful, enter UI.
 

@@ -4,12 +4,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0-alpha] - 2020-06-27
+### Added
+- `Database` ABC, establishing API for database objects.  
+    - Subclasses cannot instantiate without implementing methods defined in `Database`.
+    - Class attr `required_attributes: List[str]` is a list of string attr names that subclasses must in implement (such as `default_avatar_path`).. 
+    - Uses `ABCMetaEnforcedAttrs` metaclass to enforce existence of attrs in `required_attributes` in `Database` subclasses. 
+- `JSONDatabase(Database)` class implementing this API, apart from `get_avatar_path` which is incompatible: this method is implemented as `get_avatar_path_class_filename`, since it needs the class' name as well as the avatar's filename. This is clearly documented, and only used in one instance inside `take_chart_data_UI.py`.
+    - `Registry` object managing `JSONDatabase`'s registry.
+- `ClassIdentifier` - NamedTuple with attrs `id`, `name` for a class - allowing the `id` to be anything the database backend needs to use, with the human-readable/string name of the class. This avoids difficulty with supporting existing JSON database, as well as a uniform API between backends.
+- `definitions.DATABASE` `Database` object initialised on app_start, prompt user to set if app is being run for the first time.
+    - Presently defaults to `JSONDatabase`, ie legacy backend.
+    - Call to `DATABASE.close()` to close out database (eg write registry to disk for `JSONDatabase`, close connections etc).
+- `settings_functions` to change database backend. Actual change machinery yet to be implemented, as only JSON backend currently implemented.
+### Changed
+- Refactor all code/calls dealing with persistence to `definitions.DATABASE`.
+    - `Database` object responsible for creating needed paths apart from `app_data/`/`temp/`, such paths are removed from `DataFolder`.
+- `Student.avatar_filename` changed to `Student.avatar_id` for naming consistency between database backends. This is backwards incompatible, but is a simple string replace operation in any current data files.
+- `JSONDatabase`'s `Registry` now checks if on-disk version of registry is correct, only writing to it if incorrect or non-existent.
+- Factor out functions asking user for yes/no input into `ask_user_bool` function, taking a `question` and optional `invalid_input_response` parameters.
+- Increased test coverage, more tests converted to Pytest style tests.
+- Stricter `Path` object passing and usage.
+- Instances of 'folder' changed to 'dir' or 'directory' in vars/docstrings, apart from data_folder.py/`DataFolder`.
+- When clicking 'x' instead of 'save as' when a chart is displayed, UI no longer freezes, nor pops up a 'save chart as' file dialogue. 
+### Removed
+- `class_registry_functions.py`, `test_class_registry_functions.py`: functionality moved to `Registry` object in `persistence/databases/json_registry.py`.
+### Depreciated
+- Python 3.6 support ends with this release.
+- Python 3.7 support will soon be removed also, in `dionysus` release following release of python 3.9 - plan is to only support 2 minor releases of python at one time.
+- `JSONDatabase` may be removed at some point, or not support new features, although it, or the data format might be kept for utility of debugging and editing.
+- `data_version_conversion.py` will not be supporting conversion from older formats than current to any future versions.
+
 ## [0.6.0-alpha] - 2020-04-01
 ### Added
 - Implemented `temp` directory created in `APP_DATA` by `data_folder_check` on app start and removed on app exit (if it contains files). 
 - `NewClass` subclass of `Class` using `temp` directory to hold files before writing to database.
     - Initially holds avatars as user enters during class creation. 
-- Add [AllContributors](https://allcontributors.org/) badge to `README.md`, recognising project contributors, `.all-contributorsrc` with contributer data. 
+- Add [AllContributors](https://allcontributors.org/) badge to `README.md`, recognising project contributors, `.all-contributorsrc` with contributor data. 
 ### Changed
 - Separate UI/logic/persistence concerns in `create_classlist`. 
     - New functions `move_avatars_to_class_data`, `move_avatar_to_class_data` utilise `NewClass` to move avatars from `temp` to database.
@@ -215,7 +246,4 @@ Initial alpha release! Dionysus will take class lists, and successfully produce 
 
 ### Known bugs/non-functional features:
 - setup.py is boilerplate and untested.
-- User supplied avatar does not copy to app data folder and thus does not work in app.
-- No indication of chart save location and not saving in desired/intended location in app_data/image_data/
-- Need to cut and paste/type user supplied avatar location is too awkward.
-- Preview/display of created chart does not reflect generated image accurately.
+
