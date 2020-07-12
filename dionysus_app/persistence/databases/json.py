@@ -52,7 +52,7 @@ class JSONDatabase(Database):
     Methods
     _______
     get_classes():
-        Return list of classes in the database.
+        Return list of ClassIdentifiers for classes in the database.
 
     class_name_exists(class_id: str):
         Return bool if class name already exists in the database.
@@ -134,9 +134,11 @@ class JSONDatabase(Database):
 
     def get_classes(self) -> List[ClassIdentifier]:
         """
-        Return list of classes in the database.
-        Tuples of (class_name, class_name),, since class_id in JSON
-        is the class' name.
+        Return list of available classes in the database.
+
+        List of ClassIdentifiers with form
+        ClassIdentifier(id=class_name, name=class_name), since class_id
+        in JSONDatabase is the class' name.
 
         :return: List[Tuple[str, str]]
         """
