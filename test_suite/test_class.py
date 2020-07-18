@@ -27,7 +27,7 @@ def test_class_name_only():
 
 
 @pytest.fixture()
-def test_full_class():
+def test_full_class() -> Class:
     test_full_class = Class(test_full_class_data_set['json_dict_rep']['name'])
     for student in test_full_class_data_set['json_dict_rep']['students']:
         test_full_class.add_student(Student(**student))
@@ -341,24 +341,37 @@ class TestToJsonStr:
 
 
 class TestFromDict:
-    def test_from_dict_instantiation_class_name_only(self, test_class_name_only):
-        assert Class.from_dict(test_class_name_only.json_dict_rep).json_dict() == test_class_name_only.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    def test_from_dict_instantiation_class_name_only(self, class_def, test_class_name_only):
+        assert class_def.from_dict(test_class_name_only.json_dict_rep).json_dict() == test_class_name_only.json_dict()
 
-    def test_from_dict_instantiation_full_class(self, test_full_class):
-        assert Class.from_dict(test_full_class.json_dict_rep).json_dict() == test_full_class.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    def test_from_dict_instantiation_full_class(self, class_def, test_full_class):
+        assert class_def.from_dict(test_full_class.json_dict_rep).json_dict() == test_full_class.json_dict()
 
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    def test_from_dict_instantiation_full_class_is_correct_type(self, class_def, test_full_class):
+        """Method should return instance of calling class/subclass."""
+        assert isinstance(class_def.from_dict(test_full_class.json_dict_rep), class_def)
 
 class TestFromJson:
-    def test_from_json_instantiation_class_name_only(self, test_class_name_only):
-        assert Class.from_json(test_class_name_only.json_str_rep).json_dict() == test_class_name_only.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    def test_from_json_instantiation_class_name_only(self, class_def, test_class_name_only):
+        assert class_def.from_json(test_class_name_only.json_str_rep).json_dict() == test_class_name_only.json_dict()
 
-    def test_from_json_instantiation_full_class(self, test_full_class):
-        assert Class.from_json(test_full_class.json_str_rep).json_dict() == test_full_class.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    def test_from_json_instantiation_full_class(self, class_def, test_full_class):
+        assert class_def.from_json(test_full_class.json_str_rep).json_dict() == test_full_class.json_dict()
 
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    def test_from_json_instantiation_full_class_is_correct_type(self, class_def, test_full_class):
+        """Method should return instance of calling class/subclass."""
+        assert isinstance(class_def.from_json(test_full_class.json_str_rep), class_def)
 
 class TestFromFile:
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
     def test_from_file_load_class_name_only(self, tmp_path,
-                                            test_class_name_only):
+                                            class_def, test_class_name_only):
         # Setup test data file:
         class_data_file_name = test_class_name_only.path_safe_name + '.cdf'
         class_data_file_path = tmp_path.joinpath(class_data_file_name)
@@ -366,10 +379,11 @@ class TestFromFile:
         with open(class_data_file_path, 'w+') as class_data_file:
             class_data_file.write(test_class_name_only.json_str_rep)
 
-        assert Class.from_file(class_data_file_path).json_dict() == test_class_name_only.json_dict()
+        assert class_def.from_file(class_data_file_path).json_dict() == test_class_name_only.json_dict()
 
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
     def test_from_file_load_full_class(self, tmp_path,
-                                       test_full_class):
+                                       class_def, test_full_class):
         # Setup test data file:
         class_data_file_name = test_full_class.path_safe_name + '.cdf'
         class_data_file_path = tmp_path.joinpath(class_data_file_name)
@@ -377,8 +391,20 @@ class TestFromFile:
         with open(class_data_file_path, 'w+') as class_data_file:
             class_data_file.write(test_full_class.json_str_rep)
 
-        assert Class.from_file(class_data_file_path).json_dict() == test_full_class.json_dict()
+        assert class_def.from_file(class_data_file_path).json_dict() == test_full_class.json_dict()
 
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    def test_from_file_load_full_class_is_correct_type(self, tmp_path,
+                                       class_def, test_full_class):
+        """Method should return instance of calling class/subclass."""
+        # Setup test data file:
+        class_data_file_name = test_full_class.path_safe_name + '.cdf'
+        class_data_file_path = tmp_path.joinpath(class_data_file_name)
+
+        with open(class_data_file_path, 'w+') as class_data_file:
+            class_data_file.write(test_full_class.json_str_rep)
+
+        assert isinstance(class_def.from_file(class_data_file_path), class_def)
 
 class TestClassRepr:
     @pytest.mark.parametrize('class_object',

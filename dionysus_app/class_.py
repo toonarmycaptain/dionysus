@@ -52,7 +52,7 @@ class Class:
 
     """
 
-    def __init__(self, name: str, students: List[Student] = None) -> None:
+    def __init__(self, name: str, students: List[Student] = None,*, id: Any = None) -> None:
         """
         Create Class instance.
 
@@ -219,7 +219,7 @@ class Class:
     # Alternate constructors
 
     @classmethod
-    def from_dict(cls, class_dict: dict) -> 'Class':
+    def from_dict(cls, class_dict: dict) -> Union['Class', 'NewClass']:
         """
         Instantiate Class object from JSON-serialisable dict.
 
@@ -228,10 +228,10 @@ class Class:
         """
         _name = class_dict['name']
         _students = [Student.from_dict(student) for student in class_dict['students']]
-        return Class(_name, _students)
+        return cls(_name, _students)
 
     @classmethod
-    def from_json(cls, json_data: str) -> 'Class':
+    def from_json(cls, json_data: str) -> Union['Class', 'NewClass']:
         """
         Return Class object from json string.
 
@@ -239,10 +239,10 @@ class Class:
         :return: Class object
         """
         class_dict = json.loads(json_data)
-        return Class.from_dict(class_dict)
+        return cls.from_dict(class_dict)
 
     @classmethod
-    def from_file(cls, cdf_path: Union[Path, str]) -> 'Class':
+    def from_file(cls, cdf_path: Union[Path, str]) -> Union['Class', 'NewClass']:
         """
         Return Class object from cdf file.
 
@@ -251,7 +251,7 @@ class Class:
         """
         with open(Path(cdf_path)) as class_data_file:
             class_json = json.load(class_data_file)
-        return Class.from_dict(class_json)
+        return cls.from_dict(class_json)
 
     # String representations
     def __repr__(self) -> str:
@@ -308,7 +308,7 @@ class NewClass(Class):
     """
 
     def __init__(self, name: str, students: List[Student] = None) -> None:
-        super().__init__(name, students)
+        super().__init__(name=name, students=students)
 
         # Create class temp directory.
         Path.mkdir(TEMP_DIR, exist_ok=True, parents=True)  # Ensure path exists.

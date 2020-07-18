@@ -48,6 +48,8 @@ class Student:
 
         self.avatar_id: Any = kwargs.get('avatar_id')  # Equivalent to kwargs.get(key, None)
         # NB Assuring existence is responsibility of code instantiating/adding avatar_id.
+        self.id: Any = kwargs.get('id')  # student id in database.
+        self.class_id = kwargs.get('class_id')  # class id in database
 
     @property
     def name(self):
@@ -113,7 +115,7 @@ class Student:
     # Alternate constructors
 
     @classmethod
-    def from_dict(cls, student_dict: dict):
+    def from_dict(cls, student_dict: dict) -> 'Student':
         """
         Instantiate a Student object from a JSON-serialisable dict.
 
@@ -126,7 +128,7 @@ class Student:
         """
         _name = student_dict['name']
         _avatar_id = student_dict.get('avatar_id', None)
-        return Student(name=_name,
+        return cls(name=_name,
                        avatar_id=_avatar_id,
                        )
 

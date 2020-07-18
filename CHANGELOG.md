@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- `Class`, `Student` objects' class methods now return instances of the calling `cls`. `NewClass.from_dict` now returns an instance of `NewClass`, not `Class`.
+
 ## [0.7.0-alpha] - 2020-06-27
 ### Added
 - `Database` ABC, establishing API for database objects.  

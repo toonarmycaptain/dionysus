@@ -102,6 +102,7 @@ class TestStudentJsonDict:
 
 
 class TestStudentFromDict:
+    @pytest.mark.parametrize('student_class_def', [Student])
     @pytest.mark.parametrize(
         'output_json_dict',
         [({'name': 'Sir Galahad'}),  # name only
@@ -109,9 +110,9 @@ class TestStudentFromDict:
          ({'name': 'Arther, King of the Britons', 'avatar_id': 'Holy_Grail.jpg'}),
          ({'name': 'Brian', 'avatar_id': 'a_naughty_boy.png'}),
          ])
-    def test_from_dict(self, output_json_dict):
-        student_object = Student.from_dict(output_json_dict)
-        assert isinstance(student_object, Student)
+    def test_from_dict(self, student_class_def, output_json_dict):
+        student_object = student_class_def.from_dict(output_json_dict)
+        assert isinstance(student_object, student_class_def)
         # Verify instantiated object is equivalent by reserialising:
         assert student_object.json_dict() == output_json_dict
 
