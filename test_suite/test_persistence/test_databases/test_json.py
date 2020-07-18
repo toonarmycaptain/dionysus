@@ -18,14 +18,17 @@ from test_suite.testing_class_data import (testing_registry_data_set as test_reg
                                            test_full_class_data_set,
                                            )
 
+def empty_json_test_db(path):
+    return JSONDatabase(app_data_path=Path(path, 'app_data'),
+                        class_data_path=Path(path, 'app_data', 'class_data'),
+                        registry_path=Path(path, 'app_data', 'test_registry_file'),
+                        default_chart_save_dir=Path(path, 'default_chart_save_dir'))
+
 
 @pytest.fixture
 def empty_json_database(tmpdir):
     """Return an empty JSONDatabase stored in tmpdir."""
-    return JSONDatabase(app_data_path=Path(tmpdir, 'app_data'),
-                        class_data_path=Path(tmpdir, 'app_data', 'class_data'),
-                        registry_path=Path(tmpdir, 'app_data', 'test_registry_file'),
-                        default_chart_save_dir=Path(tmpdir, 'default_chart_save_dir'))
+    return empty_json_test_db(tmpdir)
 
 
 # Database API tests:
