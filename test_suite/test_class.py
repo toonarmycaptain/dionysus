@@ -140,6 +140,22 @@ class TestClassNamePathSafeName:
         assert (test_class.name, test_class.path_safe_name) == (test_changed_name, mock_changed_path_safe_name)
 
 
+class TestClassId:
+    """Test Class Id"""
+
+    @pytest.mark.parametrize(
+        'id_arg,',
+        [17,  # Integer eg sql db id
+         'some student_name',  # JSON db id
+         Student(name='Student used to represent complex object'),  # Ensure 'Any' typing is accurate.
+         ])
+    def test_id(self, id_arg):
+        assert Class(name='Four Yorkshiremen', class_id=id_arg).id == id_arg
+
+    def test_class_id_default_arg(self):
+        assert Class(name='Four Yorkshiremen').id is None
+
+
 class TestContainsMethod:
     def test__contains__student_obj_in_class(self, test_student_name_only, test_class_name_only):
         """Test that student object from class compares as `in` class."""

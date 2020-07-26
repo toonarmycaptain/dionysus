@@ -19,6 +19,9 @@ class Class:
 
     Attributes
     ----------
+    class_id : Any
+        Class' id in database.
+
     name : str
         Class' name
 
@@ -52,7 +55,7 @@ class Class:
 
     """
 
-    def __init__(self, name: str, students: List[Student] = None,*, id: Any = None) -> None:
+    def __init__(self, name: str, students: List[Student] = None, *, class_id: Any = None) -> None:
         """
         Create Class instance.
 
@@ -60,7 +63,9 @@ class Class:
 
         :param name: str - name of the class.
         :param students: List[Student] - list of Student objects.
+        :param class_id: Any - unique id of class in database.
         """
+        self.id: Any = class_id
         self.name = name
         self.path_safe_name = name
 
@@ -276,8 +281,9 @@ class Class:
 
 class NewClass(Class):
     """
-    Subclass of Class for creating new classes, machinery to facilitate
-    creation of new classes in database.
+    Subclass of Class for creating new classes.
+
+    Adds machinery to facilitate creation of new classes in database.
 
     Adds temp directory for class to cache files before writing to
     database.
@@ -307,8 +313,8 @@ class NewClass(Class):
         Path to avatars folder in class' temp directory.
     """
 
-    def __init__(self, name: str, students: List[Student] = None) -> None:
-        super().__init__(name=name, students=students)
+    def __init__(self, name: str, students: List[Student] = None, *, class_id: Any = None) -> None:
+        super().__init__(name=name, students=students, class_id=class_id)
 
         # Create class temp directory.
         Path.mkdir(TEMP_DIR, exist_ok=True, parents=True)  # Ensure path exists.

@@ -16,8 +16,14 @@ class Student:
     path_safe_name : str
         Cleaned string safe to use in file names and paths.
 
+    student_id : Any
+        Student's id in database.
+
     avatar_id : Any None
         id or filename of student's avatar.
+
+    class_id : Any
+        Class' id in database.
 
 
     Methods
@@ -42,14 +48,16 @@ class Student:
         :type name: str
 
         :keyword avatar_id: Filename of student's avatar.
+        :keyword student_id: Any - unique id of student in database.
+        :keyword class_id: Any - unique id of student's class in database.
         :type avatar_id: str
         """
         self.name: str = name
 
         self.avatar_id: Any = kwargs.get('avatar_id')  # Equivalent to kwargs.get(key, None)
         # NB Assuring existence is responsibility of code instantiating/adding avatar_id.
-        self.id: Any = kwargs.get('id')  # student id in database.
-        self.class_id = kwargs.get('class_id')  # class id in database
+        self.id: Any = kwargs.get('student_id')  # student id in database.
+        self.class_id: Any = kwargs.get('class_id')  # class id in database
 
     @property
     def name(self):

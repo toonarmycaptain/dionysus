@@ -1,6 +1,7 @@
 """Tests for Student class."""
 import pytest
 
+from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 
 
@@ -46,6 +47,38 @@ class TestStudentName:
         """Test error is raised for each bad type, error msg contains type."""
         with pytest.raises(TypeError, match=str(type(name_arg))):
             Student(name=name_arg)
+
+
+class TestStudentId:
+    """Test Student Id"""
+
+    @pytest.mark.parametrize(
+        'id_arg,',
+        [17,  # Integer eg sql db id
+         'some student_name',  # JSON db id
+         Class(name='Class used to represent complex object'),  # Ensure 'Any' typing is accurate.
+         ])
+    def test_id(self, id_arg):
+        assert Student(name='Arthur, King of the Britons', student_id=id_arg).id == id_arg
+
+    def test_student_id_default_arg(self):
+        assert Student(name='Arthur, King of the Britons').id is None
+
+
+class TestStudentClassId:
+    """Test Student's Class Id"""
+
+    @pytest.mark.parametrize(
+        'class_id_arg,',
+        [17,  # Integer eg sql db id
+         'some student_name',  # JSON db id
+         Class(name='Class used to represent complex object'),  # Ensure 'Any' typing is accurate.
+         ])
+    def test_id(self, class_id_arg):
+        assert Student(name='Arthur, King of the Britons', class_id=class_id_arg).class_id == class_id_arg
+
+    def test_student_id_default_arg(self):
+        assert Student(name='Arthur, King of the Britons').class_id is None
 
 
 class TestStudentAvatar:
