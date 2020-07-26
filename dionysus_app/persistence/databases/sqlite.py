@@ -1,10 +1,8 @@
 import sqlite3
 
 from pathlib import Path
-from sqlite3 import Error
-from typing import Any, List, Optional
+from typing import Any, List
 
-# noinspection PyPackageRequirements
 import matplotlib.pyplot as plt
 
 from dionysus_app.class_ import Class, NewClass
@@ -75,7 +73,7 @@ class SQLiteDatabase(Database):
                              for student_id, name, class_id, avatar in students_data]
         conn.close()
 
-        return Class(id=loaded_class_id, name=class_name, students=students_list)
+        return Class(class_id=loaded_class_id, name=class_name, students=students_list)
 
     def update_class(self, class_to_write: Class) -> None:
         return NotImplementedError  # type: ignore
