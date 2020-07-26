@@ -18,6 +18,7 @@ from test_suite.testing_class_data import (testing_registry_data_set as test_reg
                                            test_full_class_data_set,
                                            )
 
+
 def empty_json_test_db(path):
     return JSONDatabase(app_data_path=Path(path, 'app_data'),
                         class_data_path=Path(path, 'app_data', 'class_data'),
@@ -60,10 +61,10 @@ class TestGetClasses:
          ])
     def test_get_classes(self, empty_json_database,
                          registry_list, returned_value):
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
         empty_json_database._registry.list = registry_list
 
-        assert test_JSON_database.get_classes() == returned_value
+        assert test_json_database.get_classes() == returned_value
 
 
 class TestClassNameExists:
@@ -85,16 +86,16 @@ class TestClassNameExists:
          ])
     def test_class_name_exists(self, empty_json_database,
                                test_class_name, registry_list, returned_value):
-        test_JSON_database = empty_json_database
-        test_JSON_database._registry.list = registry_list
+        test_json_database = empty_json_database
+        test_json_database._registry.list = registry_list
 
-        assert test_JSON_database.class_name_exists(test_class_name) == returned_value
+        assert test_json_database.class_name_exists(test_class_name) == returned_value
 
 
 class TestCreateClass:
     def test_create_class(self, empty_json_database, test_full_class):
         """JSON's create_class delegates calls to appropriate methods."""
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
         _setup_class_mock, _write_classlist_to_file_mock, _copy_avatars_to_class_data_mock = (
             {'called': False}, {'called': False}, {'called': False})
 
@@ -113,11 +114,11 @@ class TestCreateClass:
             if test_class != test_full_class:
                 raise ValueError
 
-        test_JSON_database._setup_class = mocked__setup_class
-        test_JSON_database._write_classlist_to_file = mocked__write_classlist_to_file
-        test_JSON_database._move_avatars_to_class_data = mocked__copy_avatars_to_class_data
+        test_json_database._setup_class = mocked__setup_class
+        test_json_database._write_classlist_to_file = mocked__write_classlist_to_file
+        test_json_database._move_avatars_to_class_data = mocked__copy_avatars_to_class_data
 
-        assert test_JSON_database.create_class(test_full_class) is None
+        assert test_json_database.create_class(test_full_class) is None
         assert all([_setup_class_mock['called'],
                     _write_classlist_to_file_mock['called'],
                     _copy_avatars_to_class_data_mock['called']])
@@ -125,40 +126,40 @@ class TestCreateClass:
 
 class TestLoadClass:
     def test_load_class(self, monkeypatch, empty_json_database, test_full_class):
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
         test_class_name = 'my_test_class'
 
         def mock_from_file(class_path):
-            assert class_path == Path(test_JSON_database.class_data_path,
+            assert class_path == Path(test_json_database.class_data_path,
                                       test_class_name,
-                                      f'{test_class_name}{test_JSON_database.class_data_file_type}')
+                                      f'{test_class_name}{test_json_database.class_data_file_type}')
             return test_full_class
 
         monkeypatch.setattr(json.Class, 'from_file', mock_from_file)
-        assert test_JSON_database.load_class(test_class_name).json_dict() == test_full_class.json_dict()
+        assert test_json_database.load_class(test_class_name).json_dict() == test_full_class.json_dict()
 
 
 class TestUpdateClass:
     def test_update_class(self, empty_json_database, test_full_class):
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
         test_class = Class(test_full_class.name, test_full_class.students)
         # create_class takes a NewClass object due to avatar moving machinery.
         test_class_new_class = NewClass(test_full_class.name, test_full_class.students)
         assert test_class.json_dict() == test_class_new_class.json_dict()  # Ensure classes are the same.
 
         # Create class in database.
-        test_JSON_database.create_class(NewClass(test_full_class.name, test_full_class.students))
+        test_json_database.create_class(NewClass(test_full_class.name, test_full_class.students))
         # Ensure test_class in database
-        assert test_JSON_database.load_class(test_class.name).json_dict() == test_class.json_dict()
+        assert test_json_database.load_class(test_class.name).json_dict() == test_class.json_dict()
 
         # Change class by adding student, update database:
         new_student = Student(name='new student')
         assert new_student not in test_class and new_student.name not in test_class  # Confirm student not in class.
         test_class.add_student(new_student)
 
-        assert test_JSON_database.update_class(test_class) is None
+        assert test_json_database.update_class(test_class) is None
         # Look up name because new_student object itself is not in the loaded class object.
-        assert new_student.name in test_JSON_database.load_class(test_class.name)
+        assert new_student.name in test_json_database.load_class(test_class.name)
 
 
 class TestCreateChart:
@@ -197,11 +198,11 @@ class TestCreateChart:
 
         monkeypatch.setattr(json, 'convert_to_json', mocked_convert_to_json)
 
-        test_JSON_database = empty_json_database
-        test_JSON_database.class_data_path = tmp_path
-        test_JSON_database._sanitise_avatar_path_objects = mocked__sanitise_avatar_path_objects
+        test_json_database = empty_json_database
+        test_json_database.class_data_path = tmp_path
+        test_json_database._sanitise_avatar_path_objects = mocked__sanitise_avatar_path_objects
 
-        test_JSON_database.create_chart(test_chart_data_dict)
+        test_json_database.create_chart(test_chart_data_dict)
 
         assert test_filepath.exists()
         with open(test_filepath, 'r') as test_file:
@@ -210,7 +211,7 @@ class TestCreateChart:
 
 class TestSaveChartImage:
     def test_save_chart_image(self, empty_json_database):
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
 
         class MockMplPlt:
             def savefig(self, app_data_save_pathname, dpi):
@@ -225,34 +226,36 @@ class TestSaveChartImage:
             'chart_default_filename': "test_chart_default_filename",
             'chart_params': {"some": "chart", "default": "params"},
             'score-avatar_dict': {0: [Path('path to Cali_avatar.png')],
-                                  1: [test_JSON_database.default_avatar_path, test_JSON_database.default_avatar_path],
-                                  3: [test_JSON_database.default_avatar_path, test_JSON_database.default_avatar_path],
-                                  50: [test_JSON_database.default_avatar_path],
-                                  99: [test_JSON_database.default_avatar_path],
-                                  100: [test_JSON_database.default_avatar_path],
+                                  1: [test_json_database.default_avatar_path,
+                                      test_json_database.default_avatar_path],
+                                  3: [test_json_database.default_avatar_path,
+                                      test_json_database.default_avatar_path],
+                                  50: [test_json_database.default_avatar_path],
+                                  99: [test_json_database.default_avatar_path],
+                                  100: [test_json_database.default_avatar_path],
                                   2: [Path('path to Ashley_avatar.png')],
-                                  4: [test_JSON_database.default_avatar_path],
-                                  6: [Path('path to Danielle.png'), test_JSON_database.default_avatar_path],
-                                  7: [test_JSON_database.default_avatar_path],
-                                  8: [test_JSON_database.default_avatar_path]
+                                  4: [test_json_database.default_avatar_path],
+                                  6: [Path('path to Danielle.png'), test_json_database.default_avatar_path],
+                                  7: [test_json_database.default_avatar_path],
+                                  8: [test_json_database.default_avatar_path]
                                   },
-        }
+            }
 
-        test_image_save_path = test_JSON_database.class_data_path.joinpath(
+        test_image_save_path = test_json_database.class_data_path.joinpath(
             test_data_dict['class_name'],
             'chart_data',
             f"{test_data_dict['chart_default_filename']}.png")
 
-        assert test_JSON_database.save_chart_image(test_data_dict, mocked_mpl_plt) == test_image_save_path
+        assert test_json_database.save_chart_image(test_data_dict, mocked_mpl_plt) == test_image_save_path
         # Ensure dir to save image in exists, as not actually saving an image.
         assert test_image_save_path.parent.exists()
 
 
 class TestGetAvatarPath:
     def test_get_avatar_path(self, empty_json_database):
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
         with pytest.raises(NotImplementedError):
-            test_JSON_database.get_avatar_path(12345)
+            test_json_database.get_avatar_path(12345)
 
 
 class TestGetAvatarPathClassFilename:
@@ -266,27 +269,27 @@ class TestGetAvatarPathClassFilename:
                 raise ValueError('Should not be called as not avatar to get abs path for.')
             return test_student_avatar
 
-        test_JSON_database = empty_json_database
-        test_JSON_database.default_avatar_path = 'path to a default avatar'
-        test_JSON_database._avatar_path_from_string = mocked__avatar_path_from_string
+        test_json_database = empty_json_database
+        test_json_database.default_avatar_path = 'path to a default avatar'
+        test_json_database._avatar_path_from_string = mocked__avatar_path_from_string
 
-        assert test_JSON_database.get_avatar_path_class_filename(
+        assert test_json_database.get_avatar_path_class_filename(
             'some class', test_student_avatar) == (test_student_avatar if test_student_avatar
-                                                   else test_JSON_database.default_avatar_path)
+                                                   else test_json_database.default_avatar_path)
 
 
 class TestAvatarPathFromString:
     def test__avatar_path_from_string(self, empty_json_database):
         """Returns abs avatar path."""
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
 
         test_class_name = 'a test class'
         test_avatar_filename = 'some filename'
-        test_avatar_path = test_JSON_database.class_data_path.joinpath(test_class_name,
+        test_avatar_path = test_json_database.class_data_path.joinpath(test_class_name,
                                                                        'avatars',
                                                                        test_avatar_filename)
 
-        assert test_JSON_database._avatar_path_from_string(
+        assert test_json_database._avatar_path_from_string(
             test_class_name, test_avatar_filename) == test_avatar_path
 
 
@@ -297,10 +300,10 @@ class TestClose:
         def mock__registry_check_registry_on_exit():
             _registry_check_registry_on_exit_mock['called'] = True
 
-        test_JSON_database = empty_json_database
-        test_JSON_database._registry.check_registry_on_exit = mock__registry_check_registry_on_exit
+        test_json_database = empty_json_database
+        test_json_database._registry.check_registry_on_exit = mock__registry_check_registry_on_exit
 
-        test_JSON_database.close()
+        test_json_database.close()
         assert _registry_check_registry_on_exit_mock['called']
 
 
@@ -311,7 +314,7 @@ class TestSetupClass:
     def test__setup_class(self, empty_json_database):
         """Class data folders and entry in registry created."""
         test_classlist_name = 'the_knights_who_say_ni'
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
 
         _setup_class_data_storage_mock, registry_register_class_mock = {'called': False}, {'called': False}
 
@@ -325,10 +328,10 @@ class TestSetupClass:
             if class_name != test_classlist_name:
                 raise ValueError
 
-        test_JSON_database._setup_class_data_storage = mock__setup_class_data_storage
-        test_JSON_database._registry.register_class = mock_registry_register_class
+        test_json_database._setup_class_data_storage = mock__setup_class_data_storage
+        test_json_database._registry.register_class = mock_registry_register_class
 
-        assert test_JSON_database._setup_class(test_classlist_name) is None
+        assert test_json_database._setup_class(test_classlist_name) is None
         assert _setup_class_data_storage_mock['called']
         assert registry_register_class_mock['called']
 
@@ -337,32 +340,32 @@ class TestSetupClassDataStorage:
     def test_setup_class_data_storage(self, empty_json_database):
         """Class data directories created."""
         test_class_name = 'the_knights_who_say_ni'
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
 
-        assert test_JSON_database._setup_class_data_storage(test_class_name) is None
+        assert test_json_database._setup_class_data_storage(test_class_name) is None
 
-        assert test_JSON_database.class_data_path.joinpath(test_class_name, 'avatars').exists()
-        assert test_JSON_database.class_data_path.joinpath(test_class_name, 'chart_data').exists()
-        assert test_JSON_database.default_chart_save_dir.joinpath(test_class_name).exists()
+        assert test_json_database.class_data_path.joinpath(test_class_name, 'avatars').exists()
+        assert test_json_database.class_data_path.joinpath(test_class_name, 'chart_data').exists()
+        assert test_json_database.default_chart_save_dir.joinpath(test_class_name).exists()
 
     def test_setup_class_data_storage_raising_error(self, empty_json_database):
         """Error thrown on uninitialised default_chart_save_dir value."""
-        test_JSON_database = empty_json_database
-        test_JSON_database.default_chart_save_dir = None
+        test_json_database = empty_json_database
+        test_json_database.default_chart_save_dir = None
         with pytest.raises(ValueError):
-            test_JSON_database._setup_class_data_storage('some_class')
+            test_json_database._setup_class_data_storage('some_class')
 
 
 class TestWriteClasslistToFile:
     def test_write_classlist_to_file(self, empty_json_database, test_full_class):
-        test_JSON_database = empty_json_database
-        test_class_data_file_path = Path(test_JSON_database.class_data_path,
+        test_json_database = empty_json_database
+        test_class_data_file_path = Path(test_json_database.class_data_path,
                                          test_full_class.name,
-                                         f'{test_full_class.name}{test_JSON_database.class_data_file_type}')
+                                         f'{test_full_class.name}{test_json_database.class_data_file_type}')
         # Assert class data file doesn't exist:
         assert not test_class_data_file_path.exists()
 
-        assert test_JSON_database._write_classlist_to_file(test_full_class) is None
+        assert test_json_database._write_classlist_to_file(test_full_class) is None
 
         # Assert file created:
         assert test_class_data_file_path.exists()
@@ -380,7 +383,8 @@ class TestMoveAvatarsToClassData:
                               'students': [{'name': 'Cali', 'avatar_id': 'Cali_avatar.png'},
                                            {'name': 'Zach', 'avatar_id': 'Zach_avatar.png'},
                                            {'name': 'Ashley', 'avatar_id': 'Ashley_avatar.png'},
-                                           {'name': 'Danielle', 'avatar_id': 'Danielle.png'}, ]}),
+                                           {'name': 'Danielle', 'avatar_id': 'Danielle.png'}, ]
+                              }),
           ['Cali_avatar.png',
            'Zach_avatar.png',
            'Ashley_avatar.png',
@@ -398,13 +402,14 @@ class TestMoveAvatarsToClassData:
                               'students': [{'name': 'Cali'},
                                            {'name': 'Zach'},
                                            {'name': 'Ashley'},
-                                           {'name': 'Danielle'}, ]}),
+                                           {'name': 'Danielle'}, ]
+                              }),
           []),
          ])
     def test_move_avatars_to_class_data(self, empty_json_database,
                                         test_new_class, expected_moved_avatars):
         """Avatar files copied from original locations to class data."""
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
         moved_avatars = []
 
         def mock_move_avatar_to_class_data(test_class: NewClass, avatar_filename: str):
@@ -413,7 +418,7 @@ class TestMoveAvatarsToClassData:
 
         empty_json_database._move_avatar_to_class_data = mock_move_avatar_to_class_data
 
-        assert test_JSON_database._move_avatars_to_class_data(test_new_class) is None
+        assert test_json_database._move_avatars_to_class_data(test_new_class) is None
         assert moved_avatars == expected_moved_avatars
 
 
@@ -422,25 +427,25 @@ class TestMoveAvatarToClassData:
         """Avatar moved from original location to class data."""
         test_class = NewClass('test_class')
         test_filename = 'test avatar filename'
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
 
         def mock_move_file(origin_path: Path, destination_path: Path):
             if origin_path != test_class.temp_dir.joinpath('avatars', test_filename):
                 raise ValueError("Origin path incorrect.")
-            if destination_path != test_JSON_database.class_data_path.joinpath(test_class.name, 'avatars',
+            if destination_path != test_json_database.class_data_path.joinpath(test_class.name, 'avatars',
                                                                                test_filename):
                 raise ValueError("Destination path incorrect")
 
         monkeypatch.setattr(json, 'move_file', mock_move_file)
 
-        assert test_JSON_database._move_avatar_to_class_data(test_class, test_filename) is None
+        assert test_json_database._move_avatar_to_class_data(test_class, test_filename) is None
 
     def test_move_avatar_to_class_data_avatar_preexisting(self, monkeypatch, empty_json_database):
         """No attempt to move avatar that already exists in class_data."""
         test_class = NewClass('test_class')
-        test_JSON_database = empty_json_database
+        test_json_database = empty_json_database
         # Make existing avatar in tmpdir test_class class data:
-        destination_avatar_path = test_JSON_database.class_data_path.joinpath(
+        destination_avatar_path = test_json_database.class_data_path.joinpath(
             test_class.name, 'avatars', 'test_avatar_filename')
         Path.mkdir(destination_avatar_path.parent, parents=True)
         with open(destination_avatar_path, 'w'):
@@ -451,13 +456,13 @@ class TestMoveAvatarToClassData:
 
         monkeypatch.setattr(json, 'move_file', mock_move_file)
 
-        assert test_JSON_database._move_avatar_to_class_data(test_class, destination_avatar_path.name) is None
+        assert test_json_database._move_avatar_to_class_data(test_class, destination_avatar_path.name) is None
 
 
 class TestSanitiseAvatarPathObjects:
     def test_santise_avatar_path_objects(self, empty_json_database):
-        test_JSON_database = empty_json_database
-        test_JSON_database.default_avatar_path = Path('default/path')
+        test_json_database = empty_json_database
+        test_json_database.default_avatar_path = Path('default/path')
 
         test_data_dict = {
             'class_name': "test_class_name",
@@ -465,37 +470,39 @@ class TestSanitiseAvatarPathObjects:
             'chart_default_filename': "test_chart_default_filename",
             'chart_params': {"some": "chart", "default": "params"},
             'score-avatar_dict': {0: [Path('path to Cali_avatar.png')],
-                                  1: [test_JSON_database.default_avatar_path, test_JSON_database.default_avatar_path],
-                                  3: [test_JSON_database.default_avatar_path, test_JSON_database.default_avatar_path],
-                                  50: [test_JSON_database.default_avatar_path],
-                                  99: [test_JSON_database.default_avatar_path],
-                                  100: [test_JSON_database.default_avatar_path],
+                                  1: [test_json_database.default_avatar_path,
+                                      test_json_database.default_avatar_path],
+                                  3: [test_json_database.default_avatar_path,
+                                      test_json_database.default_avatar_path],
+                                  50: [test_json_database.default_avatar_path],
+                                  99: [test_json_database.default_avatar_path],
+                                  100: [test_json_database.default_avatar_path],
                                   2: [Path('path to Ashley_avatar.png')],
-                                  4: [test_JSON_database.default_avatar_path],
-                                  6: [Path('path to Danielle.png'), test_JSON_database.default_avatar_path],
-                                  7: [test_JSON_database.default_avatar_path],
-                                  8: [test_JSON_database.default_avatar_path]
+                                  4: [test_json_database.default_avatar_path],
+                                  6: [Path('path to Danielle.png'), test_json_database.default_avatar_path],
+                                  7: [test_json_database.default_avatar_path],
+                                  8: [test_json_database.default_avatar_path]
                                   },
-        }
+            }
         test_returned_sanitised_data_dict = {
             'class_name': "test_class_name",
             'chart_name': "test_chart_name",
             'chart_default_filename': "test_chart_default_filename",
             'chart_params': {"some": "chart", "default": "params"},
             'score-avatar_dict': {0: ['path to Cali_avatar.png'],
-                                  1: [str(test_JSON_database.default_avatar_path),
-                                      str(test_JSON_database.default_avatar_path)],
-                                  3: [str(test_JSON_database.default_avatar_path),
-                                      str(test_JSON_database.default_avatar_path)],
-                                  50: [str(test_JSON_database.default_avatar_path)],
-                                  99: [str(test_JSON_database.default_avatar_path)],
-                                  100: [str(test_JSON_database.default_avatar_path)],
+                                  1: [str(test_json_database.default_avatar_path),
+                                      str(test_json_database.default_avatar_path)],
+                                  3: [str(test_json_database.default_avatar_path),
+                                      str(test_json_database.default_avatar_path)],
+                                  50: [str(test_json_database.default_avatar_path)],
+                                  99: [str(test_json_database.default_avatar_path)],
+                                  100: [str(test_json_database.default_avatar_path)],
                                   2: ['path to Ashley_avatar.png'],
-                                  4: [str(test_JSON_database.default_avatar_path)],
-                                  6: ['path to Danielle.png', str(test_JSON_database.default_avatar_path)],
-                                  7: [str(test_JSON_database.default_avatar_path)],
-                                  8: [str(test_JSON_database.default_avatar_path)]
+                                  4: [str(test_json_database.default_avatar_path)],
+                                  6: ['path to Danielle.png', str(test_json_database.default_avatar_path)],
+                                  7: [str(test_json_database.default_avatar_path)],
+                                  8: [str(test_json_database.default_avatar_path)]
                                   },
-        }
+            }
 
-        assert test_JSON_database._sanitise_avatar_path_objects(test_data_dict) == test_returned_sanitised_data_dict
+        assert test_json_database._sanitise_avatar_path_objects(test_data_dict) == test_returned_sanitised_data_dict
