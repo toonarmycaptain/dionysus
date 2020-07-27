@@ -14,7 +14,8 @@ testing_registry_data_set = {'registry_classlist': testing_registry_list,
 # new data storage formats
 
 # Add attributes to test expected output.
-test_class_name_only_name = "The Knights of the Round-table: we don't say 'Ni!'"
+test_class_name_only_name = "The_Knights_of_the_Round-table__we_don_t_say__Ni__"
+# Essentially clean_for_filename("The Knights of the Round-table: we don't say 'Ni!'")
 
 test_class_name_only_json_str_rep = ('{\n'
                                      + f'    "name": "{test_class_name_only_name}",\n'
