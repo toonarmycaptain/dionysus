@@ -170,7 +170,7 @@ class TestLoadClass:
                                                   'empty_sqlite_database',
                                                   ])
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
-    def test_create_class(self, request, database_backend, class_data):
+    def test_load_class(self, request, database_backend, class_data):
         """JSON's create_class delegates calls to appropriate methods."""
         test_database = request.getfixturevalue(database_backend)
         preexisting_class = request.getfixturevalue(class_data)
