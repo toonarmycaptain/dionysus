@@ -12,6 +12,38 @@ from dionysus_app.persistence.database import ClassIdentifier, Database
 
 
 class SQLiteDatabase(Database):
+    """
+    SQLiteDatabase object.
+
+    Database implemented using python SQLite3 module.
+
+    Schema:
+        Table: `class`
+            key `id` - INTEGER primary key
+            key `name` TEXT <= 255 chars
+
+        Table: `student`
+            key `id` - INTEGER primary key
+            key `name` - TEXT <= 255 chars
+            key `class_id` - INTEGER student's class `class.id`
+            key `avatar_id` - INTEGER student's avatar image `avatar.id`
+
+        Table: `chart`
+            key `id` - INTEGER primary key
+            key `name` - TEXT <= 255 chars
+            key `date` - chart created date TODO: document
+
+        Table: `score` - scores in charts
+            key `id` - INTEGER primary key
+            key `chart_id` - INTEGER `chart.id` score belongs to
+            key `student_id` - INTEGER `student.id` score belongs to
+            key `value` - REAL (ie float) the score
+
+        Table: `avatar`
+            key `id` - INTEGER primary key
+            key `image` blob
+    """
+
     def __init__(self, default_avatar_path: Path = None,
                  database_path: Path = None,
                  ):
