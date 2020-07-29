@@ -151,7 +151,12 @@ class TestCreateClass:
     def test_create_class(self, request, database_backend, class_data):
         test_database = request.getfixturevalue(database_backend)
         test_class = request.getfixturevalue(class_data)
+        # Create test NewClass object, mocking avatar_files.
         test_class = NewClass.from_dict(test_class.json_dict())
+        for student in test_class:
+            if student.avatar_id:
+                Path(test_class.temp_avatars_dir, student.avatar_id).write_text(student.avatar_id)
+
         # Assure no classes in db:
         assert not test_database.get_classes()
 
@@ -174,7 +179,11 @@ class TestLoadClass:
         """JSON's create_class delegates calls to appropriate methods."""
         test_database = request.getfixturevalue(database_backend)
         preexisting_class = request.getfixturevalue(class_data)
+        # Create test NewClass object, mocking avatar_files.
         preexisting_class = NewClass.from_dict(preexisting_class.json_dict())
+        for student in preexisting_class:
+            if student.avatar_id:
+                Path(preexisting_class.temp_avatars_dir, student.avatar_id).write_text(student.avatar_id)
         # Create class in db:
         test_database.create_class(preexisting_class)
 

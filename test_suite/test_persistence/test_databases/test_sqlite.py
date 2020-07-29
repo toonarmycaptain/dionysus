@@ -1,5 +1,6 @@
 import sqlite3
 
+from pathlib import Path
 from random import randint
 
 import pytest
@@ -35,7 +36,7 @@ def empty_sqlite_database(tmpdir):
 def test_empty_sqlite_database_fixture(empty_sqlite_database):
     """Ensure test db can be connected to and tables exist."""
     assert empty_sqlite_database
-    tables = ['class', 'student', 'chart', 'score']
+    tables = ['class', 'student', 'chart', 'score', 'avatar']
     test_db_tables = empty_sqlite_database._connection().execute(
             """SELECT name from sqlite_master WHERE type='table' """).fetchall()
     for table in tables:
@@ -107,7 +108,11 @@ class TestCreateClass:
     def test_create_class(self, request, empty_sqlite_database, class_data):
         test_database = empty_sqlite_database
         test_class_data = request.getfixturevalue(class_data)
+        # Create test NewClass object, mocking avatar_files.
         test_class = NewClass.from_dict(test_class_data.json_dict())
+        for student in test_class:
+            if student.avatar_id:
+                Path(test_class.temp_avatars_dir, student.avatar_id).write_text(student.avatar_id)
 
         # no students or class in empty db:
         assert not test_database._connection().cursor().execute("""SELECT * FROM class""").fetchall()
@@ -121,15 +126,19 @@ class TestCreateClass:
         test_class_id = classes[0].id
 
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
-                test_class_id).json_dict() == Class.from_dict(test_class_data.json_dict()).json_dict()
+                test_class_id).json_dict() == Class.from_dict(test_class.json_dict()).json_dict()
 
 
 class TestLoadClass:
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
-    def test_create_class(self, request, empty_sqlite_database, class_data):
+    def test_load_class(self, request, empty_sqlite_database, class_data):
         test_database = empty_sqlite_database
         test_existing_class_data = request.getfixturevalue(class_data)
+        # Create test NewClass object, mocking avatar_files.
         test_existing_class = NewClass.from_dict(test_existing_class_data.json_dict())
+        for student in test_existing_class:
+            if student.avatar_id:
+                Path(test_existing_class.temp_avatars_dir, student.avatar_id).write_text(student.avatar_id)
         # Create class in db:
         test_database.create_class(test_existing_class)
 
@@ -140,7 +149,7 @@ class TestLoadClass:
         # Load class, verify data.
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
                 test_full_class_id).json_dict() == Class.from_dict(
-                test_existing_class_data.json_dict()).json_dict()
+                test_existing_class.json_dict()).json_dict()
 
         assert test_database._connection().cursor().execute("""SELECT * FROM class""").fetchall()
         if test_existing_class.students:

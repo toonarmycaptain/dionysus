@@ -44,6 +44,15 @@ class SQLiteDatabase(Database):
             return bool(matching_class.fetchone())
 
     def create_class(self, new_class: NewClass) -> None:
+        """
+
+        Moves avatars for each student to db, changes student.avatar_id
+        to id of avatar image in db. If no avatar, this remains None/null,
+        and that is stored as student's avatar_id in db.
+
+        :param new_class:
+        :return:
+        """
         with self._connection() as conn:
             cursor = conn.cursor()
             # insert class into class
@@ -52,9 +61,16 @@ class SQLiteDatabase(Database):
             new_class.id = cursor.lastrowid
             for student in new_class:
                 # insert student
+                if student.avatar_id:
+                    # Move avatar from temp to db:
+                    avatar_blob = new_class.temp_avatars_dir.joinpath(student.avatar_id).read_bytes()
+                    cursor.execute("""INSERT INTO avatar(image) VALUES(?)""", (avatar_blob,))
+                    # Change avatar_id to id of avatar in db.
+                    student.avatar_id = cursor.lastrowid
                 cursor.execute(
-                        """INSERT INTO student(name, class_id, avatar) VALUES(?,?,?)""",
-                        (student.name, new_class.id, student.avatar_id))
+                    """INSERT INTO student(name, class_id, avatar_id) VALUES(?,?,?)""",
+                    (student.name, new_class.id, student.avatar_id))
+
                 # Add id to student:
                 student.id = cursor.lastrowid
             conn.commit()
@@ -64,10 +80,10 @@ class SQLiteDatabase(Database):
         with self._connection() as conn:
             # Get class from db, use 'loaded_class_id' to avoid name clash with class_id when loading student.
             loaded_class_id, class_name = conn.cursor().execute(
-                    """SELECT * FROM class WHERE class.id=?""", (class_id,)).fetchone()
+                """SELECT * FROM class WHERE class.id=?""", (class_id,)).fetchone()
             # Get student data for class:
             students_data = conn.cursor().execute(
-                    """SELECT * FROM student WHERE student.class_id=?""", (loaded_class_id,)).fetchall()
+                """SELECT * FROM student WHERE student.class_id=?""", (loaded_class_id,)).fetchall()
             # Instantiate student objects:
             students_list = [Student(id=id, name=name, class_id=class_id, avatar_id=avatar)
                              for student_id, name, class_id, avatar in students_data]
@@ -107,6 +123,7 @@ class SQLiteDatabase(Database):
                                     self._create_table_student,
                                     self._create_table_chart,
                                     self._create_table_score,
+                                    self._create_table_avatar,
                                     ]
 
         connection = self._connection()
@@ -134,8 +151,9 @@ class SQLiteDatabase(Database):
                                                  length("name") <= 255
                                                  ),
                         class_id INTEGER,
-                        avatar BLOB,
-                        FOREIGN KEY (class_id) REFERENCES class (id)
+                        avatar_id INTEGER,
+                        FOREIGN KEY (class_id) REFERENCES class (id),
+                        FOREIGN KEY(avatar_id) REFERENCES avatar(id)
                         );
                         """
 
@@ -157,5 +175,12 @@ class SQLiteDatabase(Database):
                         value REAL NOT NULL, --REAL is equivalent of float.
                         FOREIGN KEY(chart_id) REFERENCES chart(id),
                         FOREIGN KEY(student_id) REFERENCES student(id)
+                        );
+                        """
+
+    def _create_table_avatar(self) -> str:
+        return """CREATE TABLE IF NOT EXISTS avatar(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        image BLOB NOT NULL
                         );
                         """
