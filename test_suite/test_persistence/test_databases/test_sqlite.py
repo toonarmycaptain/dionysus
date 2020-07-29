@@ -155,6 +155,11 @@ class TestLoadClass:
         if test_existing_class.students:
             assert test_database._connection().cursor().execute("""SELECT * FROM student""").fetchall()
 
+class TestUpdateClass:
+    """Method is unused and unimplemented."""
+    def test_update_class(self, empty_sqlite_database):
+        with pytest.raises(NotImplementedError):
+            empty_sqlite_database.update_class('some class')
 
 class Test_Connection:
     def test__connection(self, empty_sqlite_database):

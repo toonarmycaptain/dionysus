@@ -71,7 +71,7 @@ class SQLiteDatabase(Database):
     def class_name_exists(self, class_name: str) -> bool:
         with self._connection() as conn:
             matching_class = conn.cursor().execute("""SELECT class.name FROM class 
-                                                   WHERE name=? LIMIT 1""", (class_name,))
+                                                      WHERE name=? LIMIT 1""", (class_name,))
             # Will return either no class [] or [('class name',)] if matching class name found.
             return bool(matching_class.fetchone())
 
@@ -124,19 +124,32 @@ class SQLiteDatabase(Database):
         return Class(class_id=loaded_class_id, name=class_name, students=students_list)
 
     def update_class(self, class_to_write: Class) -> None:
-        return NotImplementedError  # type: ignore
+        """
+        Currently unimplemented, as not currently used.
+
+        Initial quick implementation would overwrite all class' data in db,
+        future iteration might need to be a diff and just write changed data.
+        [Much more efficient for whole class with avatars.]
+        Some changes might be able to be applied atomically by the change code,
+        - eg a new/added avatar will be added/modified in the student/avatar
+         table by the code that facilitates that, rather than by this function.
+
+        :param class_to_write: Class
+        :return:
+        """
+        raise NotImplementedError  # type: ignore
 
     def get_avatar_path(self, avatar_id: Any) -> Path:
-        return NotImplementedError  # type: ignore
+        raise NotImplementedError  # type: ignore
 
     def create_chart(self, chart_data_dict: dict) -> None:
-        return NotImplementedError  # type: ignore
+        raise NotImplementedError  # type: ignore
 
     def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
-        return NotImplementedError  # type: ignore
+        raise NotImplementedError  # type: ignore
 
     def close(self) -> None:
-        return NotImplementedError  # type: ignore
+        raise NotImplementedError  # type: ignore
 
     def _connection(self) -> sqlite3.Connection:
 

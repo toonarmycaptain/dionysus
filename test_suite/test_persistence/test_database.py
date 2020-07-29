@@ -192,3 +192,7 @@ class TestLoadClass:
         test_full_class_id = classes[0].id  # As the only class will be first item.
         assert test_database.load_class(
             test_full_class_id).json_dict() == Class.from_dict(preexisting_class.json_dict()).json_dict()
+
+
+class TestUpdateClass:
+    """Not tested as method is unused and mostly unimplemented."""
