@@ -42,7 +42,8 @@ class TestNewChart:
         test_chart_params = {'test_chart_params': 'some chart params'}
         test_score_avatar_dict = {'test_student_scores': 'test student avatars'}
 
-        test_chart_data_dict = {'class_name': test_class.name,
+        test_chart_data_dict = {'class_id': test_class.id,
+                                'class_name': test_class.name,
                                 'chart_name': test_chart_name,
                                 'chart_default_filename': test_chart_default_filename,
                                 'chart_params': test_chart_params,

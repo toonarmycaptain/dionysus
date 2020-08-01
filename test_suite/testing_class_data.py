@@ -19,11 +19,14 @@ test_class_name_only_name = "The_Knights_of_the_Round-table__we_don_t_say__Ni__"
 
 test_class_name_only_json_str_rep = ('{\n'
                                      + f'    "name": "{test_class_name_only_name}",\n'
-                                     + f'    "students": {[]}\n'
+                                     + f'    "students": {[]},\n'
+                                     + f'    "id": "{test_class_name_only_name}"\n'
                                      + '}')
 
 test_class_name_only_json_dict_rep = {'name': test_class_name_only_name,
-                                      'students': []
+                                      'students': [],
+                                      'id': test_class_name_only_name
+
                                       }
 
 test_class_name_only_data_set = {'name': test_class_name_only_name,
@@ -85,7 +88,8 @@ test_full_class_data_set_json_string = ('{\n'
                                         '        {\n'
                                         '            "name": "Jaleigh"\n'
                                         '        }\n'
-                                        '    ]\n'
+                                        '    ],\n'
+                                     + f'    "id": "test_class"\n'
                                         '}'
                                         )
 
@@ -104,7 +108,8 @@ test_full_class_data_set_json_dict = {'name': 'test_class',
                                                    {'name': 'Edgar'},
                                                    {'name': 'Danielle', 'avatar_id': 'Danielle.png'},
                                                    {'name': 'Kayla'},
-                                                   {'name': 'Jaleigh'}]}
+                                                   {'name': 'Jaleigh'}],
+                                      'id': 'test_class'}
 
 test_full_class_data_set_enumerated_dict = {1: 'Cali',
                                             2: 'Monty',

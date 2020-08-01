@@ -206,12 +206,17 @@ class Class:
         Translates Class object into JSON-serialisable dict.
 
         Captures name, converts Student objects to JSON-serialisable
-        dicts.
+        dicts. Omits id if not present.
+        NB id will be last entry in dict and last entry in json string.
 
         :return: dict
         """
-        return {'name': self._name,
-                'students': [student.json_dict() for student in self.students]}
+        json_data = {'name': self._name,
+                     'students': [student.json_dict() for student in self.students]
+                     }
+        if self.id:
+            json_data['id'] = self.id
+        return json_data
 
     def to_json_str(self) -> str:
         """
@@ -231,9 +236,10 @@ class Class:
         :param class_dict: dict
         :return: Class object
         """
+        _id = class_dict.get('id')  # Class may not have id if not in db.
         _name = class_dict['name']
         _students = [Student.from_dict(student) for student in class_dict['students']]
-        return cls(_name, _students)
+        return cls(class_id=_id, name=_name, students=_students)
 
     @classmethod
     def from_json(cls, json_data: str) -> Union['Class', 'NewClass']:
@@ -261,6 +267,7 @@ class Class:
     # String representations
     def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
+                    f'id={self.id!r}, '
                     f'name={self._name!r}, '
                     f'path_safe_name={self._path_safe_name!r}, '
                     f'students={self.students!r}'
@@ -276,7 +283,7 @@ class Class:
         else:
             students_stmt = 'containing 0 students'
 
-        return f'Class {self.name}, {students_stmt}.'
+        return f'Class {self.name}, with id={self.id}, {students_stmt}.'
 
 
 class NewClass(Class):

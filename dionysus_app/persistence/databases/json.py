@@ -54,13 +54,13 @@ class JSONDatabase(Database):
     get_classes():
         Return list of ClassIdentifiers for classes in the database.
 
-    class_name_exists(class_id: str):
+    class_name_exists(class_name: str):
         Return bool if class name already exists in the database.
 
     create_class(new_class: NewClass):
         Take a Class object and create/write the class in the database.
 
-    load_class(class_id: Any):
+    load_class(class_id: str):
         Load a class from the database.
 
     update_class(class_to_write: Class):
@@ -164,7 +164,8 @@ class JSONDatabase(Database):
         :param new_class: Class object
         :return: None
         """
-        self._setup_class(new_class.name)
+        new_class.id = new_class.name
+        self._setup_class(new_class.id)
         self._write_classlist_to_file(new_class)
         self._move_avatars_to_class_data(new_class)
 
@@ -180,7 +181,11 @@ class JSONDatabase(Database):
         class_data_filename = class_id + self.class_data_file_type
         classlist_data_path = self.class_data_path.joinpath(class_id, class_data_filename)
 
-        return Class.from_file(classlist_data_path)
+        loaded_class = Class.from_file(classlist_data_path)
+        # Append ids
+        loaded_class.id = loaded_class.name
+        # Student id not added: student cannot be found in the db by name alone.
+        return loaded_class
 
     def update_class(self, class_to_write: Class) -> None:
         """
@@ -205,6 +210,7 @@ class JSONDatabase(Database):
 
             Write classlist data to disk with format:
             chart_data_dict = {
+                        'class_id': class_id, str
                         'class_name': class_name,  str
                         'chart_name': chart_name,  str
                         'chart_default_filename': chart_default_filename,  str
@@ -227,9 +233,9 @@ class JSONDatabase(Database):
         file_chart_data_dict = deepcopy(chart_data_dict)  # Copy so as to not modify in-use dict.
 
         chart_filename = file_chart_data_dict['chart_default_filename']
-        chart_data_file = chart_filename + self.chart_data_file_type
+        chart_datafile_name = chart_filename + self.chart_data_file_type
         chart_data_filepath = self.class_data_path.joinpath(
-            file_chart_data_dict['class_name'], 'chart_data', chart_data_file)
+            file_chart_data_dict['class_id'], 'chart_data', chart_datafile_name)
 
         # Convert data_dict to JSON-safe form.
         json_safe_chart_data_dict = self._sanitise_avatar_path_objects(file_chart_data_dict)
@@ -251,45 +257,45 @@ class JSONDatabase(Database):
         :param mpl_plt: plt - matplotlib.pyplot object
         :return: Path
         """
-        class_name = chart_data_dict['class_name']
+        class_id = chart_data_dict['class_id']
         default_chart_name = chart_data_dict['chart_default_filename']
-        app_data_save_pathname = self.class_data_path.joinpath(class_name,
+        app_data_save_pathname = self.class_data_path.joinpath(class_id,
                                                                'chart_data',
                                                                f"{default_chart_name}.png")
         Path.mkdir(app_data_save_pathname.parent, parents=True, exist_ok=True)
-        # Save in app_data/class_data/class_name/chart_data with chart_default_filename
+        # Save in app_data/class_data/class_id/chart_data with chart_default_filename
 
         mpl_plt.savefig(app_data_save_pathname,
                         dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
-    def get_avatar_path_class_filename(self, class_name: str,
+    def get_avatar_path_class_filename(self, class_id: str,
                                        student_avatar_filename: str = None) -> Path:
         """
         Return abs path to student avatar, or to default avatar if None.
 
         Defaults to default avatar if none provided.
 
-        :param class_name: str
+        :param class_id: str
         :param student_avatar_filename: str or None
         :return: Path object
         """
         if student_avatar_filename is None:
             return self.default_avatar_path
-        return self._avatar_path_from_string(class_name, student_avatar_filename)
+        return self._avatar_path_from_string(class_id, student_avatar_filename)
 
-    def _avatar_path_from_string(self, class_name: str, avatar_filename: str) -> Path:
+    def _avatar_path_from_string(self, class_id: str, avatar_filename: str) -> Path:
         """
         Return abs path to student avatar image.
 
         Take class name and student's avatar filename, return a Path
         object to the avatar image file.
 
-        :param class_name: str
+        :param class_id: str
         :param avatar_filename: str
         :return: Path object
         """
-        return self.class_data_path.joinpath(class_name, 'avatars', avatar_filename)
+        return self.class_data_path.joinpath(class_id, 'avatars', avatar_filename)
 
     def close(self) -> None:
         """
@@ -319,7 +325,7 @@ class JSONDatabase(Database):
         Structure for data storage:
         app_data/
             class_data/
-                class_name/  # dir for each class
+                class_id/  # dir for each class, usually class name
                     chart_data/  # store chart data sets
                     avatars/  # store avatars for class
 
@@ -356,9 +362,9 @@ class JSONDatabase(Database):
         :param current_class: Class object
         :return: None
         """
-        class_name = current_class.name
-        data_filename = class_name + self.class_data_file_type
-        classlist_data_path = self.class_data_path.joinpath(class_name, data_filename)
+        class_id = current_class.id
+        data_filename = class_id + self.class_data_file_type
+        classlist_data_path = self.class_data_path.joinpath(class_id, data_filename)
 
         json_class_data = current_class.to_json_str()
 
@@ -392,7 +398,7 @@ class JSONDatabase(Database):
         :return: None
         """
         origin_path = new_class.temp_avatars_dir.joinpath(avatar_filename)
-        destination_path = self.class_data_path.joinpath(new_class.name,
+        destination_path = self.class_data_path.joinpath(new_class.id,
                                                          'avatars',
                                                          avatar_filename)
         if not destination_path.exists():  # Avatar not already in database/class data.

@@ -163,6 +163,7 @@ class TestStudentRepr:
     def test_repr(self, student_object):
         assert repr(student_object) == (f'{student_object.__class__.__module__}'
                                         f'.{student_object.__class__.__name__}('
+                                        f'id={student_object.id if student_object.id else None !r}, '
                                         f'name={student_object._name!r}, '
                                         f'avatar_id={student_object._avatar_id!r})')
 
@@ -172,9 +173,11 @@ class TestStudentStr:
         'student_object,'
         'expected_str',
         [(Student(name='I have no avatar!'),
-          f"Student {'I have no avatar!'}, with no avatar."),
+          f"Student {'I have no avatar!'}, with no avatar, and id=None."),
          (Student(name='I have an avatar', avatar_id='path_to_my_avatar'),
-          f"Student {'I have an avatar'}, with avatar {'path_to_my_avatar'}."),
+          f"Student {'I have an avatar'}, with avatar {'path_to_my_avatar'}, and id=None."),
+         (Student(student_id='some id', name='I have an id and avatar', avatar_id='path_to_my_avatar'),
+          f"Student {'I have an id and avatar'}, with avatar {'path_to_my_avatar'}, and id=some id.")
          ])
     def test_str(self, student_object, expected_str, test_student_name_only, test_student_with_avatar):
         assert str(student_object) == expected_str

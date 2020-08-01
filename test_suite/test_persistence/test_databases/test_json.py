@@ -150,6 +150,7 @@ class TestUpdateClass:
         # Create class in database.
         test_json_database.create_class(NewClass(test_full_class.name, test_full_class.students))
         # Ensure test_class in database
+        test_class.id = test_class.name
         assert test_json_database.load_class(test_class.name).json_dict() == test_class.json_dict()
 
         # Change class by adding student, update database:
@@ -164,7 +165,8 @@ class TestUpdateClass:
 
 class TestCreateChart:
     def test_create_chart(self, monkeypatch, tmp_path, empty_json_database):
-        test_chart_data_dict = {'class_name': 'test_class_name',
+        test_chart_data_dict = {'class_id': 'test_class_name',
+                                'class_name': 'test_class_name',
                                 'chart_name': 'test_chart_name',
                                 'chart_default_filename': 'test_default_chart_filename',
                                 'chart_params': {'some': 'params'},
@@ -221,6 +223,7 @@ class TestSaveChartImage:
         mocked_mpl_plt = MockMplPlt()
 
         test_data_dict = {
+            'class_id': 'test_class_name',
             'class_name': "test_class_name",
             'chart_name': "test_chart_name",
             'chart_default_filename': "test_chart_default_filename",
@@ -426,6 +429,7 @@ class TestMoveAvatarToClassData:
     def test_move_avatar_to_class_data(self, monkeypatch, empty_json_database):
         """Avatar moved from original location to class data."""
         test_class = NewClass('test_class')
+        test_class.id = test_class.name  # Set NewClass id to save in db.
         test_filename = 'test avatar filename'
         test_json_database = empty_json_database
 
@@ -443,6 +447,7 @@ class TestMoveAvatarToClassData:
     def test_move_avatar_to_class_data_avatar_preexisting(self, monkeypatch, empty_json_database):
         """No attempt to move avatar that already exists in class_data."""
         test_class = NewClass('test_class')
+        test_class.id = test_class.name  # Set NewClass id to save in db.
         test_json_database = empty_json_database
         # Make existing avatar in tmpdir test_class class data:
         destination_avatar_path = test_json_database.class_data_path.joinpath(
