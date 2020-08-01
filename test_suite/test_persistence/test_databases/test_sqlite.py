@@ -18,7 +18,7 @@ def empty_sqlite_test_db(db_path):
     # for some reason this didn't work on linux, but does on Win10.
     # return SQLiteDatabase(database_path=f'file:test_db{num}?mode=memory&cache=shared')
     # Slower, but cross platform:
-    return SQLiteDatabase(database_path=f'{db_path}/test_db{num}')
+    return SQLiteDatabase(database_path=Path(db_path, f'test_db{num}'))
 
 
 @pytest.fixture
