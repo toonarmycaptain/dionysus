@@ -162,7 +162,8 @@ class TestUpdateClass:
         with pytest.raises(NotImplementedError):
             empty_sqlite_database.update_class('some class')
 
-class Test_Connection:
+
+class TestConnection:
     def test__connection(self, empty_sqlite_database):
         """Connection function returns connection."""
         assert isinstance(empty_sqlite_database._connection(), sqlite3.Connection)
