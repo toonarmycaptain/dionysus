@@ -12,9 +12,7 @@ environment:
 matrix:
     allow_failures:
         - PYTHON: "C:\\Python36"
-          PYTHON_VERSION: "3.6.x"
         - PYTHON: "C:\\Python36-x64"
-          PYTHON_VERSION: "3.6.x"
 
 init:
   - SET PATH=%PYTHON%;%PATH%
