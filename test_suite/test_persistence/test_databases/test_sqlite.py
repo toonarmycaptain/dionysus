@@ -43,6 +43,25 @@ def test_empty_sqlite_database_fixture(empty_sqlite_database):
         assert (table,) in test_db_tables
 
 
+class TestSchema:
+    @pytest.mark.parametrize(
+        'table, columns',
+        [('class', ['id', 'name']),
+         ('student', ['id', 'name', 'class_id', 'avatar_id']),
+         ('chart', ['id', 'name', 'image', 'date']),
+         ('score', ['id', 'chart_id', 'student_id', 'value']),
+         ('avatar', ['id', 'image']),
+         pytest.param('student', ['height', 'weight'], marks=pytest.mark.xfail),
+         pytest.param('class_parrot', ['dead', 'sleeping'], marks=pytest.mark.xfail),
+         ])
+    def test_schema(self, empty_sqlite_database, table, columns):
+        """Test table schema as expected."""
+        conn = empty_sqlite_database._connection()
+        # Ensure all columns are present:
+        cursor = conn.cursor().execute(f"""SELECT * from {table}""")
+        assert columns == [description[0] for description in cursor.description]
+
+
 class TestGetClasses:
     @pytest.mark.parametrize(
             'existing_class_names, returned_value',
