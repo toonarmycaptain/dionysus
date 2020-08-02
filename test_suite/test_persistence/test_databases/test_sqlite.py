@@ -38,7 +38,7 @@ def test_empty_sqlite_database_fixture(empty_sqlite_database):
     assert empty_sqlite_database
     tables = ['class', 'student', 'chart', 'score', 'avatar']
     test_db_tables = empty_sqlite_database._connection().execute(
-            """SELECT name from sqlite_master WHERE type='table' """).fetchall()
+        """SELECT name from sqlite_master WHERE type='table' """).fetchall()
     for table in tables:
         assert (table,) in test_db_tables
 
@@ -64,29 +64,29 @@ class TestSchema:
 
 class TestGetClasses:
     @pytest.mark.parametrize(
-            'existing_class_names, returned_value',
-            [([], []),
-             (['one class'], [ClassIdentifier(id=1, name='one class')]
-              ),
-             (['one class', 'another'], [ClassIdentifier(id=1, name='one class'),
-                                         ClassIdentifier(id=2, name='another')]),
-             (['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
-                                                    ClassIdentifier(id=2, name='another'),
-                                                    ClassIdentifier(id=3, name='so many')]),
-             pytest.param(['tricky'], ['tricky'], marks=pytest.mark.xfail(reason='Wrong format return value.')),
-             pytest.param(['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
-                                                                ClassIdentifier(id=2, name='another'),
-                                                                ClassIdentifier(id=3, name='wrong')],
-                          marks=pytest.mark.xfail(reason='Inconsistent class list.')),
-             pytest.param(['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
-                                                                ClassIdentifier(id=2, name='another'),
-                                                                ClassIdentifier(id=3, name='so many'),
-                                                                ClassIdentifier(id=4, name='wrong')],
-                          marks=pytest.mark.xfail(reason='Inconsistent class list - extra class.')),
-             pytest.param(['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
-                                                                ClassIdentifier(id=2, name='another')],
-                          marks=pytest.mark.xfail(reason='Inconsistent class list - missing class.')),
-             ])
+        'existing_class_names, returned_value',
+        [([], []),
+         (['one class'], [ClassIdentifier(id=1, name='one class')]
+          ),
+         (['one class', 'another'], [ClassIdentifier(id=1, name='one class'),
+                                     ClassIdentifier(id=2, name='another')]),
+         (['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
+                                                ClassIdentifier(id=2, name='another'),
+                                                ClassIdentifier(id=3, name='so many')]),
+         pytest.param(['tricky'], ['tricky'], marks=pytest.mark.xfail(reason='Wrong format return value.')),
+         pytest.param(['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
+                                                            ClassIdentifier(id=2, name='another'),
+                                                            ClassIdentifier(id=3, name='wrong')],
+                      marks=pytest.mark.xfail(reason='Inconsistent class list.')),
+         pytest.param(['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
+                                                            ClassIdentifier(id=2, name='another'),
+                                                            ClassIdentifier(id=3, name='so many'),
+                                                            ClassIdentifier(id=4, name='wrong')],
+                      marks=pytest.mark.xfail(reason='Inconsistent class list - extra class.')),
+         pytest.param(['one class', 'another', 'so many'], [ClassIdentifier(id=1, name='one class'),
+                                                            ClassIdentifier(id=2, name='another')],
+                      marks=pytest.mark.xfail(reason='Inconsistent class list - missing class.')),
+         ])
     def test_get_classes(self, empty_sqlite_database,
                          existing_class_names, returned_value):
         test_sqlite_database = empty_sqlite_database
@@ -98,21 +98,21 @@ class TestGetClasses:
 
 class TestClassNameExists:
     @pytest.mark.parametrize(
-            'test_class_name, existing_class_names, returned_value',
-            [('one class', ['one class'], True),
-             ('one class', ['one class', 'another'], True),
-             ('one class', ['one class', 'another', 'so many'], True),
-             ('nonexistent class', [], False),
-             ('nonexistent class', ['one class'], False),
-             ('nonexistent class', ['one class', 'another'], False),
-             ('nonexistent class', ['one class', 'another', 'so many'], False),
-             pytest.param('one class', [], True,
-                          marks=pytest.mark.xfail(reason='Class does not actually exist.')),
-             pytest.param('one class', ['tricky'], True,
-                          marks=pytest.mark.xfail(reason='Class does not actually exist.')),
-             pytest.param('one_class', ['one_class'], False,
-                          marks=pytest.mark.xfail(reason='Class does exist.')),
-             ])
+        'test_class_name, existing_class_names, returned_value',
+        [('one class', ['one class'], True),
+         ('one class', ['one class', 'another'], True),
+         ('one class', ['one class', 'another', 'so many'], True),
+         ('nonexistent class', [], False),
+         ('nonexistent class', ['one class'], False),
+         ('nonexistent class', ['one class', 'another'], False),
+         ('nonexistent class', ['one class', 'another', 'so many'], False),
+         pytest.param('one class', [], True,
+                      marks=pytest.mark.xfail(reason='Class does not actually exist.')),
+         pytest.param('one class', ['tricky'], True,
+                      marks=pytest.mark.xfail(reason='Class does not actually exist.')),
+         pytest.param('one_class', ['one_class'], False,
+                      marks=pytest.mark.xfail(reason='Class does exist.')),
+         ])
     def test_class_name_exists(self, empty_sqlite_database,
                                test_class_name, existing_class_names, returned_value):
         test_database = empty_sqlite_database
@@ -145,7 +145,7 @@ class TestCreateClass:
         test_class_id = classes[0].id
 
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
-                test_class_id).json_dict() == Class.from_dict(test_class.json_dict()).json_dict()
+            test_class_id).json_dict() == Class.from_dict(test_class.json_dict()).json_dict()
 
 
 class TestLoadClass:
@@ -167,8 +167,8 @@ class TestLoadClass:
 
         # Load class, verify data.
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
-                test_full_class_id).json_dict() == Class.from_dict(
-                test_existing_class.json_dict()).json_dict()
+            test_full_class_id).json_dict() == Class.from_dict(
+            test_existing_class.json_dict()).json_dict()
 
         assert test_database._connection().cursor().execute("""SELECT * FROM class""").fetchall()
         if test_existing_class.students:
@@ -177,6 +177,7 @@ class TestLoadClass:
 
 class TestUpdateClass:
     """Method is unused and unimplemented."""
+
     def test_update_class(self, empty_sqlite_database):
         with pytest.raises(NotImplementedError):
             empty_sqlite_database.update_class(Class(name='some class'))
