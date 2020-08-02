@@ -208,6 +208,7 @@ class SQLiteDatabase(Database):
                         name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
                                                  length("name") <= 255
                                                  ),
+                        image BLOB NOT NULL,                                                 
                         date TEXT -- For now can be NULL, will be implemented later.
                         );
                         """
