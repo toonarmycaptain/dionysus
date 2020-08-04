@@ -109,7 +109,7 @@ def save_as_dialogue(title_str: str = None,
     """
     Prompts user to select a directory and filename to save a file to.
     Calls tkinter filedialog.asksaveasfilename with title (if provided), and
-    filetype argument (if provided) eg '*.png'.
+    filetypes argument (if provided) eg '*.png'.
 
     title_str is string to be displayed in popup's title bar.
     NB if none provided, or is None - title displayed is "Save as".
@@ -141,7 +141,7 @@ def save_as_dialogue(title_str: str = None,
 
     NB When default_file_extension is given, but not in filetypes, if
     the first filetype in filetypes is NOT ("all files", "*.*"), that
-    first filetype in filetypes will by appended rather than the default
+    first filetypes in filetypes will by appended rather than the default
     extension. If ("all files", "*.*") is the first filetype, the
     default_file_extension will be appended as expected.
 
@@ -156,7 +156,7 @@ def save_as_dialogue(title_str: str = None,
     root.withdraw()
 
     if filetypes and not default_file_extension:
-        # Make extension of first listed filetype default save extension.
+        # Make extension of first listed filetypes default save extension.
         first_extension_without_wildcard = filetypes[0][1].strip('*')
         if first_extension_without_wildcard != '.':
             default_file_extension = first_extension_without_wildcard
@@ -184,7 +184,7 @@ def select_file_dialogue(title_str: str = None,
     Prompt user to select a file.
 
     Prompts user to select a file. Calls tkinter
-    filedialog.askopenfilename with title (if provided), and filetype
+    filedialog.askopenfilename with title (if provided), and filetypes
     argument (if provided) eg '*.png'.
 
     filetypes is a list of tuples with 2 values, a label and a pattern
@@ -213,7 +213,7 @@ def select_file_dialogue(title_str: str = None,
     if not filetypes:
         filetypes = default_filetypes
     filepath_str = filedialog.askopenfilename(title=title_str,
-                                              filetype=filetypes,
+                                              filetypes=filetypes,
                                               initialdir=start_dir,
                                               )
 
@@ -227,7 +227,7 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
     Prompt user to select a directory.
 
     Prompts user to select a file. Calls tkinter
-    filedialog.askopenfilename with title (if provided), and filetype
+    filedialog.askopenfilename with title (if provided), and filetypes
     argument (if provided) eg '*.png'.
 
     Default starting directory is directory above application directory.

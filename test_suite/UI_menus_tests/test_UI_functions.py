@@ -227,7 +227,7 @@ class TestSaveAsDialogue:
          ({'filetypes': [("all files", "*.*")]},
           {},
           "my_save_file", Path("my_save_file")),
-         # Pass a filetype with no default, and it becomes default extension.
+         # Pass a filetypes with no default, and it becomes default extension.
          ({'filetypes': [('some ext', '*.some_ext')]},
           {'filetypes': [('some ext', '*.some_ext')],
            'defaultextension': '.some_ext'},
@@ -238,7 +238,7 @@ class TestSaveAsDialogue:
           {'filetypes': [('some ext', '*.some_ext')],
            'defaultextension': '.some_ext'},
           "my_save_file", Path("my_save_file.some_ext")),
-         # Test default extension different from first filetype
+         # Test default extension different from first filetypes
          ({'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
            'default_file_extension': '.b_ext'},
           {'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
@@ -316,7 +316,7 @@ class TestSelectFileDialogue:
     @pytest.mark.parametrize(
         'select_file_dialogue_args, expected_askopenfilename_args, test_filename, returned_filepath',
         [({}, {}, "my save file", Path("my save file")),  # No args.
-         pytest.param({}, {'filetype': 'should be the default', 'initialdir': 'starting directory: ".." '},
+         pytest.param({}, {'filetypes': 'should be the default', 'initialdir': 'starting directory: ".." '},
                       "my_save_file", Path("some_other_file"),
                       marks=pytest.mark.xfail(reason="Test diagnostic.")),
          ({'title_str': None,  # None args passed to select_file_dialog
@@ -329,7 +329,7 @@ class TestSelectFileDialogue:
            'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
            'start_dir': Path(r'start/here')},
           {'title': 'Some title string',
-           'filetype': [('some ext', '*.some_ext'), ('all files', '*.*')],
+           'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
            'initialdir': Path(r'start/here')},
           "my save file", Path("my save file")),
          # No user input/cancel (ie filename = '') returns None
@@ -344,7 +344,7 @@ class TestSelectFileDialogue:
         default_start_dir = '..'
 
         def mocked_filedialog_askopenfilename(title,
-                                              filetype,
+                                              filetypes,
                                               initialdir,
                                               ):
             """
@@ -352,7 +352,7 @@ class TestSelectFileDialogue:
             will supply if no value is passed (equivalent to expecting the default).
             """
             assert title == expected_askopenfilename_args.get('title', None)
-            assert filetype == expected_askopenfilename_args.get('filetype', default_filetypes)
+            assert filetypes == expected_askopenfilename_args.get('filetypes', default_filetypes)
             assert initialdir == expected_askopenfilename_args.get('initialdir', default_start_dir)
 
             return test_filename + (expected_askopenfilename_args.get('defaultextension', '') or '')
