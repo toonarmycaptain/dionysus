@@ -1,7 +1,7 @@
 import sqlite3
 
 from pathlib import Path
-from typing import Any, List
+from typing import List
 
 import matplotlib.pyplot as plt
 
@@ -69,6 +69,10 @@ class SQLiteDatabase(Database):
             return [ClassIdentifier(*class_data) for class_data in classes]
 
     def class_name_exists(self, class_name: str) -> bool:
+        """
+        :param class_name: str
+        :return: bool
+        """
         with self._connection() as conn:
             matching_class = conn.cursor().execute("""SELECT class.name FROM class 
                                                       WHERE name=? LIMIT 1""", (class_name,))
@@ -77,13 +81,14 @@ class SQLiteDatabase(Database):
 
     def create_class(self, new_class: NewClass) -> None:
         """
+        Create class data in database.
 
         Moves avatars for each student to db, changes student.avatar_id
         to id of avatar image in db. If no avatar, this remains None/null,
         and that is stored as student's avatar_id in db.
 
         :param new_class:
-        :return:
+        :return: None
         """
         with self._connection() as conn:
             cursor = conn.cursor()
@@ -109,6 +114,12 @@ class SQLiteDatabase(Database):
         conn.close()
 
     def load_class(self, class_id: int) -> Class:
+        """
+        Load class from database using primary key class.id.
+
+        :param class_id:
+        :return: Class
+        """
         with self._connection() as conn:
             # Get class from db, use 'loaded_class_id' to avoid name clash with class_id when loading student.
             loaded_class_id, class_name = conn.cursor().execute(
@@ -135,7 +146,7 @@ class SQLiteDatabase(Database):
          table by the code that facilitates that, rather than by this function.
 
         :param class_to_write: Class
-        :return:
+        :return: None
         """
         raise NotImplementedError  # type: ignore
 
@@ -162,8 +173,12 @@ class SQLiteDatabase(Database):
         # or should it fail, since on disk db connection should not fail?
 
     def _init_db(self):
-        """Create empty database.
-        Function could have better name."""
+        """
+        Create empty database.
+        Function could have better name.
+
+        :return: None
+        """
         table_creation_functions = [self._create_table_class,
                                     self._create_table_student,
                                     self._create_table_chart,
