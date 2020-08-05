@@ -183,6 +183,23 @@ class TestUpdateClass:
             empty_sqlite_database.update_class(Class(name='some class'))
 
 
+class TestGetAvatarPath:
+    def test_get_avatar_path(self, empty_sqlite_database):
+        """"""
+        test_database = empty_sqlite_database
+        # Create avatar:
+        test_avatar_data = b'some binary data'
+
+        # Add avatar to db:
+        with test_database._connection() as conn:
+            conn.cursor().execute("""INSERT INTO avatar(image) VALUES(?)""", (test_avatar_data,))
+            conn.commit()
+
+        # Path may be different/random - test data:
+        # Avatar id will be 1 as it is only one in empty db:
+        assert test_database.get_avatar_path(1).read_bytes() == test_avatar_data
+
+
 class TestConnection:
     def test__connection(self, empty_sqlite_database):
         """Connection function returns connection."""

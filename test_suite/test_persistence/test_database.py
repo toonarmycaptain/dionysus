@@ -14,6 +14,7 @@ from dionysus_app.persistence.database import (ABCMetaEnforcedAttrs,
                                                ClassIdentifier,
                                                Database,
                                                )
+from dionysus_app.student import Student
 # Import test database fixtures:
 from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.test_persistence.test_databases.test_json import empty_json_database
@@ -196,3 +197,31 @@ class TestLoadClass:
 
 class TestUpdateClass:
     """Not tested as method is unused and mostly unimplemented."""
+
+
+class TestGetAvatarPath:
+    @pytest.mark.parametrize(
+        'database_backend',
+        [pytest.param('empty_json_database', marks=pytest.mark.xfail(
+            reason='JSON db does not implement method.')),
+         'empty_sqlite_database',
+         ])
+    def test_get_avatar_path(self, tmpdir, request, database_backend,):
+        """"""
+        test_database = request.getfixturevalue(database_backend)
+        # Create avatar:
+        test_avatar_data = b'some binary data'
+        test_avatar_path = Path(tmpdir, 'test_avatar.png')
+        test_avatar_path.write_bytes(test_avatar_data)
+        # Add avatar to db:
+        test_class = NewClass(name='test class', students=[Student(name='test_student', avatar_id=test_avatar_path)])
+        test_database.create_class(test_class)
+
+        # Find avatar_id, load class to verify:
+        classes = test_database.get_classes()
+        test_class_id = classes[0].id  # As the only class will be first item.
+        loaded_test_class = test_database.load_class(test_class_id)
+        test_avatar_id = loaded_test_class.students[0].avatar_id
+
+        # Path may be different/random - test data:
+        assert test_database.get_avatar_path(test_avatar_id).read_bytes() == test_avatar_data

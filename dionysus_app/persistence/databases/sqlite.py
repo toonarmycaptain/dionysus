@@ -150,8 +150,25 @@ class SQLiteDatabase(Database):
         """
         raise NotImplementedError  # type: ignore
 
-    def get_avatar_path(self, avatar_id: Any) -> Path:
-        raise NotImplementedError  # type: ignore
+    def get_avatar_path(self, avatar_id: int) -> Path:
+        """
+        Return path to avatar from id.
+
+        Copy avatar image to temp dir using primary key avatar_id as the
+         filename.
+
+        Future iteration of chart generation code might facilitate
+        returning a binary blob or file-like io.BytesIO object.
+
+        :param avatar_id:
+        :return: Path
+        """
+        ""
+        conn = self._connection()
+        image = conn.cursor().execute("""SELECT image FROM avatar WHERE avatar.id=?""", (avatar_id,)).fetchone()[0]
+        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value), str(avatar_id))
+        temp_image_path.write_bytes(image)
+        return temp_image_path
 
     def create_chart(self, chart_data_dict: dict) -> None:
         raise NotImplementedError  # type: ignore
