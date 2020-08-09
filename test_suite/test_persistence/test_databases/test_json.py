@@ -170,7 +170,7 @@ class TestCreateChart:
                                 'chart_name': 'test_chart_name',
                                 'chart_default_filename': 'test_default_chart_filename',
                                 'chart_params': {'some': 'params'},
-                                'score-avatar_dict': {'some student': 'scores'}
+                                'score-avatar_dict': {'score': 'some student avatar paths'}
                                 }
         test_filename = test_chart_data_dict['chart_default_filename'] + empty_json_database.chart_data_file_type
         test_file_folder = tmp_path.joinpath(test_chart_data_dict['class_name'], 'chart_data')
