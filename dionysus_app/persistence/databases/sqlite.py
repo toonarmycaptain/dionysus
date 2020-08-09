@@ -166,6 +166,7 @@ class SQLiteDatabase(Database):
         ""
         conn = self._connection()
         image = conn.cursor().execute("""SELECT image FROM avatar WHERE avatar.id=?""", (avatar_id,)).fetchone()[0]
+        conn.close()
         temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value), str(avatar_id))
         temp_image_path.write_bytes(image)
         return temp_image_path
