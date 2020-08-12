@@ -100,7 +100,8 @@ class SQLiteDatabase(Database):
                 # insert student
                 if student.avatar_id:
                     # Move avatar from temp to db:
-                    avatar_blob = new_class.temp_avatars_dir.joinpath(student.avatar_id).read_bytes()
+                    avatar_blob = new_class.temp_avatars_dir.joinpath(
+                        student.avatar_id).read_bytes()
                     cursor.execute("""INSERT INTO avatar(image) VALUES(?)""", (avatar_blob,))
                     # Change avatar_id to id of avatar in db.
                     student.avatar_id = cursor.lastrowid
@@ -121,7 +122,8 @@ class SQLiteDatabase(Database):
         :return: Class
         """
         with self._connection() as conn:
-            # Get class from db, use 'loaded_class_id' to avoid name clash with class_id when loading student.
+            # Get class from db
+            # Use 'loaded_class_id' to avoid name clash with class_id when loading student.
             loaded_class_id, class_name = conn.cursor().execute(
                 """SELECT * FROM class WHERE class.id=?""", (class_id,)).fetchone()
             # Get student data for class:
@@ -165,9 +167,11 @@ class SQLiteDatabase(Database):
         """
         ""
         conn = self._connection()
-        image = conn.cursor().execute("""SELECT image FROM avatar WHERE avatar.id=?""", (avatar_id,)).fetchone()[0]
+        image = conn.cursor().execute("""SELECT image FROM avatar WHERE avatar.id=?""",
+                                      (avatar_id,)).fetchone()[0]
         conn.close()
-        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value), str(avatar_id))
+        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
+                               str(avatar_id))
         temp_image_path.write_bytes(image)
         return temp_image_path
 
