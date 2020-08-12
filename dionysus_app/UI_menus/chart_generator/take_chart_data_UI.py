@@ -1,11 +1,10 @@
 """
 Script for taking and saving data for chart.
 """
-from typing import Optional
+from typing import Dict, List, Optional
 
-import definitions
 from dionysus_app.class_ import Class
-from dionysus_app.persistence.databases.json import JSONDatabase
+from dionysus_app.student import Student
 from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
 
 
@@ -15,8 +14,8 @@ def take_score_data(current_class: Class) -> dict:
     Prints a newline after completion for readability.
 
     Returns dict with scores as keys, lists of Path objects as
-    values. eg student_scores = {33: [Path_obj1, Path_obj2, Path_obj3,
-                                 17: [Path_obj1, Path_obj2, Path_obj3]
+    values. eg student_scores = {33: [student_id1, student_id2, student_id3,
+                                 17: [student_id4, student_id5, student_id6]
                                  }
 
     :param current_class: Class object
@@ -33,7 +32,7 @@ def take_score_data(current_class: Class) -> dict:
     return student_scores
 
 
-def take_student_scores(current_class: Class) -> dict:
+def take_student_scores(current_class: Class) -> Dict[float, List[Student]]:
     """
     UI function presenting student names from supplied class one at a
     time and taking a score for each.
@@ -44,25 +43,20 @@ def take_student_scores(current_class: Class) -> dict:
     converted to float (from str) by default.
 
     Return is a dict with scores as keys, lists of Path objects as
-    values. eg student_scores = {33: [Path_obj1, Path_obj2, Path_obj3,
-                                 17: [Path_obj1, Path_obj2, Path_obj3]
+    values. eg student_scores = {33: [student1, student2, student3,
+                                 17: [student1, student2, student3]
                                  }
 
     :param current_class: Class object
-    :return: dict
+    :return: Dict[float, List[Student]]
     """
     student_scores: dict = dict()
     for student in current_class.students:
 
         student_score = take_score_entry(student.name)
-        # add avatar to list of avatars for score
+        # add student to list of students for score
         if student_score is not None:
-            if isinstance(definitions.DATABASE, JSONDatabase):
-                avatar_path = definitions.DATABASE.get_avatar_path_class_filename(
-                    current_class.id, student.avatar_id)
-            else:
-                avatar_path = definitions.DATABASE.get_avatar_path(student.avatar_id)
-            student_scores[student_score] = student_scores.get(student_score, []) + [avatar_path]
+            student_scores[student_score] = student_scores.get(student_score, []) + [student]
 
     return student_scores
 

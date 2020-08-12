@@ -47,7 +47,7 @@ class TestNewChart:
                                 'chart_name': test_chart_name,
                                 'chart_default_filename': test_chart_default_filename,
                                 'chart_params': test_chart_params,
-                                'score-avatar_dict': test_score_avatar_dict,
+                                'score-students_dict': test_score_avatar_dict,
                                 }
 
         test_chart_image_location = 'some image location'

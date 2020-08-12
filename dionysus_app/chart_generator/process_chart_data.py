@@ -1,6 +1,13 @@
 """
 Process input data for image generation code.
 """
+from typing import Any, Dict, List
+
+import definitions
+
+from dionysus_app.persistence.databases.json import JSONDatabase
+from dionysus_app.student import Student
+
 DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars vertically.
                         # Nominally pixels from x-axis to top of image//height of avatar.
                         'avatar_horizontal_offset': 5,  # Spacing between avatars ~ width of avatar
@@ -11,17 +18,20 @@ DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars verti
                         }
 
 
-def generate_avatar_coords(score_avatar_dict: dict, chart_params: dict = None):  # set chart params to a default?
+def generate_avatar_coords(score_students_dict: Dict[float, List[Student]],
+                           class_id: Any,
+                           chart_params: dict = None):  # set chart params to a default?
     """
     Take score_avatar_dict and transform into dict {avatar: [xy_coords]}
 
-    Takes score_avatar_dict - dict of scores to lists of avatar image
-    locations for each score, returns a dictionary with avatar Paths as
+    Takes score_students_dict - dict of scores to lists of Studentss
+    for each score, returns a dictionary with avatar Paths as
     keys, and a list of x,y coordinate tuples as values.
 
     eg keys: avatar Path, values: list of x, y tuples eg [(80, 80), (90, 90)]
 
-    :param score_avatar_dict: dict
+    :param score_students_dict: Dict[float, List[Student]]
+    :param class_id: Any
     :param chart_params: dict
     :return: dict
     """
@@ -29,10 +39,24 @@ def generate_avatar_coords(score_avatar_dict: dict, chart_params: dict = None): 
     if not chart_params:
         chart_params = DEFAULT_CHART_PARAMS  # pull values from DEFAULT_CHART_PARAMS dict
 
-    # Re-sort in ascending score order.
-    score_avatar_dict = {score: score_avatar_dict[score] for score in sorted(score_avatar_dict)}
+    # Fetch avatar paths:
+    score_avatar_paths_dict = {}
+    if isinstance(definitions.DATABASE, JSONDatabase):
+        for score in score_students_dict:
+            score_avatar_paths_dict[score] = [
+                definitions.DATABASE.get_avatar_path_class_filename(class_id, student.avatar_id)
+                for student in score_students_dict[score]]
 
-    banded_avatars = assign_avatars_to_bands(score_avatar_dict)  # TODO: use DEFAULT_CHART_PARAMS values for offsets.
+    else:  # All other db backends:
+        for score in score_students_dict:
+            score_avatar_paths_dict[score] = [
+                definitions.DATABASE.get_avatar_path(student.id) for student in
+                score_students_dict[score]]
+
+    # Re-sort in ascending score order.
+    score_avatar_paths_dict = {score: score_avatar_paths_dict[score] for score in sorted(score_avatar_paths_dict)}
+
+    banded_avatars = assign_avatars_to_bands(score_avatar_paths_dict)  # TODO: use DEFAULT_CHART_PARAMS values for offsets.
 
     # Return avatar_coord_dict
     return assign_avatar_coords(banded_avatars, chart_params)
@@ -84,7 +108,7 @@ def assign_avatar_coords(band_avatar_dict, chart_params: dict = None):
         chart_params['init_vertical_offset'],
         chart_params['avatar_horizontal_offset'],
         chart_params['avatar_vertical_offset'],
-    )
+        )
 
     for band in band_avatar_dict.keys():
         num_col = (len(band_avatar_dict[band]) // col_max_avatars) + 1

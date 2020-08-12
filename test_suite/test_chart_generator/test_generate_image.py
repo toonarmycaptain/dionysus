@@ -33,7 +33,8 @@ class TestGenerateChartImage:
             def __init__(self):
                 self.calls_to_mock_plt = {'figure': False,
                                           'subplot': False,
-                                          'subplots_adjust': False}
+                                          'subplots_adjust': False
+                                          }
                 self.calls_to_mock_ax = {'grid': False}
                 self.mock_ax = self.MockAx(self.calls_to_mock_ax)
 
@@ -61,8 +62,9 @@ class TestGenerateChartImage:
         def mocked_set_axis():
             called['set_axis_mock'] = True
 
-        def mocked_generate_avatar_coords(score_avatar_dict):
-            assert score_avatar_dict == test_chart_data_dict['score-avatar_dict']
+        def mocked_generate_avatar_coords(score_students_dict, class_id):
+            assert score_students_dict == test_chart_data_dict['score-students_dict']
+            assert class_id == test_chart_data_dict['class_id']
             called['generate_avatar_coords_mock'] = True
             return test_avatar_coord_dict
 
@@ -78,12 +80,13 @@ class TestGenerateChartImage:
         monkeypatch.setattr(generate_image, 'generate_avatar_coords', mocked_generate_avatar_coords)
         monkeypatch.setattr(generate_image, 'add_avatars_to_plot', mocked_add_avatars_to_plot)
 
-        test_chart_data_dict = {'score-avatar_dict': {1: ['foo', 'spam', 'dead', 'parrot'],
-                                                      5: ['halibut', 'patties'],
-                                                      8: ['original', 'recipe', 'chicken'],
-                                                      9: ['foo', 'spam', 'dead', 'parrot'],
-                                                      11: ['halibut', 'patties'],
-                                                      }
+        test_chart_data_dict = {'class_id': 'some class',
+                                'score-students_dict': {1: ['foo', 'spam', 'dead', 'parrot'],
+                                                        5: ['halibut', 'patties'],
+                                                        8: ['original', 'recipe', 'chicken'],
+                                                        9: ['foo', 'spam', 'dead', 'parrot'],
+                                                        11: ['halibut', 'patties'],
+                                                        }
                                 }
         test_avatar_coord_dict = {'avatar_coord': 'dict'}
         test_image_location = 'some image location'

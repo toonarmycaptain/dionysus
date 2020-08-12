@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - `Class`, `Student` objects' class methods now return instances of the calling `cls`. `NewClass.from_dict` now returns an instance of `NewClass`, not `Class`.
+### Changed
+- Rename `score-avatar_dict` in `chart_data_dict` to `score-students_dict`, and pass `Student` objects.
+- Retrieval of avatar paths moved from `take_chart_data_UI.take_student_scores` to `process_chart_data.generate_avatar_coords`, which now takes an additional class_id 
+parameter to facilitate getting avatar paths from JSONDatabase.
+- Charts saved as JSON now store the student name, rather than path to an avatar image. Student represented by the default avatar are no longer anonymous!
 
 ## [0.7.0-alpha] - 2020-06-27
 ### Added

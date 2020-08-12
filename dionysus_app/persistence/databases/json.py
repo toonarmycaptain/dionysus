@@ -217,11 +217,12 @@ class JSONDatabase(Database):
                          # date? Not yet implemented.
                         'chart_params': chart_params,  dict
                             dict of chart parameters and settings
-                        'score-avatar_dict': student_scores,  dict
+                        'score-students_dict': student_scores,  dict
                         }
 
-            CAUTION: conversion to JSON will convert int/float keys in score_avatar_dict
-            to strings, and keep them as strings when loading.
+            CAUTION: conversion to JSON will convert int/float keys in
+            score_students_dict to strings, and keep them as strings when
+            loading.
             This could be handled if necessary by running something like:
             original_score_avatar_dict = {
                 float(score): avatar_list for score, avatar_list
@@ -238,7 +239,7 @@ class JSONDatabase(Database):
             file_chart_data_dict['class_id'], 'chart_data', chart_datafile_name)
 
         # Convert data_dict to JSON-safe form.
-        json_safe_chart_data_dict = self._sanitise_avatar_path_objects(file_chart_data_dict)
+        json_safe_chart_data_dict = self._store_students_as_student_names(file_chart_data_dict)
         json_chart_data = convert_to_json(json_safe_chart_data_dict)
 
         with open(chart_data_filepath, 'w') as chart_data_file:
@@ -404,21 +405,19 @@ class JSONDatabase(Database):
         if not destination_path.exists():  # Avatar not already in database/class data.
             move_file(origin_path, destination_path)
 
-    def _sanitise_avatar_path_objects(self, data_dict: dict) -> dict:
+    def _store_students_as_student_names(self, data_dict: dict) -> dict:
         """
-        Convert path objects in chart data_dict to strings.
+        Convert student objects in chart data_dict to name strings.
 
         Necessary to convert dict to JSON string for saving to disk.
 
-        chart_data_dict['score-avatar_dict'] is a dict with integer
-        keys, lists of Path objects as values.
-
-        Possible TODO: change to save student name as well as path to avatar used?
+        chart_data_dict['score-students_dict'] is a dict with float
+        keys, lists of Student objects as values.
 
         :param data_dict: dict
         :return: dict
         """
-        for score in list(data_dict['score-avatar_dict'].keys()):
-            data_dict['score-avatar_dict'][score] = [str(avatar_Path) for avatar_Path
-                                                     in data_dict['score-avatar_dict'][score]]
+        for score in list(data_dict['score-students_dict'].keys()):
+            data_dict['score-students_dict'][score] = [
+                student.name for student in data_dict['score-students_dict'][score]]
         return data_dict

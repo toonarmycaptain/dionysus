@@ -170,7 +170,7 @@ class TestCreateChart:
                                 'chart_name': 'test_chart_name',
                                 'chart_default_filename': 'test_default_chart_filename',
                                 'chart_params': {'some': 'params'},
-                                'score-avatar_dict': {'score': 'some student avatar paths'}
+                                'score-students_dict': {'score': 'some student avatar paths'}
                                 }
         test_filename = test_chart_data_dict['chart_default_filename'] + empty_json_database.chart_data_file_type
         test_file_folder = tmp_path.joinpath(test_chart_data_dict['class_name'], 'chart_data')
@@ -182,7 +182,7 @@ class TestCreateChart:
         assert tmp_path.exists()
         assert test_file_folder.exists()
 
-        def mocked__sanitise_avatar_path_objects(file_chart_data_dict):
+        def mocked__store_students_as_student_names(file_chart_data_dict):
             if file_chart_data_dict != test_chart_data_dict:
                 raise ValueError('The dict of chart data did not contain expected items.')
             # file_chart_data_dict should be a deepcopy, not a reference to the original chart_data_dict.
@@ -202,7 +202,7 @@ class TestCreateChart:
 
         test_json_database = empty_json_database
         test_json_database.class_data_path = tmp_path
-        test_json_database._sanitise_avatar_path_objects = mocked__sanitise_avatar_path_objects
+        test_json_database._store_students_as_student_names = mocked__store_students_as_student_names
 
         test_json_database.create_chart(test_chart_data_dict)
 
@@ -464,50 +464,35 @@ class TestMoveAvatarToClassData:
         assert test_json_database._move_avatar_to_class_data(test_class, destination_avatar_path.name) is None
 
 
-class TestSanitiseAvatarPathObjects:
-    def test_santise_avatar_path_objects(self, empty_json_database):
+class TestStoreStudentsAsStudentNames:
+    def test_store_students_as_student_names(self, empty_json_database):
         test_json_database = empty_json_database
         test_json_database.default_avatar_path = Path('default/path')
+
+        test_class = NewClass(name='test_class', students=[Student(name='bad student'),
+                                                           Student(name='mediocre student'),
+                                                           Student(name='excellent student'),
+                                                           ])
 
         test_data_dict = {
             'class_name': "test_class_name",
             'chart_name': "test_chart_name",
             'chart_default_filename': "test_chart_default_filename",
             'chart_params': {"some": "chart", "default": "params"},
-            'score-avatar_dict': {0: [Path('path to Cali_avatar.png')],
-                                  1: [test_json_database.default_avatar_path,
-                                      test_json_database.default_avatar_path],
-                                  3: [test_json_database.default_avatar_path,
-                                      test_json_database.default_avatar_path],
-                                  50: [test_json_database.default_avatar_path],
-                                  99: [test_json_database.default_avatar_path],
-                                  100: [test_json_database.default_avatar_path],
-                                  2: [Path('path to Ashley_avatar.png')],
-                                  4: [test_json_database.default_avatar_path],
-                                  6: [Path('path to Danielle.png'), test_json_database.default_avatar_path],
-                                  7: [test_json_database.default_avatar_path],
-                                  8: [test_json_database.default_avatar_path]
-                                  },
+            'score-students_dict': {0: [test_class.students[0]],
+                                    50: [test_class.students[1]],
+                                    100: [test_class.students[2]],
+                                    },
             }
         test_returned_sanitised_data_dict = {
             'class_name': "test_class_name",
             'chart_name': "test_chart_name",
             'chart_default_filename': "test_chart_default_filename",
             'chart_params': {"some": "chart", "default": "params"},
-            'score-avatar_dict': {0: ['path to Cali_avatar.png'],
-                                  1: [str(test_json_database.default_avatar_path),
-                                      str(test_json_database.default_avatar_path)],
-                                  3: [str(test_json_database.default_avatar_path),
-                                      str(test_json_database.default_avatar_path)],
-                                  50: [str(test_json_database.default_avatar_path)],
-                                  99: [str(test_json_database.default_avatar_path)],
-                                  100: [str(test_json_database.default_avatar_path)],
-                                  2: ['path to Ashley_avatar.png'],
-                                  4: [str(test_json_database.default_avatar_path)],
-                                  6: ['path to Danielle.png', str(test_json_database.default_avatar_path)],
-                                  7: [str(test_json_database.default_avatar_path)],
-                                  8: [str(test_json_database.default_avatar_path)]
-                                  },
+            'score-students_dict': {0: [test_class.students[0].name],
+                                    50: [test_class.students[1].name],
+                                    100: [test_class.students[2].name],
+                                    },
             }
 
-        assert test_json_database._sanitise_avatar_path_objects(test_data_dict) == test_returned_sanitised_data_dict
+        assert test_json_database._store_students_as_student_names(test_data_dict) == test_returned_sanitised_data_dict

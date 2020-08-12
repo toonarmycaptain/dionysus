@@ -40,7 +40,7 @@ def new_chart(loaded_class: Class = None) -> None:
             'chart_name': chart_name,  # str
             'chart_default_filename': chart_default_filename,  # str
             'chart_params': chart_params,  # dict
-            'score-avatar_dict': student_scores,  # dict
+            'score-students_dict': student_scores,  # dict
             }
 
     Then write this data to disk as *.cdf (ChartDataFile), generate and
@@ -63,7 +63,7 @@ def new_chart(loaded_class: Class = None) -> None:
                        'chart_name': chart_name,  # str
                        'chart_default_filename': chart_default_filename,  # str
                        'chart_params': chart_params,  # dict
-                       'score-avatar_dict': student_scores,  # dict
+                       'score-students_dict': student_scores,  # dict
                        }
 
     definitions.DATABASE.create_chart(chart_data_dict)
