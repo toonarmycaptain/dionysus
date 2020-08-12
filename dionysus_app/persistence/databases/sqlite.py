@@ -172,7 +172,27 @@ class SQLiteDatabase(Database):
         return temp_image_path
 
     def create_chart(self, chart_data_dict: dict) -> None:
-        raise NotImplementedError  # type: ignore
+        """
+        Save chart data to database.
+
+        :param chart_data_dict:
+        :return: None
+        """
+        with self._connection() as conn:
+            cursor = conn.cursor()
+
+            # Create chart in chart table
+            cursor.execute("""INSERT INTO chart(name) VALUES(?)""",
+                           (chart_data_dict['chart_name'],))
+            chart_id = cursor.lastrowid
+            # Create scores in score table
+            for score, students in chart_data_dict['score-students_dict'].items():
+                for student in students:
+                    cursor.execute(
+                        """INSERT INTO score(chart_id, student_id, value) VALUES(?,?,?)""",
+                        (chart_id, student.id, score))
+            conn.commit()
+        conn.close()
 
     def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
         raise NotImplementedError  # type: ignore
@@ -241,7 +261,7 @@ class SQLiteDatabase(Database):
                         name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
                                                  length("name") <= 255
                                                  ),
-                        image BLOB NOT NULL,                                                 
+                        image BLOB, -- NOT NULL, needs to be null, as chart data/image saved independently.                                                 
                         date TEXT -- For now can be NULL, will be implemented later.
                         );
                         """

@@ -8,6 +8,7 @@ import pytest
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.persistence.databases.sqlite import SQLiteDatabase
+from dionysus_app.student import Student
 
 from test_suite.test_class import test_class_name_only, test_full_class  # Fixture imports.
 
@@ -198,6 +199,49 @@ class TestGetAvatarPath:
         # Path may be different/random - test data:
         # Avatar id will be 1 as it is only one in empty db:
         assert test_database.get_avatar_path(1).read_bytes() == test_avatar_data
+
+
+class TestCreateChart:
+    def test_create_chart(self, empty_sqlite_database):
+        """
+        Verify API works.
+
+        NB No verification in API test, as API for verifying does not exist.
+        TODO: Verify saved chart contents when load/edit features added.
+        """
+        test_database = empty_sqlite_database
+        test_class = NewClass(name='test_class', students=[Student(name='bad student'),
+                                                           Student(name='mediocre student'),
+                                                           Student(name='excellent student'),
+                                                           Student(name='another mediocre student'),
+                                                           ])
+        test_database.create_class(test_class)
+
+        test_chart_data_dict = {'class_id': test_class.id,
+                                'class_name': test_class.name,
+                                'chart_name': 'test_chart_name',
+                                'chart_default_filename': 'test_default_chart_filename',
+                                'chart_params': {'some': 'params'},
+                                'score-students_dict': {0: [test_class.students[0]],
+                                                        50: [test_class.students[1], test_class.students[3]],
+                                                        100: [test_class.students[2]],
+                                                        }
+                                }
+
+        assert test_database.create_chart(test_chart_data_dict) is None
+
+        # Verify chart data in db:
+        # A load_chart method might go here.
+
+        assert test_database._connection().cursor().execute(
+            """SELECT chart.name FROM chart""").fetchone()[0] == test_chart_data_dict['chart_name']
+
+        scores_data = []
+        for score, students in test_chart_data_dict['score-students_dict'].items():
+            # NB One chart in db -> chart.id = 1
+            scores_data += [(1, student.id, score) for student in students]
+        assert test_database._connection().cursor().execute(
+            """SELECT chart_id, student_id, value FROM score""").fetchall() == scores_data
 
 
 class TestConnection:

@@ -206,7 +206,7 @@ class TestGetAvatarPath:
             reason='JSON db does not implement method.')),
          'empty_sqlite_database',
          ])
-    def test_get_avatar_path(self, tmpdir, request, database_backend,):
+    def test_get_avatar_path(self, tmpdir, request, database_backend, ):
         """"""
         test_database = request.getfixturevalue(database_backend)
         # Create avatar:
@@ -225,3 +225,35 @@ class TestGetAvatarPath:
 
         # Path may be different/random - test data:
         assert test_database.get_avatar_path(test_avatar_id).read_bytes() == test_avatar_data
+
+
+class TestCreateChart:
+    @pytest.mark.parametrize('database_backend', ['empty_json_database',
+                                                  'empty_sqlite_database',
+                                                  ])
+    def test_create_chart(self, request, database_backend):
+        """
+        Verify API works.
+
+        NB No verification in API test, as API for verifying does not exist.
+        TODO: Verify saved chart contents when load/edit features added.
+        """
+        test_database = request.getfixturevalue(database_backend)
+        test_class = NewClass(name='test_class', students=[Student(name='bad student'),
+                                                           Student(name='mediocre student'),
+                                                           Student(name='excellent student'),
+                                                           ])
+        test_database.create_class(test_class)
+
+        test_chart_data_dict = {'class_id': test_class.id,
+                                'class_name': test_class.name,
+                                'chart_name': 'test_chart_name',
+                                'chart_default_filename': 'test_default_chart_filename',
+                                'chart_params': {'some': 'params'},
+                                'score-students_dict': {0: [test_class.students[0]],
+                                                        50: [test_class.students[1]],
+                                                        100: [test_class.students[2]],
+                                                        }
+                                }
+
+        assert test_database.create_chart(test_chart_data_dict) is None
