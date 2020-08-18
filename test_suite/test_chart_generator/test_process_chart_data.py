@@ -129,7 +129,7 @@ class TestGenerateAvatarCoords:
                                                                              (100.0, 5)],
                                               'path to Ashley_avatar.png': [(100.0, 15)],
                                               'path to Cali_avatar.png': [(0.0, 5)],
-                                              'path to Danielle.png': [(10.0, 5)]
+                                              'path to Danielle_avatar.png': [(10.0, 5)]
                                               }
 
         assert generate_avatar_coords(test_student_scores_dict, test_class.id) == test_generate_avatar_coords_result

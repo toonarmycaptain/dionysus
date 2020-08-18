@@ -106,7 +106,7 @@ test_full_class_data_set_json_dict = {'name': 'test_class',
                                                    {'name': 'Alex'},
                                                    {'name': 'Melissa'},
                                                    {'name': 'Edgar'},
-                                                   {'name': 'Danielle', 'avatar_id': 'Danielle.png'},
+                                                   {'name': 'Danielle', 'avatar_id': 'Danielle_avatar.png'},
                                                    {'name': 'Kayla'},
                                                    {'name': 'Jaleigh'}],
                                       'id': 'test_class'}
