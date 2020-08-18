@@ -170,8 +170,7 @@ def save_as_dialogue(title_str: str = None,
                                                 initialfile=suggested_filename,
                                                 initialdir=start_dir,
                                                 )
-
-    if filepath_str == '':
+    if not filepath_str:
         return None
     return Path(filepath_str)
 
@@ -216,8 +215,7 @@ def select_file_dialogue(title_str: str = None,
                                               filetypes=filetypes,
                                               initialdir=start_dir,
                                               )
-
-    if filepath_str == '':
+    if not filepath_str:
         return None
     return Path(filepath_str)
 
@@ -247,6 +245,6 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
 
     dir_path_str = filedialog.askdirectory(initialdir=start_dir, title=title_str)
 
-    if dir_path_str == '':
+    if not dir_path_str:
         return None
     return Path(dir_path_str)

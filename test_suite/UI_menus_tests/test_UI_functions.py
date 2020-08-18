@@ -277,12 +277,13 @@ class TestSaveAsDialogue:
           "my_save_file", Path("my_save_file")),
          # Test no user input returns None.
          ({}, {}, '', None),
+         ({}, {}, (), None),
          ])
     def test_save_as_dialogue(self, mock_tk, monkeypatch,
                               save_as_dialog_args,
                               expected_filedialog_args,
                               test_filename,
-                              returned_filepath):
+                              returned_filepath,):
         default_filetypes = [("all files", "*.*")]
         default_start_dir = '..'
 
@@ -301,7 +302,9 @@ class TestSaveAsDialogue:
             assert filetypes == expected_filedialog_args.get('filetypes', default_filetypes)
             assert initialfile == expected_filedialog_args.get('initialfile', None)
             assert initialdir == expected_filedialog_args.get('initialdir', default_start_dir)
-
+            # Return null test_filename value or filename + extension if present.
+            if not test_filename:
+                return test_filename
             return test_filename + (expected_filedialog_args.get('defaultextension', '') or '')
 
         monkeypatch.setattr(UI_functions.filedialog, 'asksaveasfilename', mocked_filedialog_asksaveasfilename)
@@ -332,8 +335,9 @@ class TestSelectFileDialogue:
            'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
            'initialdir': Path(r'start/here')},
           "my save file", Path("my save file")),
-         # No user input/cancel (ie filename = '') returns None
-         ({}, {}, '', None)
+         # No user input/cancel (ie filename = () or '') returns None
+         ({}, {}, '', None),
+         ({}, {}, (), None),
          ])
     def test_select_file_dialogue(self, mock_tk, monkeypatch,
                                   select_file_dialogue_args,
@@ -354,7 +358,9 @@ class TestSelectFileDialogue:
             assert title == expected_askopenfilename_args.get('title', None)
             assert filetypes == expected_askopenfilename_args.get('filetypes', default_filetypes)
             assert initialdir == expected_askopenfilename_args.get('initialdir', default_start_dir)
-
+            # Return null test_filename value or filename + extension if present.
+            if not test_filename:
+                return test_filename
             return test_filename + (expected_askopenfilename_args.get('defaultextension', '') or '')
 
         monkeypatch.setattr(UI_functions.filedialog, 'askopenfilename', mocked_filedialog_askopenfilename)
@@ -381,8 +387,9 @@ class TestSelectFolderDialogue:
           {'title': 'Some title string',
            'initialdir': Path(r'start/here')},
           "my save dir", Path("my save dir")),
-         # No user input/cancel (ie filename = '') returns None
-         ({}, {}, '', None)
+         # No user input/cancel (ie dirpath = '' or ()) returns None
+         ({}, {}, '', None),
+         ({}, {}, (), None),
          ])
     def test_select_folder_dialogue(self, mock_tk, monkeypatch,
                                     select_folder_dialogue_args,
