@@ -248,7 +248,7 @@ class TestSaveChartImage:
                                   100: [test_json_database.default_avatar_path],
                                   2: [Path('path to Ashley_avatar.png')],
                                   4: [test_json_database.default_avatar_path],
-                                  6: [Path('path to Danielle.png'), test_json_database.default_avatar_path],
+                                  6: [Path('path to Danielle_avatar.png'), test_json_database.default_avatar_path],
                                   7: [test_json_database.default_avatar_path],
                                   8: [test_json_database.default_avatar_path]
                                   },
@@ -396,18 +396,18 @@ class TestMoveAvatarsToClassData:
                               'students': [{'name': 'Cali', 'avatar_id': 'Cali_avatar.png'},
                                            {'name': 'Zach', 'avatar_id': 'Zach_avatar.png'},
                                            {'name': 'Ashley', 'avatar_id': 'Ashley_avatar.png'},
-                                           {'name': 'Danielle', 'avatar_id': 'Danielle.png'}, ]
+                                           {'name': 'Danielle', 'avatar_id': 'Danielle_avatar.png'}, ]
                               }),
           ['Cali_avatar.png',
            'Zach_avatar.png',
            'Ashley_avatar.png',
-           'Danielle.png',
+           'Danielle_avatar.png',
            ]),
          # Some students have avatar_id
          (NewClass.from_dict(test_full_class_data_set['json_dict_rep']), ['Cali_avatar.png',
                                                                           'Zach_avatar.png',
                                                                           'Ashley_avatar.png',
-                                                                          'Danielle.png',
+                                                                          'Danielle_avatar.png',
                                                                           ]
           ),
          # No students have avatar_id

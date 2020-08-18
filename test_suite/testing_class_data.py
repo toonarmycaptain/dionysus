@@ -80,7 +80,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '            "name": "Edgar"\n'
                                         '        },\n        {\n'
                                         '            "name": "Danielle",\n'
-                                        '            "avatar_id": "Danielle.png"\n'
+                                        '            "avatar_id": "Danielle_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Kayla"\n'
@@ -142,14 +142,14 @@ old_style_testing_class_data_set_json_string = '{\n    "Cali": [\n        "Cali_
                                      'null\n    ],\n    "Ashley": [\n        "Ashley_avatar.png"\n    ],' \
                                      '\n    "Alex": [\n        null\n    ],\n    "Melissa": [\n        ' \
                                      'null\n    ],\n    "Edgar": [\n        null\n    ],' \
-                                     '\n    "Danielle": [\n        "Danielle.png"\n    ],\n    "Kayla": ' \
+                                     '\n    "Danielle": [\n        "Danielle_avatar.png"\n    ],\n    "Kayla": ' \
                                      '[\n        null\n    ],\n    "Jaleigh": [\n        null\n    ]\n}'
 
 old_style_testing_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 'Monty': [None], 'Abby': [None],
                                       'Zach': ['Zach_avatar.png'], 'Janell': [None], 'Matthew': [None],
                                       'Olivia': [None], 'Regina': [None], 'Ashley': ['Ashley_avatar.png'],
                                       'Alex': [None], 'Melissa': [None], 'Edgar': [None],
-                                      'Danielle': ['Danielle.png'], 'Kayla': [None], 'Jaleigh': [None]
+                                      'Danielle': ['Danielle_avatar.png'], 'Kayla': [None], 'Jaleigh': [None]
                                       }
 
 old_style_testing_class_data_set_enumerated_dict = {1: 'Cali', 2: 'Monty', 3: 'Abby', 4: 'Zach', 5: 'Janell', 6: 'Matthew',
