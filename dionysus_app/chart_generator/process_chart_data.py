@@ -50,7 +50,7 @@ def generate_avatar_coords(score_students_dict: Dict[float, List[Student]],
     else:  # All other db backends:
         for score in score_students_dict:
             score_avatar_paths_dict[score] = [
-                definitions.DATABASE.get_avatar_path(student.id) for student in
+                definitions.DATABASE.get_avatar_path(student.avatar_id) for student in
                 score_students_dict[score]]
 
     # Re-sort in ascending score order.
