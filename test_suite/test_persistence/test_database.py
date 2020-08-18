@@ -14,6 +14,7 @@ from dionysus_app.persistence.database import (ABCMetaEnforcedAttrs,
                                                ClassIdentifier,
                                                Database,
                                                )
+from dionysus_app.persistence.databases.json import JSONDatabase
 from dionysus_app.student import Student
 # Import test database fixtures:
 from test_suite.test_class import test_class_name_only, test_full_class
@@ -167,8 +168,18 @@ class TestCreateClass:
         # Find class id, load class to verify:
         classes = test_database.get_classes()
         existing_class_id = classes[0].id  # As the only class will be first item.
+
+        # Loaded class will have ids:
+        test_saved_class_with_student_ids = Class.from_dict(test_class.json_dict())
+        if isinstance(test_database, JSONDatabase):
+            for student in test_saved_class_with_student_ids.students:
+                student.id = student.name
+        if not isinstance(test_database, JSONDatabase):
+            for test_id, student in enumerate(test_saved_class_with_student_ids.students, start=1):
+                student.id = test_id
+
         assert test_database.load_class(
-            existing_class_id).json_dict() == Class.from_dict(test_class.json_dict()).json_dict()
+            existing_class_id).json_dict() == test_saved_class_with_student_ids.json_dict()
 
 
 class TestLoadClass:
@@ -191,8 +202,18 @@ class TestLoadClass:
         # Find class id, load class to verify:
         classes = test_database.get_classes()
         test_full_class_id = classes[0].id  # As the only class will be first item.
+
+        # Loaded class will have ids:
+        test_loaded_class_with_student_ids = Class.from_dict(preexisting_class.json_dict())
+        if isinstance(test_database, JSONDatabase):
+            for student in test_loaded_class_with_student_ids.students:
+                student.id = student.name
+        if not isinstance(test_database, JSONDatabase):
+            for test_id, student in enumerate(test_loaded_class_with_student_ids.students, start=1):
+                student.id = test_id
+
         assert test_database.load_class(
-            test_full_class_id).json_dict() == Class.from_dict(preexisting_class.json_dict()).json_dict()
+            test_full_class_id).json_dict() == test_loaded_class_with_student_ids.json_dict()
 
 
 class TestUpdateClass:

@@ -1,5 +1,6 @@
 import sqlite3
 
+from io import BytesIO
 from pathlib import Path
 from typing import List
 
@@ -130,7 +131,7 @@ class SQLiteDatabase(Database):
             students_data = conn.cursor().execute(
                 """SELECT * FROM student WHERE student.class_id=?""", (loaded_class_id,)).fetchall()
             # Instantiate student objects:
-            students_list = [Student(id=id, name=name, class_id=class_id, avatar_id=avatar)
+            students_list = [Student(student_id=student_id, name=name, class_id=class_id, avatar_id=avatar)
                              for student_id, name, class_id, avatar in students_data]
         conn.close()
 

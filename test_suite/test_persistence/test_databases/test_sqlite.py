@@ -145,8 +145,16 @@ class TestCreateClass:
         classes = test_database.get_classes()
         test_class_id = classes[0].id
 
+        # Class will have ids:
+        test_loaded_class_with_student_ids = Class.from_dict(
+            test_class.json_dict()).json_dict()
+        test_id = 1
+        for student in test_loaded_class_with_student_ids['students']:
+            student['id'] = test_id
+            test_id += 1
+
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
-            test_class_id).json_dict() == Class.from_dict(test_class.json_dict()).json_dict()
+            test_class_id).json_dict() == test_loaded_class_with_student_ids
 
 
 class TestLoadClass:
@@ -166,14 +174,23 @@ class TestLoadClass:
         classes = test_database.get_classes()
         test_full_class_id = classes[0].id
 
+        # Class will have ids:
+        test_loaded_class_with_student_ids = Class.from_dict(
+            test_existing_class.json_dict()).json_dict()
+        test_id = 1
+        for student in test_loaded_class_with_student_ids['students']:
+            student['id'] = test_id
+            test_id += 1
+
         # Load class, verify data.
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
-            test_full_class_id).json_dict() == Class.from_dict(
-            test_existing_class.json_dict()).json_dict()
+            test_full_class_id).json_dict() == test_loaded_class_with_student_ids
 
         assert test_database._connection().cursor().execute("""SELECT * FROM class""").fetchall()
         if test_existing_class.students:
             assert test_database._connection().cursor().execute("""SELECT * FROM student""").fetchall()
+            # Ensure students are given non null id:
+            assert test_database.load_class(test_full_class_id).students[0]
 
 
 class TestUpdateClass:
