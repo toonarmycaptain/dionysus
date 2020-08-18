@@ -188,7 +188,7 @@ class SQLiteDatabase(Database):
             # Create chart in chart table
             cursor.execute("""INSERT INTO chart(name) VALUES(?)""",
                            (chart_data_dict['chart_name'],))
-            chart_id = cursor.lastrowid
+            chart_id = chart_data_dict['chart_id'] = cursor.lastrowid
             # Create scores in score table
             for score, students in chart_data_dict['score-students_dict'].items():
                 for student in students:

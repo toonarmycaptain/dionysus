@@ -242,6 +242,8 @@ class TestCreateChart:
             scores_data += [(1, student.id, score) for student in students]
         assert test_database._connection().cursor().execute(
             """SELECT chart_id, student_id, value FROM score""").fetchall() == scores_data
+        # Ensure chart id added to chart_data_dict:
+        assert test_chart_data_dict['chart_id'] == 1
 
 
 class TestConnection:
