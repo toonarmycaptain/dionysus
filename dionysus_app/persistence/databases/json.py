@@ -185,6 +185,8 @@ class JSONDatabase(Database):
         # Append ids
         loaded_class.id = loaded_class.name
         # Student id not added: student cannot be found in the db by name alone.
+        for student in loaded_class.students:
+            student.id = student.name
         return loaded_class
 
     def update_class(self, class_to_write: Class) -> None:

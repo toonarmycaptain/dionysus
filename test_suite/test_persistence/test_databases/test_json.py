@@ -133,10 +133,15 @@ class TestLoadClass:
             assert class_path == Path(test_json_database.class_data_path,
                                       test_class_name,
                                       f'{test_class_name}{test_json_database.class_data_file_type}')
-            return test_full_class
+            return Class.from_dict(test_full_class.json_dict())
 
         monkeypatch.setattr(json.Class, 'from_file', mock_from_file)
-        assert test_json_database.load_class(test_class_name).json_dict() == test_full_class.json_dict()
+
+        # Loaded class will have ids:
+        test_loaded_class = test_full_class.json_dict()
+        for student in test_loaded_class['students']:
+            student['id'] = student['name']
+        assert test_json_database.load_class(test_class_name).json_dict() == test_loaded_class
 
 
 class TestUpdateClass:
@@ -151,7 +156,12 @@ class TestUpdateClass:
         test_json_database.create_class(NewClass(test_full_class.name, test_full_class.students))
         # Ensure test_class in database
         test_class.id = test_class.name
-        assert test_json_database.load_class(test_class.name).json_dict() == test_class.json_dict()
+
+        # Loaded class will have ids:
+        test_loaded_class = test_full_class.json_dict()
+        for student in test_loaded_class['students']:
+            student['id'] = student['name']
+        assert test_json_database.load_class(test_class.name).json_dict() == test_loaded_class
 
         # Change class by adding student, update database:
         new_student = Student(name='new student')
