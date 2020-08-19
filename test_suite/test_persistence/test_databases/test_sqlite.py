@@ -221,7 +221,8 @@ class TestGetAvatarPath:
         """Return default avatar if None/Falsy argument."""
         test_database = empty_sqlite_database
 
-        assert test_database.get_avatar_path(None).read_bytes() == empty_sqlite_database.default_avatar_path.read_bytes()
+        assert test_database.get_avatar_path(
+            None).read_bytes() == empty_sqlite_database.default_avatar_path.read_bytes()
 
 
 class TestCreateChart:

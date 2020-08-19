@@ -227,15 +227,25 @@ class TestGetAvatarPath:
             reason='JSON db does not implement method.')),
          'empty_sqlite_database',
          ])
-    def test_get_avatar_path(self, tmpdir, request, database_backend, ):
+    @pytest.mark.parametrize('avatar_provided',
+                             [pytest.param(True, id='avatar provided'),
+                              pytest.param(False, id='no avatar provided'),
+                              ])
+    def test_get_avatar_path(self, tmpdir, request, database_backend, avatar_provided):
         """"""
         test_database = request.getfixturevalue(database_backend)
+
         # Create avatar:
         test_avatar_data = b'some binary data'
         test_avatar_path = Path(tmpdir, 'test_avatar.png')
         test_avatar_path.write_bytes(test_avatar_data)
         # Add avatar to db:
-        test_class = NewClass(name='test class', students=[Student(name='test_student', avatar_id=test_avatar_path)])
+        test_class = NewClass(name='test class',
+                              students=[
+                                  Student(name='test_student',
+                                          avatar_id=(test_avatar_path if avatar_provided else None),
+                                          )
+                                  ])
         test_database.create_class(test_class)
 
         # Find avatar_id, load class to verify:
@@ -245,7 +255,9 @@ class TestGetAvatarPath:
         test_avatar_id = loaded_test_class.students[0].avatar_id
 
         # Path may be different/random - test data:
-        assert test_database.get_avatar_path(test_avatar_id).read_bytes() == test_avatar_data
+        assert test_database.get_avatar_path(test_avatar_id).read_bytes() == (
+            test_avatar_data if avatar_provided
+            else test_database.default_avatar_path.read_bytes())
 
 
 class TestCreateChart:
