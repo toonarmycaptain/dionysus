@@ -14,15 +14,19 @@ testing_registry_data_set = {'registry_classlist': testing_registry_list,
 # new data storage formats
 
 # Add attributes to test expected output.
-test_class_name_only_name = "The Knights of the Round-table: we don't say 'Ni!'"
+test_class_name_only_name = "The_Knights_of_the_Round-table__we_don_t_say__Ni__"
+# Essentially clean_for_filename("The Knights of the Round-table: we don't say 'Ni!'")
 
 test_class_name_only_json_str_rep = ('{\n'
                                      + f'    "name": "{test_class_name_only_name}",\n'
-                                     + f'    "students": {[]}\n'
+                                     + f'    "students": {[]},\n'
+                                     + f'    "id": "{test_class_name_only_name}"\n'
                                      + '}')
 
 test_class_name_only_json_dict_rep = {'name': test_class_name_only_name,
-                                      'students': []
+                                      'students': [],
+                                      'id': test_class_name_only_name
+
                                       }
 
 test_class_name_only_data_set = {'name': test_class_name_only_name,
@@ -76,7 +80,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '            "name": "Edgar"\n'
                                         '        },\n        {\n'
                                         '            "name": "Danielle",\n'
-                                        '            "avatar_id": "Danielle.png"\n'
+                                        '            "avatar_id": "Danielle_avatar.png"\n'
                                         '        },\n'
                                         '        {\n'
                                         '            "name": "Kayla"\n'
@@ -84,7 +88,8 @@ test_full_class_data_set_json_string = ('{\n'
                                         '        {\n'
                                         '            "name": "Jaleigh"\n'
                                         '        }\n'
-                                        '    ]\n'
+                                        '    ],\n'
+                                     + f'    "id": "test_class"\n'
                                         '}'
                                         )
 
@@ -101,9 +106,10 @@ test_full_class_data_set_json_dict = {'name': 'test_class',
                                                    {'name': 'Alex'},
                                                    {'name': 'Melissa'},
                                                    {'name': 'Edgar'},
-                                                   {'name': 'Danielle', 'avatar_id': 'Danielle.png'},
+                                                   {'name': 'Danielle', 'avatar_id': 'Danielle_avatar.png'},
                                                    {'name': 'Kayla'},
-                                                   {'name': 'Jaleigh'}]}
+                                                   {'name': 'Jaleigh'}],
+                                      'id': 'test_class'}
 
 test_full_class_data_set_enumerated_dict = {1: 'Cali',
                                             2: 'Monty',
@@ -136,14 +142,14 @@ old_style_testing_class_data_set_json_string = '{\n    "Cali": [\n        "Cali_
                                      'null\n    ],\n    "Ashley": [\n        "Ashley_avatar.png"\n    ],' \
                                      '\n    "Alex": [\n        null\n    ],\n    "Melissa": [\n        ' \
                                      'null\n    ],\n    "Edgar": [\n        null\n    ],' \
-                                     '\n    "Danielle": [\n        "Danielle.png"\n    ],\n    "Kayla": ' \
+                                     '\n    "Danielle": [\n        "Danielle_avatar.png"\n    ],\n    "Kayla": ' \
                                      '[\n        null\n    ],\n    "Jaleigh": [\n        null\n    ]\n}'
 
 old_style_testing_class_data_set_loaded_dict = {'Cali': ['Cali_avatar.png'], 'Monty': [None], 'Abby': [None],
                                       'Zach': ['Zach_avatar.png'], 'Janell': [None], 'Matthew': [None],
                                       'Olivia': [None], 'Regina': [None], 'Ashley': ['Ashley_avatar.png'],
                                       'Alex': [None], 'Melissa': [None], 'Edgar': [None],
-                                      'Danielle': ['Danielle.png'], 'Kayla': [None], 'Jaleigh': [None]
+                                      'Danielle': ['Danielle_avatar.png'], 'Kayla': [None], 'Jaleigh': [None]
                                       }
 
 old_style_testing_class_data_set_enumerated_dict = {1: 'Cali', 2: 'Monty', 3: 'Abby', 4: 'Zach', 5: 'Janell', 6: 'Matthew',

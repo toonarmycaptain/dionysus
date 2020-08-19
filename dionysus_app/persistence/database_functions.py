@@ -2,8 +2,10 @@
 
 from dionysus_app.persistence.database import Database
 from dionysus_app.persistence.databases.json import JSONDatabase
+from dionysus_app.persistence.databases.sqlite import SQLiteDatabase
 
 database_backends = {'JSON': JSONDatabase,
+                     'SQLite': SQLiteDatabase
                      }
 
 

@@ -17,7 +17,8 @@ from test_suite.testing_class_data import test_class_name_only_data_set, test_fu
 @pytest.fixture()
 def test_class_name_only():
     """Returns empty class instantiated with name only."""
-    test_class_name_only = Class(test_class_name_only_data_set['json_dict_rep']['name'])
+    test_class_name_only = Class(class_id=test_class_name_only_data_set['json_dict_rep']['id'],
+                                 name=test_class_name_only_data_set['json_dict_rep']['name'])
 
     # Add attributes to test expected output.
     test_class_name_only.json_str_rep = test_class_name_only_data_set['json_str_rep']
@@ -27,8 +28,9 @@ def test_class_name_only():
 
 
 @pytest.fixture()
-def test_full_class():
-    test_full_class = Class(test_full_class_data_set['json_dict_rep']['name'])
+def test_full_class() -> Class:
+    test_full_class = Class(class_id=test_full_class_data_set['json_dict_rep']['id'],
+                            name=test_full_class_data_set['json_dict_rep']['name'])
     for student in test_full_class_data_set['json_dict_rep']['students']:
         test_full_class.add_student(Student(**student))
 
@@ -140,6 +142,22 @@ class TestClassNamePathSafeName:
         assert (test_class.name, test_class.path_safe_name) == (test_changed_name, mock_changed_path_safe_name)
 
 
+class TestClassId:
+    """Test Class Id"""
+
+    @pytest.mark.parametrize(
+        'id_arg,',
+        [17,  # Integer eg sql db id
+         'some student_name',  # JSON db id
+         Student(name='Student used to represent complex object'),  # Ensure 'Any' typing is accurate.
+         ])
+    def test_id(self, id_arg):
+        assert Class(name='Four Yorkshiremen', class_id=id_arg).id == id_arg
+
+    def test_class_id_default_arg(self):
+        assert Class(name='Four Yorkshiremen').id is None
+
+
 class TestContainsMethod:
     def test__contains__student_obj_in_class(self, test_student_name_only, test_class_name_only):
         """Test that student object from class compares as `in` class."""
@@ -148,7 +166,8 @@ class TestContainsMethod:
 
         assert test_student_name_only in test_class_name_only
 
-    def test__contains__identical_but_not_actual_student_obj_in_class(self, test_student_name_only, test_class_name_only):
+    def test__contains__identical_but_not_actual_student_obj_in_class(self, test_student_name_only,
+                                                                      test_class_name_only):
         """
         Test identical student object in class.
         Should return False, since the specific object is not in the class.
@@ -314,83 +333,104 @@ class TestAddStudent:
 
 
 class TestJSONDict:
-    def test_test_class_name_only_to_json_dict(self, test_class_name_only):
-        assert test_class_name_only.json_dict() == {'name': test_class_name_only.name,
-                                                    'students': test_class_name_only.students
-                                                    }
-
-    def test_test_full_class_to_json_dict(self, test_full_class):
-        assert test_full_class.json_dict() == test_full_class_data_set['json_dict_rep']
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_class_to_json_dict(self, request, test_class):
+        test_class = request.getfixturevalue(test_class)
+        assert test_class.json_dict() == test_class.json_dict_rep
 
 
 class TestToJsonStr:
-    def test_test_class_name_only_to_json_str(self, test_class_name_only):
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_class_to_json_str(self, request, test_class):
         """
         Have to be very careful with the string formatting here.
         To avoid hard-coding, have to insert values using f-strings, but insert
         on multiple lines as the {} not used by the fstring in JSON formatting
         raises errors. Also have to include \n in correct locations.
         """
-        assert test_class_name_only.to_json_str() == test_class_name_only.json_str_rep
+        test_class = request.getfixturevalue(test_class)
+        assert test_class.to_json_str() == test_class.json_str_rep
 
-    def test_test_full_class_to_json_str(self, test_full_class):
-        assert test_full_class.to_json_str() == test_full_class_data_set['json_str_rep']
-
-    def test_to_json_str_is_equivalent_to_converting_dict_directly(self, test_full_class):
-        assert convert_to_json(test_full_class.json_dict()) == test_full_class.to_json_str()
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_to_json_str_is_equivalent_to_converting_dict_directly(self, request, test_class):
+        test_class = request.getfixturevalue(test_class)
+        assert convert_to_json(test_class.json_dict()) == test_class.to_json_str()
 
 
 class TestFromDict:
-    def test_from_dict_instantiation_class_name_only(self, test_class_name_only):
-        assert Class.from_dict(test_class_name_only.json_dict_rep).json_dict() == test_class_name_only.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_from_dict_instantiation(self, request, class_def, test_class):
+        test_class = request.getfixturevalue(test_class)
+        assert class_def.from_dict(test_class.json_dict_rep).json_dict() == test_class.json_dict()
 
-    def test_from_dict_instantiation_full_class(self, test_full_class):
-        assert Class.from_dict(test_full_class.json_dict_rep).json_dict() == test_full_class.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_from_dict_instantiation_class_is_correct_type(self, request, class_def, test_class):
+        """Method should return instance of calling class/subclass."""
+        test_class = request.getfixturevalue(test_class)
+        assert isinstance(class_def.from_dict(test_class.json_dict_rep), class_def)
 
 
 class TestFromJson:
-    def test_from_json_instantiation_class_name_only(self, test_class_name_only):
-        assert Class.from_json(test_class_name_only.json_str_rep).json_dict() == test_class_name_only.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_from_json_instantiation(self, request, class_def, test_class):
+        test_class = request.getfixturevalue(test_class)
+        assert class_def.from_json(test_class.json_str_rep).json_dict() == test_class.json_dict()
 
-    def test_from_json_instantiation_full_class(self, test_full_class):
-        assert Class.from_json(test_full_class.json_str_rep).json_dict() == test_full_class.json_dict()
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_from_json_instantiation_class_is_correct_type(self, request, class_def, test_class):
+        """Method should return instance of calling class/subclass."""
+        test_class = request.getfixturevalue(test_class)
+        assert isinstance(class_def.from_json(test_class.json_str_rep), class_def)
 
 
 class TestFromFile:
-    def test_from_file_load_class_name_only(self, tmp_path,
-                                            test_class_name_only):
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_from_file_load_full_class(self, request, tmp_path,
+                                       class_def, test_class):
+        test_class = request.getfixturevalue(test_class)
         # Setup test data file:
-        class_data_file_name = test_class_name_only.path_safe_name + '.cdf'
+        class_data_file_name = test_class.path_safe_name + '.cdf'
         class_data_file_path = tmp_path.joinpath(class_data_file_name)
 
         with open(class_data_file_path, 'w+') as class_data_file:
-            class_data_file.write(test_class_name_only.json_str_rep)
+            class_data_file.write(test_class.json_str_rep)
 
-        assert Class.from_file(class_data_file_path).json_dict() == test_class_name_only.json_dict()
+        assert class_def.from_file(class_data_file_path).json_dict() == test_class.json_dict()
 
-    def test_from_file_load_full_class(self, tmp_path,
-                                       test_full_class):
+    @pytest.mark.parametrize('class_def', [Class, NewClass])
+    @pytest.mark.parametrize('test_class', ('test_class_name_only', 'test_full_class'))
+    def test_from_file_load_full_class_is_correct_type(self, request, tmp_path,
+                                                       class_def, test_class):
+        """Method should return instance of calling class/subclass."""
+        test_class = request.getfixturevalue(test_class)
         # Setup test data file:
-        class_data_file_name = test_full_class.path_safe_name + '.cdf'
+        class_data_file_name = test_class.path_safe_name + '.cdf'
         class_data_file_path = tmp_path.joinpath(class_data_file_name)
 
         with open(class_data_file_path, 'w+') as class_data_file:
-            class_data_file.write(test_full_class.json_str_rep)
+            class_data_file.write(test_class.json_str_rep)
 
-        assert Class.from_file(class_data_file_path).json_dict() == test_full_class.json_dict()
+        assert isinstance(class_def.from_file(class_data_file_path), class_def)
 
 
 class TestClassRepr:
     @pytest.mark.parametrize('class_object',
                              [Class(name='name_only_class'),
+                              Class(name='name only class with id', class_id='a class id'),
                               Class.from_dict(test_full_class_data_set['json_dict_rep']),
                               ])
     def test_repr(self, class_object):
-        assert repr(class_object) == (f'{class_object.__class__.__module__}'
-                                      f'.{class_object.__class__.__name__}('
+        assert repr(class_object) == (f'{class_object.__class__.__module__}.{class_object.__class__.__name__}('
+                                      f'id={class_object.id if class_object.id else None !r}, '
                                       f'name={class_object._name!r}, '
                                       f'path_safe_name={class_object._path_safe_name!r}, '
-                                      f'students={class_object.students!r})')
+                                      f'students={class_object.students!r}'
+                                      f')')
 
 
 class TestClassStr:
@@ -398,11 +438,21 @@ class TestClassStr:
         'class_object,'
         'expected_str',
         [(Class(name='name_only_class'),
-          f"Class {'name_only_class'}, containing 0 students."),
+          f"Class {'name_only_class'}, with id=None, containing 0 students."),
+         (Class(class_id='some class id', name='name_only_class with id'),
+          f"Class {'name_only_class with id'}, with id={'some class id'}, containing 0 students."),
          (Class.from_dict(test_full_class_data_set['json_dict_rep']),
           f"Class {Class.from_dict(test_full_class_data_set['json_dict_rep']).name}, "
+          f"with id={Class.from_dict(test_full_class_data_set['json_dict_rep']).id}, "
           f"containing {len(Class.from_dict(test_full_class_data_set['json_dict_rep']).students)} students, "
           f"with names: {', '.join([student.name for student in Class.from_dict(test_full_class_data_set['json_dict_rep']).students])}."),
+         (Class(class_id='some class id', name='small_class with id',
+                students=[Student(name='one'), Student(name='two')]),
+          f"Class {'small_class with id'}, "
+          f"with id={'some class id'}, "
+          f"containing 2 students, "
+          f"with names: one, two."),
+
          ])
     def test_str(self, class_object, expected_str):
         assert str(class_object) == expected_str

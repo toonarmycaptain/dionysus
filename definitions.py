@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # Global root directory.
 
-DEFAULT_DATABASE_BACKEND = 'JSON'
+DEFAULT_DATABASE_BACKEND = 'SQLite'
 # Ignore typehint error: DATABASE object needs to be initialised with a value
 DATABASE: 'Database' = None  # type: ignore
 

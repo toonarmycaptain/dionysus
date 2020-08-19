@@ -42,11 +42,12 @@ class TestNewChart:
         test_chart_params = {'test_chart_params': 'some chart params'}
         test_score_avatar_dict = {'test_student_scores': 'test student avatars'}
 
-        test_chart_data_dict = {'class_name': test_class.name,
+        test_chart_data_dict = {'class_id': test_class.id,
+                                'class_name': test_class.name,
                                 'chart_name': test_chart_name,
                                 'chart_default_filename': test_chart_default_filename,
                                 'chart_params': test_chart_params,
-                                'score-avatar_dict': test_score_avatar_dict,
+                                'score-students_dict': test_score_avatar_dict,
                                 }
 
         test_chart_image_location = 'some image location'
@@ -73,26 +74,21 @@ class TestNewChart:
                     test_chart_params)
 
         def mocked_create_chart(chart_data_dict):
-            if chart_data_dict != test_chart_data_dict:
-                raise ValueError
+            assert chart_data_dict == test_chart_data_dict
 
         def mocked_generate_chart_image(chart_data_dict):
-            if chart_data_dict != test_chart_data_dict:
-                raise ValueError
+            assert chart_data_dict == test_chart_data_dict
             return test_chart_image_location
 
         def mocked_show_image(chart_image_location):
-            if chart_image_location != test_chart_image_location:
-                raise ValueError
+            assert chart_image_location == test_chart_image_location
             return user_wants_to_save
 
         user_save_chart_image_mock = {'called': False}
 
         def mocked_user_save_chart_image(chart_data_dict, chart_image_location):
-            if chart_data_dict != test_chart_data_dict:
-                raise ValueError
-            if chart_image_location != test_chart_image_location:
-                raise ValueError
+            assert chart_data_dict == test_chart_data_dict
+            assert chart_image_location == test_chart_image_location
             user_save_chart_image_mock['called'] = True
             if not user_wants_to_save:
                 raise ValueError('Should not be called if user did not want to save.')
@@ -126,16 +122,14 @@ class TestAssembleChartData:
         mock_chart_params = {'some': 'chart_params'}
 
         def mocked_take_score_data(class_obj):
-            if class_obj is not class_from_create_class:
-                raise ValueError
+            assert class_obj is class_from_create_class
             return mock_score_avatar_dict
 
         def mocked_take_chart_name():
             return test_chart_name
 
         def mocked_clean_for_filename(chart_name):
-            if chart_name != test_chart_name:
-                raise ValueError
+            assert chart_name == test_chart_name
             return test_chart_name
 
         def mocked_set_chart_params():
@@ -155,8 +149,7 @@ class TestSetChartParams:
         test_params = {'some': 'params'}
 
         def mocked_get_custom_chart_options(default_options):
-            if default_options != DEFAULT_CHART_PARAMS:
-                raise ValueError
+            assert default_options == DEFAULT_CHART_PARAMS
             return test_params
 
         monkeypatch.setattr(create_chart, 'get_custom_chart_options', mocked_get_custom_chart_options)
@@ -192,16 +185,14 @@ class TestUserSaveChartImage:
         test_image_location = Path('my/test/image/location')
 
         def mocked_get_user_save_chart_pathname(class_name, default_chart_name):
-            if (class_name, default_chart_name) != (
-                    test_chart_data_dict['class_name'], test_chart_data_dict['chart_default_filename']):
-                raise ValueError
+            assert (class_name, default_chart_name) == (
+                    test_chart_data_dict['class_name'], test_chart_data_dict['chart_default_filename'])
             return user_supplied_location
 
         def mocked_copy_image_to_user_save_loc(image_location, save_chart_pathname):
             if not user_supplied_location:
                 raise ValueError('If user supplied no save path, function should not be called.')
-            if image_location != test_image_location and save_chart_pathname != user_supplied_location:
-                raise ValueError
+            assert (image_location == test_image_location) and (save_chart_pathname == user_supplied_location)
 
         monkeypatch.setattr(create_chart, 'get_user_save_chart_pathname', mocked_get_user_save_chart_pathname)
         monkeypatch.setattr(create_chart, 'copy_image_to_user_save_loc', mocked_copy_image_to_user_save_loc)
@@ -215,9 +206,8 @@ class TestCopyImageToUserSaveLoc:
         test_user_save_location = Path('test/user/save/location')
 
         def mocked_copy_file(app_image_location, user_save_location):
-            if (app_image_location, user_save_location) != (
-                    test_app_image_location, test_user_save_location):
-                raise ValueError
+            assert (app_image_location, user_save_location) == (
+                    test_app_image_location, test_user_save_location)
 
         monkeypatch.setattr(create_chart, 'copy_file', mocked_copy_file)
 
@@ -233,14 +223,12 @@ class TestGetUserSaveChartPathname:
         test_save_chart_path_str = r'test/save/chart/path/str'
 
         def mocked_create_class_save_folder(class_name):
-            if class_name is not test_class_name:
-                raise ValueError
+            assert class_name is test_class_name
             return test_class_save_folder_path
 
         def mocked_save_chart_dialogue(default_chart_name, class_save_folder_path):
-            if (default_chart_name, class_save_folder_path) != (
-                    test_default_chart_name, test_class_save_folder_path):
-                raise ValueError
+            assert (default_chart_name, class_save_folder_path) == (
+                    test_default_chart_name, test_class_save_folder_path)
             return test_save_chart_path_str
 
         monkeypatch.setattr(create_chart, 'create_class_save_folder', mocked_create_class_save_folder)
@@ -255,8 +243,7 @@ class TestCreateClassSaveFolder:
         test_class_save_folder_path = tmp_path.joinpath(test_class_name)
 
         def mocked_get_class_save_folder_path(class_name):
-            if class_name != test_class_name:
-                raise ValueError
+            assert class_name == test_class_name
             return test_class_save_folder_path
 
         monkeypatch.setattr(create_chart, 'get_class_save_folder_path', mocked_get_class_save_folder_path)
@@ -290,8 +277,7 @@ class TestShowImage:
         display_image_save_as_mock = {'called': False}
 
         def mocked_display_image_save_as(image_location):
-            if image_location != test_image_location:
-                raise ValueError
+            assert image_location == test_image_location
             display_image_save_as_mock['called'] = True
             return user_wants_to_save
 

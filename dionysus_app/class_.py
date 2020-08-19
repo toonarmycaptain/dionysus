@@ -19,6 +19,9 @@ class Class:
 
     Attributes
     ----------
+    class_id : Any
+        Class' id in database.
+
     name : str
         Class' name
 
@@ -52,7 +55,7 @@ class Class:
 
     """
 
-    def __init__(self, name: str, students: List[Student] = None) -> None:
+    def __init__(self, name: str, students: List[Student] = None, *, class_id: Any = None) -> None:
         """
         Create Class instance.
 
@@ -60,7 +63,9 @@ class Class:
 
         :param name: str - name of the class.
         :param students: List[Student] - list of Student objects.
+        :param class_id: Any - unique id of class in database.
         """
+        self.id: Any = class_id
         self.name = name
         self.path_safe_name = name
 
@@ -201,12 +206,17 @@ class Class:
         Translates Class object into JSON-serialisable dict.
 
         Captures name, converts Student objects to JSON-serialisable
-        dicts.
+        dicts. Omits id if not present.
+        NB id will be last entry in dict and last entry in json string.
 
         :return: dict
         """
-        return {'name': self._name,
-                'students': [student.json_dict() for student in self.students]}
+        json_data = {'name': self._name,
+                     'students': [student.json_dict() for student in self.students]
+                     }
+        if self.id:
+            json_data['id'] = self.id
+        return json_data
 
     def to_json_str(self) -> str:
         """
@@ -219,19 +229,20 @@ class Class:
     # Alternate constructors
 
     @classmethod
-    def from_dict(cls, class_dict: dict) -> 'Class':
+    def from_dict(cls, class_dict: dict) -> Union['Class', 'NewClass']:
         """
         Instantiate Class object from JSON-serialisable dict.
 
         :param class_dict: dict
         :return: Class object
         """
+        _id = class_dict.get('id')  # Class may not have id if not in db.
         _name = class_dict['name']
         _students = [Student.from_dict(student) for student in class_dict['students']]
-        return Class(_name, _students)
+        return cls(class_id=_id, name=_name, students=_students)
 
     @classmethod
-    def from_json(cls, json_data: str) -> 'Class':
+    def from_json(cls, json_data: str) -> Union['Class', 'NewClass']:
         """
         Return Class object from json string.
 
@@ -239,10 +250,10 @@ class Class:
         :return: Class object
         """
         class_dict = json.loads(json_data)
-        return Class.from_dict(class_dict)
+        return cls.from_dict(class_dict)
 
     @classmethod
-    def from_file(cls, cdf_path: Union[Path, str]) -> 'Class':
+    def from_file(cls, cdf_path: Union[Path, str]) -> Union['Class', 'NewClass']:
         """
         Return Class object from cdf file.
 
@@ -251,11 +262,12 @@ class Class:
         """
         with open(Path(cdf_path)) as class_data_file:
             class_json = json.load(class_data_file)
-        return Class.from_dict(class_json)
+        return cls.from_dict(class_json)
 
     # String representations
     def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
+                    f'id={self.id!r}, '
                     f'name={self._name!r}, '
                     f'path_safe_name={self._path_safe_name!r}, '
                     f'students={self.students!r}'
@@ -271,13 +283,14 @@ class Class:
         else:
             students_stmt = 'containing 0 students'
 
-        return f'Class {self.name}, {students_stmt}.'
+        return f'Class {self.name}, with id={self.id}, {students_stmt}.'
 
 
 class NewClass(Class):
     """
-    Subclass of Class for creating new classes, machinery to facilitate
-    creation of new classes in database.
+    Subclass of Class for creating new classes.
+
+    Adds machinery to facilitate creation of new classes in database.
 
     Adds temp directory for class to cache files before writing to
     database.
@@ -307,8 +320,8 @@ class NewClass(Class):
         Path to avatars folder in class' temp directory.
     """
 
-    def __init__(self, name: str, students: List[Student] = None) -> None:
-        super().__init__(name, students)
+    def __init__(self, name: str, students: List[Student] = None, *, class_id: Any = None) -> None:
+        super().__init__(name=name, students=students, class_id=class_id)
 
         # Create class temp directory.
         Path.mkdir(TEMP_DIR, exist_ok=True, parents=True)  # Ensure path exists.

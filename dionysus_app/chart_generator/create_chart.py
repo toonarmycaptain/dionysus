@@ -40,7 +40,7 @@ def new_chart(loaded_class: Class = None) -> None:
             'chart_name': chart_name,  # str
             'chart_default_filename': chart_default_filename,  # str
             'chart_params': chart_params,  # dict
-            'score-avatar_dict': student_scores,  # dict
+            'score-students_dict': student_scores,  # dict
             }
 
     Then write this data to disk as *.cdf (ChartDataFile), generate and
@@ -58,11 +58,12 @@ def new_chart(loaded_class: Class = None) -> None:
      student_scores,
      chart_params) = assemble_chart_data(loaded_class)
 
-    chart_data_dict = {'class_name': loaded_class.name,  # str
+    chart_data_dict = {'class_id': loaded_class.id,
+                       'class_name': loaded_class.name,  # str
                        'chart_name': chart_name,  # str
                        'chart_default_filename': chart_default_filename,  # str
                        'chart_params': chart_params,  # dict
-                       'score-avatar_dict': student_scores,  # dict
+                       'score-students_dict': student_scores,  # dict
                        }
 
     definitions.DATABASE.create_chart(chart_data_dict)
@@ -111,8 +112,7 @@ def set_chart_params() -> dict:
 
     :return: dict
     """
-    chart_params = get_custom_chart_options(DEFAULT_CHART_PARAMS)
-    return chart_params
+    return get_custom_chart_options(DEFAULT_CHART_PARAMS)
 
 
 def get_custom_chart_options(default_params: dict) -> dict:
