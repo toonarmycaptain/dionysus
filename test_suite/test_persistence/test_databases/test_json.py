@@ -273,7 +273,10 @@ class TestGetAvatarPath:
 
 
 class TestGetAvatarPathClassFilename:
-    @pytest.mark.parametrize('test_student_avatar', ['some avatar', None])
+    @pytest.mark.parametrize('test_student_avatar',
+                             [pytest.param('some avatar', id='avatar provided'),
+                              pytest.param(None, id='no avatar provided'),
+                              ])
     def test_get_avatar_path_class_filename(self, empty_json_database,
                                             test_student_avatar):
         """Returns existent avatar path, else db.default_avatar_path."""
