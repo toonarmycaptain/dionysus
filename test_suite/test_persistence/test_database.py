@@ -364,3 +364,18 @@ class TestSaveChartImage:
         assert save_chart_path.exists()
 
         compare_images(save_chart_path, test_image_path, 0.0001)
+
+
+class TestClose:
+    @pytest.mark.parametrize('database_backend', ['empty_json_database',
+                                                  'empty_sqlite_database',
+                                                  ])
+    def test_close(self, request, database_backend):
+        """
+        Verify API works without error..
+
+        NB No verification in API test, as API for verifying does not exist.
+        """
+        test_database = request.getfixturevalue(database_backend)
+
+        assert test_database.close() is None

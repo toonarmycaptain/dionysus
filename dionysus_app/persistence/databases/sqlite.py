@@ -225,7 +225,12 @@ class SQLiteDatabase(Database):
         return temp_image_path
 
     def close(self) -> None:
-        raise NotImplementedError  # type: ignore
+        """
+        No close actions needed for this database.
+
+        :return: None
+        """
+        pass
 
     def _connection(self) -> sqlite3.Connection:
 

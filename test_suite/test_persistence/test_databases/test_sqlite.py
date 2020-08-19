@@ -330,6 +330,14 @@ class TestSaveChartImage:
         assert save_chart_path.read_bytes() == test_image.read1()  # size arg can be omitted on 3.7+
 
 
+class TestClose:
+    def test_close(self, request, empty_sqlite_database):
+        """No close actions needed. Verify no error."""
+        test_database = empty_sqlite_database
+
+        assert test_database.close() is None
+
+
 class TestConnection:
     def test__connection(self, empty_sqlite_database):
         """Connection function returns connection."""
