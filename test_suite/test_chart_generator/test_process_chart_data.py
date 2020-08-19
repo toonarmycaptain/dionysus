@@ -158,6 +158,7 @@ class TestGenerateAvatarCoords:
             re-mocking method for clarity.
             """
             assert avatar_id in avatar_ids
+            #  deepcode ignore unguarded~next~call: <comment the reason here>
             return next(avatar_path)
 
         test_database.get_avatar_path = mocked_get_avatar_path
