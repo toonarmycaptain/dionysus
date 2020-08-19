@@ -126,5 +126,4 @@ def assign_avatar_coords(band_avatar_dict, chart_params: dict = None):
     return avatar_xy_dict
 
 
-if __name__ == '__main__':
-    pass
+pass
