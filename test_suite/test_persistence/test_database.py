@@ -153,6 +153,7 @@ class TestCreateClass:
                                                   ])
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
     def test_create_class(self, request, database_backend, class_data):
+        """Class saved in db has same data as that created, with class/student ids."""
         test_database = request.getfixturevalue(database_backend)
         test_class = request.getfixturevalue(class_data)
         # Create test NewClass object, mocking avatar_files.
@@ -190,7 +191,7 @@ class TestLoadClass:
                                                   ])
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
     def test_load_class(self, request, database_backend, class_data):
-        """JSON's create_class delegates calls to appropriate methods."""
+        """Class loaded has same data as that saved in db, with class/student ids."""
         test_database = request.getfixturevalue(database_backend)
         preexisting_class = request.getfixturevalue(class_data)
         # Create test NewClass object, mocking avatar_files.
@@ -211,6 +212,7 @@ class TestLoadClass:
             for student in test_loaded_class_with_student_ids.students:
                 student.id = student.name
         if not isinstance(test_database, JSONDatabase):
+            # This should be accurate for most sql databases.
             for test_id, student in enumerate(test_loaded_class_with_student_ids.students, start=1):
                 student.id = test_id
 
