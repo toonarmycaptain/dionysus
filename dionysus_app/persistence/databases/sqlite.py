@@ -266,7 +266,7 @@ class SQLiteDatabase(Database):
     def _create_table_class(self) -> str:
         return """CREATE TABLE IF NOT EXISTS class(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        -- Ensure name is type text no longer than 255 characters: 
+                        -- Ensure name is type text no longer than 255 characters:
                         name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
                                                  length("name") <= 255
                                                  )
@@ -293,7 +293,7 @@ class SQLiteDatabase(Database):
                         name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
                                                  length("name") <= 255
                                                  ),
-                        image BLOB, -- NOT NULL, needs to be null, as chart data/image saved independently.                                                 
+                        image BLOB, -- NOT NULL, needs to be null, as chart data/image saved independently.
                         date TEXT -- For now can be NULL, will be implemented later.
                         );
                         """
