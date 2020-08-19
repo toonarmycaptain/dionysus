@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Retrieval of avatar paths moved from `take_chart_data_UI.take_student_scores` to `process_chart_data.generate_avatar_coords`, which now takes an additional class_id 
 parameter to facilitate getting avatar paths from JSONDatabase.
 - Charts saved as JSON now store the student name, rather than path to an avatar image. Student represented by the default avatar are no longer anonymous!
+- Charts are now saved at 1080p proportion (19.20, 10.80, explicitly saved in png format at better quality 300dpi.
 
 ## [0.7.0-alpha] - 2020-06-27
 ### Added

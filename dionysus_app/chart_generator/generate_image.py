@@ -24,7 +24,7 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
     :param chart_data_dict: dict
     :return: Path object
     """
-    fig = plt.figure(figsize=(16, 9))  # set proportion/size in inches,
+    fig = plt.figure(figsize=(19.20, 10.80))  # set proportion/size in inches, 1080p
     ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
     plt.subplots_adjust(left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01)
 

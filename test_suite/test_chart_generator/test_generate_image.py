@@ -47,7 +47,7 @@ class TestGenerateChartImage:
                     self.calls_to_mock_ax['grid'] = True
 
             def figure(self, figsize):
-                assert figsize == (16, 9)
+                assert figsize == (19.20, 10.80)
                 self.calls_to_mock_plt['figure'] = True
 
             def subplot(self, xlim, ylim):

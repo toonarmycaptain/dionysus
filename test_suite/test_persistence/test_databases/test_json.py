@@ -226,9 +226,10 @@ class TestSaveChartImage:
         test_json_database = empty_json_database
 
         class MockMplPlt:
-            def savefig(self, app_data_save_pathname, dpi):
+            def savefig(self, app_data_save_pathname, format, dpi):
                 assert app_data_save_pathname == test_image_save_path
-                assert dpi == 120
+                assert format == 'png'
+                assert dpi == 300
 
         mocked_mpl_plt = MockMplPlt()
 

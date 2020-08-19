@@ -268,8 +268,8 @@ class JSONDatabase(Database):
         Path.mkdir(app_data_save_pathname.parent, parents=True, exist_ok=True)
         # Save in app_data/class_data/class_id/chart_data with chart_default_filename
 
-        mpl_plt.savefig(app_data_save_pathname,
-                        dpi=120)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+        mpl_plt.savefig(app_data_save_pathname, format='png',
+                        dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
     def get_avatar_path_class_filename(self, class_id: str,
