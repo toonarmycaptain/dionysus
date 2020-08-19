@@ -202,7 +202,27 @@ class SQLiteDatabase(Database):
         conn.close()
 
     def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
-        raise NotImplementedError  # type: ignore
+        # Get image data:
+        image = BytesIO()
+        mpl_plt.savefig(image,
+                        format='png',
+                        dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+        image.seek(0)  # Return pointer to start of binary stream.
+
+        # Save image in db
+        with self._connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""UPDATE chart SET image=? WHERE id=?""",
+                           (image.read(), chart_data_dict['chart_id']))
+            image.seek(0)
+            conn.commit()
+        conn.close()
+
+        # Save file to temp and pass back Path
+        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
+                               f"{chart_data_dict['chart_name']}.png")
+        temp_image_path.write_bytes(image.read())
+        return temp_image_path
 
     def close(self) -> None:
         raise NotImplementedError  # type: ignore

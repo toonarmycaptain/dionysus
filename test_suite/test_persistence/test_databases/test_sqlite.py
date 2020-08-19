@@ -1,8 +1,10 @@
+import io
 import sqlite3
 
 from pathlib import Path
 from random import randint
 
+import matplotlib.pyplot as plt
 import pytest
 
 from dionysus_app.class_ import Class, NewClass
@@ -268,6 +270,64 @@ class TestCreateChart:
             """SELECT chart_id, student_id, value FROM score""").fetchall() == scores_data
         # Ensure chart id added to chart_data_dict:
         assert test_chart_data_dict['chart_id'] == 1
+
+
+class TestSaveChartImage:
+    def test_save_chart_image(self, empty_sqlite_database, test_full_class):
+        test_database = empty_sqlite_database
+
+        test_existing_class = NewClass.from_dict(test_full_class.json_dict())
+        for student in test_existing_class:
+            if student.avatar_id:
+                Path(test_existing_class.temp_avatars_dir, student.avatar_id).write_text(student.avatar_id)
+        # Create class in db:
+        test_database.create_class(test_existing_class)
+
+        # Find class id to load:
+        classes = test_database.get_classes()
+        test_class_id = classes[0].id
+
+        # test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
+        test_class = test_database.load_class(test_class_id)
+
+        test_data_dict = {
+            'class_id': test_class_id,
+            'class_name': "test_class_name",
+            'chart_name': "test_chart_name",
+            'chart_default_filename': "test_chart_default_filename",
+            'chart_params': {"some": "chart", "default": "params"},
+            'score-students_dict': {0: [test_class.students[0]],  # Cali
+                                    1: [test_class.students[1],  # Monty
+                                        test_class.students[7]],  # Regina
+                                    3: [test_class.students[2],  # Abby
+                                        test_class.students[9]],  # Alex
+                                    # No score, not returned: None: [test_class.students[3],  # Zach
+                                    #                                test_class.students[11]],  # Edgar
+                                    50: [test_class.students[4]],  # Janell
+                                    99: [test_class.students[5]],  # Matthew
+                                    100: [test_class.students[6]],  # Olivia
+                                    2: [test_class.students[8]],  # Ashley
+                                    4: [test_class.students[10]],  # Melissa
+                                    6: [test_class.students[12]],  # Danielle
+                                    7: [test_class.students[13]],  # Kayla
+                                    8: [test_class.students[14]],  # Jaleigh
+                                    },
+            }
+        # Create chart in db:
+        test_database.create_chart(test_data_dict)
+
+        mock_plt = plt.figure(figsize=(19.20, 10.80))
+
+        test_image = io.BytesIO()
+        mock_plt.savefig(test_image, format='png', dpi=300)
+        test_image.seek(0)  # Return pointer to start of binary stream.
+
+        save_chart_path = test_database.save_chart_image(test_data_dict, mock_plt)
+        # Return pointer:
+        test_image.seek(0)  # Return pointer to start of binary stream.
+        # Path exists ad image at path is expected data:
+        assert save_chart_path.exists()
+        assert save_chart_path.read_bytes() == test_image.read1()  # size arg can be omitted on 3.7+
 
 
 class TestConnection:
