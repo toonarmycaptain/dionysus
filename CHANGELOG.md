@@ -6,8 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- `Class`, `Student` objects' class methods now return instances of the calling `cls`. `NewClass.from_dict` now returns an instance of `NewClass`, not `Class`.
+- `SQLiteDatabase` - using python's builtin `sqlite3` module.
+- `SQLiteDatabase` is now the default backend.
+- `test_database.py` - common tests run on every backend to ensure uniform API. 
 ### Changed
+- `Class`, `Student` objects' class methods now return instances of the calling `cls`. `NewClass.from_dict` now returns an instance of `NewClass`, not `Class`.
 - Rename `score-avatar_dict` in `chart_data_dict` to `score-students_dict`, and pass `Student` objects.
 - Retrieval of avatar paths moved from `take_chart_data_UI.take_student_scores` to `process_chart_data.generate_avatar_coords`, which now takes an additional class_id 
 parameter to facilitate getting avatar paths from JSONDatabase.
