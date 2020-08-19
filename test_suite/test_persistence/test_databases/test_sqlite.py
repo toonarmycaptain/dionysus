@@ -203,7 +203,7 @@ class TestUpdateClass:
 
 class TestGetAvatarPath:
     def test_get_avatar_path(self, empty_sqlite_database):
-        """"""
+        """Return avatar."""
         test_database = empty_sqlite_database
         # Create avatar:
         test_avatar_data = b'some binary data'
@@ -216,6 +216,12 @@ class TestGetAvatarPath:
         # Path may be different/random - test data:
         # Avatar id will be 1 as it is only one in empty db:
         assert test_database.get_avatar_path(1).read_bytes() == test_avatar_data
+
+    def test_get_avatar_path_returning_default_avatar(self, empty_sqlite_database):
+        """Return default avatar if None/Falsy argument."""
+        test_database = empty_sqlite_database
+
+        assert test_database.get_avatar_path(None).read_bytes() == empty_sqlite_database.default_avatar_path.read_bytes()
 
 
 class TestCreateChart:

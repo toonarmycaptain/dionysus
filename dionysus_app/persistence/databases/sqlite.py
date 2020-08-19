@@ -2,7 +2,7 @@ import sqlite3
 
 from io import BytesIO
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import matplotlib.pyplot as plt
 
@@ -153,12 +153,13 @@ class SQLiteDatabase(Database):
         """
         raise NotImplementedError  # type: ignore
 
-    def get_avatar_path(self, avatar_id: int) -> Path:
+    def get_avatar_path(self, avatar_id: Optional[int]) -> Path:
         """
         Return path to avatar from id.
 
+        Return default avatar if no avatar id.
         Copy avatar image to temp dir using primary key avatar_id as the
-         filename.
+        filename.
 
         Future iteration of chart generation code might facilitate
         returning a binary blob or file-like io.BytesIO object.
@@ -166,7 +167,8 @@ class SQLiteDatabase(Database):
         :param avatar_id:
         :return: Path
         """
-        ""
+        if not avatar_id:
+            return self.default_avatar_path
         conn = self._connection()
         image = conn.cursor().execute("""SELECT image FROM avatar WHERE avatar.id=?""",
                                       (avatar_id,)).fetchone()[0]
