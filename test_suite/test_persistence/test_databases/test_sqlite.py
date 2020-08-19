@@ -58,7 +58,7 @@ class TestSchema:
          pytest.param('class_parrot', ['dead', 'sleeping'], marks=pytest.mark.xfail),
          ])
     def test_schema(self, empty_sqlite_database, table, columns):
-        """Test table schema as expected."""
+        """Test table schema as expected, essentially tests ._init_db"""
         conn = empty_sqlite_database._connection()
         # Ensure all columns are present:
         cursor = conn.cursor().execute(f"""SELECT * from {table}""")

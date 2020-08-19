@@ -304,8 +304,8 @@ class TestSaveChartImage:
         """
         Verify API works.
 
-        NB No verification in API test, as API for verifying does not exist.
-        TODO: Verify saved chart contents when load/edit features added.
+        NB No db verification in API test, as API for verifying does not exist.
+        TODO: Verify db saved chart contents when load/edit features added.
         """
         test_database = request.getfixturevalue(database_backend)
 
