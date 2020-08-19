@@ -150,10 +150,8 @@ class TestCreateClass:
         # Class will have ids:
         test_loaded_class_with_student_ids = Class.from_dict(
             test_class.json_dict()).json_dict()
-        test_id = 1
-        for student in test_loaded_class_with_student_ids['students']:
+        for test_id, student in enumerate(test_loaded_class_with_student_ids['students'], start=1):
             student['id'] = test_id
-            test_id += 1
 
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
             test_class_id).json_dict() == test_loaded_class_with_student_ids
@@ -179,10 +177,8 @@ class TestLoadClass:
         # Class will have ids:
         test_loaded_class_with_student_ids = Class.from_dict(
             test_existing_class.json_dict()).json_dict()
-        test_id = 1
-        for student in test_loaded_class_with_student_ids['students']:
+        for test_id, student in enumerate(test_loaded_class_with_student_ids['students'], start=1):
             student['id'] = test_id
-            test_id += 1
 
         # Load class, verify data.
         assert test_database.load_class(  # NB Returned object will be Class, not NewClass:
