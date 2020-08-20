@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - `SQLiteDatabase` - using python's builtin `sqlite3` module.
-- `SQLiteDatabase` is now the default backend.
 - `test_database.py` - common tests run on every backend to ensure uniform API. 
 ### Changed
+- `SQLiteDatabase` is now the default backend.
 - `Class`, `Student` objects' class methods now return instances of the calling `cls`. `NewClass.from_dict` now returns an instance of `NewClass`, not `Class`.
+- `Class.id`, `Student.id` now used instead of other attrs (eg name) throught application.
 - Rename `score-avatar_dict` in `chart_data_dict` to `score-students_dict`, and pass `Student` objects.
 - Retrieval of avatar paths moved from `take_chart_data_UI.take_student_scores` to `process_chart_data.generate_avatar_coords`, which now takes an additional `class_id`.
 parameter to facilitate getting avatar paths from `JSONDatabase`.
@@ -18,6 +19,9 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 - Charts are now saved at 1080p proportion (19.20, 10.80, explicitly saved in png format at better quality 300dpi.
 ### Removed
 - Remove `setup.py` - package is not designed to be installed!
+### Depreciated
+- Python 3.6 is officially unsupported. Looks like it will still work with JSONDatabase, and with SQLiteDatabase if the database path is changed to a string, but no support going forward is intended.
+- Python 3.7 is pending depreciation, as Python 3.9 is due for release in October.
 
 ## [0.7.0-alpha] - 2020-06-27
 ### Added
