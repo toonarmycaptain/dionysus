@@ -1,3 +1,4 @@
+"""SQLite3 Database object."""
 import sqlite3
 
 from io import BytesIO
@@ -32,7 +33,7 @@ class SQLiteDatabase(Database):
         Table: `chart`
             key `id` - INTEGER primary key
             key `name` - TEXT <= 255 chars
-            key `date` - chart created date TODO: document
+            key `date` - chart created date TODO: implement/document
 
         Table: `score` - scores in charts
             key `id` - INTEGER primary key
@@ -202,6 +203,13 @@ class SQLiteDatabase(Database):
         conn.close()
 
     def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
+        """
+        Save image in db, and return path to file in temp storage.
+
+        :param chart_data_dict: dict
+        :param mpl_plt: matplotlib.pyplot
+        :return: Path
+        """
         # Get image data:
         image = BytesIO()
         mpl_plt.savefig(image,
@@ -264,6 +272,11 @@ class SQLiteDatabase(Database):
         connection.close()
 
     def _create_table_class(self) -> str:
+        """
+        Return sql statement to create class table in db.
+
+        :return: str
+        """
         return """CREATE TABLE IF NOT EXISTS class(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         -- Ensure name is type text no longer than 255 characters:
@@ -274,6 +287,11 @@ class SQLiteDatabase(Database):
                         """
 
     def _create_table_student(self) -> str:
+        """
+        Return sql statement to create student table in db.
+
+        :return: str
+        """
         return """CREATE TABLE IF NOT EXISTS student(
                         -- primary key must be INTEGER not INT, NOT NULL is implicit, or error/autoincrement won't work.
                         id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -288,6 +306,11 @@ class SQLiteDatabase(Database):
                         """
 
     def _create_table_chart(self) -> str:
+        """
+        Return sql statement to create chart table in db.
+
+        :return: str
+        """
         return """CREATE TABLE IF NOT EXISTS chart(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
@@ -299,6 +322,11 @@ class SQLiteDatabase(Database):
                         """
 
     def _create_table_score(self) -> str:
+        """
+        Return sql statement to create score table in db.
+
+        :return: str
+        """
         return """CREATE TABLE IF NOT EXISTS score(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         chart_id INTEGER NOT NULL,
@@ -310,6 +338,11 @@ class SQLiteDatabase(Database):
                         """
 
     def _create_table_avatar(self) -> str:
+        """
+        Return sql statement to create avatar table in db.
+
+        :return: str
+        """
         return """CREATE TABLE IF NOT EXISTS avatar(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         image BLOB NOT NULL
