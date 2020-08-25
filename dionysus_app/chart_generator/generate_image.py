@@ -24,7 +24,7 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
     :param chart_data_dict: dict
     :return: Path object
     """
-    fig = plt.figure(figsize=(16, 9))  # set proportion/size in inches,
+    fig = plt.figure(figsize=(19.20, 10.80))  # set proportion/size in inches, 1080p
     ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
     plt.subplots_adjust(left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01)
 
@@ -35,8 +35,7 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
     # if custom chart parameters affecting avatar layout,
     # pass chart_data_dict['chart_params'] to generate_avatar_coords
 
-    # nominally, avatar_coord_dict will be chart_data_dict['score-avatar_dict']
-    avatar_coord_dict = generate_avatar_coords(chart_data_dict['score-avatar_dict'])
+    avatar_coord_dict = generate_avatar_coords(chart_data_dict['score-students_dict'], chart_data_dict['class_id'])
 
     add_avatars_to_plot(ax, avatar_coord_dict)
 
@@ -109,18 +108,3 @@ def add_avatars_to_plot(ax, avatar_coord_dict: dict) -> None:
     """
     for avatar_path, xy_coords in avatar_coord_dict.items():
         add_avatar_to_plot(ax, avatar_path, xy_coords)
-
-# if __name__ == '__main__':
-#     data_dict = {'chart_name': 'testing chart',
-#                  'score-avatar_dict': {10: ['default_avatar_1.png',
-#                                             'default_avatar_2.png',
-#                                             'default_avatar_3.png',
-#                                             'default_avatar_4.png',
-#                                             'default_avatar.png',
-#                                             ]
-#                                        }
-#                  }
-#     # offset by 5 and increments of 10 neatly spaces
-#     # .4 zoom 150px images from x axis and eachother
-#
-#     generate_chart_image(data_dict)

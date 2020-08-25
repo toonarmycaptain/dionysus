@@ -16,8 +16,14 @@ class Student:
     path_safe_name : str
         Cleaned string safe to use in file names and paths.
 
-    avatar_id : Any None
+    student_id : Any
+        Student's id in database.
+
+    avatar_id : Any
         id or filename of student's avatar.
+
+    class_id : Any
+        Class' id in database.
 
 
     Methods
@@ -42,12 +48,16 @@ class Student:
         :type name: str
 
         :keyword avatar_id: Filename of student's avatar.
+        :keyword student_id: Any - unique id of student in database.
+        :keyword class_id: Any - unique id of student's class in database.
         :type avatar_id: str
         """
         self.name: str = name
 
         self.avatar_id: Any = kwargs.get('avatar_id')  # Equivalent to kwargs.get(key, None)
         # NB Assuring existence is responsibility of code instantiating/adding avatar_id.
+        self.id: Any = kwargs.get('student_id')  # student id in database.
+        self.class_id: Any = kwargs.get('class_id')  # class id in database
 
     @property
     def name(self):
@@ -101,19 +111,22 @@ class Student:
         """
         Translates Student object into JSON-serialisable dict.
 
-        Captures name, avatar_id attributes.
+        Captures name, avatar_id attributes. Omits id if not present.
 
         :return: dict
         """
-        json_data = {'name': self._name}
+        json_data = {'name': self._name
+                     }
+        if self.id:
+            json_data['id'] = self.id
         if self._avatar_id:
-            json_data['avatar_id'] = str(self.avatar_id)
+            json_data['avatar_id'] = self.avatar_id
         return json_data
 
     # Alternate constructors
 
     @classmethod
-    def from_dict(cls, student_dict: dict):
+    def from_dict(cls, student_dict: dict) -> 'Student':
         """
         Instantiate a Student object from a JSON-serialisable dict.
 
@@ -124,15 +137,18 @@ class Student:
         :param student_dict: dict
         :return: Student object
         """
+        _id = student_dict.get('id')  # Student may not have id if not in db.
         _name = student_dict['name']
         _avatar_id = student_dict.get('avatar_id', None)
-        return Student(name=_name,
-                       avatar_id=_avatar_id,
-                       )
+        return cls(class_id=_id,
+                   name=_name,
+                   avatar_id=_avatar_id,
+                   )
 
     # String representations
     def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
+                    f'id={self.id!r}, '
                     f'name={self._name!r}, '
                     f'avatar_id={self._avatar_id!r}'
                     f')'
@@ -142,4 +158,4 @@ class Student:
     def __str__(self) -> str:
         avatar_stmt = (f'avatar {self.avatar_id}' if self.avatar_id is not None
                        else 'no avatar')
-        return f'Student {self.name}, with {avatar_stmt}.'
+        return f'Student {self.name}, with {avatar_stmt}, and id={self.id}.'

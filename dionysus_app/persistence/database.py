@@ -95,7 +95,7 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
     Methods
     _______
     get_classes():
-        Return list of classes in the database.
+        Return list of ClassIdentifiers for classes in the database.
 
     class_name_exists(class_name: str):
         Return bool if class name already exists in the database.
@@ -128,8 +128,9 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
     @abc.abstractmethod
     def get_classes(self) -> List[ClassIdentifier]:
         """
-        Return list of available classes in the database,
-        as a list of tuples of class_id, name, for quick lookup.
+        Return list of available classes in the database.
+
+        Format as list of ClassIdentifiers.
 
         :return: List[ClassIdentifier] ie List[NamedTuple[Any, str]]
         """

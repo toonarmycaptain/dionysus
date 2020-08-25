@@ -10,8 +10,6 @@ from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_chart
                                                                       take_score_entry,
                                                                       take_student_scores,
                                                                       )
-from test_suite.test_persistence.test_database import empty_generic_database  # Fixture.
-from test_suite.test_persistence.test_databases.test_json import empty_json_database  # Fixture.
 from test_suite.testing_class_data import test_full_class_data_set
 
 
@@ -31,126 +29,40 @@ class TestTakeScoreData:
 
 
 class TestTakeStudentScores:
-    def test_take_student_scores(self, monkeypatch, empty_generic_database):
+    def test_take_student_scores(self, monkeypatch):
         """
         Score data returned.
 
         Test with generic database.
         """
+
         test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
-
-        test_database = empty_generic_database
-        test_database.default_avatar_path = 'mocked_default_avatar_path'
-
-        # NB If data other than avatar in dict values, this test implementation may need to change.
-        avatar_paths = [f'path to {student.avatar_id}' if student.avatar_id is not None
-                        else test_database.default_avatar_path
-                        for student in test_class.students]
 
         # Gives no score to one student with and without an avatar.
         mocked_take_score_entry_return_values = [0, 1, 3, None, 50, 99, 100, 1, 2, 3, 4, None, 6, 7, 8]
-        mocked_get_avatar_path_return_values = [
-            avatar_paths[mocked_take_score_entry_return_values.index(score)]
-            for score in mocked_take_score_entry_return_values
-            if score is not None]
 
-        test_take_student_scores_return_value = {0: ['path to Cali_avatar.png'],
-                                                 1: [test_database.default_avatar_path,
-                                                     test_database.default_avatar_path],
-                                                 3: [test_database.default_avatar_path,
-                                                     test_database.default_avatar_path],
-                                                 # No score, not returned: None: ['Zach_avatar.png', None]
-                                                 50: [test_database.default_avatar_path],
-                                                 99: [test_database.default_avatar_path],
-                                                 100: [test_database.default_avatar_path],
-                                                 2: ['path to Ashley_avatar.png'],
-                                                 4: [test_database.default_avatar_path],
-                                                 6: ['path to Danielle.png'],
-                                                 7: [test_database.default_avatar_path],
-                                                 8: [test_database.default_avatar_path]
+        test_take_student_scores_return_value = {0: [test_class.students[0]],  # Cali
+                                                 1: [test_class.students[1],  # Monty
+                                                     test_class.students[7]],  # Regina
+                                                 3: [test_class.students[2],  # Abby
+                                                     test_class.students[9]],  # Alex
+                                                 # No score, not returned: None: [test_class.students[3],  # Zach
+                                                 #                                test_class.students[11]],  # Edgar
+                                                 50: [test_class.students[4]],  # Janell
+                                                 99: [test_class.students[5]],  # Matthew
+                                                 100: [test_class.students[6]],  # Olivia
+                                                 2: [test_class.students[8]],  # Ashley
+                                                 4: [test_class.students[10]],  # Melissa
+                                                 6: [test_class.students[12]],  # Danielle
+                                                 7: [test_class.students[13]],  # Kayla
+                                                 8: [test_class.students[14]],  # Jaleigh
                                                  }
+
         score = (score for score in mocked_take_score_entry_return_values)
 
         def mocked_take_score_entry(student_name):
             return next(score)
 
-        avatar_path = (path for path in mocked_get_avatar_path_return_values)
-
-        def mocked_get_avatar_path(avatar_id):
-            """
-            Strictly speaking does not need a mock, as should raise error, but
-            re-mocking method for clarity.
-            """
-            return next(avatar_path)
-
-        def mocked_get_avatar_path_class_filename(class_name, avatar_id):
-            raise NotImplementedError("'get_avatar_path_class_filename' "
-                                      "only implemented for JSON database.")
-
-        test_database.get_avatar_path = mocked_get_avatar_path
-        test_database.get_avatar_path_class_filename = mocked_get_avatar_path_class_filename
-
-        monkeypatch.setattr(take_chart_data_UI.definitions, 'DATABASE', test_database)
-        monkeypatch.setattr(take_chart_data_UI, 'take_score_entry', mocked_take_score_entry)
-
-        assert take_student_scores(test_class) == test_take_student_scores_return_value
-
-    def test_take_student_scores_JSON_database_object(self, monkeypatch, empty_json_database):
-        """Score data returned, using JSONDatabase."""
-        test_class = Class.from_dict(test_full_class_data_set['json_dict_rep'])
-
-        test_JSON_database = empty_json_database
-        test_JSON_database.default_avatar_path = 'mocked_default_avatar_path'
-
-        # NB If data other than avatar in dict values, this test implementation may need to change.
-        avatar_paths = [f'path to {student.avatar_id}' if student.avatar_id is not None
-                        else test_JSON_database.default_avatar_path
-                        for student in test_class.students]
-
-        # Gives no score to one student with and without an avatar.
-        mocked_take_score_entry_return_values = [0, 1, 3, None, 50, 99, 100, 1, 2, 3, 4, None, 6, 7, 8]
-        mocked_get_avatar_path_return_values = [
-            avatar_paths[mocked_take_score_entry_return_values.index(score)]
-            for score in mocked_take_score_entry_return_values
-            if score is not None]
-
-        test_take_student_scores_return_value = {0: ['path to Cali_avatar.png'],
-                                                 1: [test_JSON_database.default_avatar_path,
-                                                     test_JSON_database.default_avatar_path],
-                                                 3: [test_JSON_database.default_avatar_path,
-                                                     test_JSON_database.default_avatar_path],
-                                                 # No score, not returned: None: ['Zach_avatar.png', None]
-                                                 50: [test_JSON_database.default_avatar_path],
-                                                 99: [test_JSON_database.default_avatar_path],
-                                                 100: [test_JSON_database.default_avatar_path],
-                                                 2: ['path to Ashley_avatar.png'],
-                                                 4: [test_JSON_database.default_avatar_path],
-                                                 6: ['path to Danielle.png'],
-                                                 7: [test_JSON_database.default_avatar_path],
-                                                 8: [test_JSON_database.default_avatar_path]
-                                                 }
-        score = (score for score in mocked_take_score_entry_return_values)
-
-        def mocked_take_score_entry(student_name):
-            return next(score)
-
-        def mocked_get_avatar_path(class_name, avatar_id):
-            """
-            Strictly speaking does not need a mock, as should raise error, but
-            re-mocking method for clarity.
-            """
-            raise NotImplementedError("Alternate method 'get_avatar_path_class_filename' "
-                                      "should be called for JSON database.")
-
-        avatar_path = (path for path in mocked_get_avatar_path_return_values)
-
-        def mocked_get_avatar_path_class_filename(class_name, avatar_id):
-            return next(avatar_path)
-
-        test_JSON_database.get_avatar_path = mocked_get_avatar_path
-        test_JSON_database.get_avatar_path_class_filename = mocked_get_avatar_path_class_filename
-
-        monkeypatch.setattr(take_chart_data_UI.definitions, 'DATABASE', test_JSON_database)
         monkeypatch.setattr(take_chart_data_UI, 'take_score_entry', mocked_take_score_entry)
 
         assert take_student_scores(test_class) == test_take_student_scores_return_value

@@ -1,6 +1,7 @@
 """Tests for Student class."""
 import pytest
 
+from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 
 
@@ -46,6 +47,38 @@ class TestStudentName:
         """Test error is raised for each bad type, error msg contains type."""
         with pytest.raises(TypeError, match=str(type(name_arg))):
             Student(name=name_arg)
+
+
+class TestStudentId:
+    """Test Student Id"""
+
+    @pytest.mark.parametrize(
+        'id_arg,',
+        [17,  # Integer eg sql db id
+         'some student_name',  # JSON db id
+         Class(name='Class used to represent complex object'),  # Ensure 'Any' typing is accurate.
+         ])
+    def test_id(self, id_arg):
+        assert Student(name='Arthur, King of the Britons', student_id=id_arg).id == id_arg
+
+    def test_student_id_default_arg(self):
+        assert Student(name='Arthur, King of the Britons').id is None
+
+
+class TestStudentClassId:
+    """Test Student's Class Id"""
+
+    @pytest.mark.parametrize(
+        'class_id_arg,',
+        [17,  # Integer eg sql db id
+         'some student_name',  # JSON db id
+         Class(name='Class used to represent complex object'),  # Ensure 'Any' typing is accurate.
+         ])
+    def test_id(self, class_id_arg):
+        assert Student(name='Arthur, King of the Britons', class_id=class_id_arg).class_id == class_id_arg
+
+    def test_student_id_default_arg(self):
+        assert Student(name='Arthur, King of the Britons').class_id is None
 
 
 class TestStudentAvatar:
@@ -102,6 +135,7 @@ class TestStudentJsonDict:
 
 
 class TestStudentFromDict:
+    @pytest.mark.parametrize('student_class_def', [Student])
     @pytest.mark.parametrize(
         'output_json_dict',
         [({'name': 'Sir Galahad'}),  # name only
@@ -109,9 +143,9 @@ class TestStudentFromDict:
          ({'name': 'Arther, King of the Britons', 'avatar_id': 'Holy_Grail.jpg'}),
          ({'name': 'Brian', 'avatar_id': 'a_naughty_boy.png'}),
          ])
-    def test_from_dict(self, output_json_dict):
-        student_object = Student.from_dict(output_json_dict)
-        assert isinstance(student_object, Student)
+    def test_from_dict(self, student_class_def, output_json_dict):
+        student_object = student_class_def.from_dict(output_json_dict)
+        assert isinstance(student_object, student_class_def)
         # Verify instantiated object is equivalent by reserialising:
         assert student_object.json_dict() == output_json_dict
 
@@ -129,6 +163,7 @@ class TestStudentRepr:
     def test_repr(self, student_object):
         assert repr(student_object) == (f'{student_object.__class__.__module__}'
                                         f'.{student_object.__class__.__name__}('
+                                        f'id={student_object.id if student_object.id else None !r}, '
                                         f'name={student_object._name!r}, '
                                         f'avatar_id={student_object._avatar_id!r})')
 
@@ -138,9 +173,11 @@ class TestStudentStr:
         'student_object,'
         'expected_str',
         [(Student(name='I have no avatar!'),
-          f"Student {'I have no avatar!'}, with no avatar."),
+          f"Student {'I have no avatar!'}, with no avatar, and id=None."),
          (Student(name='I have an avatar', avatar_id='path_to_my_avatar'),
-          f"Student {'I have an avatar'}, with avatar {'path_to_my_avatar'}."),
+          f"Student {'I have an avatar'}, with avatar {'path_to_my_avatar'}, and id=None."),
+         (Student(student_id='some id', name='I have an id and avatar', avatar_id='path_to_my_avatar'),
+          f"Student {'I have an id and avatar'}, with avatar {'path_to_my_avatar'}, and id=some id.")
          ])
     def test_str(self, student_object, expected_str, test_student_name_only, test_student_with_avatar):
         assert str(student_object) == expected_str
