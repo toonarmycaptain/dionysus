@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `SQLiteDatabase` - using python's builtin `sqlite3` module.
 - `test_database.py` - common tests run on every backend to ensure uniform API. 
+- Add `.dcignore` omitting test code from deepcode.ai analysis.
 ### Changed
 - `SQLiteDatabase` is now the default backend.
 - `Class`, `Student` objects' class methods now return instances of the calling `cls`. `NewClass.from_dict` now returns an instance of `NewClass`, not `Class`.
