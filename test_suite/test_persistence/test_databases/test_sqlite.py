@@ -338,7 +338,7 @@ class TestSaveChartImage:
 
 
 class TestClose:
-    def test_close(self, request, empty_sqlite_database):
+    def test_close(self, empty_sqlite_database):
         """No close actions needed. Verify no error."""
         test_database = empty_sqlite_database
 
