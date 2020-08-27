@@ -213,11 +213,11 @@ class SQLiteDatabase(Database):
                            (chart_data_dict['chart_name'],))
             chart_id = chart_data_dict['chart_id'] = cursor.lastrowid
             # Create scores in score table
+            student_scores_data = []
             for score, students in chart_data_dict['score-students_dict'].items():
-                for student in students:
-                    cursor.execute(
-                        """INSERT INTO score(chart_id, student_id, value) VALUES(?,?,?)""",
-                        (chart_id, student.id, score))
+                student_scores_data += [(chart_id, student.id, score) for student in students]
+            cursor.executemany("""INSERT INTO score(chart_id, student_id, value) VALUES(?,?,?)""",
+                               student_scores_data)
             conn.commit()
         conn.close()
 
