@@ -135,14 +135,16 @@ class SQLiteDatabase(Database):
                 """, (class_id,)).fetchall()
             print(class_data)
             if class_data:
-                class_id, class_name = class_data[0][:2]  # Class id, name from first student row returned.
+                # Class id, name from first student row returned.
+                class_id, class_name = class_data[0][:2]
                 # Instantiate student objects:
                 students_list = [Student(student_id=student_id,
                                          name=student_name,
                                          class_id=class_id,
                                          avatar_id=avatar,
                                          )
-                                 for class_id, class_name, student_id, student_name, avatar in class_data]
+                                 for class_id, class_name, student_id, student_name, avatar
+                                 in class_data]
 
             # Handle empty class (no students = no rows returned:
             else:
