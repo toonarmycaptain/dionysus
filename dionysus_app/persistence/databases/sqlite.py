@@ -262,7 +262,13 @@ class SQLiteDatabase(Database):
         pass
 
     def _connection(self) -> sqlite3.Connection:
+        """
+        Return connection to database.
 
+        Execute command enforcing foreign key support in SQLite.
+
+        :return: sqlite3.Connection
+        """
         connection = sqlite3.connect(self.database_path)
         # Ensure foreign key constraint enforcement.
         connection.cursor().execute("""PRAGMA foreign_keys=ON;""")
