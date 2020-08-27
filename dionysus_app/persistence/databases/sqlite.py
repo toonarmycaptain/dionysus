@@ -124,19 +124,38 @@ class SQLiteDatabase(Database):
         :return: Class
         """
         with self._connection() as conn:
-            # Get class from db
-            # Use 'loaded_class_id' to avoid name clash with class_id when loading student.
-            loaded_class_id, class_name = conn.cursor().execute(
-                """SELECT * FROM class WHERE class.id=?""", (class_id,)).fetchone()
-            # Get student data for class:
-            students_data = conn.cursor().execute(
-                """SELECT * FROM student WHERE student.class_id=?""", (loaded_class_id,)).fetchall()
-            # Instantiate student objects:
-            students_list = [Student(student_id=student_id, name=name, class_id=class_id, avatar_id=avatar)
-                             for student_id, name, class_id, avatar in students_data]
+            # Get class from db:
+            class_data = conn.cursor().execute(
+                """
+                SELECT class.id, class.name, student.id, student.name, student.avatar_id
+                FROM class
+                INNER JOIN student
+                ON class.id=student.class_id
+                WHERE class.id=?
+                """, (class_id,)).fetchall()
+            print(class_data)
+            if class_data:
+                class_id, class_name = class_data[0][:2]  # Class id, name from first student row returned.
+                # Instantiate student objects:
+                students_list = [Student(student_id=student_id,
+                                         name=student_name,
+                                         class_id=class_id,
+                                         avatar_id=avatar,
+                                         )
+                                 for class_id, class_name, student_id, student_name, avatar in class_data]
+
+            # Handle empty class (no students = no rows returned:
+            else:
+                class_id, class_name = conn.cursor().execute(
+                    """
+                    SELECT class.id, class.name
+                    FROM class
+                    WHERE class.id=?
+                    """, (class_id,)).fetchone()
+                students_list = []
         conn.close()
 
-        return Class(class_id=loaded_class_id, name=class_name, students=students_list)
+        return Class(class_id=class_id, name=class_name, students=students_list)
 
     def update_class(self, class_to_write: Class) -> None:
         """
