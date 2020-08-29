@@ -1,3 +1,4 @@
+"""Test SQLiteDatabase object."""
 import io
 import sqlite3
 
@@ -15,22 +16,32 @@ from dionysus_app.student import Student
 from test_suite.test_class import test_class_name_only, test_full_class  # Fixture imports.
 
 
-def empty_sqlite_test_db(db_path):
+def empty_sqlite_test_db(db_path) -> SQLiteDatabase:
+    """
+    Return empty SQLiteDatabase at path for testing.
+
+    :param db_path: Path
+    :return: SQLiteDatabase
+    """
     # give random db ref to avoid having to drop the tables and recreate each time....much faster!
     num = randint(1, 1000000000)
-    # for some reason this didn't work on linux, but does on Win10.
+    # for some reason this didn't work on linux, but does on Win10:
     # return SQLiteDatabase(database_path=f'file:test_db{num}?mode=memory&cache=shared')
     # Slower, but cross platform:
     return SQLiteDatabase(database_path=Path(db_path, f'test_db{num}'))
 
 
 @pytest.fixture
-def empty_sqlite_database(tmpdir):
-    """return in-RAM empty SQLiteDatabase.
+def empty_sqlite_database(tmpdir) -> SQLiteDatabase:
+    """
+    Initialised empty SQLiteDatabase.
 
     Basing in tmpdir works where basing in a 'file:' fails on linux,
     and also ensures test atomicity, each test starting with a fresh,
     empty database.
+
+    :param tmpdir: temporary directory path (fixture)
+    :return: SQLiteDatabase
     """
     test_db = empty_sqlite_test_db(tmpdir)
     return test_db
@@ -327,7 +338,7 @@ class TestSaveChartImage:
 
 
 class TestClose:
-    def test_close(self, request, empty_sqlite_database):
+    def test_close(self, empty_sqlite_database):
         """No close actions needed. Verify no error."""
         test_database = empty_sqlite_database
 

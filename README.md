@@ -17,7 +17,7 @@
 
 **dionysus** is an open source CLI app primarily aimed at teachers that charts student results for display using avatars, nicknames, or student names. 
 
-Currently in alpha release, fuller features, proper install/packaging, database backend, and a full GUI/webapp are future goals.
+Currently in alpha release, fuller features, automated install/packaging, and a full GUI/webapp are future goals.
 Supports latest two python minor versions - currently 3.7 and 3.8.
 
 Excitedly welcoming contributors! 
@@ -29,12 +29,12 @@ Leave a comment or [raise an issue](https://github.com/toonarmycaptain/dionysus/
 ### Installation
 
 Currently to use the application, you must clone or download the project from here on github. See [releases](https://github.com/toonarmycaptain/dionysus/releases) for a `zip` or `tar.gz`.
-You will need Python 3.6+, unzip the project if necessary, navigate to the project directory and run `pip install -r requirements.txt` or manually install the dependencies `pip install ...` you find in the requirements file.
+You will need Python 3.7+, unzip the project if necessary, navigate to the project directory and run `pip install -r requirements.txt` or manually install the dependencies `pip install ...` you find in the requirements file.
 For development you will also need `pip install -r requirements_dev.txt`.
 
 ### Running the application
 
-Either click on `app_main.py` in the project folder, or navigate to the folder and run `python -m app_main` on the command line.
+Click on `app_main.py` in the project folder, or navigate to the folder and run `python -m app_main`/`python3 app_main.py` in terminal (depending on OS).
 
 #### Versioning
 As much as possible this project will follow [Semantic Versioning](https://semver.org/).
