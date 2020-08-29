@@ -88,7 +88,7 @@ class SQLiteDatabase(Database):
                 WHERE name=?
                 LIMIT 1;
                 """, (class_name,))
-            # matching_class: no class [] or [('class name',)] if matching class name found.
+            # Matching_class: no class [] or [('class name',)] if matching class name found.
             return bool(matching_class.fetchone())
 
     def create_class(self, new_class: NewClass) -> None:
@@ -158,7 +158,6 @@ class SQLiteDatabase(Database):
                 ON class.id=student.class_id
                 WHERE class.id=?;
                 """, (class_id,)).fetchall()
-            print(class_data)
             if class_data:
                 # Class id, name from first student row returned.
                 class_id, class_name = class_data[0][:2]
@@ -306,16 +305,16 @@ class SQLiteDatabase(Database):
         Return connection to database.
 
         Execute command enforcing foreign key support in SQLite.
+        Errors connecting to on-disk db not handled. Errors indicate a
+        real error, likely a corrupt/non-db file, or too many connections,
+        and needs attention.
 
         :return: sqlite3.Connection
         """
         connection = sqlite3.connect(self.database_path)
         # Ensure foreign key constraint enforcement.
         connection.cursor().execute("""PRAGMA foreign_keys=ON;""")
-        # print("Connection to SQLite DB successful")
         return connection
-        # handle case where connection fails?
-        # or should it fail, since on disk db connection should not fail?
 
     def _init_db(self):
         """
