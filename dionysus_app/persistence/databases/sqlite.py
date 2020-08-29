@@ -66,7 +66,12 @@ class SQLiteDatabase(Database):
         """
         with self._connection() as conn:
             # get list of tuple/list pairs of id, name
-            classes = conn.cursor().execute("""SELECT id, name FROM class;""").fetchall()
+            classes = conn.cursor().execute(
+                """
+                SELECT id,
+                       name
+                FROM class;
+                """).fetchall()
             # convert to ClassIdentifiers
             return [ClassIdentifier(*class_data) for class_data in classes]
 
@@ -76,9 +81,14 @@ class SQLiteDatabase(Database):
         :return: bool
         """
         with self._connection() as conn:
-            matching_class = conn.cursor().execute("""SELECT class.name FROM class 
-                                                      WHERE name=? LIMIT 1""", (class_name,))
-            # Will return either no class [] or [('class name',)] if matching class name found.
+            matching_class = conn.cursor().execute(
+                """
+                SELECT class.name
+                FROM class
+                WHERE name=?
+                LIMIT 1;
+                """, (class_name,))
+            # Matching_class: no class [] or [('class name',)] if matching class name found.
             return bool(matching_class.fetchone())
 
     def create_class(self, new_class: NewClass) -> None:
@@ -95,7 +105,11 @@ class SQLiteDatabase(Database):
         with self._connection() as conn:
             cursor = conn.cursor()
             # insert class into class
-            cursor.execute("""INSERT INTO class(name) VALUES(?)""", (new_class.name,))
+            cursor.execute(
+                """
+                INSERT INTO class(name)
+                VALUES(?);
+                """, (new_class.name,))
             # Add id to class:
             new_class.id = cursor.lastrowid
             for student in new_class:
@@ -104,11 +118,18 @@ class SQLiteDatabase(Database):
                     # Move avatar from temp to db:
                     avatar_blob = new_class.temp_avatars_dir.joinpath(
                         student.avatar_id).read_bytes()
-                    cursor.execute("""INSERT INTO avatar(image) VALUES(?)""", (avatar_blob,))
+                    cursor.execute(
+                        """
+                        INSERT INTO avatar(image)
+                        VALUES(?);
+                        """, (avatar_blob,))
                     # Change avatar_id to id of avatar in db.
                     student.avatar_id = cursor.lastrowid
                 cursor.execute(
-                    """INSERT INTO student(name, class_id, avatar_id) VALUES(?,?,?)""",
+                    """
+                    INSERT INTO student(name, class_id, avatar_id)
+                    VALUES(?,?,?);
+                    """,
                     (student.name, new_class.id, student.avatar_id))
 
                 # Add id to student:
@@ -124,19 +145,44 @@ class SQLiteDatabase(Database):
         :return: Class
         """
         with self._connection() as conn:
-            # Get class from db
-            # Use 'loaded_class_id' to avoid name clash with class_id when loading student.
-            loaded_class_id, class_name = conn.cursor().execute(
-                """SELECT * FROM class WHERE class.id=?""", (class_id,)).fetchone()
-            # Get student data for class:
-            students_data = conn.cursor().execute(
-                """SELECT * FROM student WHERE student.class_id=?""", (loaded_class_id,)).fetchall()
-            # Instantiate student objects:
-            students_list = [Student(student_id=student_id, name=name, class_id=class_id, avatar_id=avatar)
-                             for student_id, name, class_id, avatar in students_data]
+            # Get class from db:
+            class_data = conn.cursor().execute(
+                """
+                SELECT class.id,
+                       class.name,
+                       student.id,
+                       student.name,
+                       student.avatar_id
+                FROM class
+                INNER JOIN student
+                ON class.id=student.class_id
+                WHERE class.id=?;
+                """, (class_id,)).fetchall()
+            if class_data:
+                # Class id, name from first student row returned.
+                class_id, class_name = class_data[0][:2]
+                # Instantiate student objects:
+                students_list = [Student(student_id=student_id,
+                                         name=student_name,
+                                         class_id=class_id,
+                                         avatar_id=avatar,
+                                         )
+                                 for class_id, class_name, student_id, student_name, avatar
+                                 in class_data]
+
+            # Handle empty class (no students = no rows returned:
+            else:
+                class_id, class_name = conn.cursor().execute(
+                    """
+                    SELECT class.id,
+                           class.name
+                    FROM class
+                    WHERE class.id=?;
+                    """, (class_id,)).fetchone()
+                students_list = []
         conn.close()
 
-        return Class(class_id=loaded_class_id, name=class_name, students=students_list)
+        return Class(class_id=class_id, name=class_name, students=students_list)
 
     def update_class(self, class_to_write: Class) -> None:
         """
@@ -171,8 +217,12 @@ class SQLiteDatabase(Database):
         if not avatar_id:
             return self.default_avatar_path
         conn = self._connection()
-        image = conn.cursor().execute("""SELECT image FROM avatar WHERE avatar.id=?""",
-                                      (avatar_id,)).fetchone()[0]
+        image = conn.cursor().execute("""
+                                      SELECT image
+                                      FROM avatar
+                                      WHERE avatar.id=?;
+                                      """, (avatar_id,)).fetchone()[0]
+
         conn.close()
         temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
                                str(avatar_id))
@@ -190,15 +240,21 @@ class SQLiteDatabase(Database):
             cursor = conn.cursor()
 
             # Create chart in chart table
-            cursor.execute("""INSERT INTO chart(name) VALUES(?)""",
-                           (chart_data_dict['chart_name'],))
+            cursor.execute(
+                """
+                INSERT INTO chart(name)
+                VALUES(?);
+                """, (chart_data_dict['chart_name'],))
             chart_id = chart_data_dict['chart_id'] = cursor.lastrowid
             # Create scores in score table
+            student_scores_data = []
             for score, students in chart_data_dict['score-students_dict'].items():
-                for student in students:
-                    cursor.execute(
-                        """INSERT INTO score(chart_id, student_id, value) VALUES(?,?,?)""",
-                        (chart_id, student.id, score))
+                student_scores_data += [(chart_id, student.id, score) for student in students]
+            cursor.executemany(
+                """
+                INSERT INTO score(chart_id, student_id, value)
+                VALUES(?,?,?);
+                """, student_scores_data)
             conn.commit()
         conn.close()
 
@@ -220,8 +276,12 @@ class SQLiteDatabase(Database):
         # Save image in db
         with self._connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("""UPDATE chart SET image=? WHERE id=?""",
-                           (image.read(), chart_data_dict['chart_id']))
+            cursor.execute(
+                """
+                UPDATE chart
+                SET image=?
+                WHERE id=?;
+                """, (image.read(), chart_data_dict['chart_id']))
             image.seek(0)
             conn.commit()
         conn.close()
@@ -241,14 +301,20 @@ class SQLiteDatabase(Database):
         pass
 
     def _connection(self) -> sqlite3.Connection:
+        """
+        Return connection to database.
 
+        Execute command enforcing foreign key support in SQLite.
+        Errors connecting to on-disk db not handled. Errors indicate a
+        real error, likely a corrupt/non-db file, or too many connections,
+        and needs attention.
+
+        :return: sqlite3.Connection
+        """
         connection = sqlite3.connect(self.database_path)
         # Ensure foreign key constraint enforcement.
         connection.cursor().execute("""PRAGMA foreign_keys=ON;""")
-        # print("Connection to SQLite DB successful")
         return connection
-        # handle case where connection fails?
-        # or should it fail, since on disk db connection should not fail?
 
     def _init_db(self):
         """
