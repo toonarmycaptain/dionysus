@@ -11,6 +11,7 @@ python:
     - "3.6"
     - "3.7"
     - "3.8"
+    - "3.9"
     - "nightly"
 
 
@@ -19,6 +20,7 @@ matrix:
     allow_failures:
         - os: windows  # allow failure on Win until Travis-Win supports python.
         - python: "3.6"
+        - python: "3.7"
         - python: "nightly"
 
 install:
