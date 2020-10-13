@@ -93,7 +93,7 @@ class ImageDisplay(tk.Frame):
 
         self.display_image = ImageTk.PhotoImage(self.display_sized_image, master=self.master)
         self.image_panel = tk.Label(self, image=self.display_image)
-        self.image_panel.pack(side="top", fill="both", expand="yes")
+        self.image_panel.pack(side="top", fill="both", expand=True)
 
     def create_save_as_button_widget(self) -> None:
         self.save_as_button = tk.Button(self, text="Save as", font=('Arial', 24),
