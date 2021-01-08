@@ -1,23 +1,30 @@
 build: false
 
+image: Visual Studio 2019
+
 environment:
     matrix:
         - PYTHON: "C:\\Python36"
         - PYTHON: "C:\\Python37"
         - PYTHON: "C:\\Python38"
+        - PYTHON: "C:\\Python39"
         - PYTHON: "C:\\Python36-x64"
         - PYTHON: "C:\\Python37-x64"
         - PYTHON: "C:\\Python38-x64"
+        - PYTHON: "C:\\Python39-x64"
 
 matrix:
     allow_failures:
         - PYTHON: "C:\\Python36"
+        - PYTHON: "C:\\Python37"
         - PYTHON: "C:\\Python36-x64"
+        - PYTHON: "C:\\Python37-x64"
 
 init:
   - SET PATH=%PYTHON%;%PATH%
 
 install:
+    - python -m pip install -U pip
     - python -m pip install -r requirements_dev.txt
     - python -m pip install -r requirements.txt
 
