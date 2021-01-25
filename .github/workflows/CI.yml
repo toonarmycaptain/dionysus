@@ -31,7 +31,7 @@ jobs:
              python-version: 3.7
              experimental: true
            - os: windows-latest
-             python-version: 3.10.0-dev
+             python-version: 3.10-dev
              experimental: true
 
     steps:
