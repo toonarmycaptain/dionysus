@@ -14,15 +14,15 @@ jobs:
         experimental: [false]  # These versions must pass.
         
         include:
-           - os: ubuntu-latest 
-             python-version: 3.6
-             experimental: true
+#            - os: ubuntu-latest 
+#              python-version: 3.6
+#              experimental: true
            - os: ubuntu-latest 
              python-version: 3.7
              experimental: true
-           - os: ubuntu-latest 
-             python-version: 3.10-dev
-             experimental: true
+#            - os: ubuntu-latest 
+#              python-version: 3.10-dev
+#              experimental: true
          
            - os: windows-latest 
              python-version: 3.6
@@ -30,9 +30,9 @@ jobs:
            - os: windows-latest
              python-version: 3.7
              experimental: true
-           - os: windows-latest
-             python-version: 3.10-dev
-             experimental: true
+#            - os: windows-latest
+#              python-version: 3.10-dev
+#              experimental: true
 
     steps:
     - uses: actions/checkout@v2  # checkout repo
