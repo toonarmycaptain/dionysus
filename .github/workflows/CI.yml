@@ -51,7 +51,7 @@ jobs:
 
     - name: Test with pytest --cov=./ --mypy -vv
       run: |
-        pytest --cov --mypy -vv
+        pytest --cov=./ --mypy -vv
         coverage xml -i
 
     - name: Codacy Coverage Reporter
