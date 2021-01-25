@@ -14,24 +14,31 @@ jobs:
         experimental: [false]  # These versions must pass.
         
         include:
-          - python-version: 3.6
-            os: ubuntu_latest 
-            experimental: true
-          - python-version: 3.7
-            os: ubuntu_latest 
-            experimental: true
-          - python-version: 3.10.0-dev
-            os: ubuntu_latest 
-            experimental: true
+#           - python-version: 3.6
+#             os: ubuntu_latest 
+#             experimental: true
+#           - python-version: 3.7
+#             os: ubuntu_latest 
+#             experimental: true
+#           - python-version: 3.10.0-dev
+#             os: ubuntu_latest 
+#             experimental: true
           
+#           - python-version: 3.6
+#             os: windows_latest 
+#             experimental: true
+#           - python-version: 3.7
+#             os: windows_latest
+#             experimental: true
+#           - python-version: 3.10.0-dev
+#             os: windows_latest
+#             experimental: true
+
           - python-version: 3.6
-            os: windows_latest 
             experimental: true
           - python-version: 3.7
-            os: windows_latest
             experimental: true
           - python-version: 3.10.0-dev
-            os: windows_latest
             experimental: true
 
     steps:
