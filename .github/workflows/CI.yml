@@ -34,8 +34,6 @@ jobs:
             os: windows_latest
             experimental: true
 
-          - os: macos-latest
-            experimental: true
     steps:
     - uses: actions/checkout@v2  # checkout repo
     
