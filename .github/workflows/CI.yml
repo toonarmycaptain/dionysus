@@ -75,7 +75,7 @@ jobs:
     - name: Codecov  # upload 
       uses: codecov/codecov-action@v1.2.1
       with:
-        files: ./coverage1.xml
+        files: ./coverage.xml
         name: codecov-umbrella # optional
         fail_ci_if_error: false # allow codecov to signal fail rather than action failing.
         verbose: true # optional (default = false)
