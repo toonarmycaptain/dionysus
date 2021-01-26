@@ -94,7 +94,7 @@ jobs:
       - name: Coveralls Finished report
         uses: AndreMiras/coveralls-python-action@develop
         with:
-          github-token: ${{ github.token }}
+        #  github-token: ${{ github.token }}
           parallel: true
           parallel-finished: true
           flag-name: github_action_tests
