@@ -87,6 +87,14 @@ jobs:
         parallel: true
         flag-name: Test
 
+  coveralls_py:
+      needs: test
+      runs-on: ubuntu-latest
+      steps:
+      - name: Coveralls Finished report py
+        run: coveralls
+        
+
   coveralls_finish:
       needs: test
       runs-on: ubuntu-latest
