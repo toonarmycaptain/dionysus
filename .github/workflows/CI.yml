@@ -12,7 +12,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         python-version: [3.8, 3.9]
         experimental: [false]  # These versions must pass.
-        
+
         include:
 #            - os: ubuntu-latest 
 #              python-version: 3.6
@@ -23,7 +23,7 @@ jobs:
 #            - os: ubuntu-latest 
 #              python-version: 3.10-dev
 #              experimental: true
-         
+
            - os: windows-latest 
              python-version: 3.6
              experimental: true
@@ -36,30 +36,29 @@ jobs:
 
     env: 
       GITHUB_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}  # Set token for Coveralls
-      
+
     steps:
     - uses: actions/checkout@v2  # checkout repo
-    
+
     - name: Set up production Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       if: "!endsWith(matrix.python-version, '-dev')"
       with:
         python-version: ${{ matrix.python-version }}
-          
+
     - name: Set up dev Python ${{ matrix.python-version }}
       uses: deadsnakes/action@v2.1.1
       if: endsWith(matrix.python-version, '-dev')
       with:
         python-version: ${{ matrix.python-version }}
-          
-    - name: display python version
+
+    - name: Display python version
       run: python --version --version && which python        
-     
-        
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        
+
         python -m pip install -r requirements.txt
         python -m pip install -r requirements_dev.txt
 
@@ -75,21 +74,21 @@ jobs:
       with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage.xml
-        
+
     - name: Codecov  # upload 
       uses: codecov/codecov-action@v1.2.1
       with:
         files: ./coverage.xml
         name: codecov-umbrella # optional
-        fail_ci_if_error: false # allow codecov to signal fail rather than action failing.
+        fail_ci_if_error: false # Allow codecov to signal fail rather than action failing.
         verbose: true # optional (default = false)
-      
+
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop
       if: matrix.os == 'ubuntu_latest'
       with:
         parallel: true
-        flag-name: Test        
+        flag-name: Test
 
   coveralls_finish:
       needs: test
@@ -104,5 +103,3 @@ jobs:
           flag-name: github_action_tests
           base-path: '.'
           debug: true
-    
-    
