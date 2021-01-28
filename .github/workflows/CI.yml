@@ -64,6 +64,7 @@ jobs:
       run: |
         pytest --cov=./ --mypy -vv
         coverage xml -i
+        coveralls
 
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@0.2.0
@@ -85,7 +86,7 @@ jobs:
       if: matrix.os == 'ubuntu_latest'
       with:
         parallel: true
-        flag-name: Test
+        flag-name: Test        
 
   coveralls_finish:
       needs: test
