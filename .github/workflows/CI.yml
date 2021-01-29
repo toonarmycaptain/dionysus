@@ -14,17 +14,17 @@ jobs:
         experimental: [false]  # These versions must pass.
 
         include:
-#            - os: ubuntu-latest 
+#            - os: ubuntu-latest
 #              python-version: 3.6
 #              experimental: true
-           - os: ubuntu-latest 
+           - os: ubuntu-latest
              python-version: 3.7
              experimental: true
-#            - os: ubuntu-latest 
+#            - os: ubuntu-latest
 #              python-version: 3.10-dev
 #              experimental: true
 
-           - os: windows-latest 
+           - os: windows-latest
              python-version: 3.6
              experimental: true
            - os: windows-latest
@@ -34,7 +34,7 @@ jobs:
 #              python-version: 3.10-dev
 #              experimental: true
 
-    env: 
+    env:
       GITHUB_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}  # Set token for Coveralls
 
     steps:
@@ -53,7 +53,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Display python version
-      run: python --version --version && which python        
+      run: python --version --version && which python
 
     - name: Install dependencies
       run: |
@@ -75,7 +75,7 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage.xml
 
-    - name: Codecov  # upload 
+    - name: Codecov  # upload
       uses: codecov/codecov-action@v1.2.1
       with:
         files: ./coverage.xml
