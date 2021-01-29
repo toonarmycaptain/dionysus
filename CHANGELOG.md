@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Remove unused `setuptools` dependency from `requirements.txt`.
+- Change to use github actions instead of TravisCI.
+    - Add ` dionysus/.github/workflows/CI.yml` github action, running essentially same as TravisCI, running tests both Windows and Linux, and unsupported/dev python versions, but failure on these shows as pass, to avoid failing the build.
+    - Remove `.travis.yml` 
+    - Remove dependencies that were only used for TravisCI from `requirements_dev.txt`.
+
 ## [0.8.1-alpha] - 2020-08-29
 ### Changed
 - Better optimised `SQLiteDatabase` queries. 
