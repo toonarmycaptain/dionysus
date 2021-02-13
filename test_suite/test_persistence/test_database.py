@@ -23,6 +23,10 @@ from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.test_persistence.test_databases.test_json import empty_json_database
 from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database
 
+DATABASE_BACKENDS = ['empty_json_database',
+                     'empty_sqlite_database',
+                     ]
+
 
 class EmptyGenericDatabase(Database):
     """
@@ -91,9 +95,7 @@ class TestDatabaseRequiredAttrs:
 
 
 class TestGetClasses:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize(
         'existing_class_names, returned_id_names',
         [([], []),
@@ -119,9 +121,7 @@ class TestGetClasses:
 
 
 class TestClassNameExists:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize(
         'test_class_name, existing_class_names, returned_value',
         [('one class', ['one class'], True),
@@ -148,9 +148,7 @@ class TestClassNameExists:
 
 
 class TestCreateClass:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
     def test_create_class(self, request, database_backend, class_data):
         """Class saved in db has same data as that created, with class/student ids."""
@@ -186,9 +184,7 @@ class TestCreateClass:
 
 
 class TestLoadClass:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
     def test_load_class(self, request, database_backend, class_data):
         """Class loaded has same data as that saved in db, with class/student ids."""
@@ -265,9 +261,7 @@ class TestGetAvatarPath:
 
 
 class TestCreateChart:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     def test_create_chart(self, request, database_backend):
         """
         Verify API works.
@@ -297,9 +291,7 @@ class TestCreateChart:
 
 
 class TestSaveChartImage:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     def test_save_chart_image(self, request, database_backend, test_full_class, tmpdir):
         """
         Verify API works.
@@ -367,9 +359,7 @@ class TestSaveChartImage:
 
 
 class TestClose:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     def test_close(self, request, database_backend):
         """
         Verify API works without error..
