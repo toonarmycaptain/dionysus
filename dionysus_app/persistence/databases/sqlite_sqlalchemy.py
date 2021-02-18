@@ -102,7 +102,6 @@ class SQLiteSQLAlchemyDatabase(Database):
             name = Column(String(255), nullable=False)
             class_id = Column(Integer, ForeignKey('class.id'))
             avatar_id = Column(Integer, ForeignKey('avatar.id'))
-        self.Class = ClassTable
 
         class ChartTable(Base):
             __tablename__ = 'chart'
@@ -111,7 +110,6 @@ class SQLiteSQLAlchemyDatabase(Database):
             name = Column(String(255))
             image = Column(BLOB)
             date = Column(String)
-        self.Student = StudentTable
 
         class ScoreTable(Base):
             __tablename__ = 'score'
@@ -120,14 +118,18 @@ class SQLiteSQLAlchemyDatabase(Database):
             chart_id = Column(Integer, ForeignKey('chart.id'), nullable=False)
             student_id = Column(Integer, ForeignKey('student.id'), nullable=False)
             value = Column(REAL, nullable=False)
-        self.Chart = ChartTable
 
         class AvatarTable(Base):
             __tablename__ = 'avatar'
 
             id = Column(Integer, primary_key=True)
             image = Column(BLOB, nullable=False)
+
+        self.Class = ClassTable
+        self.Student = StudentTable
+        self.Chart = ChartTable
         self.Score = ScoreTable
+        self.Avatar = AvatarTable
 
         # Create all uncreated tables
         Base.metadata.create_all(self.engine)
