@@ -8,9 +8,9 @@ from typing import (Any,
                     )
 
 from matplotlib import pyplot as plt
-from sqlalchemy import create_engine
 from sqlalchemy import (BLOB,
                         Column,
+                        create_engine,
                         ForeignKey,
                         Integer,
                         REAL,
@@ -44,16 +44,61 @@ class SQLiteSQLAlchemyDatabase(Database):
         self._init_db()
 
     def get_classes(self) -> List[ClassIdentifier]:
-        pass
+        with self.session_scope() as session:
+            return [ClassIdentifier(*class_data)
+                    for class_data in session.query(self.Class.id, self.Class.name)]
 
     def class_name_exists(self, class_name: str) -> bool:
-        pass
+        with self.session_scope() as session:
+            return (class_name,) in session.query(self.Class.name)
+            # return [class_name for class_name in session.query(self.Class.name)]
 
     def create_class(self, new_class: NewClass) -> None:
-        pass
+        with self.session_scope() as session:
+            added_class = self.Class(name=new_class.name)
+            session.add(added_class)
+            session.flush()  # Commit to get a class id
+            new_class.id = added_class.id
+
+            # Add students:
+            for student in new_class:
+                if student.avatar_id:
+                    # Move avatar from temp to db:
+                    avatar_blob = new_class.temp_avatars_dir.joinpath(
+                        student.avatar_id).read_bytes()
+                    added_avatar = self.Avatar(image=avatar_blob)
+                    session.add(added_avatar)
+                    session.flush()
+                    student.avatar_id = added_avatar.id
+
+                added_student = self.Student(name=student.name,
+                                             class_id=new_class.id,
+                                             avatar_id=student.avatar_id,
+                                             )
+                session.add(added_student)
+                session.flush()
+                # Add id to student:
+                student.id = added_student.id
 
     def load_class(self, class_id: Any) -> Class:
-        pass
+        with self.session_scope() as session:
+            class_data = session.query(self.Class, self.Student).filter(
+                self.Class.id == self.Student.class_id).filter(
+                self.Student.class_id == class_id).all()
+
+            if class_data:
+                class_id, class_name = class_data[0][0].id, class_data[0][0].name
+                students_list = [Student(student_id=student.id,
+                                         name=student.name,
+                                         class_id=class_data.id,
+                                         avatar_id=student.avatar_id,
+                                         ) for class_data, student in class_data]
+            else:
+                class_data = session.query(self.Class).filter(self.Class.id == class_id).first()
+                students_list = []
+                class_id, class_name = class_data.id, class_data.name
+
+            return Class(class_id=class_id, name=class_name, students=students_list)
 
     def update_class(self, class_to_write: Class) -> None:
         pass
