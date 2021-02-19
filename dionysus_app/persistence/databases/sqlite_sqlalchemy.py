@@ -92,8 +92,7 @@ class SQLiteSQLAlchemyDatabase(Database):
             name = Column(String(255), nullable=False)
 
             def __repr__(self):
-                ...
-                return f"<User(id={self.id}, name={self.name}"
+                return f"<Class(id={self.id}, name={self.name})>"
 
         class StudentTable(Base):
             __tablename__ = 'student'
@@ -102,6 +101,9 @@ class SQLiteSQLAlchemyDatabase(Database):
             name = Column(String(255), nullable=False)
             class_id = Column(Integer, ForeignKey('class.id'))
             avatar_id = Column(Integer, ForeignKey('avatar.id'))
+
+            def __repr__(self):
+                return f"<Student(id={self.id}, name={self.name}, class_id={self.class_id}, avatar_id={self.avatar_id})>"
 
         class ChartTable(Base):
             __tablename__ = 'chart'
