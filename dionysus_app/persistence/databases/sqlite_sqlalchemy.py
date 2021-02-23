@@ -2,7 +2,7 @@
 from contextlib import contextmanager
 from pathlib import Path
 from typing import (Any,
-                    ContextManager,
+                    Iterator,
                     List,
                     )
 
@@ -182,7 +182,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         Base.metadata.create_all(self.engine)
 
     @contextmanager
-    def session_scope(self) -> ContextManager[Session]:
+    def session_scope(self) -> Iterator[Session]:
         """
         Create a session to use as a context manager.
 
@@ -192,8 +192,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         with session_score() as session:
             # do transactions
 
-        :param self:
-        :return:
+        :return: Session context
         """
         session = self.make_session()
         try:
