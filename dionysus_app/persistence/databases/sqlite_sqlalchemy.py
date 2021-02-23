@@ -40,6 +40,9 @@ class SQLiteSQLAlchemyDatabase(Database):
         self.default_avatar_path: Path = (
                 default_avatar_path
                 or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value))
+        self.engine: Engine
+        self.make_session: sessionmaker
+
         # check if db file exists/db has appropriate tables etc
         self._init_db()
 
@@ -125,10 +128,9 @@ class SQLiteSQLAlchemyDatabase(Database):
         # Instantiate db engine
         self.engine = create_engine(f'sqlite:///{self.database_path}', echo=True)
         # Instantiate session maker and connect it to db
-        self.Session = sessionmaker()
-        self.Session.configure(bind=self.engine)
-
-        Base = declarative_base()
+        self.make_session = sessionmaker()
+        self.make_session.configure(bind=self.engine)
+        Base: DeclarativeMeta = declarative_base()
 
         class ClassTable(Base):
             __tablename__ = 'class'
@@ -195,7 +197,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         :param self:
         :return:
         """
-        session = self.Session()
+        session = self.make_session()
         try:
             yield session
             session.commit()
