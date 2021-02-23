@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import (Any,
                     ContextManager,
                     List,
-                    Union,
                     )
 
 from matplotlib import pyplot as plt
@@ -18,8 +17,7 @@ from sqlalchemy import (BLOB,
                         )
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import (relationship,
-                            sessionmaker,
+from sqlalchemy.orm import (sessionmaker,
                             Session,
                             )
 from sqlalchemy.orm.decl_api import DeclarativeMeta
