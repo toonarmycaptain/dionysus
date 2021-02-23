@@ -94,10 +94,10 @@ class SQLiteSQLAlchemyDatabase(Database):
                                          class_id=class_data.id,
                                          avatar_id=student.avatar_id,
                                          ) for class_data, student in class_data]
-            else:
-                class_data = session.query(self.Class).filter(self.Class.id == class_id).first()
+            else:  # Empty class
+                empty_class = session.query(self.Class).filter(self.Class.id == class_id).one()
                 students_list = []
-                class_id, class_name = class_data.id, class_data.name
+                class_id, class_name = empty_class.id, empty_class.name
 
             return Class(class_id=class_id, name=class_name, students=students_list)
 
