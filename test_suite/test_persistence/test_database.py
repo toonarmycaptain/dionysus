@@ -235,9 +235,9 @@ class TestUpdateClass:
 class TestGetAvatarPath:
     @pytest.mark.parametrize(
         'database_backend',
-        [pytest.param('empty_json_database', marks=pytest.mark.xfail(
-            reason='JSON db does not implement method.')),
-         'empty_sqlite_database',
+        [*[backend for backend in DATABASE_BACKENDS if backend != 'empty_json_database'],
+         pytest.param('empty_json_database', marks=pytest.mark.xfail(
+             reason='JSON db does not implement method.')),
          ])
     @pytest.mark.parametrize('avatar_provided',
                              [pytest.param(True, id='avatar provided'),
