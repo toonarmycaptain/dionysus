@@ -217,7 +217,19 @@ class TestLoadClass:
 
 
 class TestUpdateClass:
-    """Not tested as method is unused and mostly unimplemented."""
+    """API only tested as method is unused and mostly unimplemented."""
+
+    @pytest.mark.parametrize(
+        'database_backend',
+        [*[backend for backend in DATABASE_BACKENDS if backend != 'empty_json_database'],
+         pytest.param('empty_json_database', marks=pytest.mark.xfail(
+             reason='JSON db implements method, it is tested in db specific tests.')),
+         ]
+        )
+    def test_update_class(self, request, database_backend):
+        test_database = request.getfixturevalue(database_backend)
+        with pytest.raises(NotImplementedError):
+            test_database.update_class('Some class')
 
 
 class TestGetAvatarPath:
