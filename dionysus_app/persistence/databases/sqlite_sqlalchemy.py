@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import (Any,
                     Iterator,
                     List,
+                    Optional,
                     )
 
 from matplotlib import pyplot as plt
@@ -102,7 +103,38 @@ class SQLiteSQLAlchemyDatabase(Database):
             return Class(class_id=class_id, name=class_name, students=students_list)
 
     def update_class(self, class_to_write: Class) -> None:
-        pass
+        """
+        Currently unimplemented, as not currently used.
+
+        :param class_to_write: Class
+        :return: None
+        """
+        raise NotImplementedError  # type: ignore
+
+    def get_avatar_path(self, avatar_id: Optional[int]) -> Path:
+        """
+        Return path to avatar from id.
+
+        Return default avatar if no avatar id.
+        Copy avatar image to temp dir using primary key avatar_id as the
+        filename.
+
+        Future iteration of chart generation code might facilitate
+        returning a binary blob or file-like io.BytesIO object.
+
+        :param avatar_id:
+        :return: Path
+        """
+        if not avatar_id:
+            return self.default_avatar_path
+        with self.session_scope() as session:
+            image_record = session.query(self.Avatar).filter(self.Avatar.id == avatar_id).one()
+            image = image_record.image
+
+        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
+                               str(avatar_id))
+        temp_image_path.write_bytes(image)
+        return temp_image_path
 
     def create_chart(self, chart_data_dict: dict) -> None:
         pass
@@ -124,7 +156,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         :return: None
         """
         # Instantiate db engine
-        self.engine = create_engine(f'sqlite:///{self.database_path}', echo=True)
+        self.engine = create_engine(f'sqlite:///{self.database_path}')  # , echo=True)
         # Instantiate session maker and connect it to db
         self.make_session = sessionmaker()
         self.make_session.configure(bind=self.engine)
