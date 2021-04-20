@@ -55,7 +55,7 @@ def take_main_menu_input() -> Optional[bool]:
         '2': edit_class_data,
         '3': new_chart,
         '9': run_settings_menu,
-    }
+        }
 
     while True:
         chosen_option = input('>>> ')
