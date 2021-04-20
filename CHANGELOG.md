@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- Implement walrus/assignment operator (`:=`) in main_menu.py.
 - Remove unused `setuptools` dependency from `requirements.txt`.
 - Change to use github actions instead of TravisCI.
     - Add ` dionysus/.github/workflows/CI.yml` github action, running essentially same as TravisCI, running tests both Windows and Linux, and unsupported/dev python versions, but failure on these shows as pass, to avoid failing the build.
@@ -282,4 +283,3 @@ Initial alpha release! Dionysus will take class lists, and successfully produce 
 
 ### Known bugs/non-functional features:
 - setup.py is boilerplate and untested.
-
