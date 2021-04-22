@@ -258,8 +258,9 @@ def get_user_input(prompt: str,
 
     Supply desired user text prompt (eg `>>> ` or `Name: `).
 
-    Must supply a function to validate input, which takes the user input string
-    as it's only argument. eg `lambda x: return True` if no validation desired.
+    Must supply a callable to validate input, which takes the user input string
+    as it's only argument, returning a bool according to validity of the input.
+    eg `lambda x: return True` if no validation desired/validate any input.
 
     An optional validation_error_msg can be supplied, as a string or callable
     taking the user input string as it's only argument. This allows a
