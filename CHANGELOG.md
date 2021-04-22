@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- Add `get_user_input` function to `UI_functions.py`: abstracts asking for UI. Takes a prompt, validation function, error message args.
 - Implement walrus/assignment operator (`:=`) in main_menu.py.
 - Remove unused `setuptools` dependency from `requirements.txt`.
 - Change to use github actions instead of TravisCI.

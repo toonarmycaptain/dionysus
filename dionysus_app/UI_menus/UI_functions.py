@@ -6,7 +6,7 @@ import tkinter as tk
 
 from pathlib import Path
 from tkinter import filedialog
-from typing import Optional, Union, List, Tuple
+from typing import Optional, Union, List, Tuple, Callable
 
 
 def clear_screen(num_lines: int = 50) -> None:
@@ -248,3 +248,34 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
     if not dir_path_str:
         return None
     return Path(dir_path_str)
+
+
+def get_user_input(prompt: str,
+                   validation: Callable,
+                   validation_error_msg: Union[str, Callable] = None):
+    """
+    Generic function for getting user input.
+
+    Supply desired user text prompt (eg `>>> ` or `Name: `).
+
+    Must supply a function to validate input, which takes the user input string
+    as it's only argument. eg `lambda x: return True` if no validation desired.
+
+    An optional validation_error_msg can be supplied, as a string or callable
+    taking the user input string as it's only argument. This allows a
+    responsive error message
+    eg: `lambda x: f'{x} is not the messiah, it's a very naughty boy!'`
+
+
+    :param prompt: str
+    :param validation: Callable - function to validate input.
+    :param validation_error_msg: Union[str, Callable] - error message.
+    :return:
+    """
+    while not validation(user_input := input(prompt)):
+        if validation_error_msg is not None:
+            if isinstance(validation_error_msg, str):
+                print(validation_error_msg)
+            elif callable(validation_error_msg):
+                print(validation_error_msg(user_input))
+    return user_input

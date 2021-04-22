@@ -10,6 +10,7 @@ from dionysus_app.UI_menus import UI_functions
 from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
                                                 clean_for_filename,
                                                 clear_screen,
+                                                get_user_input,
                                                 input_is_essentially_blank,
                                                 save_as_dialogue,
                                                 scrub_candidate_filename,
@@ -428,3 +429,39 @@ class TestSelectFolderDialogue:
         monkeypatch.setattr(UI_functions.filedialog, 'askdirectory', mocked_filedialog_askdirectory)
 
         assert returned_path == select_folder_dialogue(**select_folder_dialogue_args)
+
+
+class TestGetUserInput:
+    @pytest.mark.parametrize(
+        'prompt, validation_function, error_message, inputs',
+        [('prompt', lambda x: x == 'good', '', ['bad', 'worse', 'good']),  # Empty error msg
+         ('prompt', lambda x: x == 'good', None, ['bad', 'worse', 'good']),  # None/no error msg
+         ('prompt', lambda x: not x % 2, 'Not even.', [1, 3, 5, 6]),  # str error message
+         ('prompt', lambda x: 'a' in x, 'No "a".', ['b', 'c', 'a']),  # str error message
+         ('prompt', lambda x: not x % 2, lambda x: f'{x} is not even.', [1, 3, 5, 6]),  # func error message
+         ('prompt', lambda x: 'a' in x, lambda x: f'{x} has no "a".', ['b', 'c', 'a']),  # func error message
+         # Ensure no test for error message if good first attempt.
+         ('prompt', lambda x: x == 'ok', 'Error!', ['ok']),
+         pytest.param('prompt', lambda x: x == 'ok', '', ['no', 'no'], marks=pytest.mark.xfail),
+         # Pass good input early (test validation)
+         pytest.param('prompt', lambda x: x == 'ok', '', ['ok', 'not'], marks=pytest.mark.xfail),
+         ])
+    def test_get_user_input(self, capsys,
+                            prompt, validation_function, error_message,
+                            inputs):
+        with patch('builtins.input',
+                   side_effect=list(inputs)):
+            assert get_user_input(prompt, validation_function, error_message) == inputs[-1]
+        captured = capsys.readouterr()
+        print(captured)
+        # Check error message/s
+        if isinstance(error_message, str):
+            for attempt in inputs[:-1]:
+                assert f'{error_message}\n' in captured.out
+        elif callable(error_message):
+            for attempt in inputs[:-1]:
+                assert f'{error_message(attempt)}\n' in captured.out
+
+        # NB checking for 'error_message\n' newlines for invalid inputs
+        # eg if empty string '' error message  will have '\n' for each attempt,
+        # but if no error messages printed, '' in '' would pass: '\n' in '' will not.
