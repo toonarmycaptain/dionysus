@@ -212,7 +212,8 @@ class TestSaveAsDialogue:
            'default_file_extension': None,
            'filetypes': None,
            'suggested_filename': None,
-           'start_dir': None},
+           'start_dir': None,
+           },
           {'initialdir': None},  # None dir passed on, default_filetypes subst by func.
           "my_save_file", Path("my_save_file")),
          # Title string.
@@ -230,34 +231,42 @@ class TestSaveAsDialogue:
          # Pass a filetypes with no default, and it becomes default extension.
          ({'filetypes': [('some ext', '*.some_ext')]},
           {'filetypes': [('some ext', '*.some_ext')],
-           'defaultextension': '.some_ext'},
+           'defaultextension': '.some_ext',
+           },
           "my_save_file", Path("my_save_file.some_ext")),
          # Test default extension and filetype
          ({'filetypes': [('some ext', '*.some_ext')],
-           'default_file_extension': '.some_ext'},
+           'default_file_extension': '.some_ext',
+           },
           {'filetypes': [('some ext', '*.some_ext')],
-           'defaultextension': '.some_ext'},
+           'defaultextension': '.some_ext',
+           },
           "my_save_file", Path("my_save_file.some_ext")),
          # Test default extension different from first filetypes
          ({'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'default_file_extension': '.b_ext'},
+           'default_file_extension': '.b_ext',
+           },
           {'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'defaultextension': '.b_ext'},
+           'defaultextension': '.b_ext',
+           },
           "my_save_file", Path("my_save_file.b_ext")),
          # Test default extension is default/first of multiple filetypes.
          ({'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')]},
           {'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'defaultextension': '.a_ext'},
+           'defaultextension': '.a_ext',
+           },
           "my_save_file", Path("my_save_file.a_ext")),
          # Test no default extension when multiple filetypes passed with all files first.
          ({'filetypes': [("all files", "*.*"), ('a ext', '*.a_ext'), ('b ext', '*.b_ext')]},
           {'filetypes': [("all files", "*.*"), ('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'defaultextension': None},
+           'defaultextension': None,
+           },
           "my_save_file", Path("my_save_file")),
          # Test default extension when multiple filetypes passed with all files not first.
          ({'filetypes': [('a ext', '*.a_ext'), ("all files", "*.*"), ('b ext', '*.b_ext')]},
           {'filetypes': [('a ext', '*.a_ext'), ("all files", "*.*"), ('b ext', '*.b_ext')],
-           'defaultextension': '.a_ext'},
+           'defaultextension': '.a_ext',
+           },
           "my_save_file", Path("my_save_file.a_ext")),
          # Test passing default filename, with user using default.
          ({'suggested_filename': 'save as this'},
@@ -283,7 +292,7 @@ class TestSaveAsDialogue:
                               save_as_dialog_args,
                               expected_filedialog_args,
                               test_filename,
-                              returned_filepath,):
+                              returned_filepath):
         default_filetypes = [("all files", "*.*")]
         default_start_dir = '..'
 
@@ -324,16 +333,19 @@ class TestSelectFileDialogue:
                       marks=pytest.mark.xfail(reason="Test diagnostic.")),
          ({'title_str': None,  # None args passed to select_file_dialog
            'filetypes': None,
-           'start_dir': None},
+           'start_dir': None,
+           },
           {'initialdir': None},  # None dir passed on, default_filetypes subst by func.
           "my_save_file", Path("my_save_file")),
          # All args passed to select_file_dialog
          ({'title_str': 'Some title string',
            'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
-           'start_dir': Path(r'start/here')},
+           'start_dir': Path(r'start/here'),
+           },
           {'title': 'Some title string',
            'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
-           'initialdir': Path(r'start/here')},
+           'initialdir': Path(r'start/here'),
+           },
           "my save file", Path("my save file")),
          # No user input/cancel (ie filename = () or '') returns None
          ({}, {}, '', None),
@@ -378,14 +390,17 @@ class TestSelectFolderDialogue:
                       marks=pytest.mark.xfail(reason="Test diagnostic.")),
          # None args passed to select_file_dialog
          ({'title_str': None,
-           'start_dir': None},
+           'start_dir': None,
+           },
           {'initialdir': None},  # None dir passed on.
           "my_save_dir", Path("my_save_dir")),
          # # All args passed to select_file_dialog
          ({'title_str': 'Some title string',
-           'start_dir': Path(r'start/here')},
+           'start_dir': Path(r'start/here'),
+           },
           {'title': 'Some title string',
-           'initialdir': Path(r'start/here')},
+           'initialdir': Path(r'start/here'),
+           },
           "my save dir", Path("my save dir")),
          # No user input/cancel (ie dirpath = '' or ()) returns None
          ({}, {}, '', None),
