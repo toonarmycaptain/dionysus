@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Implement walrus/assignment operator (`:=`) in main_menu.py.  
 - Add `get_user_input` function to `UI_functions.py`: abstracts asking for UI. Takes a prompt, validation function, error message args.
+- Implement `get_user_input` in `take_main_menu_input`.
 - Remove unused `setuptools` dependency from `requirements.txt`.
 - Change to use github actions instead of TravisCI.
     - Add ` dionysus/.github/workflows/CI.yml` github action, running essentially same as TravisCI, running tests both Windows and Linux, and unsupported/dev python versions, but failure on these shows as pass, to avoid failing the build.
