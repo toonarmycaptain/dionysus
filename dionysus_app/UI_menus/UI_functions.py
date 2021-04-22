@@ -191,7 +191,7 @@ def select_file_dialogue(title_str: str = None,
 
     Default starting directory is directory above application directory.
     If start_dir is unresolvable, or '' or None, the dialog will default
-    tonstarting at the last directory selected on recent versions of
+    to starting at the last directory selected on recent versions of
     Windows, current working directory on old Windows/other OS.
     See https://www.tcl.tk/man/tcl8.6/TkCmd/chooseDirectory.htm
 
