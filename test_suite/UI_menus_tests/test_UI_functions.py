@@ -28,7 +28,7 @@ class TestClearScreen:
          (99, 99 * '\n'),
          ])
     def test_clear_screen(self, test_input, expected_print_output):
-        with patch('dionysus_app.UI_menus.UI_functions.print') as mocked_print:
+        with patch('builtins.print') as mocked_print:
             clear_screen(test_input)
 
             mocked_print.assert_called_once_with(expected_print_output)
