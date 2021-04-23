@@ -50,7 +50,7 @@ class TestTakeClasslistNameInputSimpleTest:
                        valid_new_classname,
                        ]
 
-        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+        with patch('builtins.input') as mock_input:
             mock_input.side_effect = test_inputs
             assert take_classlist_name_input() == valid_new_classname_cleaned_for_filename
 
@@ -69,7 +69,7 @@ class TestTakeStudentNameInput:
                        valid_new_student_name,  # valid_new_student_name,
                        ]
 
-        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+        with patch('builtins.input') as mock_input:
             mock_input.side_effect = test_inputs
             assert take_student_name_input(test_class) == valid_new_student_name
 
@@ -128,8 +128,7 @@ class TestCreateChartWithNewClassDialogue:
                                           ('N', False),
                                           ('y', True),
                                           ('Y', True), ]
-         ]
-    )
+         ])
     def test_create_chart_with_new_class_dialogue(self, inputs, returned_value):
         """Dialogue returns valid user input."""
         with mock.patch('builtins.input', side_effect=inputs):
@@ -146,7 +145,7 @@ class TestDisplayClassSelectionMenu:
 
         # capture print function
         # assert captured_print_function == expected_print_statements.
-        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
+        with patch('builtins.print') as mocked_print:
             display_class_selection_menu(enumerated_registry)
 
             print_calls = [mock.call(printed_str) for printed_str in expected_print_statements]
@@ -178,7 +177,7 @@ class TestTakeClassSelection:
          ])
     def test_take_class_selection(self, inputs, returned_value):
         """Valid input after invalid input yields expected value."""
-        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+        with patch('builtins.input') as mock_input:
             mock_input.side_effect = inputs
 
             assert take_class_selection(test_registry_data_set['enumerated_dict']) == returned_value
@@ -193,7 +192,7 @@ class TestDisplayStudentSelectionMenu:
 
         # capture print function
         # assert captured_print_function == expected_print_statements.
-        with patch('dionysus_app.UI_menus.class_functions_UI.print') as mocked_print:
+        with patch('builtins.print') as mocked_print:
             display_student_selection_menu(enumerated_classlist)
 
             print_calls = [mock.call(printed_str) for printed_str in expected_print_statements]
@@ -226,7 +225,7 @@ class TestTakeStudentSelection:
          ])
     def test_take_student_selection(self, inputs, expected_return):
         """Valid input after invalid input yields expected value."""
-        with patch('dionysus_app.UI_menus.class_functions_UI.input') as mock_input:
+        with patch('builtins.input') as mock_input:
             mock_input.side_effect = inputs
 
             assert take_student_selection(test_class_data_set['enumerated_dict']) == expected_return

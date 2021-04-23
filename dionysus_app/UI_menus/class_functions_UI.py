@@ -8,6 +8,7 @@ from dionysus_app.class_ import Class
 from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
                                                 clean_for_filename,
+                                                get_user_input,
                                                 input_is_essentially_blank,
                                                 select_file_dialogue,
                                                 )
@@ -21,19 +22,13 @@ def take_classlist_name_input() -> str:
 
     :return: str
     """
-
-    while True:
-        classlist_name = input('Please enter a name for the class: ')
-
-        if input_is_essentially_blank(classlist_name):  # blank input
-            continue
-
-        classlist_name = clean_for_filename(classlist_name)
-        if definitions.DATABASE.class_name_exists(classlist_name):
-            print('A class with this name already exists.')
-            continue
-        break
-    return classlist_name
+    classlist_name = get_user_input(
+        prompt='Please enter a name for the class: ',
+        validation=lambda name: not input_is_essentially_blank(name)
+                                and not definitions.DATABASE.class_name_exists(clean_for_filename(name)),
+        validation_error_msg=lambda name: None if input_is_essentially_blank(name)
+                                               else 'A class with this name already exists.')
+    return clean_for_filename(classlist_name)
 
 
 def take_student_name_input(the_class: Class) -> str:
@@ -47,16 +42,15 @@ def take_student_name_input(the_class: Class) -> str:
     :param the_class: Class object
     :return: str
     """
-    while True:
-        student_name = input("Enter student name, or 'end', and hit enter: ")
-        if input_is_essentially_blank(student_name):  # Do not allow blank input
-            print('Please enter a valid student name.')
-            continue
+    invalid_input_msg = 'Please enter a valid student name.'
+    student_exists_msg = "This student is already a member of the class."
 
-        if student_name in the_class:
-            print("This student is already a member of the class.")
-            continue
-        return student_name
+    student_name = get_user_input(
+        prompt="Enter student name, or 'end', and hit enter: ",
+        validation=lambda name: not input_is_essentially_blank(name) and name not in the_class,
+        validation_error_msg=lambda name: student_exists_msg if name in the_class else invalid_input_msg
+        )
+    return student_name
 
 
 def blank_class_dialogue() -> bool:
@@ -65,10 +59,9 @@ def blank_class_dialogue() -> bool:
 
     :return: bool
     """
-    return ask_user_bool(
-        question='Do you want to create an empty class? [Y/N] ',
-        invalid_input_response=('Please enter y for yes to create empty class,'
-                                ' or n to return to student input.'))
+    return ask_user_bool(question='Do you want to create an empty class? [Y/N] ',
+                         invalid_input_response=('Please enter y for yes to create empty class,'
+                                                 ' or n to return to student input.'))
 
 
 def class_data_feedback(current_class: Class) -> None:

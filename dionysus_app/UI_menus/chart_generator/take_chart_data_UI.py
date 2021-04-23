@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
-from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank
+from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank, get_user_input
 
 
 def take_score_data(current_class: Class) -> dict:
@@ -96,13 +96,9 @@ def take_chart_name() -> str:
 
     :return: str
     """
-
-    while True:
-        chart_name = input('Please enter a chart name/title: ')
-        if input_is_essentially_blank(chart_name):
-            print('Please enter a valid chart name.')
-            continue
-        break
+    chart_name = get_user_input(prompt='Please enter a chart name/title: ',
+                                validation=lambda name: not input_is_essentially_blank(name),
+                                validation_error_msg='Please enter a valid chart name.')
     return chart_name
 
 

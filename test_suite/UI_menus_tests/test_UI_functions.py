@@ -10,6 +10,7 @@ from dionysus_app.UI_menus import UI_functions
 from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
                                                 clean_for_filename,
                                                 clear_screen,
+                                                get_user_input,
                                                 input_is_essentially_blank,
                                                 save_as_dialogue,
                                                 scrub_candidate_filename,
@@ -27,7 +28,7 @@ class TestClearScreen:
          (99, 99 * '\n'),
          ])
     def test_clear_screen(self, test_input, expected_print_output):
-        with patch('dionysus_app.UI_menus.UI_functions.print') as mocked_print:
+        with patch('builtins.print') as mocked_print:
             clear_screen(test_input)
 
             mocked_print.assert_called_once_with(expected_print_output)
@@ -212,7 +213,8 @@ class TestSaveAsDialogue:
            'default_file_extension': None,
            'filetypes': None,
            'suggested_filename': None,
-           'start_dir': None},
+           'start_dir': None,
+           },
           {'initialdir': None},  # None dir passed on, default_filetypes subst by func.
           "my_save_file", Path("my_save_file")),
          # Title string.
@@ -230,34 +232,42 @@ class TestSaveAsDialogue:
          # Pass a filetypes with no default, and it becomes default extension.
          ({'filetypes': [('some ext', '*.some_ext')]},
           {'filetypes': [('some ext', '*.some_ext')],
-           'defaultextension': '.some_ext'},
+           'defaultextension': '.some_ext',
+           },
           "my_save_file", Path("my_save_file.some_ext")),
          # Test default extension and filetype
          ({'filetypes': [('some ext', '*.some_ext')],
-           'default_file_extension': '.some_ext'},
+           'default_file_extension': '.some_ext',
+           },
           {'filetypes': [('some ext', '*.some_ext')],
-           'defaultextension': '.some_ext'},
+           'defaultextension': '.some_ext',
+           },
           "my_save_file", Path("my_save_file.some_ext")),
          # Test default extension different from first filetypes
          ({'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'default_file_extension': '.b_ext'},
+           'default_file_extension': '.b_ext',
+           },
           {'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'defaultextension': '.b_ext'},
+           'defaultextension': '.b_ext',
+           },
           "my_save_file", Path("my_save_file.b_ext")),
          # Test default extension is default/first of multiple filetypes.
          ({'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')]},
           {'filetypes': [('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'defaultextension': '.a_ext'},
+           'defaultextension': '.a_ext',
+           },
           "my_save_file", Path("my_save_file.a_ext")),
          # Test no default extension when multiple filetypes passed with all files first.
          ({'filetypes': [("all files", "*.*"), ('a ext', '*.a_ext'), ('b ext', '*.b_ext')]},
           {'filetypes': [("all files", "*.*"), ('a ext', '*.a_ext'), ('b ext', '*.b_ext')],
-           'defaultextension': None},
+           'defaultextension': None,
+           },
           "my_save_file", Path("my_save_file")),
          # Test default extension when multiple filetypes passed with all files not first.
          ({'filetypes': [('a ext', '*.a_ext'), ("all files", "*.*"), ('b ext', '*.b_ext')]},
           {'filetypes': [('a ext', '*.a_ext'), ("all files", "*.*"), ('b ext', '*.b_ext')],
-           'defaultextension': '.a_ext'},
+           'defaultextension': '.a_ext',
+           },
           "my_save_file", Path("my_save_file.a_ext")),
          # Test passing default filename, with user using default.
          ({'suggested_filename': 'save as this'},
@@ -283,7 +293,7 @@ class TestSaveAsDialogue:
                               save_as_dialog_args,
                               expected_filedialog_args,
                               test_filename,
-                              returned_filepath,):
+                              returned_filepath):
         default_filetypes = [("all files", "*.*")]
         default_start_dir = '..'
 
@@ -324,16 +334,19 @@ class TestSelectFileDialogue:
                       marks=pytest.mark.xfail(reason="Test diagnostic.")),
          ({'title_str': None,  # None args passed to select_file_dialog
            'filetypes': None,
-           'start_dir': None},
+           'start_dir': None,
+           },
           {'initialdir': None},  # None dir passed on, default_filetypes subst by func.
           "my_save_file", Path("my_save_file")),
          # All args passed to select_file_dialog
          ({'title_str': 'Some title string',
            'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
-           'start_dir': Path(r'start/here')},
+           'start_dir': Path(r'start/here'),
+           },
           {'title': 'Some title string',
            'filetypes': [('some ext', '*.some_ext'), ('all files', '*.*')],
-           'initialdir': Path(r'start/here')},
+           'initialdir': Path(r'start/here'),
+           },
           "my save file", Path("my save file")),
          # No user input/cancel (ie filename = () or '') returns None
          ({}, {}, '', None),
@@ -378,14 +391,17 @@ class TestSelectFolderDialogue:
                       marks=pytest.mark.xfail(reason="Test diagnostic.")),
          # None args passed to select_file_dialog
          ({'title_str': None,
-           'start_dir': None},
+           'start_dir': None,
+           },
           {'initialdir': None},  # None dir passed on.
           "my_save_dir", Path("my_save_dir")),
          # # All args passed to select_file_dialog
          ({'title_str': 'Some title string',
-           'start_dir': Path(r'start/here')},
+           'start_dir': Path(r'start/here'),
+           },
           {'title': 'Some title string',
-           'initialdir': Path(r'start/here')},
+           'initialdir': Path(r'start/here'),
+           },
           "my save dir", Path("my save dir")),
          # No user input/cancel (ie dirpath = '' or ()) returns None
          ({}, {}, '', None),
@@ -413,3 +429,39 @@ class TestSelectFolderDialogue:
         monkeypatch.setattr(UI_functions.filedialog, 'askdirectory', mocked_filedialog_askdirectory)
 
         assert returned_path == select_folder_dialogue(**select_folder_dialogue_args)
+
+
+class TestGetUserInput:
+    @pytest.mark.parametrize(
+        'prompt, validation_function, error_message, inputs',
+        [('prompt', lambda x: x == 'good', '', ['bad', 'worse', 'good']),  # Empty error msg
+         ('prompt', lambda x: x == 'good', None, ['bad', 'worse', 'good']),  # None/no error msg
+         ('prompt', lambda x: not x % 2, 'Not even.', [1, 3, 5, 6]),  # str error message
+         ('prompt', lambda x: 'a' in x, 'No "a".', ['b', 'c', 'a']),  # str error message
+         ('prompt', lambda x: not x % 2, lambda x: f'{x} is not even.', [1, 3, 5, 6]),  # func error message
+         ('prompt', lambda x: 'a' in x, lambda x: f'{x} has no "a".', ['b', 'c', 'a']),  # func error message
+         # Ensure no test for error message if good first attempt.
+         ('prompt', lambda x: x == 'ok', 'Error!', ['ok']),
+         pytest.param('prompt', lambda x: x == 'ok', '', ['no', 'no'], marks=pytest.mark.xfail),
+         # Pass good input early (test validation)
+         pytest.param('prompt', lambda x: x == 'ok', '', ['ok', 'not'], marks=pytest.mark.xfail),
+         ])
+    def test_get_user_input(self, capsys,
+                            prompt, validation_function, error_message,
+                            inputs):
+        with patch('builtins.input',
+                   side_effect=list(inputs)):
+            assert get_user_input(prompt, validation_function, error_message) == inputs[-1]
+        captured = capsys.readouterr()
+        print(captured)
+        # Check error message/s
+        if isinstance(error_message, str):
+            for attempt in inputs[:-1]:
+                assert f'{error_message}\n' in captured.out
+        elif callable(error_message):
+            for attempt in inputs[:-1]:
+                assert f'{error_message(attempt)}\n' in captured.out
+
+        # NB checking for 'error_message\n' newlines for invalid inputs
+        # eg if empty string '' error message  will have '\n' for each attempt,
+        # but if no error messages printed, '' in '' would pass: '\n' in '' will not.
