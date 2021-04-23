@@ -7,6 +7,7 @@ from dionysus_app.chart_generator.create_chart import new_chart
 from dionysus_app.class_functions import create_classlist
 from dionysus_app.UI_menus.edit_class_data_UI import edit_class_data
 from dionysus_app.UI_menus.settings_menu import run_settings_menu
+from dionysus_app.UI_menus.UI_functions import get_user_input
 
 
 def welcome_blurb() -> None:
@@ -57,14 +58,14 @@ def take_main_menu_input() -> Optional[bool]:
         '9': run_settings_menu,
         }
 
-    while (chosen_option := input('>>> ')) or True:
-        if chosen_option in possible_options:
-            possible_options[chosen_option]()
-            break  # Exit loop when chosen action finishes. Returns None.
-        if chosen_option.upper() == 'Q':
-            return True  # Quit app.
-        # else:
-        print("Invalid input.")  # User input does not correspond to option or exit.
+    def input_validator(user_input: str) -> bool:
+        return user_input in possible_options or user_input.upper() == 'Q'
+
+    chosen_option = get_user_input(prompt='>>> ', validation=input_validator,
+                                   validation_error_msg='Invalid input.')
+    if chosen_option.upper() == 'Q':
+        return True  # Quit app.
+    possible_options[chosen_option]()
     return None
 
 

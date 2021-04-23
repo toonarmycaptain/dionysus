@@ -2,6 +2,7 @@
 from typing import Optional
 
 from dionysus_app.settings_functions import set_default_chart_save_location
+from dionysus_app.UI_menus.UI_functions import get_user_input
 
 
 def run_settings_menu() -> None:
@@ -49,19 +50,16 @@ def take_settings_menu_input() -> Optional[bool]:
     possible_options = {
         '1': call_set_default_chart_save_location,
         '2': call_set_database_backend,  # Future option.
-        # '0': return_to_main_menu,
-    }
+        '0': return_to_main_menu,
+        }
 
-    while True:
-        chosen_option = input('>>> ')
-
-        if chosen_option in possible_options:
-            possible_options[chosen_option]()
-            break  # Exit loop when chosen action finishes. Returns None.
-        if chosen_option == '0':  # User selects to return to main menu.
-            return True
-        # else:
-        print("Invalid input.")
+    chosen_option = get_user_input(prompt='>>> ',
+                                   validation=lambda choice: choice in possible_options,
+                                   validation_error_msg="Invalid input.")
+    possible_options[chosen_option]()
+    if chosen_option == '0':  # User selects to return to main menu.
+        return True
+    # else:
     return None
 
 
