@@ -150,4 +150,4 @@ def take_database_choice_input() -> Union[str, bool]:
     chosen_option = get_user_input(prompt='>>> ',
                                    validation=lambda user_input: user_input in possible_options,
                                    validation_error_msg="Invalid input.")
-    return possible_options[chosen_option]
+    return possible_options[chosen_option]  # type: ignore
