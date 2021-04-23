@@ -5,7 +5,8 @@ from typing import Union
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.UI_menus.UI_functions import (ask_user_bool,
                                                 clear_screen,
-                                                select_folder_dialogue
+                                                get_user_input,
+                                                select_folder_dialogue,
                                                 )
 
 APP_DEFAULT_CHART_SAVE_DIR = DataFolder.generate_rel_path(
@@ -143,15 +144,10 @@ def take_database_choice_input() -> Union[str, bool]:
     possible_options = {
         '1': 'JSON',
         '2': 'SQLite',
-        # '0': Cancel/return to menu,
-    }
+        '0': False,  # Cancel/return to menu.
+        }
 
-    while True:
-        chosen_option = input('>>> ')
-
-        if chosen_option in possible_options:
-            return possible_options[chosen_option]
-        elif chosen_option == '0':  # User did not select an option.
-            return False
-        # else:
-        print("Invalid input.")
+    chosen_option = get_user_input(prompt='>>> ',
+                                   validation=lambda user_input: user_input in possible_options,
+                                   validation_error_msg="Invalid input.")
+    return possible_options[chosen_option]
