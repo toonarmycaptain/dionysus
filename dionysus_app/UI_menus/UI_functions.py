@@ -92,12 +92,10 @@ def ask_user_bool(question: str, invalid_input_response: str = None) -> bool:
                        "N": False,
                        "NO": False,
                        }
-    while True:
-        response = input(question)
-        if response.upper() in valid_responses:
-            return valid_responses[response.upper()]
-        if invalid_input_response:
-            print(invalid_input_response)
+    response = get_user_input(prompt=question,
+                              validation=lambda user_input: user_input.upper() in valid_responses,
+                              validation_error_msg=invalid_input_response)
+    return valid_responses[response.upper()]
 
 
 def save_as_dialogue(title_str: str = None,
