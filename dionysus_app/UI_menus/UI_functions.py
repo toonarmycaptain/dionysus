@@ -6,7 +6,7 @@ import tkinter as tk
 
 from pathlib import Path
 from tkinter import filedialog
-from typing import Optional, Union, List, Tuple
+from typing import Optional, Union, List, Tuple, Callable
 
 
 def clear_screen(num_lines: int = 50) -> None:
@@ -92,12 +92,10 @@ def ask_user_bool(question: str, invalid_input_response: str = None) -> bool:
                        "N": False,
                        "NO": False,
                        }
-    while True:
-        response = input(question)
-        if response.upper() in valid_responses:
-            return valid_responses[response.upper()]
-        if invalid_input_response:
-            print(invalid_input_response)
+    response = get_user_input(prompt=question,
+                              validation=lambda user_input: user_input.upper() in valid_responses,
+                              validation_error_msg=invalid_input_response)
+    return valid_responses[response.upper()]
 
 
 def save_as_dialogue(title_str: str = None,
@@ -191,7 +189,7 @@ def select_file_dialogue(title_str: str = None,
 
     Default starting directory is directory above application directory.
     If start_dir is unresolvable, or '' or None, the dialog will default
-    tonstarting at the last directory selected on recent versions of
+    to starting at the last directory selected on recent versions of
     Windows, current working directory on old Windows/other OS.
     See https://www.tcl.tk/man/tcl8.6/TkCmd/chooseDirectory.htm
 
@@ -248,3 +246,35 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
     if not dir_path_str:
         return None
     return Path(dir_path_str)
+
+
+def get_user_input(prompt: str,
+                   validation: Callable,
+                   validation_error_msg: Union[str, Callable] = None):
+    """
+    Generic function for getting user input.
+
+    Supply desired user text prompt (eg `>>> ` or `Name: `).
+
+    Must supply a callable to validate input, which takes the user input string
+    as it's only argument, returning a bool according to validity of the input.
+    eg `lambda x: return True` if no validation desired/validate any input.
+
+    An optional validation_error_msg can be supplied, as a string or callable
+    taking the user input string as it's only argument. This allows a
+    responsive error message
+    eg: `lambda x: f'{x} is not the messiah, it's a very naughty boy!'`
+
+
+    :param prompt: str
+    :param validation: Callable - function to validate input.
+    :param validation_error_msg: Union[str, Callable] - error message.
+    :return:
+    """
+    while not validation(user_input := input(prompt)):
+        if validation_error_msg is not None:
+            if isinstance(validation_error_msg, str):
+                print(validation_error_msg)
+            elif callable(validation_error_msg):
+                print(validation_error_msg(user_input))
+    return user_input

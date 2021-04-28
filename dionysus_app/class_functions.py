@@ -70,7 +70,7 @@ def compose_classlist_dialogue(class_name: str) -> NewClass:
             if create_empty_class:
                 break
             # else: ie if not cancelled:
-            continue  # Line skipped from coverage due to peephole optimiser.
+            continue  # Line (and following) skipped from coverage due to peephole optimiser.
         break  # class_data not empty
 
     class_data_feedback(new_class)
