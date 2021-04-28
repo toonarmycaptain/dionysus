@@ -125,7 +125,6 @@ class TestSaveChartImage:
         test_image.seek(0)  # Return pointer to start of binary stream.
 
         save_chart_path = test_database.save_chart_image(test_data_dict, mock_plt)
-        test_image.seek(0)  # Return pointer to start of test_image binary stream.
         # Path exists and image at path/db is expected data:
         assert save_chart_path.exists()
         assert save_chart_path.read_bytes() == test_image.read1()  # size arg can be omitted on 3.7+
@@ -137,7 +136,11 @@ class TestSaveChartImage:
         # Images must both be saved as '.png' for comparison.
         test_image_path = Path(tmpdir, 'test_image.png')
         test_image_path.write_bytes(test_image.read1())
+        test_image.seek(0)
         db_image_path = Path(tmpdir, 'db_image.png')
         db_image_path.write_bytes(db_image)
-
-        compare_images(db_image_path, test_image_path, 0.0001)  # Raises exception.
+        try:
+            assert not compare_images(db_image_path, test_image_path, 0.0001)  # Returns str on fail, None on success.
+        except MemoryError:
+            pass  # fails for 32 bit python on Windows.
+        assert save_chart_path.read_bytes() == test_image.read()

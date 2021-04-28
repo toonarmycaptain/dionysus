@@ -360,7 +360,10 @@ class TestSaveChartImage:
         test_image = io.BytesIO()
         # Images must both be saved as '.png' for comparison.
         test_image_path = Path(tmpdir, 'test image.png')
-        mock_plt.savefig(test_image_path, format='png', dpi=300)
+        mock_plt.savefig(test_image, format='png', dpi=300)
+        test_image.seek(0)  # Return pointer to start of binary stream.
+        # Save image to file for compare_images
+        test_image_path.write_bytes(test_image.read())
         test_image.seek(0)  # Return pointer to start of binary stream.
 
         save_chart_path = test_database.save_chart_image(test_data_dict, mock_plt)
@@ -369,7 +372,11 @@ class TestSaveChartImage:
         # Path exists ad image at path is expected data:
         assert save_chart_path.exists()
 
-        compare_images(save_chart_path, test_image_path, 0.0001)
+        try:
+            assert not compare_images(save_chart_path, test_image_path, 0.0001)  # Returns str on fail, None on success.
+        except MemoryError:
+            pass  # fails for 32 bit python on Windows.
+        assert save_chart_path.read_bytes() == test_image.read()
 
 
 class TestClose:
