@@ -30,6 +30,38 @@ from dionysus_app.persistence.database import ClassIdentifier, Database
 
 
 class SQLiteSQLAlchemyDatabase(Database):
+    """
+        SQLiteSQLAlchemyDatabase object.
+
+        Database implemented using SQLAlchemy wrapping python SQLite3 module.
+
+        Schema:
+            Table: `class`
+                key `id` - INTEGER primary key
+                key `name` TEXT <= 255 chars
+
+            Table: `student`
+                key `id` - INTEGER primary key
+                key `name` - TEXT <= 255 chars
+                key `class_id` - INTEGER student's class `class.id`
+                key `avatar_id` - INTEGER student's avatar image `avatar.id`
+
+            Table: `chart`
+                key `id` - INTEGER primary key
+                key `name` - TEXT <= 255 chars
+                key `date` - chart created date TODO: implement/document
+
+            Table: `score` - scores in charts
+                key `id` - INTEGER primary key
+                key `chart_id` - INTEGER `chart.id` score belongs to
+                key `student_id` - INTEGER `student.id` score belongs to
+                key `value` - REAL (ie float) the score
+
+            Table: `avatar`
+                key `id` - INTEGER primary key
+                key `image` blob
+        """
+
     def __init__(self, default_avatar_path: Path = None,
                  database_path: Path = None,
                  ):
@@ -46,16 +78,35 @@ class SQLiteSQLAlchemyDatabase(Database):
         self._init_db()
 
     def get_classes(self) -> List[ClassIdentifier]:
+        """
+        Return list of ClassIdentifiers for classes in the database.
+
+        :return: List[ClassIdentifier]
+        """
         with self.session_scope() as session:
             return [ClassIdentifier(*class_data)
                     for class_data in session.query(self.Class.id, self.Class.name)]
 
     def class_name_exists(self, class_name: str) -> bool:
+        """
+        :param class_name: str
+        :return: bool
+        """
         with self.session_scope() as session:
             return (class_name,) in session.query(self.Class.name)
             # return [class_name for class_name in session.query(self.Class.name)]
 
     def create_class(self, new_class: NewClass) -> None:
+        """
+        Create class data in database.
+
+        Moves avatars for each student to db, changes student.avatar_id
+        to id of avatar image in db. If no avatar, this remains None/null,
+        and that is stored as student's avatar_id in db.
+
+        :param new_class:
+        :return: None
+        """
         with self.session_scope() as session:
             added_class = self.Class(name=new_class.name)
             session.add(added_class)
@@ -70,7 +121,7 @@ class SQLiteSQLAlchemyDatabase(Database):
                         student.avatar_id).read_bytes()
                     added_avatar = self.Avatar(image=avatar_blob)
                     session.add(added_avatar)
-                    session.flush()
+                    session.flush()  # Must flush after each avatar to get the avatar id.
                     student.avatar_id = added_avatar.id
 
                 added_student = self.Student(name=student.name,
@@ -78,11 +129,17 @@ class SQLiteSQLAlchemyDatabase(Database):
                                              avatar_id=student.avatar_id,
                                              )
                 session.add(added_student)
-                session.flush()
+                session.flush()  # Must flush after each student to get the avatar id.
                 # Add id to student:
                 student.id = added_student.id
 
     def load_class(self, class_id: Any) -> Class:
+        """
+        Load class from database using primary key class.id.
+
+        :param class_id:
+        :return: Class
+        """
         with self.session_scope() as session:
             class_data = session.query(self.Class, self.Student).filter(
                 self.Class.id == self.Student.class_id).filter(
