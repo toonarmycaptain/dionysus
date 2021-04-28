@@ -1,5 +1,6 @@
 """SQLAlchemy SQLite3 Database object ."""
 from contextlib import contextmanager
+from io import BytesIO
 from pathlib import Path
 from typing import (Any,
                     Iterator,
@@ -194,10 +195,55 @@ class SQLiteSQLAlchemyDatabase(Database):
         return temp_image_path
 
     def create_chart(self, chart_data_dict: dict) -> None:
-        pass
+        """
+        Save chart data to database.
+
+        :param chart_data_dict:
+        :return: None
+        """
+        with self.session_scope() as session:
+            new_chart = self.Chart(name=chart_data_dict['chart_name'])
+            session.add(new_chart)
+            session.flush()  # Commit to get a class id
+            chart_data_dict['chart_id'] = new_chart.id
+
+            # Create scores in score table
+            student_scores_data = []
+            for score, students in chart_data_dict['score-students_dict'].items():
+                student_scores_data += [self.Score(chart_id=new_chart.id,
+                                                   student_id=student.id,
+                                                   value=score) for student in students]
+
+            session.add_all(student_scores_data)
 
     def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
-        pass
+        """
+        Save image in db, and return path to file in temp storage.
+
+        :param chart_data_dict: dict
+        :param mpl_plt: matplotlib.pyplot
+        :return: Path
+        """
+        # Get image data:
+        image = BytesIO()
+        mpl_plt.savefig(image,
+                        format='png',
+                        dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+        image.seek(0)  # Return pointer to start of binary stream.
+
+        # Save image in db
+        with self.session_scope() as session:
+            chart = session.query(self.Chart).filter_by(id=chart_data_dict['chart_id']).first()
+            chart.image = image.read()
+
+            session.commit()
+        image.seek(0)
+
+        # Save file to temp and pass back Path
+        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
+                               f"{chart_data_dict['chart_name']}.png")
+        temp_image_path.write_bytes(image.read())
+        return temp_image_path
 
     def close(self) -> None:
         """
@@ -262,7 +308,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         class ChartTable(Base):
             __tablename__ = 'chart'
 
-            def __init__(self, name, image, date=None):
+            def __init__(self, name, image=None, date=None):
                 self.name = name
                 self.image = image
 
