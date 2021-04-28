@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- SQLiteSQLAlchemyDatabase, wrapping python's SQLite3 with SQLAlchemy.
 ### Changed
 - Implement walrus/assignment operator (`:=`) in main_menu.py.  
 - Add `get_user_input` function to `UI_functions.py`: abstracts asking for UI. Takes a prompt, validation function, error message args.

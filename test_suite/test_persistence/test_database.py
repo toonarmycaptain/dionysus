@@ -22,6 +22,12 @@ from dionysus_app.student import Student
 from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.test_persistence.test_databases.test_json import empty_json_database
 from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database
+from test_suite.test_persistence.test_databases.test_sqlite_sqlalchemy import empty_sqlite_sqlalchemy_database
+
+DATABASE_BACKENDS = ['empty_json_database',
+                     'empty_sqlite_database',
+                     'empty_sqlite_sqlalchemy_database'
+                     ]
 
 
 class EmptyGenericDatabase(Database):
@@ -91,9 +97,7 @@ class TestDatabaseRequiredAttrs:
 
 
 class TestGetClasses:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize(
         'existing_class_names, returned_id_names',
         [([], []),
@@ -119,9 +123,7 @@ class TestGetClasses:
 
 
 class TestClassNameExists:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize(
         'test_class_name, existing_class_names, returned_value',
         [('one class', ['one class'], True),
@@ -148,9 +150,7 @@ class TestClassNameExists:
 
 
 class TestCreateClass:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
     def test_create_class(self, request, database_backend, class_data):
         """Class saved in db has same data as that created, with class/student ids."""
@@ -186,9 +186,7 @@ class TestCreateClass:
 
 
 class TestLoadClass:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     @pytest.mark.parametrize('class_data', ['test_class_name_only', 'test_full_class'])
     def test_load_class(self, request, database_backend, class_data):
         """Class loaded has same data as that saved in db, with class/student ids."""
@@ -221,15 +219,27 @@ class TestLoadClass:
 
 
 class TestUpdateClass:
-    """Not tested as method is unused and mostly unimplemented."""
+    """API only tested as method is unused and mostly unimplemented."""
+
+    @pytest.mark.parametrize(
+        'database_backend',
+        [*[backend for backend in DATABASE_BACKENDS if backend != 'empty_json_database'],
+         pytest.param('empty_json_database', marks=pytest.mark.xfail(
+             reason='JSON db implements method, it is tested in db specific tests.')),
+         ]
+        )
+    def test_update_class(self, request, database_backend):
+        test_database = request.getfixturevalue(database_backend)
+        with pytest.raises(NotImplementedError):
+            test_database.update_class('Some class')
 
 
 class TestGetAvatarPath:
     @pytest.mark.parametrize(
         'database_backend',
-        [pytest.param('empty_json_database', marks=pytest.mark.xfail(
-            reason='JSON db does not implement method.')),
-         'empty_sqlite_database',
+        [*[backend for backend in DATABASE_BACKENDS if backend != 'empty_json_database'],
+         pytest.param('empty_json_database', marks=pytest.mark.xfail(
+             reason='JSON db does not implement method.')),
          ])
     @pytest.mark.parametrize('avatar_provided',
                              [pytest.param(True, id='avatar provided'),
@@ -265,9 +275,7 @@ class TestGetAvatarPath:
 
 
 class TestCreateChart:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     def test_create_chart(self, request, database_backend):
         """
         Verify API works.
@@ -297,9 +305,7 @@ class TestCreateChart:
 
 
 class TestSaveChartImage:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     def test_save_chart_image(self, request, database_backend, test_full_class, tmpdir):
         """
         Verify API works.
@@ -354,7 +360,10 @@ class TestSaveChartImage:
         test_image = io.BytesIO()
         # Images must both be saved as '.png' for comparison.
         test_image_path = Path(tmpdir, 'test image.png')
-        mock_plt.savefig(test_image_path, format='png', dpi=300)
+        mock_plt.savefig(test_image, format='png', dpi=300)
+        test_image.seek(0)  # Return pointer to start of binary stream.
+        # Save image to file for compare_images
+        test_image_path.write_bytes(test_image.read())
         test_image.seek(0)  # Return pointer to start of binary stream.
 
         save_chart_path = test_database.save_chart_image(test_data_dict, mock_plt)
@@ -363,13 +372,15 @@ class TestSaveChartImage:
         # Path exists ad image at path is expected data:
         assert save_chart_path.exists()
 
-        compare_images(save_chart_path, test_image_path, 0.0001)
+        try:
+            assert not compare_images(save_chart_path, test_image_path, 0.0001)  # Returns str on fail, None on success.
+        except MemoryError:
+            pass  # fails for 32 bit python on Windows.
+        assert save_chart_path.read_bytes() == test_image.read()
 
 
 class TestClose:
-    @pytest.mark.parametrize('database_backend', ['empty_json_database',
-                                                  'empty_sqlite_database',
-                                                  ])
+    @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
     def test_close(self, request, database_backend):
         """
         Verify API works without error..
