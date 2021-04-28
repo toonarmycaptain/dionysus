@@ -22,9 +22,11 @@ from dionysus_app.student import Student
 from test_suite.test_class import test_class_name_only, test_full_class
 from test_suite.test_persistence.test_databases.test_json import empty_json_database
 from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database
+from test_suite.test_persistence.test_databases.test_sqlite_sqlalchemy import empty_sqlite_sqlalchemy_database
 
 DATABASE_BACKENDS = ['empty_json_database',
                      'empty_sqlite_database',
+                     'empty_sqlite_sqlalchemy_database'
                      ]
 
 
