@@ -1,0 +1,19 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "11:00"
+  open-pull-requests-limit: 10
+  target-branch: development
+  ignore:
+  - dependency-name: pytest
+    versions:
+    - 6.2.2
+  - dependency-name: matplotlib
+    versions:
+    - 3.3.4
+  - dependency-name: coverage
+    versions:
+    - "5.4"
