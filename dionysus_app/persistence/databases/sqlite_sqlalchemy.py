@@ -200,6 +200,11 @@ class SQLiteSQLAlchemyDatabase(Database):
         pass
 
     def close(self) -> None:
+        """
+        No close actions needed for this database.
+
+        :return: None
+        """
         pass
 
     def _init_db(self) -> None:
