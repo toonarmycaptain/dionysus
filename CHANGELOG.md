@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- SQLiteSQLAlchemyDatabase, wrapping python's SQLite3 with SQLAlchemy.
 ### Changed
 - Remove unused `setuptools` dependency from `requirements.txt`.
 - Change to use github actions instead of TravisCI.
@@ -282,4 +284,3 @@ Initial alpha release! Dionysus will take class lists, and successfully produce 
 
 ### Known bugs/non-functional features:
 - setup.py is boilerplate and untested.
-
