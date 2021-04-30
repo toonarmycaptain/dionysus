@@ -270,7 +270,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         self.make_session.configure(bind=self.engine)
 
         # Define tables
-        Base: DeclarativeMeta = declarative_base()
+        Base = declarative_base()
 
         class ClassTable(Base):
             __tablename__ = 'class'
