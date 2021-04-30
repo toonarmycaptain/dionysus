@@ -232,7 +232,7 @@ class SQLiteSQLAlchemyDatabase(Database):
 
         # Save image in db
         with self.session_scope() as session:
-            chart: self.Chart = session.query(self.Chart).filter_by(id=chart_data_dict['chart_id']).first()
+            chart = session.query(self.Chart).filter_by(id=chart_data_dict['chart_id']).one()
             chart.image = image.read()
 
             session.commit()
