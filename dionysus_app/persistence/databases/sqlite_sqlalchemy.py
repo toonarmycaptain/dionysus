@@ -22,7 +22,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import (sessionmaker,
                             Session,
                             )
-from sqlalchemy.orm.decl_api import DeclarativeMeta
 
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.data_folder import DataFolder
@@ -233,7 +232,7 @@ class SQLiteSQLAlchemyDatabase(Database):
 
         # Save image in db
         with self.session_scope() as session:
-            chart = session.query(self.Chart).filter_by(id=chart_data_dict['chart_id']).first()
+            chart = session.query(self.Chart).filter_by(id=chart_data_dict['chart_id']).one()
             chart.image = image.read()
 
             session.commit()
@@ -270,7 +269,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         self.make_session.configure(bind=self.engine)
 
         # Define tables
-        Base: DeclarativeMeta = declarative_base()
+        Base = declarative_base()
 
         class ClassTable(Base):
             __tablename__ = 'class'
