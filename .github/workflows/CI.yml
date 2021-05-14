@@ -55,11 +55,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        coveralls --service=github
-
         pytest --cov=./ --mypy -vv
         coverage xml -i
-        coveralls
+        coveralls --service=github
 
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@0.2.0
