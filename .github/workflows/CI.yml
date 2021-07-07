@@ -23,8 +23,6 @@ jobs:
 #              python-version: 3.10-dev
 #              experimental: true
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}  # Set token for Coveralls.
 
     steps:
     - uses: actions/checkout@v2  # Checkout repo.
@@ -52,10 +50,12 @@ jobs:
         python -m pip install -r requirements_dev.txt
 
     - name: Test with pytest --cov=./ --mypy -vv
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         pytest --cov=./ --mypy -vv
         coverage xml -i
-        coveralls
+        coveralls --service=github
 
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@0.2.0
@@ -79,7 +79,7 @@ jobs:
       - name: Coveralls Finished report
         uses: AndreMiras/coveralls-python-action@develop
         with:
-          github-token: ${{ github.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel: true
           parallel-finished: true
           flag-name: github_action_tests
