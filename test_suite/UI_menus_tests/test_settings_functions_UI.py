@@ -112,6 +112,8 @@ class TestTakeDatabaseChoiceInput:
     @pytest.mark.parametrize(
         'mocked_input, expected_return_value',
         [('1', 'JSON'),  # Choose option
+         ('2', 'SQLite'),
+         ('3', 'SQLiteSQLAlchemy'),
          (('invalid input', '0'), False),  # Invalid input, then cancel.
          ('0', False),
          ])

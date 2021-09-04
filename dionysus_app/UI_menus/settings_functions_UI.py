@@ -122,6 +122,7 @@ def display_database_backend_options() -> None:
           " and press return:\n"
           "     1. JSON database.\n"
           "     2. SQLite3 database.\n"
+          "     3. SQLAlchemy wrapped SQLite3 database.\n"
           "     0. Cancel."
           )
 
@@ -144,6 +145,7 @@ def take_database_choice_input() -> Union[str, bool]:
     possible_options = {
         '1': 'JSON',
         '2': 'SQLite',
+        '3': 'SQLiteSQLAlchemy',
         '0': False,  # Cancel/return to menu.
         }
 
