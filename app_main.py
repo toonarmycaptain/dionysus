@@ -23,7 +23,7 @@ def quit_app():
     """
     definitions.DATABASE.close()
     clear_temp()  # Clear temp files.
-    sys.exit()
+    raise SystemExit(0)
 
 
 def run_app():

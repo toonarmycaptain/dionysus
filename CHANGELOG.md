@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- SQLiteSQLAlchemyDatabase, wrapping python's SQLite3 with SQLAlchemy.
 ### Changed
 - Implement walrus/assignment operator (`:=`) in main_menu.py.  
 - Add `get_user_input` function to `UI_functions.py`: abstracts asking for UI. Takes a prompt, validation function, error message args.
@@ -14,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Add ` dionysus/.github/workflows/CI.yml` github action, running essentially same as TravisCI, running tests both Windows and Linux, and unsupported/dev python versions, but failure on these shows as pass, to avoid failing the build.
     - Remove `.travis.yml` 
     - Remove dependencies that were only used for TravisCI from `requirements_dev.txt`.
+- Change exit to use `raise SystemExit` with exit code 0.
 
 ## [0.8.1-alpha] - 2020-08-29
 ### Changed
