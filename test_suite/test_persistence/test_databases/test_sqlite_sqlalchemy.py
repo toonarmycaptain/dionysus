@@ -57,6 +57,140 @@ def test_empty_sqlite_sqlalchemy_database_fixture(empty_sqlite_sqlalchemy_databa
         assert table in test_db_tables
 
 
+class TestSQLiteSQLAlchemyDatabase:
+    def test_class_table_repr(self, empty_sqlite_sqlalchemy_database):
+        test_database = empty_sqlite_sqlalchemy_database
+        test_class = NewClass(name='test_class', students=[Student(name='bad student'),
+                                                           Student(name='mediocre student'),
+                                                           Student(name='excellent student'),
+                                                           Student(name='another mediocre student'),
+                                                           ])
+
+        test_database.create_class(test_class)
+
+        # Verify repr of (only) class in db:
+        with test_database.session_scope() as test_session:
+            assert repr(
+                test_session.query(test_database.Class).one()) == f"<Class(id={test_class.id}, name={test_class.name})>"
+
+    def test_student_table_repr(self, empty_sqlite_sqlalchemy_database):
+        test_database = empty_sqlite_sqlalchemy_database
+        test_class = NewClass(name='test_class', students=[Student(name='bad student'),
+                                                           Student(name='mediocre student'),
+                                                           Student(name='excellent student'),
+                                                           Student(name='another mediocre student'),
+                                                           ])
+
+        test_database.create_class(test_class)
+        # Verify reprs of students in db:
+        student_strings = [(f"<Student("
+                            f"id={student.id}, "
+                            f"name={student.name}, "
+                            f"class_id={test_class.id}, "
+                            f"avatar_id={student.avatar_id}"
+                            f")>") for student in test_class.students]
+
+        with test_database.session_scope() as test_session:
+            assert repr(
+                test_session.query(test_database.Student).all()) == f"[{', '.join(student_strings)}]"
+
+    def test_chart_table_repr(self, empty_sqlite_sqlalchemy_database):
+        test_database = empty_sqlite_sqlalchemy_database
+        test_class = NewClass(name='test_class', students=[Student(name='bad student'),
+                                                           Student(name='mediocre student'),
+                                                           Student(name='excellent student'),
+                                                           Student(name='another mediocre student'),
+                                                           ])
+
+        test_database.create_class(test_class)
+
+        test_chart_data_dict = {'class_id': test_class.id,
+                                'class_name': test_class.name,
+                                'chart_name': 'test_chart_name',
+                                'chart_default_filename': 'test_default_chart_filename',
+                                'chart_params': {'some': 'params'},
+                                'score-students_dict': {0: [test_class.students[0]],
+                                                        50: [test_class.students[1], test_class.students[3]],
+                                                        100: [test_class.students[2]],
+                                                        }
+                                }
+        test_database.create_chart(test_chart_data_dict)
+
+        # Create fake plot/image
+        mock_plt = plt.figure(figsize=(19.20, 10.80))
+        test_image = io.BytesIO()
+        mock_plt.savefig(test_image, format='png', dpi=300)
+        test_image.seek(0)  # Return pointer to start of binary stream.
+
+        test_database.save_chart_image(test_chart_data_dict, mock_plt)
+
+        # Verify repr of (only) chart in db:
+        with test_database.session_scope() as test_session:
+            assert repr(test_session.query(
+                test_database.Chart).one()) == (f"<Chart("
+                                                f"id={test_chart_data_dict['chart_id']}, "
+                                                f"name={test_chart_data_dict['chart_name']}, "
+                                                f"image={test_image.read1()}, "
+                                                f"date=None"  # Not implemented yet.
+                                                f")>")
+
+    def test_score_table_repr(self, empty_sqlite_sqlalchemy_database):
+        test_database = empty_sqlite_sqlalchemy_database
+        test_class = NewClass(name='test_class', students=[Student(name='bad student'),
+                                                           Student(name='mediocre student'),
+                                                           Student(name='excellent student'),
+                                                           Student(name='another mediocre student'),
+                                                           ])
+
+        test_database.create_class(test_class)
+
+        test_chart_data_dict = {'class_id': test_class.id,
+                                'class_name': test_class.name,
+                                'chart_name': 'test_chart_name',
+                                'chart_default_filename': 'test_default_chart_filename',
+                                'chart_params': {'some': 'params'},
+                                'score-students_dict': {0: [test_class.students[0]],
+                                                        50.0: [test_class.students[1], test_class.students[3]],
+                                                        100: [test_class.students[2]],
+                                                        }
+                                }
+        test_database.create_chart(test_chart_data_dict)
+
+        scores_data = []
+        score_id = 1  # initiate score id
+        for score, students in test_chart_data_dict['score-students_dict'].items():
+            # NB One chart in db -> chart.id = 1]
+            for student in students:
+                scores_data += [(score_id, test_chart_data_dict['chart_id'], student.id, score)]
+                score_id += 1
+
+        # Verify reprs of scores in db:
+        score_strings = [(f"<Score("
+                          f"id={score[0]}, "
+                          f"chart_id={score[1]}, "
+                          f"student_id={score[2]}, "
+                          f"value={float(score[3])}"  # Value is stored as a float.
+                          f")>") for score in scores_data]
+        with test_database.session_scope() as test_session:
+            assert repr(test_session.query(
+                test_database.Score).all()) == f"[{', '.join(score_strings)}]"
+
+    def test_avatar_table_repr(self, tmpdir, empty_sqlite_sqlalchemy_database):
+        test_database = empty_sqlite_sqlalchemy_database
+
+        dummy_avatar_bytes = b'1a2b3c4d'
+        avatar_path = Path(tmpdir, 'avatar_path.jpg')
+        avatar_path.write_bytes(dummy_avatar_bytes)
+        test_class = NewClass(name='test_class', students=[Student(name='bad student', avatar_id=avatar_path)])
+
+        test_database.create_class(test_class)
+
+        # Verify reprs of avatar in db:
+        with test_database.session_scope() as test_session:
+            assert repr(test_session.query(
+                test_database.Avatar).one()) == f"<Avatar(id={test_class.students[0].id}, image={dummy_avatar_bytes})>"
+
+
 class TestCreateChart:
     def test_create_chart(self, empty_sqlite_sqlalchemy_database):
         """
