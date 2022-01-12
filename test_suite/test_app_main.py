@@ -1,11 +1,14 @@
 """Test app_main."""
 import sys
 
+import pytest
+
 import app_main
 
 from app_main import quit_app, run_app
 
 from test_suite.test_persistence.test_database import empty_generic_database  # Fixture
+
 
 class TestQuitApp:
     def test_quit_app(self, monkeypatch, empty_generic_database):
@@ -26,9 +29,9 @@ class TestQuitApp:
         monkeypatch.setattr(app_main, 'clear_temp', mocked_clear_temp)
         monkeypatch.setattr(app_main.definitions, 'DATABASE', mocked_DATABASE)
         monkeypatch.setattr(app_main.sys, 'exit', mocked_sys_exit)
-
-        assert quit_app() is None
-        assert all([DATABASE_close_mock['called'], exit_mock['called'], clear_temp_mock['called']])
+        with pytest.raises(SystemExit):
+            assert quit_app() is 0
+            assert all([DATABASE_close_mock['called'], exit_mock['called'], clear_temp_mock['called']])
 
 
 class TestRunApp:
