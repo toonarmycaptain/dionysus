@@ -6,7 +6,7 @@ import tkinter as tk
 
 from pathlib import Path
 from tkinter import filedialog
-from typing import Optional, Union, List, Tuple, Callable
+from typing import Optional, Union, Callable
 
 
 def clear_screen(num_lines: int = 50) -> None:
@@ -100,7 +100,7 @@ def ask_user_bool(question: str, invalid_input_response: str = None) -> bool:
 
 def save_as_dialogue(title_str: str = None,
                      default_file_extension: str = None,
-                     filetypes: List[Tuple[str, str]] = None,
+                     filetypes: list[tuple[str, str]] = None,
                      suggested_filename: str = None,
                      start_dir: Union[Path, str] = '..'
                      ) -> Optional[Path]:
@@ -146,7 +146,7 @@ def save_as_dialogue(title_str: str = None,
     :param title_str: str
     :param default_file_extension: list
     :param suggested_filename: str
-    :param filetypes: List[Tuple[str, str]]
+    :param filetypes: list[tuple[str, str]]
     :param start_dir: Path or str
     :return: Path
     """
@@ -174,7 +174,7 @@ def save_as_dialogue(title_str: str = None,
 
 
 def select_file_dialogue(title_str: str = None,
-                         filetypes: List[Tuple[str, str]] = None,
+                         filetypes: list[tuple[str, str]] = None,
                          start_dir: Union[Path, str] = '..',
                          ) -> Optional[Path]:
     """
@@ -199,7 +199,7 @@ def select_file_dialogue(title_str: str = None,
     title will be "Open".
 
     :param title_str: str
-    :param filetypes: List[Tuple[str, str]]
+    :param filetypes: list[tuple[str, str]]
     :param start_dir: str
     :return: Path or None
     """

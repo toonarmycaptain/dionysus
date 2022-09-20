@@ -4,7 +4,7 @@ Functions for creating, editing, dealing with classes.
 import time
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import definitions
 
@@ -165,11 +165,11 @@ def select_classlist() -> Any:
     return selected_class.id
 
 
-def create_class_list_dict() -> Dict[int, ClassIdentifier]:
+def create_class_list_dict() -> dict[int, ClassIdentifier]:
     """
     Create dict with enumerated class identifiers, starting at 1.
 
-    :return: Dict[int, ClassIdentifier]
+    :return: dict[int, ClassIdentifier]
     :raises ValueError: If registry is None/uninitialised.
     """
     class_identifiers = definitions.DATABASE.get_classes()

@@ -5,7 +5,6 @@ if title/name desired on image:
     fig.subtitle('title_string')
 """
 from pathlib import Path
-from typing import List, Tuple
 
 import matplotlib.pyplot as plt
 
@@ -49,7 +48,7 @@ def set_axis(x_min: int = 0, x_max: int = 100, x_step: int = 10):
     plt.yticks([])
 
 
-def add_avatar_to_plot(ax, avatar_path, xy_coords: List[Tuple[int, int]]) -> None:
+def add_avatar_to_plot(ax, avatar_path, xy_coords: list[tuple[int, int]]) -> None:
     """
     Take avatar, add avatar to ax at given coords.
 
@@ -63,7 +62,7 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: List[Tuple[int, int]]) -> Non
 
     :param ax:
     :param avatar_path: Path object
-    :param xy_coords: List[Tuple[int, int]]
+    :param xy_coords: list[tuple[int, int]]
     :return: None
     """
     valid_avatar_path = validate_avatar(avatar_path)

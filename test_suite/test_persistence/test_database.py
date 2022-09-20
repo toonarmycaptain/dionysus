@@ -6,7 +6,6 @@ import io
 import pytest
 
 from pathlib import Path
-from typing import List
 
 import matplotlib.pyplot as plt
 from matplotlib.testing.compare import compare_images
@@ -43,7 +42,7 @@ class EmptyGenericDatabase(Database):
         super().__init__()
         self.default_avatar_path: Path = None
 
-    def get_classes(self) -> List[ClassIdentifier]:
+    def get_classes(self) -> list[ClassIdentifier]:
         raise NotImplementedError
 
     def class_name_exists(self, class_name: str) -> bool:

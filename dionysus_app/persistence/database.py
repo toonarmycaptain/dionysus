@@ -3,7 +3,6 @@ import abc
 
 from pathlib import Path
 from typing import (Any,
-                    List,
                     NamedTuple,
                     )
 
@@ -51,7 +50,7 @@ class ABCMetaEnforcedAttrs(abc.ABCMeta):
     Attribute names must be defined in the __init__ of the subclass,
     or a TypeError will be raised.
     """
-    required_attributes: List[str] = []
+    required_attributes: list[str] = []
 
     def __call__(cls, *args, **kwargs):
         """
@@ -88,7 +87,7 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
 
     Attributes
     ----------
-    required_attributes: List[str]
+    required_attributes: list[str]
         List of attributes required to be implemented by subclasses.
 
 
@@ -126,13 +125,13 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
                            ]
 
     @abc.abstractmethod
-    def get_classes(self) -> List[ClassIdentifier]:
+    def get_classes(self) -> list[ClassIdentifier]:
         """
         Return list of available classes in the database.
 
         Format as list of ClassIdentifiers.
 
-        :return: List[ClassIdentifier] ie List[NamedTuple[Any, str]]
+        :return: list[ClassIdentifier] ie list[NamedTuple[Any, str]]
         """
 
     @abc.abstractmethod
