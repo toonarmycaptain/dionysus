@@ -8,7 +8,7 @@ a percentage, or column widths of 5pts rather than 10. Other potential concern i
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 import definitions
 
@@ -75,7 +75,7 @@ def new_chart(loaded_class: Class = None) -> None:
         user_save_chart_image(chart_data_dict, chart_image_location)
 
 
-def assemble_chart_data(loaded_class: Class) -> Tuple[str, str, dict, dict]:
+def assemble_chart_data(loaded_class: Class) -> tuple[str, str, dict, dict]:
     """
     Collect data/user input for new chart.
 

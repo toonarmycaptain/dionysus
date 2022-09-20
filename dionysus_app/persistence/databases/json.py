@@ -1,7 +1,7 @@
 """ JSON Database object """
 from copy import deepcopy
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import matplotlib.pyplot as plt
 
@@ -132,7 +132,7 @@ class JSONDatabase(Database):
                                                 class_data_file_type=self.class_data_file_type
                                                 ))
 
-    def get_classes(self) -> List[ClassIdentifier]:
+    def get_classes(self) -> list[ClassIdentifier]:
         """
         Return list of available classes in the database.
 
@@ -140,7 +140,7 @@ class JSONDatabase(Database):
         ClassIdentifier(id=class_name, name=class_name), since class_id
         in JSONDatabase is the class' name.
 
-        :return: List[Tuple[str, str]]
+        :return: list[tuple[str, str]]
         """
         return [ClassIdentifier(class_name, class_name)
                 for class_name in self._registry.list]

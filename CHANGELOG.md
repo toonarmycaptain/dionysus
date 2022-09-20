@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Remove `.travis.yml` 
     - Remove dependencies that were only used for TravisCI from `requirements_dev.txt`.
 - Change exit to use `raise SystemExit` with exit code 0.
+- Change generic types to use builtins (eg list, dict rather than List, Dict), per PEP 585.
+- Remove Python 3.8 support due to implementing PEP.
 
 ## [0.8.1-alpha] - 2020-08-29
 ### Changed

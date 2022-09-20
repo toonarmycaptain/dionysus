@@ -1,7 +1,7 @@
 """
 Script for taking and saving data for chart.
 """
-from typing import Dict, List, Optional
+from typing import Optional
 
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
@@ -32,7 +32,7 @@ def take_score_data(current_class: Class) -> dict:
     return student_scores
 
 
-def take_student_scores(current_class: Class) -> Dict[float, List[Student]]:
+def take_student_scores(current_class: Class) -> dict[float, list[Student]]:
     """
     UI function presenting student names from supplied class one at a
     time and taking a score for each.
@@ -48,7 +48,7 @@ def take_student_scores(current_class: Class) -> Dict[float, List[Student]]:
                                  }
 
     :param current_class: Class object
-    :return: Dict[float, List[Student]]
+    :return: dict[float, list[Student]]
     """
     student_scores: dict = dict()
     for student in current_class.students:

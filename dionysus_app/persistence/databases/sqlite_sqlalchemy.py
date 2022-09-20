@@ -4,7 +4,6 @@ from io import BytesIO
 from pathlib import Path
 from typing import (Any,
                     Iterator,
-                    List,
                     Optional,
                     )
 
@@ -77,11 +76,11 @@ class SQLiteSQLAlchemyDatabase(Database):
         # check if db file exists/db has appropriate tables etc
         self._init_db()
 
-    def get_classes(self) -> List[ClassIdentifier]:
+    def get_classes(self) -> list[ClassIdentifier]:
         """
         Return list of ClassIdentifiers for classes in the database.
 
-        :return: List[ClassIdentifier]
+        :return: list[ClassIdentifier]
         """
         with self.session_scope() as session:
             return [ClassIdentifier(*class_data)

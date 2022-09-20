@@ -1,7 +1,7 @@
 """
 Process input data for image generation code.
 """
-from typing import Any, Dict, List
+from typing import Any
 
 import definitions
 
@@ -18,19 +18,19 @@ DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars verti
                         }
 
 
-def generate_avatar_coords(score_students_dict: Dict[float, List[Student]],
+def generate_avatar_coords(score_students_dict: dict[float, list[Student]],
                            class_id: Any,
                            chart_params: dict = None):  # set chart params to a default?
     """
     Take score_avatar_dict and transform into dict {avatar: [xy_coords]}
 
-    Takes score_students_dict - dict of scores to lists of Studentss
+    Takes score_students_dict - dict of scores to lists of Students
     for each score, returns a dictionary with avatar Paths as
     keys, and a list of x,y coordinate tuples as values.
 
     eg keys: avatar Path, values: list of x, y tuples eg [(80, 80), (90, 90)]
 
-    :param score_students_dict: Dict[float, List[Student]]
+    :param score_students_dict: dict[float, list[Student]]
     :param class_id: Any
     :param chart_params: dict
     :return: dict
