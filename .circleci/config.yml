@@ -3,8 +3,8 @@ version: 2
 jobs:
     build:
         docker:
-            - image: circleci/python:3.9
             - image: circleci/python:3.10
+            - image: circleci/python:3.11
 
         working_directory: ~/dionysus
 
