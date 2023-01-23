@@ -4,4 +4,4 @@ mypy==0.982
 pytest==7.2.1
 pytest-cov==4.0.0
 pytest-mypy==0.10.3
-sqlalchemy2-stubs==0.0.2a31
+sqlalchemy2-stubs==0.0.2a32
