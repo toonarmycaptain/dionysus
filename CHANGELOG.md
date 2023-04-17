@@ -18,7 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Remove dependencies that were only used for TravisCI from `requirements_dev.txt`.
 - Change exit to use `raise SystemExit` with exit code 0.
 - Change generic types to use builtins (eg list, dict rather than List, Dict), per PEP 585.
-- Remove Python 3.8 support due to implementing PEP.
+- Remove Python 3.8 support due to implementing PEP 585.
+- Change all implicity None-optional typing top explicity declare None type or Optional. 
+- Remove Python 3.9 support, add 3.11.
+- Remove CircleCI/TravisCI testing.
+- Remove sqlalchemy stubs, functionality now bundled with sqlalchemy
+- Rm codecov in favour of github-action
+
 
 ## [0.8.1-alpha] - 2020-08-29
 ### Changed
