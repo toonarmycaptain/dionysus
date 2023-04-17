@@ -27,6 +27,10 @@ from dionysus_app.data_folder import DataFolder
 from dionysus_app.student import Student
 from dionysus_app.persistence.database import ClassIdentifier, Database
 
+from sqlalchemy.orm.decl_api import DeclarativeMeta
+
+Base: DeclarativeMeta = declarative_base()
+
 
 class SQLiteSQLAlchemyDatabase(Database):
     """
