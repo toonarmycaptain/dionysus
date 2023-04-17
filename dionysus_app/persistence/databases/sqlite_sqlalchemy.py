@@ -61,8 +61,8 @@ class SQLiteSQLAlchemyDatabase(Database):
                 key `image` blob
         """
 
-    def __init__(self, default_avatar_path: Path = None,
-                 database_path: Path = None,
+    def __init__(self, default_avatar_path: Path|None = None,
+                 database_path: Path|None = None,
                  ):
         self.database_path: Path = (
                 database_path

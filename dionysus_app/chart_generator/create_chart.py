@@ -27,7 +27,7 @@ from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_chart
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 
-def new_chart(loaded_class: Class = None) -> None:
+def new_chart(loaded_class: Class|None = None) -> None:
     """
     Create a new chart with supplied class, user input.
 

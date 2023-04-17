@@ -20,7 +20,7 @@ DEFAULT_CHART_PARAMS = {'column_max_avatars': 10,  # max number of avatars verti
 
 def generate_avatar_coords(score_students_dict: dict[float, list[Student]],
                            class_id: Any,
-                           chart_params: dict = None):  # set chart params to a default?
+                           chart_params: dict|None = None):  # set chart params to a default?
     """
     Take score_avatar_dict and transform into dict {avatar: [xy_coords]}
 
@@ -80,7 +80,7 @@ def assign_avatars_to_bands(score_avatar_dict: dict):
     return band_dict
 
 
-def assign_avatar_coords(band_avatar_dict, chart_params: dict = None):
+def assign_avatar_coords(band_avatar_dict, chart_params: dict|None = None):
     """
     Take dict of bands 0-100 by 10 with int values as keys, lists of
     avatar Paths as values.

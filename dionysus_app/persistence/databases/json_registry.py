@@ -55,11 +55,11 @@ class Registry:
     """
 
     def __init__(self,
-                 registry_list: list[str] = None,
-                 app_data_path: Path = None,
-                 class_data_path: Path = None,
-                 class_data_file_type: str = None,
-                 registry_path: Path = None,
+                 registry_list: list[str]|None = None,
+                 app_data_path: Path|None = None,
+                 class_data_path: Path|None = None,
+                 class_data_file_type: str|None = None,
+                 registry_path: Path|None = None,
                  ) -> None:
         """
         Constructs Registry object, with defaults for unprovided args.

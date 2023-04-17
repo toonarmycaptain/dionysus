@@ -47,8 +47,8 @@ class SQLiteDatabase(Database):
     """
 
     def __init__(self,
-                 default_avatar_path: Path = None,
-                 database_path: Path = None,
+                 default_avatar_path: Path|None = None,
+                 database_path: Path|None = None,
                  ):
         self.database_path: Path = (
                 database_path

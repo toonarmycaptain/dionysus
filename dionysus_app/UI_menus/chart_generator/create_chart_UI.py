@@ -71,7 +71,7 @@ def display_image_save_as(chart_image_path: Path) -> bool:
 
 
 class ImageDisplay(tk.Frame):
-    def __init__(self, image_path: Path = None, master=None) -> None:
+    def __init__(self, image_path: Path|None = None, master=None) -> None:
         super().__init__(master)
         self.master = master
         self.save_as_button_clicked = False
