@@ -55,7 +55,7 @@ class Class:
 
     """
 
-    def __init__(self, name: str, students: list[Student] = None, *, class_id: Any = None) -> None:
+    def __init__(self, name: str, students: list[Student]|None = None, *, class_id: Any = None) -> None:
         """
         Create Class instance.
 
@@ -160,7 +160,7 @@ class Class:
         # for student in self.students:
         #     yield student
 
-    def add_student(self, student: Student = None, **kwargs: Any) -> None:
+    def add_student(self, student: Student|None = None, **kwargs: Any) -> None:
         """
         Adds a student to the class.
 
@@ -320,7 +320,7 @@ class NewClass(Class):
         Path to avatars folder in class' temp directory.
     """
 
-    def __init__(self, name: str, students: list[Student] = None, *, class_id: Any = None) -> None:
+    def __init__(self, name: str, students: list[Student]|None = None, *, class_id: Any = None) -> None:
         super().__init__(name=name, students=students, class_id=class_id)
 
         # Create class temp directory.

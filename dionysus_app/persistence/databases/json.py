@@ -84,14 +84,14 @@ class JSONDatabase(Database):
     """
 
     def __init__(self,
-                 app_data_path: Path = None,
-                 class_data_path: Path = None,
-                 class_data_file_type: str = None,
-                 chart_data_file_type: str = None,
-                 default_chart_save_dir: Path = None,
-                 default_avatar_path: Path = None,
-                 registry_path: Path = None,
-                 registry: Registry = None,
+                 app_data_path: Path|None = None,
+                 class_data_path: Path|None = None,
+                 class_data_file_type: str|None = None,
+                 chart_data_file_type: str|None = None,
+                 default_chart_save_dir: Path|None = None,
+                 default_avatar_path: Path|None = None,
+                 registry_path: Path|None = None,
+                 registry: Registry|None = None,
                  ):
         """
         Constructs the JSONDatabase object, with defaults for unprovided args.
@@ -282,7 +282,7 @@ class JSONDatabase(Database):
         return app_data_save_pathname
 
     def get_avatar_path_class_filename(self, class_id: str,
-                                       student_avatar_filename: str = None) -> Path:
+                                       student_avatar_filename: str|None = None) -> Path:
         """
         Return abs path to student avatar, or to default avatar if None.
 
