@@ -172,6 +172,7 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
         :return: None
         """
 
+    @abc.abstractmethod
     def get_avatar_path(self, avatar_id: Any) -> Path:
         """
         Return path to avatar, or to a default if nonexistent.
@@ -181,7 +182,6 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
         :param avatar_id: Any
         :return: Path
         """
-        raise NotImplementedError("Method not implemented on base class.")
 
     @abc.abstractmethod
     def create_chart(self, chart_data_dict: dict) -> None:
