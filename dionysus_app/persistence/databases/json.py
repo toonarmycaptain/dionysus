@@ -1,7 +1,7 @@
 """ JSON Database object """
 from copy import deepcopy
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import matplotlib.pyplot as plt
 
@@ -84,14 +84,14 @@ class JSONDatabase(Database):
     """
 
     def __init__(self,
-                 app_data_path: Path = None,
-                 class_data_path: Path = None,
-                 class_data_file_type: str = None,
-                 chart_data_file_type: str = None,
-                 default_chart_save_dir: Path = None,
-                 default_avatar_path: Path = None,
-                 registry_path: Path = None,
-                 registry: Registry = None,
+                 app_data_path: Path|None = None,
+                 class_data_path: Path|None = None,
+                 class_data_file_type: str|None = None,
+                 chart_data_file_type: str|None = None,
+                 default_chart_save_dir: Path|None = None,
+                 default_avatar_path: Path|None = None,
+                 registry_path: Path|None = None,
+                 registry: Registry|None = None,
                  ):
         """
         Constructs the JSONDatabase object, with defaults for unprovided args.
@@ -132,7 +132,7 @@ class JSONDatabase(Database):
                                                 class_data_file_type=self.class_data_file_type
                                                 ))
 
-    def get_classes(self) -> List[ClassIdentifier]:
+    def get_classes(self) -> list[ClassIdentifier]:
         """
         Return list of available classes in the database.
 
@@ -140,7 +140,7 @@ class JSONDatabase(Database):
         ClassIdentifier(id=class_name, name=class_name), since class_id
         in JSONDatabase is the class' name.
 
-        :return: List[Tuple[str, str]]
+        :return: list[tuple[str, str]]
         """
         return [ClassIdentifier(class_name, class_name)
                 for class_name in self._registry.list]
@@ -197,18 +197,6 @@ class JSONDatabase(Database):
         :return: None
         """
         self._write_classlist_to_file(class_to_write)
-
-    def get_avatar_path(self, avatar_id: int):
-        """
-        Unimplemented: call get_avatar_path_class_filename instead.
-
-        JSONDatabase requires class_id/name and student/avatar to
-        retrieve avatar data.
-
-        :param avatar_id: int
-        :return: NotImplementedError
-        """
-        raise NotImplementedError
 
     def create_chart(self, chart_data_dict: dict) -> None:
         """
@@ -281,8 +269,8 @@ class JSONDatabase(Database):
                         dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
-    def get_avatar_path_class_filename(self, class_id: str,
-                                       student_avatar_filename: str = None) -> Path:
+    def get_avatar_path(self, class_id: str,
+                        student_avatar_filename: str|None = None) -> Path:
         """
         Return abs path to student avatar, or to default avatar if None.
 

@@ -4,7 +4,6 @@ from io import BytesIO
 from pathlib import Path
 from typing import (Any,
                     Iterator,
-                    List,
                     Optional,
                     )
 
@@ -27,6 +26,10 @@ from dionysus_app.class_ import Class, NewClass
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.student import Student
 from dionysus_app.persistence.database import ClassIdentifier, Database
+
+from sqlalchemy.orm.decl_api import DeclarativeMeta
+
+Base: DeclarativeMeta = declarative_base()
 
 
 class SQLiteSQLAlchemyDatabase(Database):
@@ -62,8 +65,8 @@ class SQLiteSQLAlchemyDatabase(Database):
                 key `image` blob
         """
 
-    def __init__(self, default_avatar_path: Path = None,
-                 database_path: Path = None,
+    def __init__(self, default_avatar_path: Path|None = None,
+                 database_path: Path|None = None,
                  ):
         self.database_path: Path = (
                 database_path
@@ -77,11 +80,11 @@ class SQLiteSQLAlchemyDatabase(Database):
         # check if db file exists/db has appropriate tables etc
         self._init_db()
 
-    def get_classes(self) -> List[ClassIdentifier]:
+    def get_classes(self) -> list[ClassIdentifier]:
         """
         Return list of ClassIdentifiers for classes in the database.
 
-        :return: List[ClassIdentifier]
+        :return: list[ClassIdentifier]
         """
         with self.session_scope() as session:
             return [ClassIdentifier(*class_data)

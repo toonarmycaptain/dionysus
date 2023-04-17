@@ -1,6 +1,6 @@
 """UI elements for class_functions"""
 from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 import definitions
 
@@ -94,11 +94,11 @@ def create_chart_with_new_class_dialogue() -> bool:
                          invalid_input_response="Invalid response, please try again.")
 
 
-def display_class_selection_menu(class_options: Dict[int, ClassIdentifier]) -> None:
+def display_class_selection_menu(class_options: dict[int, ClassIdentifier]) -> None:
     """
     Print "Select class from list:" followed by numbered option list.
 
-    :param class_options: Dict[int, ClassIdentifier]
+    :param class_options: dict[int, ClassIdentifier]
     :return: None
     """
     print("Select class from list:")
@@ -106,7 +106,7 @@ def display_class_selection_menu(class_options: Dict[int, ClassIdentifier]) -> N
         print(f'{key}. {class_.name}')
 
 
-def take_class_selection(class_options: Dict[int, ClassIdentifier]) -> ClassIdentifier:
+def take_class_selection(class_options: dict[int, ClassIdentifier]) -> ClassIdentifier:
     """
     Prompt user to select a class, return selected class name.
 
@@ -118,7 +118,7 @@ def take_class_selection(class_options: Dict[int, ClassIdentifier]) -> ClassIden
     but this behaviour is predicated on exact match and thus not
     communicated to user.
 
-    :param class_options: Dict[int: ClassIdentifier]
+    :param class_options: dict[int: ClassIdentifier]
     :return: ClassIdentifier
     """
     while True:

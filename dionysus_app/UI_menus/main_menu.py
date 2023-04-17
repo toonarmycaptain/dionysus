@@ -1,7 +1,7 @@
 """
 Application main menu.
 """
-from typing import Dict, Callable, Optional
+from typing import Callable, Optional
 
 from dionysus_app.chart_generator.create_chart import new_chart
 from dionysus_app.class_functions import create_classlist
@@ -51,7 +51,7 @@ def take_main_menu_input() -> Optional[bool]:
 
     :return: None or True
     """
-    possible_options: Dict[str, Callable] = {
+    possible_options: dict[str, Callable] = {
         '1': create_classlist,
         '2': edit_class_data,
         '3': new_chart,

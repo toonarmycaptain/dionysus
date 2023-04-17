@@ -115,11 +115,11 @@ class TestGenerateAvatarCoords:
                                               (100.0, 15)],
                },
             **({
-                   test_database.get_avatar_path_class_filename(test_class.id, test_class.students[8].avatar_id): [
+                   test_database.get_avatar_path(test_class.id, test_class.students[8].avatar_id): [
                        (0.0, 35)],  # Ashley
-                   test_database.get_avatar_path_class_filename(test_class.id, test_class.students[0].avatar_id): [
+                   test_database.get_avatar_path(test_class.id, test_class.students[0].avatar_id): [
                        (0.0, 5)],  # Cali
-                   test_database.get_avatar_path_class_filename(test_class.id, test_class.students[12].avatar_id): [
+                   test_database.get_avatar_path(test_class.id, test_class.students[12].avatar_id): [
                        (10.0, 5)],  # Danielle
                    } if isinstance(test_database, JSONDatabase) else {
                 test_database.get_avatar_path(test_class.students[8].avatar_id): [(0.0, 35)],  # Ashley
@@ -156,7 +156,7 @@ class TestGenerateAvatarCoords:
             re-mocking method for clarity.
             """
             assert avatar_id in avatar_ids
-            #  deepcode ignore unguarded~next~call: No guard - let error propagate, should not reach StopIteration. 
+            #  deepcode ignore unguarded~next~call: No guard - let error propagate, should not reach StopIteration.
             return next(avatar_path)
 
         test_database.get_avatar_path = mocked_get_avatar_path

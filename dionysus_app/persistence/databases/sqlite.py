@@ -3,7 +3,7 @@ import sqlite3
 
 from io import BytesIO
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import matplotlib.pyplot as plt
 
@@ -46,8 +46,9 @@ class SQLiteDatabase(Database):
             key `image` blob
     """
 
-    def __init__(self, default_avatar_path: Path = None,
-                 database_path: Path = None,
+    def __init__(self,
+                 default_avatar_path: Path|None = None,
+                 database_path: Path|None = None,
                  ):
         self.database_path: Path = (
                 database_path
@@ -58,11 +59,11 @@ class SQLiteDatabase(Database):
         # check if db file exists/db has appropriate tables etc
         self._init_db()
 
-    def get_classes(self) -> List[ClassIdentifier]:
+    def get_classes(self) -> list[ClassIdentifier]:
         """
         Return list of ClassIdentifiers for classes in the database.
 
-        :return: List[ClassIdentifier]
+        :return: list[ClassIdentifier]
         """
         with self._connection() as conn:
             # get list of tuple/list pairs of id, name

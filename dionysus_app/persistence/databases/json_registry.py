@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.persistence.databases import json as json_db
@@ -16,7 +16,7 @@ class Registry:
 
     Attributes
     ----------
-    registry_list : List[str]
+    registry_list : list[str]
         List of class name strings.
 
     app_data_path : Path
@@ -55,11 +55,11 @@ class Registry:
     """
 
     def __init__(self,
-                 registry_list: List[str] = None,
-                 app_data_path: Path = None,
-                 class_data_path: Path = None,
-                 class_data_file_type: str = None,
-                 registry_path: Path = None,
+                 registry_list: list[str]|None = None,
+                 app_data_path: Path|None = None,
+                 class_data_path: Path|None = None,
+                 class_data_file_type: str|None = None,
+                 registry_path: Path|None = None,
                  ) -> None:
         """
         Constructs Registry object, with defaults for unprovided args.
@@ -79,9 +79,9 @@ class Registry:
                                     or self.app_data_path.joinpath('class_registry.index'))
         self.class_data_file_type: str = (class_data_file_type
                                           or json_db.DEFAULT_CLASSLIST_DATA_FILE_TYPE)
-        self.list: List[str] = registry_list or self.cache_class_registry()
+        self.list: list[str] = registry_list or self.cache_class_registry()
 
-    def cache_class_registry(self) -> List[str]:
+    def cache_class_registry(self) -> list[str]:
         """
         Generate registry from disk, write to disk, return registry list.
 
@@ -89,14 +89,14 @@ class Registry:
         app_data/class_data, writing to disk, returning registry list.
         Typically used on app start to get registry list.
 
-        :return: List[str]
+        :return: list[str]
         """
 
         registry = self.generate_registry_from_filesystem()
         self.write_registry_to_disk(registry)
         return registry  # return value unused on startup
 
-    def generate_registry_from_filesystem(self) -> List[str]:
+    def generate_registry_from_filesystem(self) -> list[str]:
         """
         Searches class_data data files, return list of class names.
 

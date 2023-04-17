@@ -6,7 +6,7 @@ import tkinter as tk
 
 from pathlib import Path
 from tkinter import filedialog
-from typing import Optional, Union, List, Tuple, Callable
+from typing import Optional, Union, Callable
 
 
 def clear_screen(num_lines: int = 50) -> None:
@@ -78,7 +78,7 @@ def scrub_candidate_filename(dirty_string: str) -> str:
                     ]).rstrip()
 
 
-def ask_user_bool(question: str, invalid_input_response: str = None) -> bool:
+def ask_user_bool(question: str, invalid_input_response: str|None = None) -> bool:
     """
     Get user input, return a bool response.
     Optional additional instruction on invalid input.
@@ -98,10 +98,10 @@ def ask_user_bool(question: str, invalid_input_response: str = None) -> bool:
     return valid_responses[response.upper()]
 
 
-def save_as_dialogue(title_str: str = None,
-                     default_file_extension: str = None,
-                     filetypes: List[Tuple[str, str]] = None,
-                     suggested_filename: str = None,
+def save_as_dialogue(title_str: str|None = None,
+                     default_file_extension: str |None= None,
+                     filetypes: list[tuple[str, str]]|None = None,
+                     suggested_filename: str|None = None,
                      start_dir: Union[Path, str] = '..'
                      ) -> Optional[Path]:
     """
@@ -146,7 +146,7 @@ def save_as_dialogue(title_str: str = None,
     :param title_str: str
     :param default_file_extension: list
     :param suggested_filename: str
-    :param filetypes: List[Tuple[str, str]]
+    :param filetypes: list[tuple[str, str]]
     :param start_dir: Path or str
     :return: Path
     """
@@ -173,8 +173,8 @@ def save_as_dialogue(title_str: str = None,
     return Path(filepath_str)
 
 
-def select_file_dialogue(title_str: str = None,
-                         filetypes: List[Tuple[str, str]] = None,
+def select_file_dialogue(title_str: str|None = None,
+                         filetypes: list[tuple[str, str]]|None = None,
                          start_dir: Union[Path, str] = '..',
                          ) -> Optional[Path]:
     """
@@ -199,7 +199,7 @@ def select_file_dialogue(title_str: str = None,
     title will be "Open".
 
     :param title_str: str
-    :param filetypes: List[Tuple[str, str]]
+    :param filetypes: list[tuple[str, str]]
     :param start_dir: str
     :return: Path or None
     """
@@ -218,7 +218,7 @@ def select_file_dialogue(title_str: str = None,
     return Path(filepath_str)
 
 
-def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = '..') -> Optional[Path]:
+def select_folder_dialogue(title_str: str|None = None, start_dir: Union[Path, str] = '..') -> Optional[Path]:
     """
     Prompt user to select a directory.
 
@@ -250,7 +250,7 @@ def select_folder_dialogue(title_str: str = None, start_dir: Union[Path, str] = 
 
 def get_user_input(prompt: str,
                    validation: Callable,
-                   validation_error_msg: Union[str, Callable] = None):
+                   validation_error_msg: Union[str, Callable]|None = None):
     """
     Generic function for getting user input.
 

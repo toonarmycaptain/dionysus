@@ -104,7 +104,7 @@ def set_database_backend(user_set: bool) -> None:
 
 
 def create_chart_save_folder(new_path: Path,
-                             original_location: Path = None,
+                             original_location: Path|None = None,
                              ) -> None:
     """
     Create a new chart_save_folder, move files from old location.
@@ -162,7 +162,7 @@ def write_settings_to_file(settings_dict: dict) -> None:
         app_settings_file.write(write_string)
 
 
-def create_app_settings_file(settings_dict: dict = None) -> None:
+def create_app_settings_file(settings_dict: dict|None = None) -> None:
     """
     Create settings file, ensuring __init__.py in containing folder.
 

@@ -4,7 +4,7 @@ import shutil
 import tempfile
 
 from pathlib import Path
-from typing import Any, Iterator, List, Union
+from typing import Any, Iterator, Union
 
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
@@ -55,14 +55,14 @@ class Class:
 
     """
 
-    def __init__(self, name: str, students: List[Student] = None, *, class_id: Any = None) -> None:
+    def __init__(self, name: str, students: list[Student]|None = None, *, class_id: Any = None) -> None:
         """
         Create Class instance.
 
         Can be instantiated with name only.
 
         :param name: str - name of the class.
-        :param students: List[Student] - list of Student objects.
+        :param students: list[Student] - list of Student objects.
         :param class_id: Any - unique id of class in database.
         """
         self.id: Any = class_id
@@ -160,7 +160,7 @@ class Class:
         # for student in self.students:
         #     yield student
 
-    def add_student(self, student: Student = None, **kwargs: Any) -> None:
+    def add_student(self, student: Student|None = None, **kwargs: Any) -> None:
         """
         Adds a student to the class.
 
@@ -320,7 +320,7 @@ class NewClass(Class):
         Path to avatars folder in class' temp directory.
     """
 
-    def __init__(self, name: str, students: List[Student] = None, *, class_id: Any = None) -> None:
+    def __init__(self, name: str, students: list[Student]|None = None, *, class_id: Any = None) -> None:
         super().__init__(name=name, students=students, class_id=class_id)
 
         # Create class temp directory.

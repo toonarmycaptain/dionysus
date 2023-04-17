@@ -1,7 +1,6 @@
-coverage==6.2
+coverage==6.5.0
 coveralls==3.3.1
-mypy==0.931
-pytest==6.2.5
-pytest-cov==3.0.0
-pytest-mypy==0.8.1
-sqlalchemy2-stubs==0.0.2a19
+mypy==1.2.0
+pytest==7.3.1
+pytest-cov==4.0.0
+pytest-mypy==0.10.3

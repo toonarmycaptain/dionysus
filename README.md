@@ -2,8 +2,6 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-[![Build Status](https://travis-ci.org/toonarmycaptain/dionysus.svg?branch=master)](https://travis-ci.org/toonarmycaptain/dionysus) 
-[![CircleCI](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master.svg?style=svg)](https://circleci.com/gh/toonarmycaptain/dionysus/tree/master) 
 [![Build status](https://ci.appveyor.com/api/projects/status/yb33uwd13tkv7l79?svg=true)](https://ci.appveyor.com/project/toonarmycaptain/dionysus) 
 [![Coverage Status](https://coveralls.io/repos/github/toonarmycaptain/dionysus/badge.svg)](https://coveralls.io/github/toonarmycaptain/dionysus) 
 [![codecov](https://codecov.io/gh/toonarmycaptain/dionysus/branch/master/graph/badge.svg)](https://codecov.io/gh/toonarmycaptain/dionysus)
@@ -18,7 +16,7 @@
 **dionysus** is an open source CLI app primarily aimed at teachers that charts student results for display using avatars, nicknames, or student names. 
 
 Currently in alpha release, fuller features, automated install/packaging, and a full GUI/webapp are future goals.
-Supports latest two python minor versions - currently 3.8 and 3.9.
+Supports latest two python minor versions - currently 3.10 and 3.11.
 
 Excitedly welcoming contributors! 
 
