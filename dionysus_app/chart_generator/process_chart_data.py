@@ -44,7 +44,7 @@ def generate_avatar_coords(score_students_dict: dict[float, list[Student]],
     if isinstance(definitions.DATABASE, JSONDatabase):
         for score in score_students_dict:
             score_avatar_paths_dict[score] = [
-                definitions.DATABASE.get_avatar_path_class_filename(class_id, student.avatar_id)
+                definitions.DATABASE.get_avatar_path(class_id, student.avatar_id)
                 for student in score_students_dict[score]]
 
     else:  # All other db backends:

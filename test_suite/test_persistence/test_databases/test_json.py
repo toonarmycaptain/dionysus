@@ -266,19 +266,12 @@ class TestSaveChartImage:
 
 
 class TestGetAvatarPath:
-    def test_get_avatar_path(self, empty_json_database):
-        test_json_database = empty_json_database
-        with pytest.raises(NotImplementedError):
-            test_json_database.get_avatar_path(12345)
-
-
-class TestGetAvatarPathClassFilename:
     @pytest.mark.parametrize('test_student_avatar',
                              [pytest.param('some avatar', id='avatar provided'),
                               pytest.param(None, id='no avatar provided'),
                               ])
-    def test_get_avatar_path_class_filename(self, empty_json_database,
-                                            test_student_avatar):
+    def test_get_avatar_path(self, empty_json_database,
+                             test_student_avatar):
         """Returns existent avatar path, else db.default_avatar_path."""
 
         def mocked__avatar_path_from_string(class_name, student_avatar_filename):
@@ -290,7 +283,7 @@ class TestGetAvatarPathClassFilename:
         test_json_database.default_avatar_path = 'path to a default avatar'
         test_json_database._avatar_path_from_string = mocked__avatar_path_from_string
 
-        assert test_json_database.get_avatar_path_class_filename(
+        assert test_json_database.get_avatar_path(
             'some class', test_student_avatar) == (test_student_avatar if test_student_avatar
                                                    else test_json_database.default_avatar_path)
 

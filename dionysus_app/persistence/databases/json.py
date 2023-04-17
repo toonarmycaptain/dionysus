@@ -198,18 +198,6 @@ class JSONDatabase(Database):
         """
         self._write_classlist_to_file(class_to_write)
 
-    def get_avatar_path(self, avatar_id: int):
-        """
-        Unimplemented: call get_avatar_path_class_filename instead.
-
-        JSONDatabase requires class_id/name and student/avatar to
-        retrieve avatar data.
-
-        :param avatar_id: int
-        :return: NotImplementedError
-        """
-        raise NotImplementedError
-
     def create_chart(self, chart_data_dict: dict) -> None:
         """
             Save chart data to disk as JSON in class' chart_data folder.
@@ -281,8 +269,8 @@ class JSONDatabase(Database):
                         dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
-    def get_avatar_path_class_filename(self, class_id: str,
-                                       student_avatar_filename: str|None = None) -> Path:
+    def get_avatar_path(self, class_id: str,
+                        student_avatar_filename: str|None = None) -> Path:
         """
         Return abs path to student avatar, or to default avatar if None.
 
