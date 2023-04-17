@@ -223,15 +223,18 @@ class TestCreateChart:
         # Verify chart data in db:
         # A load_chart method might go here.
         with test_database.session_scope() as test_session:
+            from sqlalchemy.sql import text
             assert test_session.execute(
-                """SELECT chart.name FROM chart""").fetchone()[0] == test_chart_data_dict['chart_name']
+                text("""SELECT chart.name FROM chart""")
+                ).fetchone()[0] == test_chart_data_dict['chart_name']
 
             scores_data = []
             for score, students in test_chart_data_dict['score-students_dict'].items():
                 # NB One chart in db -> chart.id = 1
                 scores_data += [(1, student.id, score) for student in students]
             assert test_session.execute(
-                """SELECT chart_id, student_id, value FROM score""").fetchall() == scores_data
+                text("""SELECT chart_id, student_id, value FROM score""")
+                ).fetchall() == scores_data
             # Ensure chart id added to chart_data_dict:
             assert test_chart_data_dict['chart_id'] == 1
 
