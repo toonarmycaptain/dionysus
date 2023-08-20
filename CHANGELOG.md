@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Better optimised `SQLiteDatabase` queries. 
 ### Removed
+- Remove 32-bit python testing on appveyor. 
 - `data_version_conversion.py` is removed. NB Still available on GitHub.  
   - No intention to maintain interoperability of very old data formats going forward.
   - Similar functionality may return in future releases, for conversion between backends. 

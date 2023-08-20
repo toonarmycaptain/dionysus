@@ -4,8 +4,6 @@ image: Visual Studio 2019
 
 environment:
     matrix:
-        - PYTHON: "C:\\Python310"
-        - PYTHON: "C:\\Python311"
         - PYTHON: "C:\\Python310-x64"
         - PYTHON: "C:\\Python311-x64"
 
