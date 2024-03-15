@@ -54,7 +54,11 @@ jobs:
       run: |
         pytest --cov=./ --mypy -vv
         coverage xml -i
-        coveralls --service=github
+    - name: Upload coveralls
+      continue-on-error: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: coveralls --service=github
 
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@v1
