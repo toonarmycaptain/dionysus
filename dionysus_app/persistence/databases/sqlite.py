@@ -259,7 +259,9 @@ class SQLiteDatabase(Database):
             conn.commit()
         conn.close()
 
-    def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
+    def save_chart_image(self, chart_data_dict: dict,
+                         mpl_plt: plt,  # type: ignore
+                         ) -> Path:
         """
         Save image in db, and return path to file in temp storage.
 
@@ -269,7 +271,7 @@ class SQLiteDatabase(Database):
         """
         # Get image data:
         image = BytesIO()
-        mpl_plt.savefig(image,
+        mpl_plt.savefig(image,  # type: ignore[attr-defined]
                         format='png',
                         dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         image.seek(0)  # Return pointer to start of binary stream.

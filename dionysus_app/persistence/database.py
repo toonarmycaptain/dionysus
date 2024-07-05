@@ -195,7 +195,9 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
         """
 
     @abc.abstractmethod
-    def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
+    def save_chart_image(self, chart_data_dict: dict,
+                         mpl_plt: plt,  # type: ignore
+                         ) -> Path:
         """
         Save chart image, return Path to location.
 
