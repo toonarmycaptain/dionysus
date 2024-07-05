@@ -8,7 +8,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d24e9508258849c2b40760fce3448c6b)](https://www.codacy.com/app/toonarmycaptain/dionysus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toonarmycaptain/dionysus&amp;utm_campaign=Badge_Grade) 
 [![codebeat badge](https://codebeat.co/badges/c7b02602-ed39-46ff-9513-d06217fdfab4)](https://codebeat.co/projects/github-com-toonarmycaptain-dionysus-master) 
 [![CodeFactor](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/badge/master)](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/overview/master) 
-[![Codeship Status for toonarmycaptain/dionysus](https://app.codeship.com/projects/43b55830-ee0a-0136-e887-0e72079f591a/status?branch=master)](https://app.codeship.com/projects/320107)
 [![Updates](https://pyup.io/repos/github/toonarmycaptain/dionysus/shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/) 
 [![Known Vulnerabilities](https://snyk.io/test/github/toonarmycaptain/dionysus/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/toonarmycaptain/dionysus?targetFile=requirements.txt) 
 [![Python 3](https://pyup.io/repos/github/toonarmycaptain/dionysus/python-3-shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/) 

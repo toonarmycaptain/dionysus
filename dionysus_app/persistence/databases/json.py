@@ -244,7 +244,9 @@ class JSONDatabase(Database):
         with open(chart_data_filepath, 'w') as chart_data_file:
             chart_data_file.write(json_chart_data)
 
-    def save_chart_image(self, chart_data_dict: dict, mpl_plt: plt) -> Path:
+    def save_chart_image(self, chart_data_dict: dict,
+                         mpl_plt: plt,  # type: ignore
+                         ) -> Path:
         """
         Save image, and return path to file in application storage.
 
@@ -265,7 +267,7 @@ class JSONDatabase(Database):
         Path.mkdir(app_data_save_pathname.parent, parents=True, exist_ok=True)
         # Save in app_data/class_data/class_id/chart_data with chart_default_filename
 
-        mpl_plt.savefig(app_data_save_pathname, format='png',
+        mpl_plt.savefig(app_data_save_pathname, format='png',  # type: ignore[attr-defined]
                         dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
