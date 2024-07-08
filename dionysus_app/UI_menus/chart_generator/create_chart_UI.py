@@ -89,10 +89,11 @@ class ImageDisplay(tk.Frame):
 
     def create_image_widget(self) -> None:
         self.full_chart_image = Image.open(self.image_path)
-        self.display_sized_image = self.full_chart_image.resize((960, 540), Image.ANTIALIAS)
+        self.display_sized_image = self.full_chart_image.resize((960, 540),
+                                                                Image.ANTIALIAS)  # type: ignore[attr-defined]
 
         self.display_image = ImageTk.PhotoImage(self.display_sized_image, master=self.master)
-        self.image_panel = tk.Label(self, image=self.display_image)
+        self.image_panel = tk.Label(self, image=self.display_image)  # type: ignore[arg-type]
         self.image_panel.pack(side="top", fill="both", expand=True)
 
     def create_save_as_button_widget(self) -> None:
