@@ -1,3 +1,4 @@
 matplotlib==3.7.1
 Pillow==9.5.0
 sqlalchemy==2.0.9
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
