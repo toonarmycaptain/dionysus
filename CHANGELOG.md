@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - SQLiteSQLAlchemyDatabase, wrapping python's SQLite3 with SQLAlchemy.
 ### Changed
+- Dependency updates; typehinting updates in support
 - Implement walrus/assignment operator (`:=`) in main_menu.py.  
 - Add `get_user_input` function to `UI_functions.py`: abstracts asking for UI. Takes a prompt, validation function, error message args.
 - Implement `get_user_input` for most user input.
@@ -19,8 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change exit to use `raise SystemExit` with exit code 0.
 - Change generic types to use builtins (eg list, dict rather than List, Dict), per PEP 585.
 - Remove Python 3.8 support due to implementing PEP 585.
-- Change all implicity None-optional typing top explicity declare None type or Optional. 
-- Remove Python 3.9 support, add 3.11.
+- Change all implicity None-optional typing top explicity declare None type or Optional.
+### Removed
+- Remove Python 3.9 support, add 3.11, 3.12.
 - Remove CircleCI/TravisCI testing.
 - Remove sqlalchemy stubs, functionality now bundled with sqlalchemy
 - Rm codecov in favour of github-action
