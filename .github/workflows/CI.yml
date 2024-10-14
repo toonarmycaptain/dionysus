@@ -10,12 +10,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
         experimental: [false]  # These versions must pass.
 
         include:
             - os: ubuntu-latest
-              python-version: 3.13-dev
+              python-version: 3.14-dev
               experimental: true
 
 #            - os: windows-latest
