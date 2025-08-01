@@ -1,6 +1,6 @@
-coverage==7.9.2
+coverage==7.10.1
 coveralls==4.0.1
-mypy==1.17.0
+mypy==1.17.1
 pytest==8.4.1
 pytest-cov==6.2.1
 pytest-mypy==1.0.1
