@@ -54,11 +54,6 @@ jobs:
       run: |
         pytest --cov=./ --mypy -vv
         coverage xml -i
-    - name: Upload coveralls
-      continue-on-error: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --service=github
 
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@v1
@@ -74,17 +69,3 @@ jobs:
         name: codecov-umbrella # Optional.
         fail_ci_if_error: false # Allow codecov to signal fail rather than action failing.
         verbose: true # Optional (default = false).
-
-  coveralls_finish:
-      needs: test
-      runs-on: ubuntu-latest
-      steps:
-      - name: Coveralls Finished report
-        uses: AndreMiras/coveralls-python-action@develop
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel: true
-          parallel-finished: true
-          flag-name: github_action_tests
-          base-path: '.'
-          debug: true
