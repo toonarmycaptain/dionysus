@@ -26,8 +26,8 @@ Leave a comment or [raise an issue](https://github.com/toonarmycaptain/dionysus/
 ### Installation
 
 Currently to use the application, you must clone or download the project from here on github. See [releases](https://github.com/toonarmycaptain/dionysus/releases) for a `zip` or `tar.gz`.
-You will need Python 3.7+, unzip the project if necessary, navigate to the project directory and run `pip install -r requirements.txt` or manually install the dependencies `pip install ...` you find in the requirements file.
-For development you will also need `pip install -r requirements_dev.txt`.
+You will need Python 3.10+ and [uv](https://docs.astral.sh/uv/). Unzip the project if necessary, navigate to the project directory and run `uv sync` to install dependencies.
+For development you will also need `uv sync --all-extras`.
 
 ### Running the application
 

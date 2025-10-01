@@ -1,11 +1,11 @@
 build: false
 
-image: Visual Studio 2019
+image: Visual Studio 2022
 
 environment:
     matrix:
-        - PYTHON: "C:\\Python310-x64"
-        - PYTHON: "C:\\Python311-x64"
+        - PYTHON: "C:\\Python312-x64"
+        - PYTHON: "C:\\Python313-x64"
 
 #matrix:
 #    allow_failures:
@@ -14,9 +14,10 @@ init:
   - SET PATH=%PYTHON%;%PATH%
 
 install:
-    - python -m pip install -U pip
-    - python -m pip install -r requirements_dev.txt
-    - python -m pip install -r requirements.txt
+    - ps: irm https://astral.sh/uv/install.ps1 | iex
+    - SET PATH=%USERPROFILE%\.local\bin;%PATH%
+    - uv sync --all-groups
 
 test_script:
-    - python -m pytest
+    - uv run pytest --cov=./ --mypy -vv
+    - uv run coverage xml -i
