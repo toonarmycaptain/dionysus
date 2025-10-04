@@ -1,4 +1,5 @@
-""" JSON Database object """
+"""JSON Database object"""
+
 from copy import deepcopy
 from pathlib import Path
 from typing import Optional
@@ -13,8 +14,8 @@ from dionysus_app.file_functions import convert_to_json, move_file
 from dionysus_app.persistence.database import ClassIdentifier, Database
 from dionysus_app.persistence.databases.json_registry import Registry
 
-DEFAULT_CLASSLIST_DATA_FILE_TYPE = '.cld'
-DEFAULT_CHART_DATA_FILE_TYPE = '.cdf'
+DEFAULT_CLASSLIST_DATA_FILE_TYPE = ".cld"
+DEFAULT_CHART_DATA_FILE_TYPE = ".cdf"
 
 
 class JSONDatabase(Database):
@@ -83,16 +84,17 @@ class JSONDatabase(Database):
 
     """
 
-    def __init__(self,
-                 app_data_path: Path|None = None,
-                 class_data_path: Path|None = None,
-                 class_data_file_type: str|None = None,
-                 chart_data_file_type: str|None = None,
-                 default_chart_save_dir: Path|None = None,
-                 default_avatar_path: Path|None = None,
-                 registry_path: Path|None = None,
-                 registry: Registry|None = None,
-                 ):
+    def __init__(
+        self,
+        app_data_path: Path | None = None,
+        class_data_path: Path | None = None,
+        class_data_file_type: str | None = None,
+        chart_data_file_type: str | None = None,
+        default_chart_save_dir: Path | None = None,
+        default_avatar_path: Path | None = None,
+        registry_path: Path | None = None,
+        registry: Registry | None = None,
+    ):
         """
         Constructs the JSONDatabase object, with defaults for unprovided args.
 
@@ -109,28 +111,38 @@ class JSONDatabase(Database):
         :param registry: Registry
         """
         super().__init__()
-        self.app_data_path: Path = (app_data_path
-                                    or DataFolder.generate_rel_path(DataFolder.APP_DATA.value))
-        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath('class_data')
-        self.class_data_file_type: str = class_data_file_type or DEFAULT_CLASSLIST_DATA_FILE_TYPE
-        self.default_chart_save_dir: Optional[Path] = (default_chart_save_dir
-                                                       or definitions.DEFAULT_CHART_SAVE_DIR)
+        self.app_data_path: Path = app_data_path or DataFolder.generate_rel_path(
+            DataFolder.APP_DATA.value
+        )
+        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath(
+            "class_data"
+        )
+        self.class_data_file_type: str = (
+            class_data_file_type or DEFAULT_CLASSLIST_DATA_FILE_TYPE
+        )
+        self.default_chart_save_dir: Optional[Path] = (
+            default_chart_save_dir or definitions.DEFAULT_CHART_SAVE_DIR
+        )
         self.default_avatar_path: Path = (
-                default_avatar_path
-                or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value))
-        self.chart_data_file_type: str = chart_data_file_type or DEFAULT_CHART_DATA_FILE_TYPE
+            default_avatar_path
+            or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
+        )
+        self.chart_data_file_type: str = (
+            chart_data_file_type or DEFAULT_CHART_DATA_FILE_TYPE
+        )
         # Create data paths:
         self.app_data_path.mkdir(parents=True, exist_ok=True)
         self.class_data_path.mkdir(parents=True, exist_ok=True)
         # Initialise class registry:
-        self._registry_path: Path = (registry_path
-                                     or self.app_data_path.joinpath('class_registry.index'))
-        self._registry: Registry = (registry
-                                    or Registry(app_data_path=self.app_data_path,
-                                                class_data_path=self.class_data_path,
-                                                registry_path=self._registry_path,
-                                                class_data_file_type=self.class_data_file_type
-                                                ))
+        self._registry_path: Path = registry_path or self.app_data_path.joinpath(
+            "class_registry.index"
+        )
+        self._registry: Registry = registry or Registry(
+            app_data_path=self.app_data_path,
+            class_data_path=self.class_data_path,
+            registry_path=self._registry_path,
+            class_data_file_type=self.class_data_file_type,
+        )
 
     def get_classes(self) -> list[ClassIdentifier]:
         """
@@ -142,8 +154,10 @@ class JSONDatabase(Database):
 
         :return: list[tuple[str, str]]
         """
-        return [ClassIdentifier(class_name, class_name)
-                for class_name in self._registry.list]
+        return [
+            ClassIdentifier(class_name, class_name)
+            for class_name in self._registry.list
+        ]
 
     def class_name_exists(self, class_name: str) -> bool:
         """
@@ -179,7 +193,9 @@ class JSONDatabase(Database):
         :return: Class object
         """
         class_data_filename = class_id + self.class_data_file_type
-        classlist_data_path = self.class_data_path.joinpath(class_id, class_data_filename)
+        classlist_data_path = self.class_data_path.joinpath(
+            class_id, class_data_filename
+        )
 
         loaded_class = Class.from_file(classlist_data_path)
         # Append ids
@@ -200,53 +216,60 @@ class JSONDatabase(Database):
 
     def create_chart(self, chart_data_dict: dict) -> None:
         """
-            Save chart data to disk as JSON in class' chart_data folder.
+        Save chart data to disk as JSON in class' chart_data folder.
 
-            Filename is chart name sanitised to a suitable string.
+        Filename is chart name sanitised to a suitable string.
 
-            Pathlib Path objects are not json-serializable, so data dict is converted to
-            a JSON-safe form before conversion to JSON
+        Pathlib Path objects are not json-serializable, so data dict is converted to
+        a JSON-safe form before conversion to JSON
 
-            Write classlist data to disk with format:
-            chart_data_dict = {
-                        'class_id': class_id, str
-                        'class_name': class_name,  str
-                        'chart_name': chart_name,  str
-                        'chart_default_filename': chart_default_filename,  str
-                         # date? Not yet implemented.
-                        'chart_params': chart_params,  dict
-                            dict of chart parameters and settings
-                        'score-students_dict': student_scores,  dict
-                        }
+        Write classlist data to disk with format:
+        chart_data_dict = {
+                    'class_id': class_id, str
+                    'class_name': class_name,  str
+                    'chart_name': chart_name,  str
+                    'chart_default_filename': chart_default_filename,  str
+                     # date? Not yet implemented.
+                    'chart_params': chart_params,  dict
+                        dict of chart parameters and settings
+                    'score-students_dict': student_scores,  dict
+                    }
 
-            CAUTION: conversion to JSON will convert int/float keys in
-            score_students_dict to strings, and keep them as strings when
-            loading.
-            This could be handled if necessary by running something like:
-            original_score_avatar_dict = {
-                float(score): avatar_list for score, avatar_list
-                                in dejsonified_score_avatar_dict.items()}
+        CAUTION: conversion to JSON will convert int/float keys in
+        score_students_dict to strings, and keep them as strings when
+        loading.
+        This could be handled if necessary by running something like:
+        original_score_avatar_dict = {
+            float(score): avatar_list for score, avatar_list
+                            in dejsonified_score_avatar_dict.items()}
 
-            :param chart_data_dict: dict
-            :return: None
-            """
-        file_chart_data_dict = deepcopy(chart_data_dict)  # Copy so as to not modify in-use dict.
+        :param chart_data_dict: dict
+        :return: None
+        """
+        file_chart_data_dict = deepcopy(
+            chart_data_dict
+        )  # Copy so as to not modify in-use dict.
 
-        chart_filename = file_chart_data_dict['chart_default_filename']
+        chart_filename = file_chart_data_dict["chart_default_filename"]
         chart_datafile_name = chart_filename + self.chart_data_file_type
         chart_data_filepath = self.class_data_path.joinpath(
-            file_chart_data_dict['class_id'], 'chart_data', chart_datafile_name)
+            file_chart_data_dict["class_id"], "chart_data", chart_datafile_name
+        )
 
         # Convert data_dict to JSON-safe form.
-        json_safe_chart_data_dict = self._store_students_as_student_names(file_chart_data_dict)
+        json_safe_chart_data_dict = self._store_students_as_student_names(
+            file_chart_data_dict
+        )
         json_chart_data = convert_to_json(json_safe_chart_data_dict)
 
-        with open(chart_data_filepath, 'w') as chart_data_file:
+        with open(chart_data_filepath, "w") as chart_data_file:
             chart_data_file.write(json_chart_data)
 
-    def save_chart_image(self, chart_data_dict: dict,
-                         mpl_plt: plt,  # type: ignore
-                         ) -> Path:
+    def save_chart_image(
+        self,
+        chart_data_dict: dict,
+        mpl_plt: plt,  # type: ignore
+    ) -> Path:
         """
         Save image, and return path to file in application storage.
 
@@ -259,20 +282,24 @@ class JSONDatabase(Database):
         :param mpl_plt: plt - matplotlib.pyplot object
         :return: Path
         """
-        class_id = chart_data_dict['class_id']
-        default_chart_name = chart_data_dict['chart_default_filename']
-        app_data_save_pathname = self.class_data_path.joinpath(class_id,
-                                                               'chart_data',
-                                                               f"{default_chart_name}.png")
+        class_id = chart_data_dict["class_id"]
+        default_chart_name = chart_data_dict["chart_default_filename"]
+        app_data_save_pathname = self.class_data_path.joinpath(
+            class_id, "chart_data", f"{default_chart_name}.png"
+        )
         Path.mkdir(app_data_save_pathname.parent, parents=True, exist_ok=True)
         # Save in app_data/class_data/class_id/chart_data with chart_default_filename
 
-        mpl_plt.savefig(app_data_save_pathname, format='png',  # type: ignore[attr-defined]
-                        dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+        mpl_plt.savefig(
+            app_data_save_pathname,
+            format="png",  # type: ignore[attr-defined]
+            dpi=300,
+        )  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
-    def get_avatar_path(self, class_id: str,
-                        student_avatar_filename: str|None = None) -> Path:
+    def get_avatar_path(
+        self, class_id: str, student_avatar_filename: str | None = None
+    ) -> Path:
         """
         Return abs path to student avatar, or to default avatar if None.
 
@@ -297,7 +324,7 @@ class JSONDatabase(Database):
         :param avatar_filename: str
         :return: Path object
         """
-        return self.class_data_path.joinpath(class_id, 'avatars', avatar_filename)
+        return self.class_data_path.joinpath(class_id, "avatars", avatar_filename)
 
     def close(self) -> None:
         """
@@ -343,8 +370,8 @@ class JSONDatabase(Database):
         :return: None
         :raises ValueError: If default_chart_save_dir is None/uninitialised.
         """
-        avatar_path = self.class_data_path.joinpath(classlist_name, 'avatars')
-        chart_path = self.class_data_path.joinpath(classlist_name, 'chart_data')
+        avatar_path = self.class_data_path.joinpath(classlist_name, "avatars")
+        chart_path = self.class_data_path.joinpath(classlist_name, "chart_data")
         if self.default_chart_save_dir is None:
             raise ValueError("Uninitialised DEFAULT_CHART_SAVE_dir")
         user_chart_save_dir = self.default_chart_save_dir.joinpath(classlist_name)
@@ -373,7 +400,7 @@ class JSONDatabase(Database):
         # Make data path if it doesn't exist.
         classlist_data_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(classlist_data_path, 'w') as classlist_file:
+        with open(classlist_data_path, "w") as classlist_file:
             classlist_file.write(json_class_data)
 
     def _move_avatars_to_class_data(self, new_class: NewClass) -> None:
@@ -383,12 +410,14 @@ class JSONDatabase(Database):
         :param new_class: NewClass
         :return: None
         """
-        for avatar_file in [student.avatar_id for student in new_class.students
-                            if student.avatar_id]:
+        for avatar_file in [
+            student.avatar_id for student in new_class.students if student.avatar_id
+        ]:
             self._move_avatar_to_class_data(new_class, avatar_file)
 
-    def _move_avatar_to_class_data(self, new_class: NewClass,
-                                   avatar_filename: str) -> None:
+    def _move_avatar_to_class_data(
+        self, new_class: NewClass, avatar_filename: str
+    ) -> None:
         """
         Moves avatar from NewClass.temp_dir to new class' avatars dir.
 
@@ -400,9 +429,9 @@ class JSONDatabase(Database):
         :return: None
         """
         origin_path = new_class.temp_avatars_dir.joinpath(avatar_filename)
-        destination_path = self.class_data_path.joinpath(new_class.id,
-                                                         'avatars',
-                                                         avatar_filename)
+        destination_path = self.class_data_path.joinpath(
+            new_class.id, "avatars", avatar_filename
+        )
         if not destination_path.exists():  # Avatar not already in database/class data.
             move_file(origin_path, destination_path)
 
@@ -418,7 +447,8 @@ class JSONDatabase(Database):
         :param data_dict: dict
         :return: dict
         """
-        for score in list(data_dict['score-students_dict'].keys()):
-            data_dict['score-students_dict'][score] = [
-                student.name for student in data_dict['score-students_dict'][score]]
+        for score in list(data_dict["score-students_dict"].keys()):
+            data_dict["score-students_dict"][score] = [
+                student.name for student in data_dict["score-students_dict"][score]
+            ]
         return data_dict

@@ -49,7 +49,9 @@ def load_from_json_file(json_file_path: Union[Path, str]) -> Any:
         return load_from_json(json_data)
 
 
-def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]) -> None:
+def copy_file(
+    origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]
+) -> None:
     """
     Copy file from origin to destination.
 
@@ -71,7 +73,9 @@ def copy_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Pat
         copyfile(origin_fullpath, destination_fullpath)
 
 
-def move_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]) -> None:
+def move_file(
+    origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]
+) -> None:
     """
     Move origin file to destination, do nothing if origin nonexistent.
 
@@ -90,5 +94,6 @@ def move_file(origin_fullpath: Union[Path, str], destination_fullpath: Union[Pat
         destination_fullpath = str(destination_fullpath)
 
         move(origin_fullpath, destination_fullpath)
+
 
 # use Path.rename(new_name) to rename a class.

@@ -54,13 +54,14 @@ class Registry:
 
     """
 
-    def __init__(self,
-                 registry_list: list[str]|None = None,
-                 app_data_path: Path|None = None,
-                 class_data_path: Path|None = None,
-                 class_data_file_type: str|None = None,
-                 registry_path: Path|None = None,
-                 ) -> None:
+    def __init__(
+        self,
+        registry_list: list[str] | None = None,
+        app_data_path: Path | None = None,
+        class_data_path: Path | None = None,
+        class_data_file_type: str | None = None,
+        registry_path: Path | None = None,
+    ) -> None:
         """
         Constructs Registry object, with defaults for unprovided args.
 
@@ -71,14 +72,18 @@ class Registry:
         :param registry_path: Path
         :return: None
         """
-        self.app_data_path: Path = (
-                app_data_path or DataFolder.generate_rel_path(DataFolder.APP_DATA.value))
-        self.class_data_path: Path = (class_data_path
-                                      or self.app_data_path.joinpath('class_data'))
-        self.registry_path: Path = (registry_path
-                                    or self.app_data_path.joinpath('class_registry.index'))
-        self.class_data_file_type: str = (class_data_file_type
-                                          or json_db.DEFAULT_CLASSLIST_DATA_FILE_TYPE)
+        self.app_data_path: Path = app_data_path or DataFolder.generate_rel_path(
+            DataFolder.APP_DATA.value
+        )
+        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath(
+            "class_data"
+        )
+        self.registry_path: Path = registry_path or self.app_data_path.joinpath(
+            "class_registry.index"
+        )
+        self.class_data_file_type: str = (
+            class_data_file_type or json_db.DEFAULT_CLASSLIST_DATA_FILE_TYPE
+        )
         self.list: list[str] = registry_list or self.cache_class_registry()
 
     def cache_class_registry(self) -> list[str]:
@@ -106,7 +111,9 @@ class Registry:
 
         :return: list
         """
-        classlist_data_fullpaths = self.class_data_path.rglob(f'**/*{self.class_data_file_type}')
+        classlist_data_fullpaths = self.class_data_path.rglob(
+            f"**/*{self.class_data_file_type}"
+        )
         return [data_path.stem for data_path in classlist_data_fullpaths]
 
     def write_registry_to_disk(self, registry_list: list) -> None:
@@ -116,9 +123,9 @@ class Registry:
         :param registry_list: list
         :return: None
         """
-        with open(self.registry_path, 'w') as registry_file:
+        with open(self.registry_path, "w") as registry_file:
             for classlist_name in registry_list:
-                registry_file.write(f'{classlist_name}\n')
+                registry_file.write(f"{classlist_name}\n")
 
     def register_class(self, classlist_name: str) -> None:
         """
@@ -136,8 +143,8 @@ class Registry:
         self.list.append(classlist_name)
 
         # open class registry, create if does not exist.
-        with open(self.registry_path, 'a+') as registry:
-            registry.write(f'{classlist_name}\n')
+        with open(self.registry_path, "a+") as registry:
+            registry.write(f"{classlist_name}\n")
 
     def classlist_exists(self, classlist_name: str) -> bool:
         """
@@ -166,12 +173,12 @@ class Registry:
             raise ValueError("RegistryError: Registry uninitialised.")
         # Load registry file, if it exists.
         try:
-            with open(self.registry_path, 'r') as registry_file:
+            with open(self.registry_path, "r") as registry_file:
                 disk_registry_str: Optional[str] = registry_file.read()
         except FileNotFoundError:
             disk_registry_str = None
 
-        if disk_registry_str != ''.join(f'{class_name}\n' for class_name in self.list):
+        if disk_registry_str != "".join(f"{class_name}\n" for class_name in self.list):
             self.write_registry_to_disk(self.list)
 
     def __del__(self) -> None:

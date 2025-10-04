@@ -1,10 +1,12 @@
 """Class for database object."""
+
 import abc
 
 from pathlib import Path
-from typing import (Any,
-                    NamedTuple,
-                    )
+from typing import (
+    Any,
+    NamedTuple,
+)
 
 import matplotlib.pyplot as plt
 
@@ -33,6 +35,7 @@ class ClassIdentifier(NamedTuple):
     :param id: Any - database primary key/unique identifier.
     :param name: str - the name of the class
     """
+
     id: Any
     name: str
 
@@ -50,6 +53,7 @@ class ABCMetaEnforcedAttrs(abc.ABCMeta):
     Attribute names must be defined in the __init__ of the subclass,
     or a TypeError will be raised.
     """
+
     required_attributes: list[str] = []
 
     def __call__(cls, *args, **kwargs):
@@ -67,8 +71,10 @@ class ABCMetaEnforcedAttrs(abc.ABCMeta):
         obj = super(ABCMetaEnforcedAttrs, cls).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if not hasattr(obj, attr_name):
-                raise TypeError(f"Can't instantiate abstract class {type(obj)}"
-                                f"without required attribute {attr_name}.")
+                raise TypeError(
+                    f"Can't instantiate abstract class {type(obj)}"
+                    f"without required attribute {attr_name}."
+                )
         return obj
 
 
@@ -121,8 +127,10 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
         Closeout database.
 
     """
-    required_attributes = ['default_avatar_path',  # Path to default avatar.
-                           ]
+
+    required_attributes = [
+        "default_avatar_path",  # Path to default avatar.
+    ]
 
     @abc.abstractmethod
     def get_classes(self) -> list[ClassIdentifier]:
@@ -195,9 +203,11 @@ class Database(abc.ABC, metaclass=ABCMetaEnforcedAttrs):
         """
 
     @abc.abstractmethod
-    def save_chart_image(self, chart_data_dict: dict,
-                         mpl_plt: plt,  # type: ignore
-                         ) -> Path:
+    def save_chart_image(
+        self,
+        chart_data_dict: dict,
+        mpl_plt: plt,  # type: ignore
+    ) -> Path:
         """
         Save chart image, return Path to location.
 

@@ -4,6 +4,7 @@ Optional feature implementations:
 if title/name desired on image:
     fig.subtitle('title_string')
 """
+
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -25,7 +26,9 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
     """
     fig = plt.figure(figsize=(19.20, 10.80))  # noqa: F841 | set proportion/size in inches, 1080p
     ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
-    plt.subplots_adjust(left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01)
+    plt.subplots_adjust(
+        left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01
+    )
 
     # TODO: hide vertical axis, top and right border lines.
     set_axis()
@@ -34,7 +37,9 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
     # if custom chart parameters affecting avatar layout,
     # pass chart_data_dict['chart_params'] to generate_avatar_coords
 
-    avatar_coord_dict = generate_avatar_coords(chart_data_dict['score-students_dict'], chart_data_dict['class_id'])
+    avatar_coord_dict = generate_avatar_coords(
+        chart_data_dict["score-students_dict"], chart_data_dict["class_id"]
+    )
 
     add_avatars_to_plot(ax, avatar_coord_dict)
 
@@ -67,15 +72,19 @@ def add_avatar_to_plot(ax, avatar_path, xy_coords: list[tuple[int, int]]) -> Non
     """
     valid_avatar_path = validate_avatar(avatar_path)
 
-    avatar_image = plt.imread(str(valid_avatar_path))  # matplotlib takes an 8bit str or FILE object, not Path object.
-    imagebox = OffsetImage(avatar_image, zoom=.4)
+    avatar_image = plt.imread(
+        str(valid_avatar_path)
+    )  # matplotlib takes an 8bit str or FILE object, not Path object.
+    imagebox = OffsetImage(avatar_image, zoom=0.4)
 
     for xy in xy_coords:
         # xy = tuple coordinates to position this image
-        ab = AnnotationBbox(imagebox, xy,
-                            # xycoords='data',
-                            # boxcoords="offset points",
-                            )
+        ab = AnnotationBbox(
+            imagebox,
+            xy,
+            # xycoords='data',
+            # boxcoords="offset points",
+        )
         ax.add_artist(ab)
         plt.draw()
 
