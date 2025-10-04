@@ -183,8 +183,10 @@ class TestGenerateAvatarCoords:
         )
 
     def test_generate_avatar_coords_generic_api(
-        self, monkeypatch, empty_generic_database
-    ):  # noqa: F811
+        self,
+        monkeypatch,
+        empty_generic_database,  # noqa: F811
+    ):
         test_database = empty_generic_database
         test_database.default_avatar_path = "mocked_default_avatar_path"
 

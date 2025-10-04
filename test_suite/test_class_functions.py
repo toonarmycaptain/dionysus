@@ -27,8 +27,8 @@ from dionysus_app.UI_menus.UI_functions import clean_for_filename
 from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
 from test_suite.test_class import (
     test_class_name_only,  # noqa: F401
-    test_full_class,
-)  # noqa: F401
+    test_full_class,  # noqa: F401
+)
 from test_suite.testing_class_data import (
     testing_registry_data_set as test_registry_data_set,
     test_full_class_data_set,
@@ -40,8 +40,8 @@ class TestCreateClasslist:
         self,
         monkeypatch,
         empty_generic_database,  # noqa: F811
-        test_full_class,
-    ):  # noqa: F811
+        test_full_class,  # noqa: F811
+    ):
         test_database = empty_generic_database
 
         def mocked_take_classlist_name_input():

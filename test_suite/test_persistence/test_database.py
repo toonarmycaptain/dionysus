@@ -25,8 +25,8 @@ from test_suite.test_class import test_class_name_only, test_full_class  # noqa:
 from test_suite.test_persistence.test_databases.test_json import empty_json_database  # noqa: F401
 from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database  # noqa: F401
 from test_suite.test_persistence.test_databases.test_sqlite_sqlalchemy import (
-    empty_sqlite_sqlalchemy_database,
-)  # noqa: F401
+    empty_sqlite_sqlalchemy_database,  # noqa: F401
+)
 
 DATABASE_BACKENDS = [
     "empty_json_database",
