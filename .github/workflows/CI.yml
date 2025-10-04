@@ -47,9 +47,7 @@ jobs:
     - name: Test with pytest --cov=./ --mypy -vv
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        uv run pytest --cov=./ --mypy -vv
-        uv run coverage xml -i
+      run: uv run pytest --cov=./ --mypy -vv --cov-report html --cov-report xml --cov-report=lcov --cov-branch
 
 
     - name: Codacy Coverage Reporter
