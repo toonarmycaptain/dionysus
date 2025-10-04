@@ -1,6 +1,7 @@
 """
 Application main menu.
 """
+
 from typing import Callable, Optional
 
 from dionysus_app.chart_generator.create_chart import new_chart
@@ -26,14 +27,17 @@ def main_menu_options() -> None:
     :return: None
     """
     print("Dionysus - Main menu\n")
-    print("Please select an option by entering the corresponding number, and press return:\n")
-    print("     1. Create a classlist\n"
-          "     2. Edit a classlist\n"
-          "     3. Create a new chart\n"
-          "     \n"
-          "     9. Settings\n"
-          "     Enter Q to quit.\n"
-          )
+    print(
+        "Please select an option by entering the corresponding number, and press return:\n"
+    )
+    print(
+        "     1. Create a classlist\n"
+        "     2. Edit a classlist\n"
+        "     3. Create a new chart\n"
+        "     \n"
+        "     9. Settings\n"
+        "     Enter Q to quit.\n"
+    )
 
 
 def take_main_menu_input() -> Optional[bool]:
@@ -52,18 +56,19 @@ def take_main_menu_input() -> Optional[bool]:
     :return: None or True
     """
     possible_options: dict[str, Callable] = {
-        '1': create_classlist,
-        '2': edit_class_data,
-        '3': new_chart,
-        '9': run_settings_menu,
-        }
+        "1": create_classlist,
+        "2": edit_class_data,
+        "3": new_chart,
+        "9": run_settings_menu,
+    }
 
     def input_validator(user_input: str) -> bool:
-        return user_input in possible_options or user_input.upper() == 'Q'
+        return user_input in possible_options or user_input.upper() == "Q"
 
-    chosen_option = get_user_input(prompt='>>> ', validation=input_validator,
-                                   validation_error_msg='Invalid input.')
-    if chosen_option.upper() == 'Q':
+    chosen_option = get_user_input(
+        prompt=">>> ", validation=input_validator, validation_error_msg="Invalid input."
+    )
+    if chosen_option.upper() == "Q":
         return True  # Quit app.
     possible_options[chosen_option]()
     return None

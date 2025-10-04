@@ -10,7 +10,7 @@ from typing import Optional, Union, Callable
 
 
 def clear_screen(num_lines: int = 50) -> None:
-    clear_seq = '\n' * num_lines
+    clear_seq = "\n" * num_lines
 
     print(clear_seq)
 
@@ -30,7 +30,7 @@ def input_is_essentially_blank(subject_string: str) -> bool:
     :return: bool
     """
     cleaned_string = "".join([c for c in subject_string if c.isalnum()]).rstrip()
-    if cleaned_string == '':
+    if cleaned_string == "":
         return True
     # else:
     return False
@@ -49,7 +49,7 @@ def clean_for_filename(some_string: str) -> str:
     :return: str
     """
     cleaner_filename = scrub_candidate_filename(some_string)
-    cleaned_filename = cleaner_filename.replace(' ', '_')  # no slashes either
+    cleaned_filename = cleaner_filename.replace(" ", "_")  # no slashes either
     return cleaned_filename
 
 
@@ -70,15 +70,20 @@ def scrub_candidate_filename(dirty_string: str) -> str:
     :param dirty_string: str
     :return: str
     """
-    allowed_special_characters = [' ', '_', '-', ]
-    return "".join([c if c.isalnum()
-                         or c in allowed_special_characters
-                    else '_'
-                    for c in dirty_string
-                    ]).rstrip()
+    allowed_special_characters = [
+        " ",
+        "_",
+        "-",
+    ]
+    return "".join(
+        [
+            c if c.isalnum() or c in allowed_special_characters else "_"
+            for c in dirty_string
+        ]
+    ).rstrip()
 
 
-def ask_user_bool(question: str, invalid_input_response: str|None = None) -> bool:
+def ask_user_bool(question: str, invalid_input_response: str | None = None) -> bool:
     """
     Get user input, return a bool response.
     Optional additional instruction on invalid input.
@@ -87,23 +92,27 @@ def ask_user_bool(question: str, invalid_input_response: str|None = None) -> boo
     :param invalid_input_response: str
     :return: bool
     """
-    valid_responses = {"Y": True,
-                       "YES": True,
-                       "N": False,
-                       "NO": False,
-                       }
-    response = get_user_input(prompt=question,
-                              validation=lambda user_input: user_input.upper() in valid_responses,
-                              validation_error_msg=invalid_input_response)
+    valid_responses = {
+        "Y": True,
+        "YES": True,
+        "N": False,
+        "NO": False,
+    }
+    response = get_user_input(
+        prompt=question,
+        validation=lambda user_input: user_input.upper() in valid_responses,
+        validation_error_msg=invalid_input_response,
+    )
     return valid_responses[response.upper()]
 
 
-def save_as_dialogue(title_str: str|None = None,
-                     default_file_extension: str |None= None,
-                     filetypes: list[tuple[str, str]]|None = None,
-                     suggested_filename: str|None = None,
-                     start_dir: Union[Path, str] = '..'
-                     ) -> Optional[Path]:
+def save_as_dialogue(
+    title_str: str | None = None,
+    default_file_extension: str | None = None,
+    filetypes: list[tuple[str, str]] | None = None,
+    suggested_filename: str | None = None,
+    start_dir: Union[Path, str] = "..",
+) -> Optional[Path]:
     """
     Prompts user to select a directory and filename to save a file to.
     Calls tkinter filedialog.asksaveasfilename with title (if provided), and
@@ -155,28 +164,30 @@ def save_as_dialogue(title_str: str|None = None,
 
     if filetypes and not default_file_extension:
         # Make extension of first listed filetypes default save extension.
-        first_extension_without_wildcard = filetypes[0][1].strip('*')
-        if first_extension_without_wildcard != '.':
+        first_extension_without_wildcard = filetypes[0][1].strip("*")
+        if first_extension_without_wildcard != ".":
             default_file_extension = first_extension_without_wildcard
 
     default_filetypes = [("all files", "*.*")]
     if not filetypes:
         filetypes = default_filetypes
-    filepath_str = filedialog.asksaveasfilename(title=title_str,
-                                                defaultextension=default_file_extension,
-                                                filetypes=filetypes,
-                                                initialfile=suggested_filename,
-                                                initialdir=start_dir,
-                                                )
+    filepath_str = filedialog.asksaveasfilename(
+        title=title_str,
+        defaultextension=default_file_extension,
+        filetypes=filetypes,
+        initialfile=suggested_filename,
+        initialdir=start_dir,
+    )
     if not filepath_str:
         return None
     return Path(filepath_str)
 
 
-def select_file_dialogue(title_str: str|None = None,
-                         filetypes: list[tuple[str, str]]|None = None,
-                         start_dir: Union[Path, str] = '..',
-                         ) -> Optional[Path]:
+def select_file_dialogue(
+    title_str: str | None = None,
+    filetypes: list[tuple[str, str]] | None = None,
+    start_dir: Union[Path, str] = "..",
+) -> Optional[Path]:
     """
     Prompt user to select a file.
 
@@ -209,16 +220,19 @@ def select_file_dialogue(title_str: str|None = None,
     default_filetypes = [("all files", "*.*")]
     if not filetypes:
         filetypes = default_filetypes
-    filepath_str = filedialog.askopenfilename(title=title_str,
-                                              filetypes=filetypes,
-                                              initialdir=start_dir,
-                                              )
+    filepath_str = filedialog.askopenfilename(
+        title=title_str,
+        filetypes=filetypes,
+        initialdir=start_dir,
+    )
     if not filepath_str:
         return None
     return Path(filepath_str)
 
 
-def select_folder_dialogue(title_str: str|None = None, start_dir: Union[Path, str] = '..') -> Optional[Path]:
+def select_folder_dialogue(
+    title_str: str | None = None, start_dir: Union[Path, str] = ".."
+) -> Optional[Path]:
     """
     Prompt user to select a directory.
 
@@ -248,9 +262,11 @@ def select_folder_dialogue(title_str: str|None = None, start_dir: Union[Path, st
     return Path(dir_path_str)
 
 
-def get_user_input(prompt: str,
-                   validation: Callable,
-                   validation_error_msg: Union[str, Callable]|None = None):
+def get_user_input(
+    prompt: str,
+    validation: Callable,
+    validation_error_msg: Union[str, Callable] | None = None,
+):
     """
     Generic function for getting user input.
 
