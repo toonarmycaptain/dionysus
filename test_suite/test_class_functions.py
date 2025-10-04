@@ -22,17 +22,17 @@ from dionysus_app.class_functions import (avatar_file_exists,
 from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.student import Student
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
-from test_suite.test_persistence.test_database import empty_generic_database  # Fixture.
-from test_suite.test_class import (test_class_name_only,
-                                   test_full_class)
+from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
+from test_suite.test_class import (test_class_name_only, # noqa: F401
+                                   test_full_class) # noqa: F401
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_full_class_data_set,
                                            )
 
 
 class TestCreateClasslist:
-    def test_create_classlist(self, monkeypatch, empty_generic_database,
-                              test_full_class):
+    def test_create_classlist(self, monkeypatch, empty_generic_database, # noqa: F811
+                              test_full_class): # noqa: F811
         test_database = empty_generic_database
 
         def mocked_take_classlist_name_input():
@@ -79,7 +79,7 @@ class TestComposeClasslistDialogue:
          ])
     def test_compose_classlist_dialogue_full_class(self, monkeypatch,
                                                    class_data, create_blank_class,
-                                                   test_full_class,
+                                                   test_full_class, # noqa: F811
                                                    ):
         class_data_to_return = (test_class for test_class in class_data)
 
@@ -266,7 +266,7 @@ class TestCreateClassListDict:
         [(test_registry_data_set['enumerated_dict'].values(), test_registry_data_set['enumerated_dict']),
          pytest.param(None, 'error raised!', marks=pytest.mark.xfail('ValueError("No Database found.")')),
          ])
-    def test_create_class_list_dict_patching_REGISTRY(self, monkeypatch, empty_generic_database,
+    def test_create_class_list_dict_patching_REGISTRY(self, monkeypatch, empty_generic_database, # noqa: F811
                                                       classes_list, enumerated_dict,
                                                       ):
         def mocked_get_classes():

@@ -82,7 +82,8 @@ class Student:
         # if not isinstance(self._name := name, str):
         #     raise TypeError(f"Student name must be a str, "
         #                     f"got {type(name)} instead.")
-        if not isinstance(name, str): raise TypeError(f"Student name must be a str, got {type(name)} instead.")
+        if not isinstance(name, str):
+            raise TypeError(f"Student name must be a str, got {type(name)} instead.")
         # Raise inline with isinstance to show code causing error.
         # else:
         self._name = name

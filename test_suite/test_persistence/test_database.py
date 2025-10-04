@@ -18,10 +18,10 @@ from dionysus_app.persistence.database import (ABCMetaEnforcedAttrs,
 from dionysus_app.persistence.databases.json import JSONDatabase
 from dionysus_app.student import Student
 # Import test database fixtures:
-from test_suite.test_class import test_class_name_only, test_full_class
-from test_suite.test_persistence.test_databases.test_json import empty_json_database
-from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database
-from test_suite.test_persistence.test_databases.test_sqlite_sqlalchemy import empty_sqlite_sqlalchemy_database
+from test_suite.test_class import test_class_name_only, test_full_class # noqa: F401
+from test_suite.test_persistence.test_databases.test_json import empty_json_database # noqa: F401
+from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database # noqa: F401
+from test_suite.test_persistence.test_databases.test_sqlite_sqlalchemy import empty_sqlite_sqlalchemy_database # noqa: F401
 
 DATABASE_BACKENDS = ['empty_json_database',
                      'empty_sqlite_database',
@@ -305,7 +305,7 @@ class TestCreateChart:
 
 class TestSaveChartImage:
     @pytest.mark.parametrize('database_backend', DATABASE_BACKENDS)
-    def test_save_chart_image(self, request, database_backend, test_full_class, tmpdir):
+    def test_save_chart_image(self, request, database_backend, test_full_class, tmpdir): # noqa: F811
         """
         Verify API works.
 

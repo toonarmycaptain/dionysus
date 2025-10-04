@@ -217,5 +217,5 @@ def edit_classlist() -> None:
     :return: None
     """
     classlist_name = take_classlist_name_input()
-    with open(classlist_name + '.txt', 'r+') as classlist_file:
+    with open(classlist_name + '.txt', 'r+') as classlist_file: # noqa: F841
         pass

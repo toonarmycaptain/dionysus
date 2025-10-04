@@ -13,8 +13,8 @@ from dionysus_app.persistence.databases import json
 from dionysus_app.persistence.databases.json import JSONDatabase
 from dionysus_app.student import Student
 
-from test_suite.test_class import test_full_class  # fixture
-from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
+from test_suite.test_class import test_full_class  # noqa: F401 | fixture
+from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set, # noqa: F401
                                            test_full_class_data_set,
                                            )
 
@@ -93,7 +93,7 @@ class TestClassNameExists:
 
 
 class TestCreateClass:
-    def test_create_class(self, empty_json_database, test_full_class):
+    def test_create_class(self, empty_json_database, test_full_class): # noqa: F811
         """JSON's create_class delegates calls to appropriate methods."""
         test_json_database = empty_json_database
         _setup_class_mock, _write_classlist_to_file_mock, _copy_avatars_to_class_data_mock = (
@@ -125,7 +125,7 @@ class TestCreateClass:
 
 
 class TestLoadClass:
-    def test_load_class(self, monkeypatch, empty_json_database, test_full_class):
+    def test_load_class(self, monkeypatch, empty_json_database, test_full_class): # noqa: F811
         test_json_database = empty_json_database
         test_class_name = 'my_test_class'
 
@@ -145,7 +145,7 @@ class TestLoadClass:
 
 
 class TestUpdateClass:
-    def test_update_class(self, empty_json_database, test_full_class):
+    def test_update_class(self, empty_json_database, test_full_class): # noqa: F811
         test_json_database = empty_json_database
         test_class = Class(test_full_class.name, test_full_class.students)
         # create_class takes a NewClass object due to avatar moving machinery.
@@ -367,7 +367,7 @@ class TestSetupClassDataStorage:
 
 
 class TestWriteClasslistToFile:
-    def test_write_classlist_to_file(self, empty_json_database, test_full_class):
+    def test_write_classlist_to_file(self, empty_json_database, test_full_class): # noqa: F811
         test_json_database = empty_json_database
         test_class_data_file_path = Path(test_json_database.class_data_path,
                                          test_full_class.name,

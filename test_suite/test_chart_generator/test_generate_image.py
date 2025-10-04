@@ -9,11 +9,11 @@ from dionysus_app.chart_generator.generate_image import (add_avatar_to_plot,
                                                          set_axis,
                                                          validate_avatar,
                                                          )
-from test_suite.test_persistence.test_database import empty_generic_database  # Fixture.
+from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
 
 
 class TestGenerateChartImage:
-    def test_generate_chart_image(self, monkeypatch, empty_generic_database):
+    def test_generate_chart_image(self, monkeypatch, empty_generic_database): # noqa: F811
         called = {'set_axis_mock': False,
                   'generate_avatar_coords_mock': False,
                   'add_avatars_to_plot_mock': False,
@@ -201,7 +201,7 @@ class TestAddAvatarToPlot:
 
 class TestValidateAvatar:
     @pytest.mark.parametrize('avatar_path_exists', [True, False])
-    def test_validate_avatar(self, monkeypatch, empty_generic_database,
+    def test_validate_avatar(self, monkeypatch, empty_generic_database, # noqa: F811
                              avatar_path_exists):
         """Returns valid avatar path, else db.default_avatar_path."""
         test_database = empty_generic_database

@@ -89,7 +89,7 @@ test_full_class_data_set_json_string = ('{\n'
                                         '            "name": "Jaleigh"\n'
                                         '        }\n'
                                         '    ],\n'
-                                     + f'    "id": "test_class"\n'
+                                     +  '    "id": "test_class"\n'
                                         '}'
                                         )
 

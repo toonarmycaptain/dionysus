@@ -10,9 +10,9 @@ from dionysus_app.chart_generator.process_chart_data import (assign_avatars_to_b
                                                              )
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.persistence.databases.json import JSONDatabase
-from test_suite.test_persistence.test_database import empty_generic_database  # Fixture.
-from test_suite.test_persistence.test_databases.test_json import empty_json_database  # Fixture.
-from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database  # Fixture.
+from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
+from test_suite.test_persistence.test_databases.test_json import empty_json_database  # noqa: F401 | Fixture.
+from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database  # noqa: F401 | Fixture.
 from test_suite.testing_class_data import test_full_class_data_set
 
 test_score_students_dict = {1: ['foo', 'spam', 'dead', 'parrot'],
@@ -131,7 +131,7 @@ class TestGenerateAvatarCoords:
 
         assert generate_avatar_coords(test_student_scores_dict, test_class.id) == test_generate_avatar_coords_result
 
-    def test_generate_avatar_coords_generic_api(self, monkeypatch, empty_generic_database):
+    def test_generate_avatar_coords_generic_api(self, monkeypatch, empty_generic_database): # noqa: F811
         test_database = empty_generic_database
         test_database.default_avatar_path = 'mocked_default_avatar_path'
 

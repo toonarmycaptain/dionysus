@@ -4,10 +4,9 @@ from io import BytesIO
 from pathlib import Path
 from typing import (Any,
                     Iterator,
-                    Optional, Tuple,
+                    Optional,
                     )
 
-import matplotlib
 from matplotlib import pyplot as plt
 from sqlalchemy import (BLOB,
                         Column,

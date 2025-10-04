@@ -18,18 +18,18 @@ from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
                                                       take_student_name_input,
                                                       take_student_selection,
                                                       )
-from test_suite.test_class import test_class_name_only, test_full_class  # fixture
+from test_suite.test_class import test_class_name_only, test_full_class  # noqa: F401 | fixture
 from test_suite.testing_class_data import (testing_registry_data_set as test_registry_data_set,
                                            test_full_class_data_set as test_class_data_set,
                                            test_display_student_selection_menu_student_output,
                                            )
-from test_suite.test_persistence.test_database import empty_generic_database  # fixture
+from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | fixture
 
 
 class TestTakeClasslistNameInputSimpleTest:
     """Test return on valid input after invalid inputs."""
 
-    def test_take_classlist_name_input(self, monkeypatch, empty_generic_database):
+    def test_take_classlist_name_input(self, monkeypatch, empty_generic_database): # noqa: F811
         def mocked_class_name_exists(class_id):
             if class_id == preexisting_classname:
                 return True
@@ -103,14 +103,14 @@ class TestClassDataFeedback:
     what is passed to print.
     """
 
-    def test_class_data_feedback(self, test_full_class, capsys):
+    def test_class_data_feedback(self, test_full_class, capsys): # noqa: F811
         printed_strings = [f'\nClass name: {test_full_class.name}\n'] + [student.name + '\n' for student in
                                                                          test_full_class]
         class_data_feedback(test_full_class)
         captured = capsys.readouterr().out
         assert captured == ''.join(printed_strings)
 
-    def test_class_data_feedback_with_empty_class(self, test_class_name_only, capsys):
+    def test_class_data_feedback_with_empty_class(self, test_class_name_only, capsys): # noqa: F811
         empty_class_feedback = 'No students entered.'
 
         printed_strings = [f'\nClass name: {test_class_name_only.name}\n{empty_class_feedback}\n']

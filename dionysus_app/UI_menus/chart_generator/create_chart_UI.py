@@ -57,7 +57,7 @@ def display_image_save_as(chart_image_path: Path) -> bool:
         Quit the root window, as it will not be closed by the save-as
         button click handler in ImageDisplay.
         """
-        user_did_not_cancel = False
+        user_did_not_cancel = False # noqa: F841
         # Destroy window:
         root.quit()
 

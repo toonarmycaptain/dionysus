@@ -13,7 +13,7 @@ from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.persistence.databases.sqlite import SQLiteDatabase
 from dionysus_app.student import Student
 
-from test_suite.test_class import test_class_name_only, test_full_class  # Fixture imports.
+from test_suite.test_class import test_class_name_only, test_full_class  # noqa: F401 | Fixture imports.
 
 
 def empty_sqlite_test_db(db_path) -> SQLiteDatabase:
@@ -280,7 +280,7 @@ class TestCreateChart:
 
 
 class TestSaveChartImage:
-    def test_save_chart_image(self, empty_sqlite_database, test_full_class):
+    def test_save_chart_image(self, empty_sqlite_database, test_full_class): # noqa: F811
         test_database = empty_sqlite_database
 
         test_existing_class = NewClass.from_dict(test_full_class.json_dict())

@@ -19,8 +19,8 @@ from dionysus_app.chart_generator.create_chart import (assemble_chart_data,
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.class_ import Class, NewClass
 
-from test_suite.test_class import test_full_class  # Fixture.
-from test_suite.test_persistence.test_database import empty_generic_database  # Fixture.
+from test_suite.test_class import test_full_class  # noqa: F401 | Fixture.
+from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
 from test_suite.testing_class_data import test_full_class_data_set
 
 
@@ -31,8 +31,8 @@ class TestNewChart:
                               Class.from_dict(test_full_class_data_set['json_dict_rep']),  # Pass in test_class
                               NewClass.from_dict(test_full_class_data_set['json_dict_rep'])  # NewClass obj
                               ])
-    def test_new_chart(self, monkeypatch, empty_generic_database,
-                       class_from_create_class, test_full_class,
+    def test_new_chart(self, monkeypatch, empty_generic_database, # noqa: F811
+                       class_from_create_class, test_full_class, # noqa: F811
                        user_wants_to_save):
         # Test class either passed, or instantiated if None is passed.
         test_class = class_from_create_class or test_full_class

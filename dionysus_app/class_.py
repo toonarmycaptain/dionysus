@@ -193,7 +193,8 @@ class Class:
             # if not isinstance(new_student := student, Student):
             #     raise TypeError(f"Student name must be a str, "
             #                     f"got {type(name)} instead.")
-            if not isinstance(student, Student): raise TypeError(f"Student expected, got {type(student)} instead.")
+            if not isinstance(student, Student):
+                raise TypeError(f"Student expected, got {type(student)} instead.")
             # raise inline with isinstance to show code causing error.
             # else:
             self.students.append(student)

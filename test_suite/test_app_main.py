@@ -7,11 +7,11 @@ import app_main
 
 from app_main import quit_app, run_app
 
-from test_suite.test_persistence.test_database import empty_generic_database  # Fixture
+from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture
 
 
 class TestQuitApp:
-    def test_quit_app(self, monkeypatch, empty_generic_database):
+    def test_quit_app(self, monkeypatch, empty_generic_database): # noqa: F811
         clear_temp_mock, DATABASE_close_mock, exit_mock = {'called': False}, {'called': False}, {'called': False}
 
         def mocked_clear_temp():
@@ -30,7 +30,7 @@ class TestQuitApp:
         monkeypatch.setattr(app_main.definitions, 'DATABASE', mocked_DATABASE)
         monkeypatch.setattr(app_main.sys, 'exit', mocked_sys_exit)
         with pytest.raises(SystemExit):
-            assert quit_app() is 0
+            assert quit_app() == 0
             assert all([DATABASE_close_mock['called'], exit_mock['called'], clear_temp_mock['called']])
 
 
