@@ -14,9 +14,11 @@ dependencies = [
 testing = [
     "coverage==7.10.7",
     "mypy==1.18.2",
+    "pre-commit==4.3.0",
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
     "pytest-mypy==1.0.1",
+    "ruff==0.13.3",
 ]
 
 [tool.hatch.build.targets.wheel]
