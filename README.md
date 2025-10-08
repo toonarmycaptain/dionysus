@@ -8,7 +8,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d24e9508258849c2b40760fce3448c6b)](https://www.codacy.com/app/toonarmycaptain/dionysus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toonarmycaptain/dionysus&amp;utm_campaign=Badge_Grade) 
 [![CodeFactor](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/badge/master)](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/overview/master) 
 [![Updates](https://pyup.io/repos/github/toonarmycaptain/dionysus/shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/) 
-[![Known Vulnerabilities](https://snyk.io/test/github/toonarmycaptain/dionysus/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/toonarmycaptain/dionysus?targetFile=requirements.txt) 
 [![Python 3](https://pyup.io/repos/github/toonarmycaptain/dionysus/python-3-shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/) 
 
 **dionysus** is an open source CLI app primarily aimed at teachers that charts student results for display using avatars, nicknames, or student names. 
