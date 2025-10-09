@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove CircleCI/TravisCI testing.
 - Remove sqlalchemy stubs, functionality now bundled with sqlalchemy
 - Rm codecov in favour of github-action
-- Remove Coveralls from CI and dependencies. Uploads we constantly causing problems. 
+- Remove Coveralls from CI and dependencies. Uploads were constantly causing problems. 
 
 
 ## [0.8.1-alpha] - 2020-08-29
