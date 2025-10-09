@@ -5,27 +5,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+## [0.9.0-alpha] - 2025-10-08
 ### Added
 - SQLiteSQLAlchemyDatabase, wrapping python's SQLite3 with SQLAlchemy.
 ### Changed
+- Support for python 3.12, 3.13 in rolling version support cadence.
+- Switch to uv for env/dependency management. Tracking in pyproject.toml//uv.lock with separate group for testing dependencies. CI now uses uv, requirements files are removed.
+- Update CI to use `actions/setup-python@v5` with prerelease support instead of deadsnakes.
 - Dependency updates; typehinting updates in support
-- Implement walrus/assignment operator (`:=`) in main_menu.py.  
+- Implement walrus/assignment operator (`:=`) in main_menu.py.
 - Add `get_user_input` function to `UI_functions.py`: abstracts asking for UI. Takes a prompt, validation function, error message args.
 - Implement `get_user_input` for most user input.
 - Remove unused `setuptools` dependency from `requirements.txt`.
 - Change to use github actions instead of TravisCI.
     - Add ` dionysus/.github/workflows/CI.yml` github action, running essentially same as TravisCI, running tests both Windows and Linux, and unsupported/dev python versions, but failure on these shows as pass, to avoid failing the build.
-    - Remove `.travis.yml` 
+    - Remove `.travis.yml`
     - Remove dependencies that were only used for TravisCI from `requirements_dev.txt`.
 - Change exit to use `raise SystemExit` with exit code 0.
 - Change generic types to use builtins (eg list, dict rather than List, Dict), per PEP 585.
 - Remove Python 3.8 support due to implementing PEP 585.
-- Change all implicity None-optional typing top explicity declare None type or Optional.
+- Change all implicitly None-optional typing top explicitly declare None type or Optional.
 ### Removed
-- Remove Python 3.9 support, add 3.11, 3.12.
+- Remove Python 3.9 support
 - Remove CircleCI/TravisCI testing.
 - Remove sqlalchemy stubs, functionality now bundled with sqlalchemy
 - Rm codecov in favour of github-action
+- Remove Coveralls from CI and dependencies. Uploads we constantly causing problems. 
 
 
 ## [0.8.1-alpha] - 2020-08-29
