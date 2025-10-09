@@ -1,11 +1,15 @@
 """
 Script for taking and saving data for chart.
 """
+
 from typing import Optional
 
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
-from dionysus_app.UI_menus.UI_functions import input_is_essentially_blank, get_user_input
+from dionysus_app.UI_menus.UI_functions import (
+    input_is_essentially_blank,
+    get_user_input,
+)
 
 
 def take_score_data(current_class: Class) -> dict:
@@ -21,13 +25,15 @@ def take_score_data(current_class: Class) -> dict:
     :param current_class: Class object
     :return: dict
     """
-    print(f"\nEnter student scores for {current_class.name}: \n"
-          f"Type score for each student, or '_' to exclude student, and press enter.")
+    print(
+        f"\nEnter student scores for {current_class.name}: \n"
+        f"Type score for each student, or '_' to exclude student, and press enter."
+    )
 
     student_scores = take_student_scores(current_class)
 
     # Newline between last score and 'Please enter a chart name/title: '
-    print('\n')
+    print("\n")
 
     return student_scores
 
@@ -52,18 +58,19 @@ def take_student_scores(current_class: Class) -> dict[float, list[Student]]:
     """
     student_scores: dict = dict()
     for student in current_class.students:
-
         student_score = take_score_entry(student.name)
         # add student to list of students for score
         if student_score is not None:
-            student_scores[student_score] = student_scores.get(student_score, []) + [student]
+            student_scores[student_score] = student_scores.get(student_score, []) + [
+                student
+            ]
 
     return student_scores
 
 
-def take_score_entry(student_name: str,
-                     minimum: int = 0,
-                     maximum: int = 100) -> Optional[float]:
+def take_score_entry(
+    student_name: str, minimum: int = 0, maximum: int = 100
+) -> Optional[float]:
     """
 
     :param student_name: str
@@ -72,9 +79,9 @@ def take_score_entry(student_name: str,
     :return: float or None
     """
     while True:
-        score = input(f'{student_name}: ')
+        score = input(f"{student_name}: ")
 
-        if score == '_':
+        if score == "_":
             return None  # do not include student in graph eg if absent
 
         try:
@@ -84,7 +91,7 @@ def take_score_entry(student_name: str,
             continue
 
         if score_float < minimum or score_float > maximum:
-            print(f'InputError: Please enter a number between {minimum} and {maximum}.')
+            print(f"InputError: Please enter a number between {minimum} and {maximum}.")
             continue
         return score_float
 
@@ -96,9 +103,11 @@ def take_chart_name() -> str:
 
     :return: str
     """
-    chart_name = get_user_input(prompt='Please enter a chart name/title: ',
-                                validation=lambda name: not input_is_essentially_blank(name),
-                                validation_error_msg='Please enter a valid chart name.')
+    chart_name = get_user_input(
+        prompt="Please enter a chart name/title: ",
+        validation=lambda name: not input_is_essentially_blank(name),
+        validation_error_msg="Please enter a valid chart name.",
+    )
     return chart_name
 
 

@@ -6,17 +6,17 @@ from definitions import ROOT_DIR
 
 
 class DataFolder(Enum):
-    APP = './dionysus_app/'
+    APP = "./dionysus_app/"
 
-    APP_DATA = APP + 'app_data/'
+    APP_DATA = APP + "app_data/"
 
-    TEMP_DIR = APP_DATA + 'temp/'
+    TEMP_DIR = APP_DATA + "temp/"
 
-    APP_SETTINGS = APP_DATA + 'settings.py'
-    APP_DEFAULT_CHART_SAVE_DIR = '..'
+    APP_SETTINGS = APP_DATA + "settings.py"
+    APP_DEFAULT_CHART_SAVE_DIR = ".."
 
-    CHART_GENERATOR = APP + 'chart_generator/'
-    DEFAULT_AVATAR = CHART_GENERATOR + 'default_avatar.png'
+    CHART_GENERATOR = APP + "chart_generator/"
+    DEFAULT_AVATAR = CHART_GENERATOR + "default_avatar.png"
 
     @staticmethod
     def generate_rel_path(path: Optional[str]) -> Path:
@@ -37,6 +37,6 @@ class DataFolder(Enum):
         if not path:
             return Path.cwd()
 
-        path_parts = path.split('/')
+        path_parts = path.split("/")
         path_parts.insert(0, ROOT_DIR)
         return Path(*path_parts).resolve()

@@ -6,6 +6,7 @@ Settings dict keys:
     'user_default_chart_save_folder': string path to where charts are saved.
 
 """
+
 from pathlib import Path
 from typing import Union
 
@@ -13,19 +14,21 @@ import definitions
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import move_file
-from dionysus_app.UI_menus.settings_functions_UI import (user_decides_to_set_database_backend,
-                                                         user_decides_to_set_default_location,
-                                                         user_set_chart_save_folder,
-                                                         user_set_database_backend,
-                                                         )
+from dionysus_app.UI_menus.settings_functions_UI import (
+    user_decides_to_set_database_backend,
+    user_decides_to_set_default_location,
+    user_set_chart_save_folder,
+    user_set_database_backend,
+)
 
 APP_DATA = DataFolder.generate_rel_path(DataFolder.APP_DATA.value)
 TEMP_DIR = DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value)
 APP_DEFAULT_CHART_SAVE_DIR = DataFolder.generate_rel_path(
-    DataFolder.APP_DEFAULT_CHART_SAVE_DIR.value)
+    DataFolder.APP_DEFAULT_CHART_SAVE_DIR.value
+)
 APP_SETTINGS_FILE = DataFolder.generate_rel_path(DataFolder.APP_SETTINGS.value)
 
-CHART_SAVE_DIR_NAME = 'dionysus_charts'
+CHART_SAVE_DIR_NAME = "dionysus_charts"
 
 
 def app_start_set_default_chart_save_location() -> None:
@@ -100,12 +103,13 @@ def set_database_backend(user_set: bool) -> None:
         if user_chosen_database:
             database_backend = user_chosen_database
 
-    edit_app_settings_file({'database': database_backend})
+    edit_app_settings_file({"database": database_backend})
 
 
-def create_chart_save_folder(new_path: Path,
-                             original_location: Path|None = None,
-                             ) -> None:
+def create_chart_save_folder(
+    new_path: Path,
+    original_location: Path | None = None,
+) -> None:
     """
     Create a new chart_save_folder, move files from old location.
 
@@ -121,8 +125,7 @@ def create_chart_save_folder(new_path: Path,
     new_path.mkdir(parents=True, exist_ok=True)
 
 
-def move_chart_save_folder(original_location: Path,
-                           new_location: Path) -> None:
+def move_chart_save_folder(original_location: Path, new_location: Path) -> None:
     """
     Move existent chart save folder to new location.
 
@@ -139,14 +142,16 @@ def move_chart_save_folder(original_location: Path,
         move_file(original_location, new_location)
 
 
-def save_new_default_chart_save_location_setting(new_location: Union[Path, str]) -> None:
+def save_new_default_chart_save_location_setting(
+    new_location: Union[Path, str],
+) -> None:
     """
     Save new default chart save location to settings.
 
     :param new_location: Path or str
     :return: None
     """
-    new_setting = {'user_default_chart_save_folder': str(new_location)}
+    new_setting = {"user_default_chart_save_folder": str(new_location)}
     edit_app_settings_file(new_setting)
 
 
@@ -157,12 +162,12 @@ def write_settings_to_file(settings_dict: dict) -> None:
     :param settings_dict: dict
     :return: None
     """
-    with open(APP_SETTINGS_FILE, 'w+') as app_settings_file:
-        write_string = 'dionysus_settings = ' + str(settings_dict)
+    with open(APP_SETTINGS_FILE, "w+") as app_settings_file:
+        write_string = "dionysus_settings = " + str(settings_dict)
         app_settings_file.write(write_string)
 
 
-def create_app_settings_file(settings_dict: dict|None = None) -> None:
+def create_app_settings_file(settings_dict: dict | None = None) -> None:
     """
     Create settings file, ensuring __init__.py in containing folder.
 
@@ -187,9 +192,9 @@ def create_app_data__init__() -> None:
 
     :return: None
     """
-    init_py_path = Path(APP_DATA, '__init__.py')
+    init_py_path = Path(APP_DATA, "__init__.py")
 
-    with open(init_py_path, 'w+') as init_py:
+    with open(init_py_path, "w+") as init_py:
         init_py.write('"""__init__.py so that settings.py may be imported."""')
 
 
@@ -226,4 +231,5 @@ def load_chart_save_folder() -> Path:
     :return: Path
     """
     from dionysus_app.app_data.settings import dionysus_settings
-    return Path(dionysus_settings['user_default_chart_save_folder'])
+
+    return Path(dionysus_settings["user_default_chart_save_folder"])

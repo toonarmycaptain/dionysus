@@ -7,6 +7,7 @@ Immediate enhancement from there will be variable ranges for the chart, columns 
 a percentage, or column widths of 5pts rather than 10. Other potential concern is chart being too high, so some
 sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
 """
+
 from pathlib import Path
 from typing import Optional
 
@@ -17,17 +18,19 @@ from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.class_ import Class
 from dionysus_app.class_functions import select_classlist
 from dionysus_app.file_functions import copy_file
-from dionysus_app.UI_menus.chart_generator.create_chart_UI import (display_image_save_as,
-                                                                   save_chart_dialogue,
-                                                                   )
-from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (take_chart_name,
-                                                                      take_custom_chart_options,
-                                                                      take_score_data,
-                                                                      )
+from dionysus_app.UI_menus.chart_generator.create_chart_UI import (
+    display_image_save_as,
+    save_chart_dialogue,
+)
+from dionysus_app.UI_menus.chart_generator.take_chart_data_UI import (
+    take_chart_name,
+    take_custom_chart_options,
+    take_score_data,
+)
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 
-def new_chart(loaded_class: Class|None = None) -> None:
+def new_chart(loaded_class: Class | None = None) -> None:
     """
     Create a new chart with supplied class, user input.
 
@@ -53,18 +56,18 @@ def new_chart(loaded_class: Class|None = None) -> None:
         class_id = select_classlist()  # TODO: warn for empty classlist
         loaded_class = definitions.DATABASE.load_class(class_id)
 
-    (chart_name,
-     chart_default_filename,
-     student_scores,
-     chart_params) = assemble_chart_data(loaded_class)
+    (chart_name, chart_default_filename, student_scores, chart_params) = (
+        assemble_chart_data(loaded_class)
+    )
 
-    chart_data_dict = {'class_id': loaded_class.id,
-                       'class_name': loaded_class.name,  # str
-                       'chart_name': chart_name,  # str
-                       'chart_default_filename': chart_default_filename,  # str
-                       'chart_params': chart_params,  # dict
-                       'score-students_dict': student_scores,  # dict
-                       }
+    chart_data_dict = {
+        "class_id": loaded_class.id,
+        "class_name": loaded_class.name,  # str
+        "chart_name": chart_name,  # str
+        "chart_default_filename": chart_default_filename,  # str
+        "chart_params": chart_params,  # dict
+        "score-students_dict": student_scores,  # dict
+    }
 
     definitions.DATABASE.create_chart(chart_data_dict)
 
@@ -147,8 +150,8 @@ def user_save_chart_image(chart_data_dict: dict, image_location: Path) -> None:
     :param image_location: Path object
     :return: None
     """
-    class_name = chart_data_dict['class_name']
-    default_chart_name = chart_data_dict['chart_default_filename']
+    class_name = chart_data_dict["class_name"]
+    default_chart_name = chart_data_dict["chart_default_filename"]
 
     # Save in user selected location with user defined name.
     save_chart_pathname = get_user_save_chart_pathname(class_name, default_chart_name)
@@ -156,8 +159,9 @@ def user_save_chart_image(chart_data_dict: dict, image_location: Path) -> None:
         copy_image_to_user_save_loc(image_location, save_chart_pathname)
 
 
-def copy_image_to_user_save_loc(app_image_location: Path,
-                                user_save_location: Path) -> None:
+def copy_image_to_user_save_loc(
+    app_image_location: Path, user_save_location: Path
+) -> None:
     """
     Copies image from app_data location to user selected location.
     NB if
@@ -169,8 +173,9 @@ def copy_image_to_user_save_loc(app_image_location: Path,
     copy_file(app_image_location, user_save_location)
 
 
-def get_user_save_chart_pathname(class_name: str,
-                                 default_chart_name: str) -> Optional[Path]:
+def get_user_save_chart_pathname(
+    class_name: str, default_chart_name: str
+) -> Optional[Path]:
     """
     Gets set class save folder path, return None if user cancels save.
 
@@ -197,7 +202,9 @@ def create_class_save_folder(class_name: str) -> Path:
     :return: Path object
     """
     class_save_folder_path = get_class_save_folder_path(class_name)
-    class_save_folder_path.mkdir(parents=True, exist_ok=True)  # create class_save_folder if nonexistent
+    class_save_folder_path.mkdir(
+        parents=True, exist_ok=True
+    )  # create class_save_folder if nonexistent
     return class_save_folder_path
 
 

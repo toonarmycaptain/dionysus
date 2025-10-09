@@ -8,8 +8,9 @@ from PIL import Image, ImageTk
 from dionysus_app.UI_menus.UI_functions import save_as_dialogue
 
 
-def save_chart_dialogue(default_chart_name: str,
-                        class_save_folder_path: Path) -> Optional[Path]:
+def save_chart_dialogue(
+    default_chart_name: str, class_save_folder_path: Path
+) -> Optional[Path]:
     """
     Calls save as dialogue to get user input for chart image file save
     name and location. Supplies defaults, returns user chosen path, or
@@ -20,11 +21,12 @@ def save_chart_dialogue(default_chart_name: str,
     :return: Path or None
     """
     class_save_folder_str = str(class_save_folder_path)
-    return save_as_dialogue(title_str='Save chart image as:',
-                            filetypes=[('.png', '*.png'), ("all files", "*.*")],
-                            suggested_filename=default_chart_name,
-                            start_dir=class_save_folder_str
-                            )
+    return save_as_dialogue(
+        title_str="Save chart image as:",
+        filetypes=[(".png", "*.png"), ("all files", "*.*")],
+        suggested_filename=default_chart_name,
+        start_dir=class_save_folder_str,
+    )
 
 
 def display_image_save_as(chart_image_path: Path) -> bool:
@@ -57,7 +59,7 @@ def display_image_save_as(chart_image_path: Path) -> bool:
         Quit the root window, as it will not be closed by the save-as
         button click handler in ImageDisplay.
         """
-        user_did_not_cancel = False
+        user_did_not_cancel = False  # noqa: F841
         # Destroy window:
         root.quit()
 
@@ -71,7 +73,7 @@ def display_image_save_as(chart_image_path: Path) -> bool:
 
 
 class ImageDisplay(tk.Frame):
-    def __init__(self, image_path: Path|None = None, master=None) -> None:
+    def __init__(self, image_path: Path | None = None, master=None) -> None:
         super().__init__(master)
         self.master = master
         self.save_as_button_clicked = False
@@ -89,16 +91,24 @@ class ImageDisplay(tk.Frame):
 
     def create_image_widget(self) -> None:
         self.full_chart_image = Image.open(self.image_path)
-        self.display_sized_image = self.full_chart_image.resize((960, 540),
-                                                                Image.ANTIALIAS)  # type: ignore[attr-defined]
+        self.display_sized_image = self.full_chart_image.resize(
+            (960, 540),
+            Image.ANTIALIAS,  # type: ignore[attr-defined]
+        )
 
-        self.display_image = ImageTk.PhotoImage(self.display_sized_image, master=self.master)
+        self.display_image = ImageTk.PhotoImage(
+            self.display_sized_image, master=self.master
+        )
         self.image_panel = tk.Label(self, image=self.display_image)  # type: ignore[arg-type]
         self.image_panel.pack(side="top", fill="both", expand=True)
 
     def create_save_as_button_widget(self) -> None:
-        self.save_as_button = tk.Button(self, text="Save as", font=('Arial', 24),
-                                        command=self.register_save_as_click)
+        self.save_as_button = tk.Button(
+            self,
+            text="Save as",
+            font=("Arial", 24),
+            command=self.register_save_as_click,
+        )
         self.save_as_button.pack(side="bottom")
 
     def register_save_as_click(self) -> None:

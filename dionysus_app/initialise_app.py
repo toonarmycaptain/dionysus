@@ -4,11 +4,12 @@ import shutil
 from pathlib import Path
 
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.settings_functions import (APP_SETTINGS_FILE,
-                                             app_start_set_database,
-                                             app_start_set_default_chart_save_location,
-                                             TEMP_DIR,
-                                             )
+from dionysus_app.settings_functions import (
+    APP_SETTINGS_FILE,
+    app_start_set_database,
+    app_start_set_default_chart_save_location,
+    TEMP_DIR,
+)
 from dionysus_app.UI_menus.settings_functions_UI import welcome_to_program
 
 
@@ -36,7 +37,7 @@ def data_folder_check() -> None:
 
     data_folders = {
         DataFolder.APP_DATA: DataFolder.generate_rel_path(DataFolder.APP_DATA.value),
-        DataFolder.TEMP_DIR: DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value)
+        DataFolder.TEMP_DIR: DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
     }
 
     for data_path in data_folders.values():

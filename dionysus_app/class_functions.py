@@ -1,6 +1,7 @@
 """
 Functions for creating, editing, dealing with classes.
 """
+
 import time
 
 from pathlib import Path
@@ -11,20 +12,20 @@ import definitions
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.student import Student
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.file_functions import (copy_file,
-                                         load_from_json_file)
+from dionysus_app.file_functions import copy_file, load_from_json_file
 from dionysus_app.persistence.database import ClassIdentifier
-from dionysus_app.UI_menus.class_functions_UI import (blank_class_dialogue,
-                                                      class_data_feedback,
-                                                      create_chart_with_new_class_dialogue,
-                                                      display_class_selection_menu,
-                                                      display_student_selection_menu,
-                                                      select_avatar_file_dialogue,
-                                                      take_class_selection,
-                                                      take_classlist_name_input,
-                                                      take_student_name_input,
-                                                      take_student_selection,
-                                                      )
+from dionysus_app.UI_menus.class_functions_UI import (
+    blank_class_dialogue,
+    class_data_feedback,
+    create_chart_with_new_class_dialogue,
+    display_class_selection_menu,
+    display_student_selection_menu,
+    select_avatar_file_dialogue,
+    take_class_selection,
+    take_classlist_name_input,
+    take_student_name_input,
+    take_student_selection,
+)
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 DEFAULT_AVATAR_PATH = DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
@@ -38,7 +39,9 @@ def create_classlist() -> None:
 
     :return: None
     """
-    classlist_name = take_classlist_name_input()  # TODO: Option to cancel creation at class name entry stage
+    classlist_name = (
+        take_classlist_name_input()
+    )  # TODO: Option to cancel creation at class name entry stage
 
     new_class: NewClass = compose_classlist_dialogue(classlist_name)
 
@@ -88,7 +91,7 @@ def take_class_data_input(class_name: str) -> NewClass:
     new_class = NewClass(name=class_name)
     while True:
         student_name = take_student_name_input(new_class)
-        if student_name.upper() == 'END':
+        if student_name.upper() == "END":
             break
         avatar_filename = take_student_avatar(new_class, student_name)
         new_class.add_student(name=student_name, avatar_id=avatar_filename)
@@ -113,7 +116,7 @@ def take_student_avatar(new_class: NewClass, student_name: str) -> Optional[str]
         return None
 
     cleaned_student_name = clean_for_filename(student_name)
-    target_avatar_filename = f'{cleaned_student_name}.png'
+    target_avatar_filename = f"{cleaned_student_name}.png"
     # TODO: append hash to filename to prevent name collisions eg cleaned versions of 'a_b.jpg' and 'a b.jpg' will be identical.
 
     # TODO: process_student_avatar()
@@ -145,6 +148,7 @@ def create_chart_with_new_class(new_class: NewClass) -> None:
     """
     if create_chart_with_new_class_dialogue():
         from dionysus_app.chart_generator.create_chart import new_chart
+
         new_chart(new_class)
 
 
@@ -176,9 +180,10 @@ def create_class_list_dict() -> dict[int, ClassIdentifier]:
     if class_identifiers is None:
         raise ValueError("No Database found.")
 
-    return {option: class_identifier
-            for option, class_identifier in enumerate(class_identifiers, start=1)
-            }
+    return {
+        option: class_identifier
+        for option, class_identifier in enumerate(class_identifiers, start=1)
+    }
 
 
 def select_student(current_class: Class) -> Student:
@@ -191,13 +196,19 @@ def select_student(current_class: Class) -> Student:
     :param current_class: Class object
     :return: Student_object
     """
-    student_options = {numeral: student.name for numeral, student in enumerate(current_class.students, start=1)}
+    student_options = {
+        numeral: student.name
+        for numeral, student in enumerate(current_class.students, start=1)
+    }
     display_student_selection_menu(student_options)
 
     selected_student_name = take_student_selection(student_options)
 
-    return next(student for student in current_class.students
-                if student.name == selected_student_name)
+    return next(
+        student
+        for student in current_class.students
+        if student.name == selected_student_name
+    )
 
 
 def load_chart_data(chart_data_path: str) -> dict:
@@ -217,5 +228,5 @@ def edit_classlist() -> None:
     :return: None
     """
     classlist_name = take_classlist_name_input()
-    with open(classlist_name + '.txt', 'r+') as classlist_file:
+    with open(classlist_name + ".txt", "r+") as classlist_file:  # noqa: F841
         pass

@@ -1,4 +1,5 @@
 """Settings menu UI"""
+
 from typing import Optional
 
 from dionysus_app.settings_functions import set_default_chart_save_location
@@ -26,12 +27,13 @@ def settings_menu_options() -> None:
     :return: None
     """
     print("Dionysus - Settings\n")
-    print("Please select an option by entering the corresponding number, and press return:\n"
-          "     1. Change default chart save location.\n"
-          "     2. Change database backend.\n"
-          "     \n"
-          "     0. Return to main menu."
-          )
+    print(
+        "Please select an option by entering the corresponding number, and press return:\n"
+        "     1. Change default chart save location.\n"
+        "     2. Change database backend.\n"
+        "     \n"
+        "     0. Return to main menu."
+    )
 
 
 def take_settings_menu_input() -> Optional[bool]:
@@ -48,16 +50,18 @@ def take_settings_menu_input() -> Optional[bool]:
     :return: None or True
     """
     possible_options = {
-        '1': call_set_default_chart_save_location,
-        '2': call_set_database_backend,  # Future option.
-        '0': return_to_main_menu,
-        }
+        "1": call_set_default_chart_save_location,
+        "2": call_set_database_backend,  # Future option.
+        "0": return_to_main_menu,
+    }
 
-    chosen_option = get_user_input(prompt='>>> ',
-                                   validation=lambda choice: choice in possible_options,
-                                   validation_error_msg="Invalid input.")
+    chosen_option = get_user_input(
+        prompt=">>> ",
+        validation=lambda choice: choice in possible_options,
+        validation_error_msg="Invalid input.",
+    )
     possible_options[chosen_option]()
-    if chosen_option == '0':  # User selects to return to main menu.
+    if chosen_option == "0":  # User selects to return to main menu.
         return True
     # else:
     return None
@@ -70,7 +74,7 @@ def call_set_default_chart_save_location() -> None:
     :return: None
     """
     set_default_chart_save_location(user_set=True)
-    print('\n\n')
+    print("\n\n")
 
 
 def call_set_database_backend() -> None:
@@ -79,9 +83,11 @@ def call_set_database_backend() -> None:
 
     :return: None
     """
-    print("This feature is not yet implemented.\n"
-          "Please contact the developer and ply him with liquor, coffee, and\n"
-          "other desirables if you would like to see this feature.\n")
+    print(
+        "This feature is not yet implemented.\n"
+        "Please contact the developer and ply him with liquor, coffee, and\n"
+        "other desirables if you would like to see this feature.\n"
+    )
 
 
 def return_to_main_menu() -> bool:
@@ -93,5 +99,5 @@ def return_to_main_menu() -> bool:
 
     :return: False
     """
-    print('Returning to main menu...\n\n\n')
+    print("Returning to main menu...\n\n\n")
     return False

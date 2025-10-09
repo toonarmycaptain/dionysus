@@ -1,4 +1,5 @@
 """SQLite3 Database object."""
+
 import sqlite3
 
 from io import BytesIO
@@ -46,16 +47,18 @@ class SQLiteDatabase(Database):
             key `image` blob
     """
 
-    def __init__(self,
-                 default_avatar_path: Path|None = None,
-                 database_path: Path|None = None,
-                 ):
-        self.database_path: Path = (
-                database_path
-                or DataFolder.generate_rel_path(DataFolder.APP_DATA.value).joinpath('dionysus.db'))
+    def __init__(
+        self,
+        default_avatar_path: Path | None = None,
+        database_path: Path | None = None,
+    ):
+        self.database_path: Path = database_path or DataFolder.generate_rel_path(
+            DataFolder.APP_DATA.value
+        ).joinpath("dionysus.db")
         self.default_avatar_path: Path = (
-                default_avatar_path
-                or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value))
+            default_avatar_path
+            or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
+        )
         # check if db file exists/db has appropriate tables etc
         self._init_db()
 
@@ -67,12 +70,17 @@ class SQLiteDatabase(Database):
         """
         with self._connection() as conn:
             # get list of tuple/list pairs of id, name
-            classes = conn.cursor().execute(
-                """
+            classes = (
+                conn.cursor()
+                .execute(
+                    """
                 SELECT id,
                        name
                 FROM class;
-                """).fetchall()
+                """
+                )
+                .fetchall()
+            )
             # convert to ClassIdentifiers
             return [ClassIdentifier(*class_data) for class_data in classes]
 
@@ -88,7 +96,9 @@ class SQLiteDatabase(Database):
                 FROM class
                 WHERE name=?
                 LIMIT 1;
-                """, (class_name,))
+                """,
+                (class_name,),
+            )
             # Matching_class: no class [] or [('class name',)] if matching class name found.
             return bool(matching_class.fetchone())
 
@@ -110,7 +120,9 @@ class SQLiteDatabase(Database):
                 """
                 INSERT INTO class(name)
                 VALUES(?);
-                """, (new_class.name,))
+                """,
+                (new_class.name,),
+            )
             # Add id to class:
             new_class.id = cursor.lastrowid
             for student in new_class:
@@ -118,12 +130,15 @@ class SQLiteDatabase(Database):
                 if student.avatar_id:
                     # Move avatar from temp to db:
                     avatar_blob = new_class.temp_avatars_dir.joinpath(
-                        student.avatar_id).read_bytes()
+                        student.avatar_id
+                    ).read_bytes()
                     cursor.execute(
                         """
                         INSERT INTO avatar(image)
                         VALUES(?);
-                        """, (avatar_blob,))
+                        """,
+                        (avatar_blob,),
+                    )
                     # Change avatar_id to id of avatar in db.
                     student.avatar_id = cursor.lastrowid
                 cursor.execute(
@@ -131,7 +146,8 @@ class SQLiteDatabase(Database):
                     INSERT INTO student(name, class_id, avatar_id)
                     VALUES(?,?,?);
                     """,
-                    (student.name, new_class.id, student.avatar_id))
+                    (student.name, new_class.id, student.avatar_id),
+                )
 
                 # Add id to student:
                 student.id = cursor.lastrowid
@@ -147,8 +163,10 @@ class SQLiteDatabase(Database):
         """
         with self._connection() as conn:
             # Get class from db:
-            class_data = conn.cursor().execute(
-                """
+            class_data = (
+                conn.cursor()
+                .execute(
+                    """
                 SELECT class.id,
                        class.name,
                        student.id,
@@ -158,28 +176,40 @@ class SQLiteDatabase(Database):
                 INNER JOIN student
                 ON class.id=student.class_id
                 WHERE class.id=?;
-                """, (class_id,)).fetchall()
+                """,
+                    (class_id,),
+                )
+                .fetchall()
+            )
             if class_data:
                 # Class id, name from first student row returned.
                 class_id, class_name = class_data[0][:2]
                 # Instantiate student objects:
-                students_list = [Student(student_id=student_id,
-                                         name=student_name,
-                                         class_id=class_id,
-                                         avatar_id=avatar,
-                                         )
-                                 for class_id, class_name, student_id, student_name, avatar
-                                 in class_data]
+                students_list = [
+                    Student(
+                        student_id=student_id,
+                        name=student_name,
+                        class_id=class_id,
+                        avatar_id=avatar,
+                    )
+                    for class_id, class_name, student_id, student_name, avatar in class_data
+                ]
 
             # Handle empty class (no students = no rows returned:
             else:
-                class_id, class_name = conn.cursor().execute(
-                    """
+                class_id, class_name = (
+                    conn.cursor()
+                    .execute(
+                        """
                     SELECT class.id,
                            class.name
                     FROM class
                     WHERE class.id=?;
-                    """, (class_id,)).fetchone()
+                    """,
+                        (class_id,),
+                    )
+                    .fetchone()
+                )
                 students_list = []
         conn.close()
 
@@ -218,15 +248,23 @@ class SQLiteDatabase(Database):
         if not avatar_id:
             return self.default_avatar_path
         conn = self._connection()
-        image = conn.cursor().execute("""
+        image = (
+            conn.cursor()
+            .execute(
+                """
                                       SELECT image
                                       FROM avatar
                                       WHERE avatar.id=?;
-                                      """, (avatar_id,)).fetchone()[0]
+                                      """,
+                (avatar_id,),
+            )
+            .fetchone()[0]
+        )
 
         conn.close()
-        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
-                               str(avatar_id))
+        temp_image_path = Path(
+            DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value), str(avatar_id)
+        )
         temp_image_path.write_bytes(image)
         return temp_image_path
 
@@ -245,23 +283,31 @@ class SQLiteDatabase(Database):
                 """
                 INSERT INTO chart(name)
                 VALUES(?);
-                """, (chart_data_dict['chart_name'],))
-            chart_id = chart_data_dict['chart_id'] = cursor.lastrowid
+                """,
+                (chart_data_dict["chart_name"],),
+            )
+            chart_id = chart_data_dict["chart_id"] = cursor.lastrowid
             # Create scores in score table
             student_scores_data = []
-            for score, students in chart_data_dict['score-students_dict'].items():
-                student_scores_data += [(chart_id, student.id, score) for student in students]
+            for score, students in chart_data_dict["score-students_dict"].items():
+                student_scores_data += [
+                    (chart_id, student.id, score) for student in students
+                ]
             cursor.executemany(
                 """
                 INSERT INTO score(chart_id, student_id, value)
                 VALUES(?,?,?);
-                """, student_scores_data)
+                """,
+                student_scores_data,
+            )
             conn.commit()
         conn.close()
 
-    def save_chart_image(self, chart_data_dict: dict,
-                         mpl_plt: plt,  # type: ignore
-                         ) -> Path:
+    def save_chart_image(
+        self,
+        chart_data_dict: dict,
+        mpl_plt: plt,  # type: ignore
+    ) -> Path:
         """
         Save image in db, and return path to file in temp storage.
 
@@ -271,9 +317,11 @@ class SQLiteDatabase(Database):
         """
         # Get image data:
         image = BytesIO()
-        mpl_plt.savefig(image,  # type: ignore[attr-defined]
-                        format='png',
-                        dpi=300)  # dpi - 120 comes to 1920*1080, 80 - 1280*720
+        mpl_plt.savefig(  # type: ignore[attr-defined]
+            image,
+            format="png",
+            dpi=300,
+        )  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         image.seek(0)  # Return pointer to start of binary stream.
 
         # Save image in db
@@ -284,14 +332,18 @@ class SQLiteDatabase(Database):
                 UPDATE chart
                 SET image=?
                 WHERE id=?;
-                """, (image.read(), chart_data_dict['chart_id']))
+                """,
+                (image.read(), chart_data_dict["chart_id"]),
+            )
             image.seek(0)
             conn.commit()
         conn.close()
 
         # Save file to temp and pass back Path
-        temp_image_path = Path(DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
-                               f"{chart_data_dict['chart_name']}.png")
+        temp_image_path = Path(
+            DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value),
+            f"{chart_data_dict['chart_name']}.png",
+        )
         temp_image_path.write_bytes(image.read())
         return temp_image_path
 
@@ -326,12 +378,13 @@ class SQLiteDatabase(Database):
 
         :return: None
         """
-        table_creation_functions = [self._create_table_class,
-                                    self._create_table_student,
-                                    self._create_table_chart,
-                                    self._create_table_score,
-                                    self._create_table_avatar,
-                                    ]
+        table_creation_functions = [
+            self._create_table_class,
+            self._create_table_student,
+            self._create_table_chart,
+            self._create_table_score,
+            self._create_table_avatar,
+        ]
 
         connection = self._connection()
 

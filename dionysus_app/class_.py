@@ -1,4 +1,5 @@
 """Class for class data."""
+
 import json
 import shutil
 import tempfile
@@ -55,7 +56,9 @@ class Class:
 
     """
 
-    def __init__(self, name: str, students: list[Student]|None = None, *, class_id: Any = None) -> None:
+    def __init__(
+        self, name: str, students: list[Student] | None = None, *, class_id: Any = None
+    ) -> None:
         """
         Create Class instance.
 
@@ -140,8 +143,9 @@ class Class:
             student = item
             return student in self.students
         else:
-            raise ValueError(f'Expected type str or Student: '
-                             f'received type {type(item)}.')
+            raise ValueError(
+                f"Expected type str or Student: received type {type(item)}."
+            )
 
     def __iter__(self) -> Iterator[Student]:
         """
@@ -160,7 +164,7 @@ class Class:
         # for student in self.students:
         #     yield student
 
-    def add_student(self, student: Student|None = None, **kwargs: Any) -> None:
+    def add_student(self, student: Student | None = None, **kwargs: Any) -> None:
         """
         Adds a student to the class.
 
@@ -193,7 +197,8 @@ class Class:
             # if not isinstance(new_student := student, Student):
             #     raise TypeError(f"Student name must be a str, "
             #                     f"got {type(name)} instead.")
-            if not isinstance(student, Student): raise TypeError(f"Student expected, got {type(student)} instead.")
+            if not isinstance(student, Student):
+                raise TypeError(f"Student expected, got {type(student)} instead.")
             # raise inline with isinstance to show code causing error.
             # else:
             self.students.append(student)
@@ -211,11 +216,12 @@ class Class:
 
         :return: dict
         """
-        json_data = {'name': self._name,
-                     'students': [student.json_dict() for student in self.students]
-                     }
+        json_data = {
+            "name": self._name,
+            "students": [student.json_dict() for student in self.students],
+        }
         if self.id:
-            json_data['id'] = self.id
+            json_data["id"] = self.id
         return json_data
 
     def to_json_str(self) -> str:
@@ -229,20 +235,20 @@ class Class:
     # Alternate constructors
 
     @classmethod
-    def from_dict(cls, class_dict: dict) -> Union['Class', 'NewClass']:
+    def from_dict(cls, class_dict: dict) -> Union["Class", "NewClass"]:
         """
         Instantiate Class object from JSON-serialisable dict.
 
         :param class_dict: dict
         :return: Class object
         """
-        _id = class_dict.get('id')  # Class may not have id if not in db.
-        _name = class_dict['name']
-        _students = [Student.from_dict(student) for student in class_dict['students']]
+        _id = class_dict.get("id")  # Class may not have id if not in db.
+        _name = class_dict["name"]
+        _students = [Student.from_dict(student) for student in class_dict["students"]]
         return cls(class_id=_id, name=_name, students=_students)
 
     @classmethod
-    def from_json(cls, json_data: str) -> Union['Class', 'NewClass']:
+    def from_json(cls, json_data: str) -> Union["Class", "NewClass"]:
         """
         Return Class object from json string.
 
@@ -253,7 +259,7 @@ class Class:
         return cls.from_dict(class_dict)
 
     @classmethod
-    def from_file(cls, cdf_path: Union[Path, str]) -> Union['Class', 'NewClass']:
+    def from_file(cls, cdf_path: Union[Path, str]) -> Union["Class", "NewClass"]:
         """
         Return Class object from cdf file.
 
@@ -266,24 +272,27 @@ class Class:
 
     # String representations
     def __repr__(self) -> str:
-        repr_str = (f'{self.__class__.__module__}.{self.__class__.__name__}('
-                    f'id={self.id!r}, '
-                    f'name={self._name!r}, '
-                    f'path_safe_name={self._path_safe_name!r}, '
-                    f'students={self.students!r}'
-                    f')'
-                    )
+        repr_str = (
+            f"{self.__class__.__module__}.{self.__class__.__name__}("
+            f"id={self.id!r}, "
+            f"name={self._name!r}, "
+            f"path_safe_name={self._path_safe_name!r}, "
+            f"students={self.students!r}"
+            f")"
+        )
         return repr_str
 
     def __str__(self):
         if self.students:
-            student_list_str = ', '.join([student.name for student in self.students])
-            students_stmt = (f'containing {len(self.students)} students, '
-                             f'with names: {student_list_str}')
+            student_list_str = ", ".join([student.name for student in self.students])
+            students_stmt = (
+                f"containing {len(self.students)} students, "
+                f"with names: {student_list_str}"
+            )
         else:
-            students_stmt = 'containing 0 students'
+            students_stmt = "containing 0 students"
 
-        return f'Class {self.name}, with id={self.id}, {students_stmt}.'
+        return f"Class {self.name}, with id={self.id}, {students_stmt}."
 
 
 class NewClass(Class):
@@ -320,14 +329,18 @@ class NewClass(Class):
         Path to avatars folder in class' temp directory.
     """
 
-    def __init__(self, name: str, students: list[Student]|None = None, *, class_id: Any = None) -> None:
+    def __init__(
+        self, name: str, students: list[Student] | None = None, *, class_id: Any = None
+    ) -> None:
         super().__init__(name=name, students=students, class_id=class_id)
 
         # Create class temp directory.
         Path.mkdir(TEMP_DIR, exist_ok=True, parents=True)  # Ensure path exists.
-        self.temp_dir: Path = Path(tempfile.mkdtemp(prefix=self._path_safe_name, dir=TEMP_DIR))
+        self.temp_dir: Path = Path(
+            tempfile.mkdtemp(prefix=self._path_safe_name, dir=TEMP_DIR)
+        )
         # Create avatars directory within class temp directory.
-        self.temp_avatars_dir: Path = self.temp_dir.joinpath('avatars')
+        self.temp_avatars_dir: Path = self.temp_dir.joinpath("avatars")
         Path.mkdir(self.temp_avatars_dir)
 
     def __del__(self) -> None:
