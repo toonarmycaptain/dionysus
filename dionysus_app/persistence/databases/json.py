@@ -290,9 +290,9 @@ class JSONDatabase(Database):
         Path.mkdir(app_data_save_pathname.parent, parents=True, exist_ok=True)
         # Save in app_data/class_data/class_id/chart_data with chart_default_filename
 
-        mpl_plt.savefig(
+        mpl_plt.savefig(  # type: ignore[attr-defined]
             app_data_save_pathname,
-            format="png",  # type: ignore[attr-defined]
+            format="png",
             dpi=300,
         )  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname

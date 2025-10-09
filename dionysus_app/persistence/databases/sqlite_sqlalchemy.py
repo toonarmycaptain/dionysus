@@ -258,8 +258,8 @@ class SQLiteSQLAlchemyDatabase(Database):
         """
         # Get image data:
         image = BytesIO()
-        mpl_plt.savefig(
-            image,  # type: ignore[attr-defined]
+        mpl_plt.savefig(  # type: ignore[attr-defined]
+            image,
             format="png",
             dpi=300,
         )  # dpi - 120 comes to 1920*1080, 80 - 1280*720
