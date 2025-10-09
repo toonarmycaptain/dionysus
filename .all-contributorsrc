@@ -83,6 +83,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "elliotwutingfeng",
+      "name": "Wu Tingfeng",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30223404?v=4",
+      "profile": "https://github.com/elliotwutingfeng",
+      "contributions": [
+        "code",
+        "tool"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -90,5 +100,8 @@
   "projectOwner": "toonarmycaptain",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "contributorsSortAlphabetically": false
+  "skipCi": true,
+  "commitType": "docs",
+  "commitConvention": "angular"
 }

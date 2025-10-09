@@ -1,6 +1,6 @@
 ## dionysus - Avatar chart generator
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Build status](https://ci.appveyor.com/api/projects/status/yb33uwd13tkv7l79?svg=true)](https://ci.appveyor.com/project/toonarmycaptain/dionysus) 
 [![Coverage Status](https://coveralls.io/repos/github/toonarmycaptain/dionysus/badge.svg)](https://coveralls.io/github/toonarmycaptain/dionysus) 
@@ -43,20 +43,24 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center"><a href="https://github.com/toonarmycaptain"><img src="https://avatars3.githubusercontent.com/u/29956894?v=4" width="100px;" alt=""/><br /><sub><b>toonarmycaptain</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Documentation">📖</a> <a href="#design-toonarmycaptain" title="Design">🎨</a> <a href="#ideas-toonarmycaptain" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-toonarmycaptain" title="Maintenance">🚧</a></td>
-    <td align="center"><a href="https://github.com/destag"><img src="https://avatars2.githubusercontent.com/u/16159069?v=4" width="100px;" alt=""/><br /><sub><b>Przemysław Pietras</b></sub></a><br /><a href="#infra-destag" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=destag" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/Ginkooo"><img src="https://avatars3.githubusercontent.com/u/11911709?v=4" width="100px;" alt=""/><br /><sub><b>Piotr Czajka</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Tests">⚠️</a></td>    
-    <td align="center"><a href="https://stackoverflow.com/story/samchats"><img src="https://avatars1.githubusercontent.com/u/22810216?v=4" width="100px;" alt=""/><br /><sub><b>Saurabh Chaturvedi</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=schedutron" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/malexanderboyd"><img src="https://avatars2.githubusercontent.com/u/2465264?v=4" width="100px;" alt=""/><br /><sub><b>M. Alex Boyd</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/mbarakaja"><img src="https://avatars0.githubusercontent.com/u/7861175?v=4" width="100px;" alt=""/><br /><sub><b>José María Domínguez</b></sub></a><br /><a href="#infra-mbarakaja" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
-    <td align="center"><a href="https://github.com/HCamberos"><img src="https://avatars2.githubusercontent.com/u/56201325?v=4" width="100px;" alt=""/><br /><sub><b>HCamberos</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=HCamberos" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/AbdullahElagha"><img src="https://avatars3.githubusercontent.com/u/20312723?v=4" width="100px;" alt=""/><br /><sub><b>AbdullahElagha</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=AbdullahElagha" title="Documentation">📖</a></td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/toonarmycaptain"><img src="https://avatars3.githubusercontent.com/u/29956894?v=4?s=100" width="100px;" alt="toonarmycaptain"/><br /><sub><b>toonarmycaptain</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=toonarmycaptain" title="Documentation">📖</a> <a href="#design-toonarmycaptain" title="Design">🎨</a> <a href="#ideas-toonarmycaptain" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-toonarmycaptain" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/destag"><img src="https://avatars2.githubusercontent.com/u/16159069?v=4?s=100" width="100px;" alt="Przemysław Pietras"/><br /><sub><b>Przemysław Pietras</b></sub></a><br /><a href="#infra-destag" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=destag" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Ginkooo"><img src="https://avatars3.githubusercontent.com/u/11911709?v=4?s=100" width="100px;" alt="Piotr Czajka"/><br /><sub><b>Piotr Czajka</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=Ginkooo" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://stackoverflow.com/story/samchats"><img src="https://avatars1.githubusercontent.com/u/22810216?v=4?s=100" width="100px;" alt="Saurabh Chaturvedi"/><br /><sub><b>Saurabh Chaturvedi</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=schedutron" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/malexanderboyd"><img src="https://avatars2.githubusercontent.com/u/2465264?v=4?s=100" width="100px;" alt="M. Alex Boyd"/><br /><sub><b>M. Alex Boyd</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Code">💻</a> <a href="https://github.com/toonarmycaptain/dionysus/commits?author=malexanderboyd" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mbarakaja"><img src="https://avatars0.githubusercontent.com/u/7861175?v=4?s=100" width="100px;" alt="José María Domínguez"/><br /><sub><b>José María Domínguez</b></sub></a><br /><a href="#infra-mbarakaja" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AbdullahElagha"><img src="https://avatars3.githubusercontent.com/u/20312723?v=4?s=100" width="100px;" alt="AbdullahElagha"/><br /><sub><b>AbdullahElagha</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=AbdullahElagha" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/HCamberos"><img src="https://avatars2.githubusercontent.com/u/56201325?v=4?s=100" width="100px;" alt="HCamberos"/><br /><sub><b>HCamberos</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=HCamberos" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/elliotwutingfeng"><img src="https://avatars.githubusercontent.com/u/30223404?v=4?s=100" width="100px;" alt="Wu Tingfeng"/><br /><sub><b>Wu Tingfeng</b></sub></a><br /><a href="https://github.com/toonarmycaptain/dionysus/commits?author=elliotwutingfeng" title="Code">💻</a> <a href="#tool-elliotwutingfeng" title="Tools">🔧</a></td>
+    </tr>
+  </tbody>
 </table>
 
-
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
