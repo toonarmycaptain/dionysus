@@ -12,6 +12,7 @@ environment:
 
 init:
   - SET PATH=%PYTHON%;%PATH%
+  - SET UV_PYTHON=%PYTHON%\python.exe
 
 install:
     - ps: irm https://astral.sh/uv/install.ps1 | iex
