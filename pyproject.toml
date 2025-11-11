@@ -14,7 +14,7 @@ dependencies = [
 testing = [
     "coverage==7.11.3",
     "mypy==1.18.2",
-    "pre-commit==4.3.0",
+    "pre-commit==4.4.0",
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
     "pytest-mypy==1.0.1",
