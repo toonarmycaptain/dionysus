@@ -16,7 +16,7 @@ testing = [
     "mypy==1.19.1",
     "pre-commit==4.5.1",
     "pytest==9.0.2",
-    "pytest-cov==7.0.0",
+    "pytest-cov==7.1.0",
     "pytest-mypy==1.0.1",
     "ruff==0.15.6",
 ]
