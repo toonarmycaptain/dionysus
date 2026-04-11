@@ -36,6 +36,83 @@ from sqlalchemy.orm.decl_api import DeclarativeMeta
 Base: DeclarativeMeta = declarative_base()
 
 
+class ClassTable(Base):
+    __tablename__ = "class"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<Class(id={self.id}, name={self.name})>"
+
+
+class StudentTable(Base):
+    __tablename__ = "student"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    class_id = Column(Integer, ForeignKey("class.id"))
+    avatar_id = Column(Integer, ForeignKey("avatar.id"))
+
+    def __repr__(self):
+        return (
+            f"<Student("
+            f"id={self.id}, "
+            f"name={self.name}, "
+            f"class_id={self.class_id}, "
+            f"avatar_id={self.avatar_id}"
+            f")>"
+        )
+
+
+class ChartTable(Base):
+    __tablename__ = "chart"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    image = Column(BLOB)
+    date = Column(String)
+
+    def __repr__(self):
+        return (
+            f"<Chart("
+            f"id={self.id}, "
+            f"name={self.name}, "
+            f"image={self.image}, "
+            f"date={self.date}"
+            f")>"
+        )
+
+
+class ScoreTable(Base):
+    __tablename__ = "score"
+
+    id = Column(Integer, primary_key=True)
+    chart_id = Column(Integer, ForeignKey("chart.id"), nullable=False)
+    student_id = Column(Integer, ForeignKey("student.id"), nullable=False)
+    value = Column(REAL, nullable=False)
+
+    def __repr__(self):
+        return (
+            f"<Score("
+            f"id={self.id}, "
+            f"chart_id={self.chart_id}, "
+            f"student_id={self.student_id}, "
+            f"value={self.value}"
+            f")>"
+        )
+
+
+class AvatarTable(Base):
+    __tablename__ = "avatar"
+
+    id = Column(Integer, primary_key=True)
+    image = Column(BLOB, nullable=False)
+
+    def __repr__(self):
+        return f"<Avatar(id={self.id}, image={self.image})>"
+
+
 class SQLiteSQLAlchemyDatabase(Database):
     """
     SQLiteSQLAlchemyDatabase object.
@@ -105,7 +182,10 @@ class SQLiteSQLAlchemyDatabase(Database):
         :return: bool
         """
         with self.session_scope() as session:
-            return (class_name,) in session.query(self.Class.name)
+            return (
+                session.query(self.Class).filter(self.Class.name == class_name).first()
+                is not None
+            )
             # return [class_name for class_name in session.query(self.Class.name)]
 
     def create_class(self, new_class: NewClass) -> None:
@@ -207,16 +287,15 @@ class SQLiteSQLAlchemyDatabase(Database):
         """
         if not avatar_id:
             return self.default_avatar_path
-        with self.session_scope() as session:
-            image_record = (
-                session.query(self.Avatar).filter(self.Avatar.id == avatar_id).one()
-            )
-            image = image_record.image
 
         temp_image_path = Path(
             DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value), str(avatar_id)
         )
-        temp_image_path.write_bytes(image)
+        with self.session_scope() as session:
+            image_record = (
+                session.query(self.Avatar).filter(self.Avatar.id == avatar_id).one()
+            )
+            temp_image_path.write_bytes(image_record.image)  # type: ignore[arg-type]  # image column is not nullable
         return temp_image_path
 
     def create_chart(self, chart_data_dict: dict) -> None:
@@ -308,101 +387,6 @@ class SQLiteSQLAlchemyDatabase(Database):
         # Instantiate session maker and connect it to db
         self.make_session = sessionmaker()
         self.make_session.configure(bind=self.engine)
-
-        # Define tables
-        Base = declarative_base()
-
-        class ClassTable(Base):
-            __tablename__ = "class"
-
-            def __init__(self, name):
-                self.name = name
-
-            id = Column(Integer, primary_key=True)
-            name = Column(String(255), nullable=False)
-
-            def __repr__(self):
-                return f"<Class(id={self.id}, name={self.name})>"
-
-        class StudentTable(Base):
-            __tablename__ = "student"
-
-            def __init__(self, name, class_id, avatar_id=None):
-                self.name = name
-                self.class_id = class_id
-                self.avatar_id = avatar_id
-
-            id = Column(Integer, primary_key=True)
-            name = Column(String(255), nullable=False)
-            class_id = Column(Integer, ForeignKey("class.id"))
-            avatar_id = Column(Integer, ForeignKey("avatar.id"))
-
-            def __repr__(self):
-                return (
-                    f"<Student("
-                    f"id={self.id}, "
-                    f"name={self.name}, "
-                    f"class_id={self.class_id}, "
-                    f"avatar_id={self.avatar_id}"
-                    f")>"
-                )
-
-        class ChartTable(Base):
-            __tablename__ = "chart"
-
-            def __init__(self, name, image=None, date=None):
-                self.name = name
-                self.image = image
-
-            id = Column(Integer, primary_key=True)
-            name = Column(String(255))
-            image = Column(BLOB)
-            date = Column(String)
-
-            def __repr__(self):
-                return (
-                    f"<Chart("
-                    f"id={self.id}, "
-                    f"name={self.name}, "
-                    f"image={self.image}, "
-                    f"date={self.date}"
-                    f")>"
-                )
-
-        class ScoreTable(Base):
-            __tablename__ = "score"
-
-            def __init__(self, chart_id, student_id, value):
-                self.chart_id = chart_id
-                self.student_id = student_id
-                self.value = value
-
-            id = Column(Integer, primary_key=True)
-            chart_id = Column(Integer, ForeignKey("chart.id"), nullable=False)
-            student_id = Column(Integer, ForeignKey("student.id"), nullable=False)
-            value = Column(REAL, nullable=False)
-
-            def __repr__(self):
-                return (
-                    f"<Score("
-                    f"id={self.id}, "
-                    f"chart_id={self.chart_id}, "
-                    f"student_id={self.student_id}, "
-                    f"value={self.value}"
-                    f")>"
-                )
-
-        class AvatarTable(Base):
-            __tablename__ = "avatar"
-
-            def __init__(self, image):
-                self.image = image
-
-            id = Column(Integer, primary_key=True)
-            image = Column(BLOB, nullable=False)
-
-            def __repr__(self):
-                return f"<Avatar(id={self.id}, image={self.image})>"
 
         self.Class = ClassTable
         self.Student = StudentTable
