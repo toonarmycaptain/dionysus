@@ -18,7 +18,7 @@ testing = [
     "pytest==9.0.3",
     "pytest-cov==7.1.0",
     "pytest-mypy==1.0.1",
-    "ruff==0.15.9",
+    "ruff==0.15.10",
 ]
 
 [tool.hatch.build.targets.wheel]
