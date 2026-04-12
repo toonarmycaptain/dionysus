@@ -63,6 +63,7 @@ def new_chart(loaded_class: Class | None = None) -> None:
     chart_data_dict = {
         "class_id": loaded_class.id,
         "class_name": loaded_class.name,  # str
+        "class_path_safe_name": loaded_class.path_safe_name,  # str
         "chart_name": chart_name,  # str
         "chart_default_filename": chart_default_filename,  # str
         "chart_params": chart_params,  # dict
@@ -150,11 +151,13 @@ def user_save_chart_image(chart_data_dict: dict, image_location: Path) -> None:
     :param image_location: Path object
     :return: None
     """
-    class_name = chart_data_dict["class_name"]
+    class_path_safe_name = chart_data_dict.pop("class_path_safe_name")
     default_chart_name = chart_data_dict["chart_default_filename"]
 
     # Save in user selected location with user defined name.
-    save_chart_pathname = get_user_save_chart_pathname(class_name, default_chart_name)
+    save_chart_pathname = get_user_save_chart_pathname(
+        class_path_safe_name, default_chart_name
+    )
     if save_chart_pathname:
         copy_image_to_user_save_loc(image_location, save_chart_pathname)
 
