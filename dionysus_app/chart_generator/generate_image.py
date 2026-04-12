@@ -8,11 +8,9 @@ if title/name desired on image:
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
 import definitions
-
 from dionysus_app.chart_generator.process_chart_data import generate_avatar_coords
 from dionysus_app.class_functions import avatar_file_exists
 
@@ -26,9 +24,7 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
     """
     fig = plt.figure(figsize=(19.20, 10.80))  # noqa: F841 | set proportion/size in inches, 1080p
     ax = plt.subplot(xlim=(-0, 105), ylim=(-0, 100))
-    plt.subplots_adjust(
-        left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01
-    )
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0.01, hspace=0.01)
 
     # TODO: hide vertical axis, top and right border lines.
     set_axis()
@@ -49,7 +45,7 @@ def generate_chart_image(chart_data_dict: dict) -> Path:
 
 
 def set_axis(x_min: int = 0, x_max: int = 100, x_step: int = 10):
-    plt.xticks([tick for tick in range(x_min, x_max + 1, x_step)])
+    plt.xticks(list(range(x_min, x_max + 1, x_step)))
     plt.yticks([])
 
 

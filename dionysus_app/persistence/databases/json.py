@@ -2,12 +2,10 @@
 
 from copy import deepcopy
 from pathlib import Path
-from typing import Optional
 
 import matplotlib.pyplot as plt
 
 import definitions
-
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import convert_to_json, move_file
@@ -114,22 +112,15 @@ class JSONDatabase(Database):
         self.app_data_path: Path = app_data_path or DataFolder.generate_rel_path(
             DataFolder.APP_DATA.value
         )
-        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath(
-            "class_data"
-        )
-        self.class_data_file_type: str = (
-            class_data_file_type or DEFAULT_CLASSLIST_DATA_FILE_TYPE
-        )
-        self.default_chart_save_dir: Optional[Path] = (
+        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath("class_data")
+        self.class_data_file_type: str = class_data_file_type or DEFAULT_CLASSLIST_DATA_FILE_TYPE
+        self.default_chart_save_dir: Path | None = (
             default_chart_save_dir or definitions.DEFAULT_CHART_SAVE_DIR
         )
-        self.default_avatar_path: Path = (
-            default_avatar_path
-            or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
+        self.default_avatar_path: Path = default_avatar_path or DataFolder.generate_rel_path(
+            DataFolder.DEFAULT_AVATAR.value
         )
-        self.chart_data_file_type: str = (
-            chart_data_file_type or DEFAULT_CHART_DATA_FILE_TYPE
-        )
+        self.chart_data_file_type: str = chart_data_file_type or DEFAULT_CHART_DATA_FILE_TYPE
         # Create data paths:
         self.app_data_path.mkdir(parents=True, exist_ok=True)
         self.class_data_path.mkdir(parents=True, exist_ok=True)
@@ -154,10 +145,7 @@ class JSONDatabase(Database):
 
         :return: list[tuple[str, str]]
         """
-        return [
-            ClassIdentifier(class_name, class_name)
-            for class_name in self._registry.list
-        ]
+        return [ClassIdentifier(class_name, class_name) for class_name in self._registry.list]
 
     def class_name_exists(self, class_name: str) -> bool:
         """
@@ -193,9 +181,7 @@ class JSONDatabase(Database):
         :return: Class object
         """
         class_data_filename = class_id + self.class_data_file_type
-        classlist_data_path = self.class_data_path.joinpath(
-            class_id, class_data_filename
-        )
+        classlist_data_path = self.class_data_path.joinpath(class_id, class_data_filename)
 
         loaded_class = Class.from_file(classlist_data_path)
         # Append ids
@@ -246,9 +232,7 @@ class JSONDatabase(Database):
         :param chart_data_dict: dict
         :return: None
         """
-        file_chart_data_dict = deepcopy(
-            chart_data_dict
-        )  # Copy so as to not modify in-use dict.
+        file_chart_data_dict = deepcopy(chart_data_dict)  # Copy so as to not modify in-use dict.
 
         chart_filename = file_chart_data_dict["chart_default_filename"]
         chart_datafile_name = chart_filename + self.chart_data_file_type
@@ -257,9 +241,7 @@ class JSONDatabase(Database):
         )
 
         # Convert data_dict to JSON-safe form.
-        json_safe_chart_data_dict = self._store_students_as_student_names(
-            file_chart_data_dict
-        )
+        json_safe_chart_data_dict = self._store_students_as_student_names(file_chart_data_dict)
         json_chart_data = convert_to_json(json_safe_chart_data_dict)
 
         with open(chart_data_filepath, "w") as chart_data_file:
@@ -297,9 +279,7 @@ class JSONDatabase(Database):
         )  # dpi - 120 comes to 1920*1080, 80 - 1280*720
         return app_data_save_pathname
 
-    def get_avatar_path(
-        self, class_id: str, student_avatar_filename: str | None = None
-    ) -> Path:
+    def get_avatar_path(self, class_id: str, student_avatar_filename: str | None = None) -> Path:
         """
         Return abs path to student avatar, or to default avatar if None.
 
@@ -415,9 +395,7 @@ class JSONDatabase(Database):
         ]:
             self._move_avatar_to_class_data(new_class, avatar_file)
 
-    def _move_avatar_to_class_data(
-        self, new_class: NewClass, avatar_filename: str
-    ) -> None:
+    def _move_avatar_to_class_data(self, new_class: NewClass, avatar_filename: str) -> None:
         """
         Moves avatar from NewClass.temp_dir to new class' avatars dir.
 
@@ -429,9 +407,7 @@ class JSONDatabase(Database):
         :return: None
         """
         origin_path = new_class.temp_avatars_dir.joinpath(avatar_filename)
-        destination_path = self.class_data_path.joinpath(
-            new_class.id, "avatars", avatar_filename
-        )
+        destination_path = self.class_data_path.joinpath(new_class.id, "avatars", avatar_filename)
         if not destination_path.exists():  # Avatar not already in database/class data.
             move_file(origin_path, destination_path)
 

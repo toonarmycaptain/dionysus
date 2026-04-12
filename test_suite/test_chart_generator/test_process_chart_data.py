@@ -1,20 +1,26 @@
 """Tests for dionysus_app.chart_generator.process_chart_data.py"""
 
-import pytest
-
 from pathlib import Path
+
+import pytest
 
 from dionysus_app.chart_generator import process_chart_data
 from dionysus_app.chart_generator.process_chart_data import (
-    assign_avatars_to_bands,
     assign_avatar_coords,
+    assign_avatars_to_bands,
     generate_avatar_coords,
 )
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.persistence.databases.json import JSONDatabase
-from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
-from test_suite.test_persistence.test_databases.test_json import empty_json_database  # noqa: F401 | Fixture.
-from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database  # noqa: F401 | Fixture.
+from test_suite.test_persistence.test_database import (
+    empty_generic_database,  # noqa: F401 | Fixture.
+)
+from test_suite.test_persistence.test_databases.test_json import (
+    empty_json_database,  # noqa: F401 | Fixture.
+)
+from test_suite.test_persistence.test_databases.test_sqlite import (
+    empty_sqlite_database,  # noqa: F401 | Fixture.
+)
 from test_suite.testing_class_data import test_full_class_data_set
 
 test_score_students_dict = {
@@ -53,8 +59,7 @@ class TestAssignAvatarsToBands:
         }
 
         assert (
-            assign_avatars_to_bands(test_score_students_dict)
-            == test_assign_avatars_to_bands_result
+            assign_avatars_to_bands(test_score_students_dict) == test_assign_avatars_to_bands_result
         )
 
 
@@ -85,20 +90,16 @@ class TestGenerateAvatarCoords:
             "empty_sqlite_database",
         ],
     )
-    def test_generate_avatar_coords_backends(
-        self, request, monkeypatch, database_backend
-    ):
+    def test_generate_avatar_coords_backends(self, request, monkeypatch, database_backend):
         test_database = request.getfixturevalue(database_backend)
         test_database.default_avatar_path = "mocked_default_avatar_path"
 
-        test_existing_class = NewClass.from_dict(
-            test_full_class_data_set["json_dict_rep"]
-        )
+        test_existing_class = NewClass.from_dict(test_full_class_data_set["json_dict_rep"])
         for student in test_existing_class:
             if student.avatar_id:
-                Path(
-                    test_existing_class.temp_avatars_dir, student.avatar_id
-                ).write_text(student.avatar_id)
+                Path(test_existing_class.temp_avatars_dir, student.avatar_id).write_text(
+                    student.avatar_id
+                )
         # Create class in db:
         test_database.create_class(test_existing_class)
 
@@ -232,7 +233,8 @@ class TestGenerateAvatarCoords:
             re-mocking method for clarity.
             """
             assert avatar_id in avatar_ids
-            #  deepcode ignore unguarded~next~call: No guard - let error propagate, should not reach StopIteration.
+            #  deepcode ignore unguarded~next~call: No guard -
+            #  let error propagate, should not reach StopIteration.
             return next(avatar_path)
 
         test_database.get_avatar_path = mocked_get_avatar_path

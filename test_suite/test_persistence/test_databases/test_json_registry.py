@@ -66,7 +66,8 @@ class TestGenerateRegistryFromFilesystem:
 
         assert (
             test_registry.generate_registry_from_filesystem() == test_registry_list
-            # Concession to occasional instance contents are equal but order is different, which is still ok.
+            # Concession to occasional instance contents are equal
+            # but order is different, which is still ok.
             or sorted(test_registry.generate_registry_from_filesystem())
             == sorted(test_registry_list)
         )
@@ -89,9 +90,7 @@ class TestWriteRegistryToDisk:
         test_registry_path = Path(tmpdir, "registry_file")
         test_registry = Registry()
         test_registry.registry_path = test_registry_path
-        expected_registry_file = "".join(
-            f"{class_name}\n" for class_name in test_registry_list
-        )
+        expected_registry_file = "".join(f"{class_name}\n" for class_name in test_registry_list)
 
         test_registry.write_registry_to_disk(test_registry_list)
         assert open(test_registry_path).read() == expected_registry_file
@@ -206,7 +205,8 @@ class TestCheckRegistryOnExit:
         """
         Registry file written to with cached registry if file copy does not match cached.
         """
-        # Test sanity check: Registry list and file copy should be different if file is to be written to.
+        # Test sanity check: Registry list and file copy should be
+        # different if file is to be written to.
         assert (
             "".join(f"{class_name}\n" for class_name in test_registry_list)
             != test_registry_file_str
@@ -226,20 +226,14 @@ class TestCheckRegistryOnExit:
         def mocked_write_registry_to_disk(registry):
             write_registry_to_disk_mock["called"] = True
             if not registry_should_be_written_to_disk:
-                raise ValueError(
-                    "Registry file was correct, should not have been written to."
-                )
+                raise ValueError("Registry file was correct, should not have been written to.")
 
         test_registry.write_registry_to_disk = mocked_write_registry_to_disk
         assert test_registry.check_registry_on_exit() is None
         # Ensure write_registry_to_disk is called when it should be.
-        assert (
-            write_registry_to_disk_mock["called"] == registry_should_be_written_to_disk
-        )
+        assert write_registry_to_disk_mock["called"] == registry_should_be_written_to_disk
 
-    def test_check_registry_on_exit_raising_error_uninitialised_registry(
-        self, monkeypatch
-    ):
+    def test_check_registry_on_exit_raising_error_uninitialised_registry(self, monkeypatch):
         """Registry uninitialised/None raises ValueError."""
         test_registry = Registry()
         test_registry.list = None

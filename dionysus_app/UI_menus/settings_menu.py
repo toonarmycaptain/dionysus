@@ -1,7 +1,5 @@
 """Settings menu UI"""
 
-from typing import Optional
-
 from dionysus_app.settings_functions import set_default_chart_save_location
 from dionysus_app.UI_menus.UI_functions import get_user_input
 
@@ -36,7 +34,7 @@ def settings_menu_options() -> None:
     )
 
 
-def take_settings_menu_input() -> Optional[bool]:
+def take_settings_menu_input() -> bool | None:
     """
     Takes input and runs chosen action.
 

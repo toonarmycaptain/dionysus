@@ -1,18 +1,19 @@
 """
 Script for composing data set to pass to graph_image_generator.
 
-Prototype will be a bar chart eg columns for each 10pt range 0-100, each avatar stacked on top of each other.
+Prototype will be a bar chart eg columns for each 10pt range 0-100,
+each avatar stacked on top of each other.
 
-Immediate enhancement from there will be variable ranges for the chart, columns eg 0-15 for a quiz rather than
-a percentage, or column widths of 5pts rather than 10. Other potential concern is chart being too high, so some
-sort of overlap without obscuring the avatars, or two columns of avatars in a point column.
+Immediate enhancement from there will be variable ranges for the
+chart, columns eg 0-15 for a quiz rather than a percentage, or
+column widths of 5pts rather than 10. Other potential concern is
+chart being too high, so some sort of overlap without obscuring
+the avatars, or two columns of avatars in a point column.
 """
 
 from pathlib import Path
-from typing import Optional
 
 import definitions
-
 from dionysus_app.chart_generator.generate_image import generate_chart_image
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.class_ import Class
@@ -56,8 +57,8 @@ def new_chart(loaded_class: Class | None = None) -> None:
         class_id = select_classlist()  # TODO: warn for empty classlist
         loaded_class = definitions.DATABASE.load_class(class_id)
 
-    (chart_name, chart_default_filename, student_scores, chart_params) = (
-        assemble_chart_data(loaded_class)
+    (chart_name, chart_default_filename, student_scores, chart_params) = assemble_chart_data(
+        loaded_class
     )
 
     chart_data_dict = {
@@ -155,16 +156,12 @@ def user_save_chart_image(chart_data_dict: dict, image_location: Path) -> None:
     default_chart_name = chart_data_dict["chart_default_filename"]
 
     # Save in user selected location with user defined name.
-    save_chart_pathname = get_user_save_chart_pathname(
-        class_path_safe_name, default_chart_name
-    )
+    save_chart_pathname = get_user_save_chart_pathname(class_path_safe_name, default_chart_name)
     if save_chart_pathname:
         copy_image_to_user_save_loc(image_location, save_chart_pathname)
 
 
-def copy_image_to_user_save_loc(
-    app_image_location: Path, user_save_location: Path
-) -> None:
+def copy_image_to_user_save_loc(app_image_location: Path, user_save_location: Path) -> None:
     """
     Copies image from app_data location to user selected location.
     NB if
@@ -176,9 +173,7 @@ def copy_image_to_user_save_loc(
     copy_file(app_image_location, user_save_location)
 
 
-def get_user_save_chart_pathname(
-    class_name: str, default_chart_name: str
-) -> Optional[Path]:
+def get_user_save_chart_pathname(class_name: str, default_chart_name: str) -> Path | None:
     """
     Gets set class save folder path, return None if user cancels save.
 

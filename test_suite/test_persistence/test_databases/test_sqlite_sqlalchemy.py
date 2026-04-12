@@ -5,7 +5,6 @@ from pathlib import Path
 from random import randint
 
 import pytest
-
 from matplotlib import pyplot as plt
 from matplotlib.testing.compare import compare_images
 from sqlalchemy import inspect
@@ -14,7 +13,6 @@ from dionysus_app.class_ import NewClass
 from dionysus_app.persistence.databases.sqlite_sqlalchemy import (
     SQLiteSQLAlchemyDatabase,
 )
-
 from dionysus_app.student import Student
 
 
@@ -194,9 +192,7 @@ class TestSQLiteSQLAlchemyDatabase:
         for score, students in test_chart_data_dict["score-students_dict"].items():
             # NB One chart in db -> chart.id = 1]
             for student in students:
-                scores_data += [
-                    (score_id, test_chart_data_dict["chart_id"], student.id, score)
-                ]
+                scores_data += [(score_id, test_chart_data_dict["chart_id"], student.id, score)]
                 score_id += 1
 
         # Verify reprs of scores in db:
@@ -279,9 +275,7 @@ class TestCreateChart:
             from sqlalchemy.sql import text
 
             assert (
-                test_session.execute(
-                    text("""SELECT chart.name FROM chart""")
-                ).fetchone()[0]
+                test_session.execute(text("""SELECT chart.name FROM chart""")).fetchone()[0]
                 == test_chart_data_dict["chart_name"]
             )
 
@@ -325,9 +319,7 @@ class TestSaveChartImage:
         save_chart_path = test_database.save_chart_image(test_data_dict, mock_plt)
         # Path exists and image at path/db is expected data:
         assert save_chart_path.exists()
-        assert (
-            save_chart_path.read_bytes() == test_image.read1()
-        )  # size arg can be omitted on 3.7+
+        assert save_chart_path.read_bytes() == test_image.read1()  # size arg can be omitted on 3.7+
         test_image.seek(0)  # Return pointer to start of test_image binary stream.
 
         # Compare db image

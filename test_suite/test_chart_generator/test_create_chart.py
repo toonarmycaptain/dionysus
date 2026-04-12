@@ -3,7 +3,6 @@ from pathlib import Path
 import pytest
 
 import definitions
-
 from dionysus_app.chart_generator import create_chart
 from dionysus_app.chart_generator.create_chart import (
     assemble_chart_data,
@@ -19,9 +18,10 @@ from dionysus_app.chart_generator.create_chart import (
 )
 from dionysus_app.chart_generator.process_chart_data import DEFAULT_CHART_PARAMS
 from dionysus_app.class_ import Class, NewClass
-
 from test_suite.test_class import test_full_class  # noqa: F401 | Fixture.
-from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
+from test_suite.test_persistence.test_database import (
+    empty_generic_database,  # noqa: F401 | Fixture.
+)
 from test_suite.testing_class_data import test_full_class_data_set
 
 
@@ -33,12 +33,8 @@ class TestNewChart:
         "class_from_create_class",
         [
             None,  # Test Full class fixture
-            Class.from_dict(
-                test_full_class_data_set["json_dict_rep"]
-            ),  # Pass in test_class
-            NewClass.from_dict(
-                test_full_class_data_set["json_dict_rep"]
-            ),  # NewClass obj
+            Class.from_dict(test_full_class_data_set["json_dict_rep"]),  # Pass in test_class
+            NewClass.from_dict(test_full_class_data_set["json_dict_rep"]),  # NewClass obj
         ],
     )
     def test_new_chart(
@@ -71,9 +67,7 @@ class TestNewChart:
 
         def mocked_select_classlist():
             if class_from_create_class:
-                raise ValueError(
-                    "select_classlist should not be called if a class is passed."
-                )
+                raise ValueError("select_classlist should not be called if a class is passed.")
             return test_full_class.name
 
         def mocked_get_classes():
@@ -121,16 +115,10 @@ class TestNewChart:
 
         monkeypatch.setattr(definitions, "DATABASE", test_database)
         monkeypatch.setattr(create_chart, "select_classlist", mocked_select_classlist)
-        monkeypatch.setattr(
-            create_chart, "assemble_chart_data", mocked_assemble_chart_data
-        )
-        monkeypatch.setattr(
-            create_chart, "generate_chart_image", mocked_generate_chart_image
-        )
+        monkeypatch.setattr(create_chart, "assemble_chart_data", mocked_assemble_chart_data)
+        monkeypatch.setattr(create_chart, "generate_chart_image", mocked_generate_chart_image)
         monkeypatch.setattr(create_chart, "show_image", mocked_show_image)
-        monkeypatch.setattr(
-            create_chart, "user_save_chart_image", mocked_user_save_chart_image
-        )
+        monkeypatch.setattr(create_chart, "user_save_chart_image", mocked_user_save_chart_image)
 
         assert new_chart(class_from_create_class) is None
 
@@ -141,12 +129,8 @@ class TestAssembleChartData:
     @pytest.mark.parametrize(
         "class_from_create_class",
         [
-            Class.from_dict(
-                test_full_class_data_set["json_dict_rep"]
-            ),  # Pass in test_class
-            NewClass.from_dict(
-                test_full_class_data_set["json_dict_rep"]
-            ),  # NewClass obj
+            Class.from_dict(test_full_class_data_set["json_dict_rep"]),  # Pass in test_class
+            NewClass.from_dict(test_full_class_data_set["json_dict_rep"]),  # NewClass obj
         ],
     )
     def test_assemble_chart_data(self, monkeypatch, class_from_create_class):
@@ -171,9 +155,7 @@ class TestAssembleChartData:
 
         monkeypatch.setattr(create_chart, "take_score_data", mocked_take_score_data)
         monkeypatch.setattr(create_chart, "take_chart_name", mocked_take_chart_name)
-        monkeypatch.setattr(
-            create_chart, "clean_for_filename", mocked_clean_for_filename
-        )
+        monkeypatch.setattr(create_chart, "clean_for_filename", mocked_clean_for_filename)
         monkeypatch.setattr(create_chart, "set_chart_params", mocked_set_chart_params)
 
         assert assemble_chart_data(class_from_create_class) == (
@@ -241,9 +223,7 @@ class TestUserSaveChartImage:
 
         def mocked_copy_image_to_user_save_loc(image_location, save_chart_pathname):
             if not user_supplied_location:
-                raise ValueError(
-                    "If user supplied no save path, function should not be called."
-                )
+                raise ValueError("If user supplied no save path, function should not be called.")
             assert (image_location == test_image_location) and (
                 save_chart_pathname == user_supplied_location
             )
@@ -275,12 +255,7 @@ class TestCopyImageToUserSaveLoc:
 
         monkeypatch.setattr(create_chart, "copy_file", mocked_copy_file)
 
-        assert (
-            copy_image_to_user_save_loc(
-                test_app_image_location, test_user_save_location
-            )
-            is None
-        )
+        assert copy_image_to_user_save_loc(test_app_image_location, test_user_save_location) is None
 
 
 class TestGetUserSaveChartPathname:
@@ -305,9 +280,7 @@ class TestGetUserSaveChartPathname:
         monkeypatch.setattr(
             create_chart, "create_class_save_folder", mocked_create_class_save_folder
         )
-        monkeypatch.setattr(
-            create_chart, "save_chart_dialogue", mocked_save_chart_dialogue
-        )
+        monkeypatch.setattr(create_chart, "save_chart_dialogue", mocked_save_chart_dialogue)
 
         assert (
             get_user_save_chart_pathname(test_class_name, test_default_chart_name)
@@ -342,13 +315,9 @@ class TestGetClassSaveFolderPath:
         )
 
         test_class_name = "my_test_class_name"
-        test_class_save_folder_path = definitions.DEFAULT_CHART_SAVE_DIR.joinpath(
-            test_class_name
-        )
+        test_class_save_folder_path = definitions.DEFAULT_CHART_SAVE_DIR.joinpath(test_class_name)
 
-        assert (
-            get_class_save_folder_path(test_class_name) == test_class_save_folder_path
-        )
+        assert get_class_save_folder_path(test_class_name) == test_class_save_folder_path
 
 
 def test_get_class_save_folder_path(monkeypatch):
@@ -369,9 +338,7 @@ class TestShowImage:
             display_image_save_as_mock["called"] = True
             return user_wants_to_save
 
-        monkeypatch.setattr(
-            create_chart, "display_image_save_as", mocked_display_image_save_as
-        )
+        monkeypatch.setattr(create_chart, "display_image_save_as", mocked_display_image_save_as)
 
         assert show_image(test_image_location) is user_wants_to_save
 

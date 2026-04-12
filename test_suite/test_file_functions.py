@@ -1,15 +1,16 @@
 from pathlib import Path
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 
 import pytest
 
 from dionysus_app import file_functions
 from dionysus_app.file_functions import (
     convert_to_json,
+    copy_file,
     load_from_json,
     load_from_json_file,
+    move_file,
 )
-from dionysus_app.file_functions import copy_file, move_file
 from test_suite.testing_class_data import (
     test_full_class_data_set as test_json_class_data,
 )
@@ -93,9 +94,7 @@ class TestLoadFromJsonFile:
     )
     def test_load_from_json_file(self, json_file_data, loaded_object):
         mock_file_path = Path("test_file_path")
-        with patch(
-            "dionysus_app.file_functions.open", mock_open(read_data=json_file_data)
-        ):
+        with patch("dionysus_app.file_functions.open", mock_open(read_data=json_file_data)):
             assert load_from_json_file(mock_file_path) == loaded_object
 
 
@@ -190,9 +189,7 @@ class TestMoveFile:
 
         destination_dir = Path(tmpdir, "new_directory")
         Path.mkdir(destination_dir)
-        destination_filepath = Path(
-            destination_dir, original_dirname, original_filename
-        )
+        destination_filepath = Path(destination_dir, original_dirname, original_filename)
 
         assert not Path.exists(destination_filepath)
         # Move original folder with file in it.

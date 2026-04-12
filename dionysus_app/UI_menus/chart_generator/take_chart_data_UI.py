@@ -2,13 +2,11 @@
 Script for taking and saving data for chart.
 """
 
-from typing import Optional
-
 from dionysus_app.class_ import Class
 from dionysus_app.student import Student
 from dionysus_app.UI_menus.UI_functions import (
-    input_is_essentially_blank,
     get_user_input,
+    input_is_essentially_blank,
 )
 
 
@@ -56,21 +54,17 @@ def take_student_scores(current_class: Class) -> dict[float, list[Student]]:
     :param current_class: Class object
     :return: dict[float, list[Student]]
     """
-    student_scores: dict = dict()
+    student_scores: dict = {}
     for student in current_class.students:
         student_score = take_score_entry(student.name)
         # add student to list of students for score
         if student_score is not None:
-            student_scores[student_score] = student_scores.get(student_score, []) + [
-                student
-            ]
+            student_scores[student_score] = student_scores.get(student_score, []) + [student]
 
     return student_scores
 
 
-def take_score_entry(
-    student_name: str, minimum: int = 0, maximum: int = 100
-) -> Optional[float]:
+def take_score_entry(student_name: str, minimum: int = 0, maximum: int = 100) -> float | None:
     """
 
     :param student_name: str

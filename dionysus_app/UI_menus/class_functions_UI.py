@@ -1,10 +1,8 @@
 """UI elements for class_functions"""
 
 from pathlib import Path
-from typing import Optional, Union
 
 import definitions
-
 from dionysus_app.class_ import Class
 from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.UI_menus.UI_functions import (
@@ -26,11 +24,13 @@ def take_classlist_name_input() -> str:
     """
     classlist_name = get_user_input(
         prompt="Please enter a name for the class: ",
-        validation=lambda name: not input_is_essentially_blank(name)
-        and not definitions.DATABASE.class_name_exists(clean_for_filename(name)),
-        validation_error_msg=lambda name: None
-        if input_is_essentially_blank(name)
-        else "A class with this name already exists.",
+        validation=lambda name: (
+            not input_is_essentially_blank(name)
+            and not definitions.DATABASE.class_name_exists(clean_for_filename(name))
+        ),
+        validation_error_msg=lambda name: (
+            None if input_is_essentially_blank(name) else "A class with this name already exists."
+        ),
     )
     return clean_for_filename(classlist_name)
 
@@ -51,11 +51,10 @@ def take_student_name_input(the_class: Class) -> str:
 
     student_name = get_user_input(
         prompt="Enter student name, or 'end', and hit enter: ",
-        validation=lambda name: not input_is_essentially_blank(name)
-        and name not in the_class,
-        validation_error_msg=lambda name: student_exists_msg
-        if name in the_class
-        else invalid_input_msg,
+        validation=lambda name: not input_is_essentially_blank(name) and name not in the_class,
+        validation_error_msg=lambda name: (
+            student_exists_msg if name in the_class else invalid_input_msg
+        ),
     )
     return student_name
 
@@ -69,8 +68,7 @@ def blank_class_dialogue() -> bool:
     return ask_user_bool(
         question="Do you want to create an empty class? [Y/N] ",
         invalid_input_response=(
-            "Please enter y for yes to create empty class,"
-            " or n to return to student input."
+            "Please enter y for yes to create empty class, or n to return to student input."
         ),
     )
 
@@ -101,9 +99,7 @@ def create_chart_with_new_class_dialogue() -> bool:
     :return: bool
     """
     return ask_user_bool(
-        question=(
-            "Do you want to create a new chartfor the class you just created? [Y/N]: "
-        ),
+        question=("Do you want to create a new chartfor the class you just created? [Y/N]: "),
         invalid_input_response="Invalid response, please try again.",
     )
 
@@ -136,7 +132,7 @@ def take_class_selection(class_options: dict[int, ClassIdentifier]) -> ClassIden
     :return: ClassIdentifier
     """
     while True:
-        chosen_option: Union[int, str]
+        chosen_option: int | str
         chosen_option = input("Select class: ")
 
         try:
@@ -152,9 +148,7 @@ def take_class_selection(class_options: dict[int, ClassIdentifier]) -> ClassIden
                 selected_class = class_options[class_names.index(chosen_option) + 1]
                 break
             # else:
-            print(
-                "Invalid input.\nPlease enter the integer beside the name of the desired class."
-            )
+            print("Invalid input.\nPlease enter the integer beside the name of the desired class.")
 
     return selected_class
 
@@ -204,7 +198,7 @@ def take_student_selection(student_options: dict) -> str:
     return selected_student
 
 
-def select_avatar_file_dialogue() -> Optional[Path]:
+def select_avatar_file_dialogue() -> Path | None:
     """
     Prompts user to select an avatar file.
 

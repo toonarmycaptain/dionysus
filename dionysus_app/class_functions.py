@@ -3,17 +3,15 @@ Functions for creating, editing, dealing with classes.
 """
 
 import time
-
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import definitions
-
 from dionysus_app.class_ import Class, NewClass
-from dionysus_app.student import Student
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import copy_file, load_from_json_file
 from dionysus_app.persistence.database import ClassIdentifier
+from dionysus_app.student import Student
 from dionysus_app.UI_menus.class_functions_UI import (
     blank_class_dialogue,
     class_data_feedback,
@@ -98,7 +96,7 @@ def take_class_data_input(class_name: str) -> NewClass:
     return new_class
 
 
-def take_student_avatar(new_class: NewClass, student_name: str) -> Optional[str]:
+def take_student_avatar(new_class: NewClass, student_name: str) -> str | None:
     """
     Take user supplied avatar image file.
 
@@ -117,7 +115,8 @@ def take_student_avatar(new_class: NewClass, student_name: str) -> Optional[str]
 
     cleaned_student_name = clean_for_filename(student_name)
     target_avatar_filename = f"{cleaned_student_name}.png"
-    # TODO: append hash to filename to prevent name collisions eg cleaned versions of 'a_b.jpg' and 'a b.jpg' will be identical.
+    # TODO: append hash to filename to prevent name collisions
+    # eg cleaned versions of 'a_b.jpg' and 'a b.jpg' will be identical.
 
     # TODO: process_student_avatar()
     # TODO: convert to png
@@ -156,8 +155,8 @@ def select_classlist() -> Any:
     """
     Prompt user to select a class from list, return selected Class.
 
-    Display list of existent classes from class_registry and allow user to select one, returning the name of the
-    selected class.
+    Display list of existent classes from class_registry and allow
+    user to select one, returning the name of the selected class.
 
     :return: Any - the type ClassIdentifier.id is for backend database.
     """
@@ -180,10 +179,7 @@ def create_class_list_dict() -> dict[int, ClassIdentifier]:
     if class_identifiers is None:
         raise ValueError("No Database found.")
 
-    return {
-        option: class_identifier
-        for option, class_identifier in enumerate(class_identifiers, start=1)
-    }
+    return dict(enumerate(class_identifiers, start=1))
 
 
 def select_student(current_class: Class) -> Student:
@@ -197,17 +193,14 @@ def select_student(current_class: Class) -> Student:
     :return: Student_object
     """
     student_options = {
-        numeral: student.name
-        for numeral, student in enumerate(current_class.students, start=1)
+        numeral: student.name for numeral, student in enumerate(current_class.students, start=1)
     }
     display_student_selection_menu(student_options)
 
     selected_student_name = take_student_selection(student_options)
 
     return next(
-        student
-        for student in current_class.students
-        if student.name == selected_student_name
+        student for student in current_class.students if student.name == selected_student_name
     )
 
 

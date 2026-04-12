@@ -1,6 +1,6 @@
 """Class for student."""
 
-from typing import Union, Any
+from typing import Any
 
 
 class Student:
@@ -54,9 +54,7 @@ class Student:
         """
         self.name: str = name
 
-        self.avatar_id: Any = kwargs.get(
-            "avatar_id"
-        )  # Equivalent to kwargs.get(key, None)
+        self.avatar_id: Any = kwargs.get("avatar_id")  # Equivalent to kwargs.get(key, None)
         # NB Assuring existence is responsibility of code instantiating/adding avatar_id.
         self.id: Any = kwargs.get("student_id")  # student id in database.
         self.class_id: Any = kwargs.get("class_id")  # class id in database
@@ -107,7 +105,7 @@ class Student:
         :param avatar_id: Any or None.
         :return: None
         """
-        self._avatar_id: Union[Any, None]
+        self._avatar_id: Any | None
         self._avatar_id = avatar_id if avatar_id else None
 
     def json_dict(self):
@@ -160,7 +158,5 @@ class Student:
         return repr_str
 
     def __str__(self) -> str:
-        avatar_stmt = (
-            f"avatar {self.avatar_id}" if self.avatar_id is not None else "no avatar"
-        )
+        avatar_stmt = f"avatar {self.avatar_id}" if self.avatar_id is not None else "no avatar"
         return f"Student {self.name}, with {avatar_stmt}, and id={self.id}."

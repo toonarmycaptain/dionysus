@@ -3,13 +3,13 @@
 import json
 import shutil
 import tempfile
-
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, Iterator, Union
+from typing import Any, Union
 
 from dionysus_app.file_functions import convert_to_json
-from dionysus_app.student import Student
 from dionysus_app.settings_functions import TEMP_DIR
+from dionysus_app.student import Student
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
 
 
@@ -113,7 +113,7 @@ class Class:
         """
         self._path_safe_name = clean_for_filename(class_name)
 
-    def __contains__(self, item: Union[str, Student]) -> bool:
+    def __contains__(self, item: str | Student) -> bool:
         """
         Implement use of 'in' operator for membership testing or
         iterating over students in the class eg:
@@ -143,9 +143,7 @@ class Class:
             student = item
             return student in self.students
         else:
-            raise ValueError(
-                f"Expected type str or Student: received type {type(item)}."
-            )
+            raise ValueError(f"Expected type str or Student: received type {type(item)}.")
 
     def __iter__(self) -> Iterator[Student]:
         """
@@ -259,7 +257,7 @@ class Class:
         return cls.from_dict(class_dict)
 
     @classmethod
-    def from_file(cls, cdf_path: Union[Path, str]) -> Union["Class", "NewClass"]:
+    def from_file(cls, cdf_path: Path | str) -> Union["Class", "NewClass"]:
         """
         Return Class object from cdf file.
 
@@ -286,8 +284,7 @@ class Class:
         if self.students:
             student_list_str = ", ".join([student.name for student in self.students])
             students_stmt = (
-                f"containing {len(self.students)} students, "
-                f"with names: {student_list_str}"
+                f"containing {len(self.students)} students, with names: {student_list_str}"
             )
         else:
             students_stmt = "containing 0 students"
@@ -336,9 +333,7 @@ class NewClass(Class):
 
         # Create class temp directory.
         Path.mkdir(TEMP_DIR, exist_ok=True, parents=True)  # Ensure path exists.
-        self.temp_dir: Path = Path(
-            tempfile.mkdtemp(prefix=self._path_safe_name, dir=TEMP_DIR)
-        )
+        self.temp_dir: Path = Path(tempfile.mkdtemp(prefix=self._path_safe_name, dir=TEMP_DIR))
         # Create avatars directory within class temp directory.
         self.temp_avatars_dir: Path = self.temp_dir.joinpath("avatars")
         Path.mkdir(self.temp_avatars_dir)

@@ -1,8 +1,8 @@
 """Test settings_menu."""
 
-import pytest
-
 from unittest.mock import patch
+
+import pytest
 
 from dionysus_app.UI_menus import settings_menu
 from dionysus_app.UI_menus.settings_menu import (
@@ -57,9 +57,7 @@ class TestTakeSettingsMenuInput:
                 None,
                 marks=pytest.mark.xfail(reason="Wrong function called."),
             ),
-            pytest.param(
-                ["2"], "", True, marks=pytest.mark.xfail(reason="Function not called.")
-            ),
+            pytest.param(["2"], "", True, marks=pytest.mark.xfail(reason="Function not called.")),
             pytest.param(
                 ["0"],
                 "call_set_default_chart_save_location",
@@ -71,11 +69,10 @@ class TestTakeSettingsMenuInput:
     def test_take_settings_menu_input(
         self, monkeypatch, valid_input, called_function, returned_value
     ):
-        called = {
-            called_function: False
-        }  # Initialise called_function as False ie not called.
+        called = {called_function: False}  # Initialise called_function as False ie not called.
         called[None] = (
-            True  # Initialise None=True: None won't be called (reset None=True if called_function is None).
+            True  # Initialise None=True: None won't be called
+            # (reset None=True if called_function is None).
         )
 
         # Monkeypatched functions ensure correct function was called:

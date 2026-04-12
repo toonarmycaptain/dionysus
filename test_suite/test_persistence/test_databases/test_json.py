@@ -1,22 +1,24 @@
 """Test json and JSONDatabase"""
 
 # Test  per-API then backend specific methods
-# -> Test API for all databases in test_database.py, passing in each database type using parametrize?
-
-import pytest
+# -> Test API for all databases in test_database.py,
+# passing in each database type using parametrize?
 
 from pathlib import Path
+
+import pytest
 
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.persistence.databases import json
 from dionysus_app.persistence.databases.json import JSONDatabase
 from dionysus_app.student import Student
-
 from test_suite.test_class import test_full_class  # noqa: F401 | fixture
 from test_suite.testing_class_data import (
-    testing_registry_data_set as test_registry_data_set,  # noqa: F401
     test_full_class_data_set,
+)
+from test_suite.testing_class_data import (
+    testing_registry_data_set as test_registry_data_set,  # noqa: F401
 )
 
 
@@ -81,9 +83,7 @@ class TestGetClasses:
                     ClassIdentifier(id="so many", name="so many"),
                     ClassIdentifier(id="wrong", name="wrong"),
                 ],
-                marks=pytest.mark.xfail(
-                    reason="Inconsistent class list - extra class."
-                ),
+                marks=pytest.mark.xfail(reason="Inconsistent class list - extra class."),
             ),
             pytest.param(
                 ["one class", "another", "so many"],
@@ -91,9 +91,7 @@ class TestGetClasses:
                     ClassIdentifier(id="one class", name="one class"),
                     ClassIdentifier(id="another", name="another"),
                 ],
-                marks=pytest.mark.xfail(
-                    reason="Inconsistent class list - missing class."
-                ),
+                marks=pytest.mark.xfail(reason="Inconsistent class list - missing class."),
             ),
         ],
     )
@@ -171,9 +169,7 @@ class TestCreateClass:
 
         test_json_database._setup_class = mocked__setup_class
         test_json_database._write_classlist_to_file = mocked__write_classlist_to_file
-        test_json_database._move_avatars_to_class_data = (
-            mocked__copy_avatars_to_class_data
-        )
+        test_json_database._move_avatars_to_class_data = mocked__copy_avatars_to_class_data
 
         assert test_json_database.create_class(test_full_class) is None
         assert all(
@@ -204,10 +200,7 @@ class TestLoadClass:
         test_loaded_class = test_full_class.json_dict()
         for student in test_loaded_class["students"]:
             student["id"] = student["name"]
-        assert (
-            test_json_database.load_class(test_class_name).json_dict()
-            == test_loaded_class
-        )
+        assert test_json_database.load_class(test_class_name).json_dict() == test_loaded_class
 
 
 class TestUpdateClass:
@@ -221,9 +214,7 @@ class TestUpdateClass:
         )  # Ensure classes are the same.
 
         # Create class in database.
-        test_json_database.create_class(
-            NewClass(test_full_class.name, test_full_class.students)
-        )
+        test_json_database.create_class(NewClass(test_full_class.name, test_full_class.students))
         # Ensure test_class in database
         test_class.id = test_class.name
 
@@ -231,10 +222,7 @@ class TestUpdateClass:
         test_loaded_class = test_full_class.json_dict()
         for student in test_loaded_class["students"]:
             student["id"] = student["name"]
-        assert (
-            test_json_database.load_class(test_class.name).json_dict()
-            == test_loaded_class
-        )
+        assert test_json_database.load_class(test_class.name).json_dict() == test_loaded_class
 
         # Change class by adding student, update database:
         new_student = Student(name="new student")
@@ -262,9 +250,7 @@ class TestCreateChart:
             test_chart_data_dict["chart_default_filename"]
             + empty_json_database.chart_data_file_type
         )
-        test_file_folder = tmp_path.joinpath(
-            test_chart_data_dict["class_name"], "chart_data"
-        )
+        test_file_folder = tmp_path.joinpath(test_chart_data_dict["class_name"], "chart_data")
         test_file_folder.mkdir(parents=True, exist_ok=True)
         test_filepath = test_file_folder.joinpath(test_filename)
 
@@ -275,10 +261,9 @@ class TestCreateChart:
 
         def mocked__store_students_as_student_names(file_chart_data_dict):
             if file_chart_data_dict != test_chart_data_dict:
-                raise ValueError(
-                    "The dict of chart data did not contain expected items."
-                )
-            # file_chart_data_dict should be a deepcopy, not a reference to the original chart_data_dict.
+                raise ValueError("The dict of chart data did not contain expected items.")
+            # file_chart_data_dict should be a deepcopy, not a
+            # reference to the original chart_data_dict.
             if file_chart_data_dict is test_chart_data_dict:
                 raise ValueError(
                     "A reference to the original chart data dict was passed. \n"
@@ -304,7 +289,7 @@ class TestCreateChart:
         test_json_database.create_chart(test_chart_data_dict)
 
         assert test_filepath.exists()
-        with open(test_filepath, "r") as test_file:
+        with open(test_filepath) as test_file:
             assert test_file.read() == test_text_written_to_file
 
 
@@ -377,21 +362,15 @@ class TestGetAvatarPath:
 
         def mocked__avatar_path_from_string(class_name, student_avatar_filename):
             if not test_student_avatar:
-                raise ValueError(
-                    "Should not be called as not avatar to get abs path for."
-                )
+                raise ValueError("Should not be called as not avatar to get abs path for.")
             return test_student_avatar
 
         test_json_database = empty_json_database
         test_json_database.default_avatar_path = "path to a default avatar"
         test_json_database._avatar_path_from_string = mocked__avatar_path_from_string
 
-        assert test_json_database.get_avatar_path(
-            "some class", test_student_avatar
-        ) == (
-            test_student_avatar
-            if test_student_avatar
-            else test_json_database.default_avatar_path
+        assert test_json_database.get_avatar_path("some class", test_student_avatar) == (
+            test_student_avatar if test_student_avatar else test_json_database.default_avatar_path
         )
 
 
@@ -407,9 +386,7 @@ class TestAvatarPathFromString:
         )
 
         assert (
-            test_json_database._avatar_path_from_string(
-                test_class_name, test_avatar_filename
-            )
+            test_json_database._avatar_path_from_string(test_class_name, test_avatar_filename)
             == test_avatar_path
         )
 
@@ -422,9 +399,7 @@ class TestClose:
             _registry_check_registry_on_exit_mock["called"] = True
 
         test_json_database = empty_json_database
-        test_json_database._registry.check_registry_on_exit = (
-            mock__registry_check_registry_on_exit
-        )
+        test_json_database._registry.check_registry_on_exit = mock__registry_check_registry_on_exit
 
         test_json_database.close()
         assert _registry_check_registry_on_exit_mock["called"]
@@ -470,15 +445,9 @@ class TestSetupClassDataStorage:
 
         assert test_json_database._setup_class_data_storage(test_class_name) is None
 
-        assert test_json_database.class_data_path.joinpath(
-            test_class_name, "avatars"
-        ).exists()
-        assert test_json_database.class_data_path.joinpath(
-            test_class_name, "chart_data"
-        ).exists()
-        assert test_json_database.default_chart_save_dir.joinpath(
-            test_class_name
-        ).exists()
+        assert test_json_database.class_data_path.joinpath(test_class_name, "avatars").exists()
+        assert test_json_database.class_data_path.joinpath(test_class_name, "chart_data").exists()
+        assert test_json_database.default_chart_save_dir.joinpath(test_class_name).exists()
 
     def test_setup_class_data_storage_raising_error(self, empty_json_database):
         """Error thrown on uninitialised default_chart_save_dir value."""
@@ -504,7 +473,7 @@ class TestWriteClasslistToFile:
         # Assert file created:
         assert test_class_data_file_path.exists()
         # Verify file contents:
-        with open(test_class_data_file_path, "r") as test_class_data_file:
+        with open(test_class_data_file_path) as test_class_data_file:
             assert test_class_data_file.read() == test_full_class.to_json_str()
 
 
@@ -595,14 +564,9 @@ class TestMoveAvatarToClassData:
 
         monkeypatch.setattr(json, "move_file", mock_move_file)
 
-        assert (
-            test_json_database._move_avatar_to_class_data(test_class, test_filename)
-            is None
-        )
+        assert test_json_database._move_avatar_to_class_data(test_class, test_filename) is None
 
-    def test_move_avatar_to_class_data_avatar_preexisting(
-        self, monkeypatch, empty_json_database
-    ):
+    def test_move_avatar_to_class_data_avatar_preexisting(self, monkeypatch, empty_json_database):
         """No attempt to move avatar that already exists in class_data."""
         test_class = NewClass("test_class")
         test_class.id = test_class.name  # Set NewClass id to save in db.
@@ -621,9 +585,7 @@ class TestMoveAvatarToClassData:
         monkeypatch.setattr(json, "move_file", mock_move_file)
 
         assert (
-            test_json_database._move_avatar_to_class_data(
-                test_class, destination_avatar_path.name
-            )
+            test_json_database._move_avatar_to_class_data(test_class, destination_avatar_path.name)
             is None
         )
 

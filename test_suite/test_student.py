@@ -69,9 +69,7 @@ class TestStudentId:
         ],
     )
     def test_id(self, id_arg):
-        assert (
-            Student(name="Arthur, King of the Britons", student_id=id_arg).id == id_arg
-        )
+        assert Student(name="Arthur, King of the Britons", student_id=id_arg).id == id_arg
 
     def test_student_id_default_arg(self):
         assert Student(name="Arthur, King of the Britons").id is None
@@ -221,7 +219,8 @@ class TestStudentStr:
                     name="I have an id and avatar",
                     avatar_id="path_to_my_avatar",
                 ),
-                f"Student {'I have an id and avatar'}, with avatar {'path_to_my_avatar'}, and id=some id.",
+                f"Student {'I have an id and avatar'}, "
+                f"with avatar {'path_to_my_avatar'}, and id=some id.",
             ),
         ],
     )

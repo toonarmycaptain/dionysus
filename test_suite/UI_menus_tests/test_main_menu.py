@@ -1,10 +1,8 @@
-import pytest
-
 from unittest.mock import patch
 
+import pytest
 
 from dionysus_app.UI_menus import main_menu
-
 from dionysus_app.UI_menus.main_menu import (
     main_menu_options,
     run_main_menu,
@@ -16,9 +14,7 @@ from dionysus_app.UI_menus.main_menu import (
 class TestWelcomeBlurb:
     def test_welcome_blurb(self, capsys):
         """Welcome statement printed."""
-        welcome_blurb_print_stmt = (
-            "Welcome to Dionysus - student avatar chart generator\n"
-        )
+        welcome_blurb_print_stmt = "Welcome to Dionysus - student avatar chart generator\n"
 
         assert welcome_blurb() is None
         # Message printed.
@@ -43,7 +39,7 @@ class TestMainMenuOptions:
         assert main_menu_options() is None
         # Confirm options printed.
         captured = capsys.readouterr()
-        assert all([output in captured.out for output in menu_print_stmts])
+        assert all(output in captured.out for output in menu_print_stmts)
 
 
 class TestTakeMainMenuInput:
@@ -70,9 +66,7 @@ class TestTakeMainMenuInput:
                 "",
                 marks=pytest.mark.xfail(reason="Wrong function called."),
             ),
-            pytest.param(
-                ["2"], "", True, marks=pytest.mark.xfail(reason="Function not called.")
-            ),
+            pytest.param(["2"], "", True, marks=pytest.mark.xfail(reason="Function not called.")),
             pytest.param(
                 ["Q"],
                 "create_classlist",
@@ -175,4 +169,4 @@ class TestRunMainMenu:
         ):
             assert run_main_menu() is None
 
-        assert all([called[func] for func in called])
+        assert all(called[func] for func in called)

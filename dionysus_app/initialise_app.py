@@ -1,14 +1,13 @@
 import os
 import shutil
-
 from pathlib import Path
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.settings_functions import (
     APP_SETTINGS_FILE,
+    TEMP_DIR,
     app_start_set_database,
     app_start_set_default_chart_save_location,
-    TEMP_DIR,
 )
 from dionysus_app.UI_menus.settings_functions_UI import welcome_to_program
 

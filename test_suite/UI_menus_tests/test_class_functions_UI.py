@@ -14,18 +14,22 @@ from dionysus_app.UI_menus.class_functions_UI import (
     display_class_selection_menu,
     display_student_selection_menu,
     select_avatar_file_dialogue,
-    take_classlist_name_input,
     take_class_selection,
+    take_classlist_name_input,
     take_student_name_input,
     take_student_selection,
 )
 from test_suite.test_class import test_class_name_only, test_full_class  # noqa: F401 | fixture
+from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | fixture
 from test_suite.testing_class_data import (
-    testing_registry_data_set as test_registry_data_set,
-    test_full_class_data_set as test_class_data_set,
     test_display_student_selection_menu_student_output,
 )
-from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | fixture
+from test_suite.testing_class_data import (
+    test_full_class_data_set as test_class_data_set,
+)
+from test_suite.testing_class_data import (
+    testing_registry_data_set as test_registry_data_set,
+)
 
 
 class TestTakeClasslistNameInputSimpleTest:
@@ -41,9 +45,13 @@ class TestTakeClasslistNameInputSimpleTest:
         test_database.class_name_exists = mocked_class_name_exists
         monkeypatch.setattr(class_functions_UI.definitions, "DATABASE", test_database)
 
-        preexisting_classname = "this_class_already_exists"  # cleaned_for_filename('this_class_already_exists')
+        preexisting_classname = (
+            "this_class_already_exists"  # cleaned_for_filename('this_class_already_exists')
+        )
         valid_new_classname = "this is a valid classname"
-        valid_new_classname_cleaned_for_filename = "this_is_a_valid_classname"  # =cleaned_for_filename('this is a valid classname')
+        valid_new_classname_cleaned_for_filename = (
+            "this_is_a_valid_classname"  # =cleaned_for_filename('this is a valid classname')
+        )
 
         test_inputs = [
             "",  # no_classname
@@ -55,18 +63,14 @@ class TestTakeClasslistNameInputSimpleTest:
 
         with patch("builtins.input") as mock_input:
             mock_input.side_effect = test_inputs
-            assert (
-                take_classlist_name_input() == valid_new_classname_cleaned_for_filename
-            )
+            assert take_classlist_name_input() == valid_new_classname_cleaned_for_filename
 
 
 class TestTakeStudentNameInput:
     def test_take_student_name_input(self):
         """Test return on valid input after invalid inputs."""
         preexisting_student_name = "this student already exists in the class"
-        test_class = Class(
-            name="my_test_class", students=[Student(name=preexisting_student_name)]
-        )
+        test_class = Class(name="my_test_class", students=[Student(name=preexisting_student_name)])
 
         valid_new_student_name = "this is a valid student name"
 
@@ -121,9 +125,7 @@ class TestClassDataFeedback:
     def test_class_data_feedback_with_empty_class(self, test_class_name_only, capsys):  # noqa: F811
         empty_class_feedback = "No students entered."
 
-        printed_strings = [
-            f"\nClass name: {test_class_name_only.name}\n{empty_class_feedback}\n"
-        ]
+        printed_strings = [f"\nClass name: {test_class_name_only.name}\n{empty_class_feedback}\n"]
         class_data_feedback(test_class_name_only)
         captured = capsys.readouterr().out
         assert captured == "".join(printed_strings)
@@ -165,8 +167,7 @@ class TestDisplayClassSelectionMenu:
         """User feedback rendered as expected."""
         enumerated_registry = test_registry_data_set["enumerated_dict"]
         expected_enum_class_strings = [
-            f"{numeral}. {class_.name}"
-            for numeral, class_ in enumerated_registry.items()
+            f"{numeral}. {class_.name}" for numeral, class_ in enumerated_registry.items()
         ]
         expected_print_statements = [
             "Select class from list:",
@@ -177,9 +178,7 @@ class TestDisplayClassSelectionMenu:
         with patch("builtins.print") as mocked_print:
             display_class_selection_menu(enumerated_registry)
 
-            print_calls = [
-                mock.call(printed_str) for printed_str in expected_print_statements
-            ]
+            print_calls = [mock.call(printed_str) for printed_str in expected_print_statements]
             assert mocked_print.call_args_list == print_calls
 
 
@@ -223,19 +222,14 @@ class TestTakeClassSelection:
         with patch("builtins.input") as mock_input:
             mock_input.side_effect = inputs
 
-            assert (
-                take_class_selection(test_registry_data_set["enumerated_dict"])
-                == returned_value
-            )
+            assert take_class_selection(test_registry_data_set["enumerated_dict"]) == returned_value
 
 
 class TestDisplayStudentSelectionMenu:
     def test_display_student_selection_menu(self):
         """User feedback rendered as expected."""
         enumerated_classlist = test_class_data_set["enumerated_dict"]
-        expected_enum_student_strings = (
-            test_display_student_selection_menu_student_output
-        )
+        expected_enum_student_strings = test_display_student_selection_menu_student_output
         expected_print_statements = [
             "Select student from list:",
         ] + expected_enum_student_strings
@@ -245,9 +239,7 @@ class TestDisplayStudentSelectionMenu:
         with patch("builtins.print") as mocked_print:
             display_student_selection_menu(enumerated_classlist)
 
-            print_calls = [
-                mock.call(printed_str) for printed_str in expected_print_statements
-            ]
+            print_calls = [mock.call(printed_str) for printed_str in expected_print_statements]
             assert mocked_print.call_args_list == print_calls
 
 
@@ -293,10 +285,7 @@ class TestTakeStudentSelection:
         with patch("builtins.input") as mock_input:
             mock_input.side_effect = inputs
 
-            assert (
-                take_student_selection(test_class_data_set["enumerated_dict"])
-                == expected_return
-            )
+            assert take_student_selection(test_class_data_set["enumerated_dict"]) == expected_return
 
 
 class TestSelectAvatarFileDialogue:
@@ -320,8 +309,6 @@ class TestSelectAvatarFileDialogue:
                 )
             return test_avatar_path
 
-        monkeypatch.setattr(
-            class_functions_UI, "select_file_dialogue", mocked_select_file_dialogue
-        )
+        monkeypatch.setattr(class_functions_UI, "select_file_dialogue", mocked_select_file_dialogue)
 
         assert select_avatar_file_dialogue() == test_avatar_path

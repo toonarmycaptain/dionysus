@@ -1,7 +1,6 @@
 """Class for database object."""
 
 import abc
-
 from pathlib import Path
 from typing import (
     Any,
@@ -68,7 +67,7 @@ class ABCMetaEnforcedAttrs(abc.ABCMeta):
         :return: Subclass
         :raises: TypeError
         """
-        obj = super(ABCMetaEnforcedAttrs, cls).__call__(*args, **kwargs)
+        obj = super().__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if not hasattr(obj, attr_name):
                 raise TypeError(

@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional
 
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.persistence.databases import json as json_db
@@ -75,9 +74,7 @@ class Registry:
         self.app_data_path: Path = app_data_path or DataFolder.generate_rel_path(
             DataFolder.APP_DATA.value
         )
-        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath(
-            "class_data"
-        )
+        self.class_data_path: Path = class_data_path or self.app_data_path.joinpath("class_data")
         self.registry_path: Path = registry_path or self.app_data_path.joinpath(
             "class_registry.index"
         )
@@ -111,9 +108,7 @@ class Registry:
 
         :return: list
         """
-        classlist_data_fullpaths = self.class_data_path.rglob(
-            f"**/*{self.class_data_file_type}"
-        )
+        classlist_data_fullpaths = self.class_data_path.rglob(f"**/*{self.class_data_file_type}")
         return [data_path.stem for data_path in classlist_data_fullpaths]
 
     def write_registry_to_disk(self, registry_list: list) -> None:
@@ -173,8 +168,8 @@ class Registry:
             raise ValueError("RegistryError: Registry uninitialised.")
         # Load registry file, if it exists.
         try:
-            with open(self.registry_path, "r") as registry_file:
-                disk_registry_str: Optional[str] = registry_file.read()
+            with open(self.registry_path) as registry_file:
+                disk_registry_str: str | None = registry_file.read()
         except FileNotFoundError:
             disk_registry_str = None
 

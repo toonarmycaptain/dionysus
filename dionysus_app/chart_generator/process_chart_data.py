@@ -5,7 +5,6 @@ Process input data for image generation code.
 from typing import Any
 
 import definitions
-
 from dionysus_app.persistence.databases.json import JSONDatabase
 from dionysus_app.student import Student
 
@@ -41,9 +40,7 @@ def generate_avatar_coords(
     """
 
     if not chart_params:
-        chart_params = (
-            DEFAULT_CHART_PARAMS  # pull values from DEFAULT_CHART_PARAMS dict
-        )
+        chart_params = DEFAULT_CHART_PARAMS  # pull values from DEFAULT_CHART_PARAMS dict
 
     # Fetch avatar paths:
     score_avatar_paths_dict = {}
@@ -63,8 +60,7 @@ def generate_avatar_coords(
 
     # Re-sort in ascending score order.
     score_avatar_paths_dict = {
-        score: score_avatar_paths_dict[score]
-        for score in sorted(score_avatar_paths_dict)
+        score: score_avatar_paths_dict[score] for score in sorted(score_avatar_paths_dict)
     }
 
     banded_avatars = assign_avatars_to_bands(
@@ -113,9 +109,7 @@ def assign_avatar_coords(band_avatar_dict, chart_params: dict | None = None):
     :return: dict
     """
     if not chart_params:
-        chart_params = (
-            DEFAULT_CHART_PARAMS  # pull values from DEFAULT_CHART_PARAMS dict
-        )
+        chart_params = DEFAULT_CHART_PARAMS  # pull values from DEFAULT_CHART_PARAMS dict
 
     avatar_xy_dict: dict = {}
     col_max_avatars, init_vert_offset, horiz_offset, vert_offset = (

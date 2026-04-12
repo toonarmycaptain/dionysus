@@ -5,9 +5,7 @@ import sys
 import pytest
 
 import app_main
-
 from app_main import quit_app, run_app
-
 from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture
 
 
@@ -56,9 +54,7 @@ class TestRunApp:
 
         def mocked_os_chdir(path):
             if path is not sys.path[0]:
-                raise ValueError(
-                    "run_app did not change cwd to dir containing app_main."
-                )
+                raise ValueError("run_app did not change cwd to dir containing app_main.")
             os_chdir_mock["called"] = True
 
         def mocked_app_init():
@@ -78,9 +74,7 @@ class TestRunApp:
 
         monkeypatch.setattr(app_main.os, "chdir", mocked_os_chdir)
         monkeypatch.setattr(app_main, "app_init", mocked_app_init)
-        monkeypatch.setattr(
-            app_main, "load_chart_save_folder", mocked_load_chart_save_folder
-        )
+        monkeypatch.setattr(app_main, "load_chart_save_folder", mocked_load_chart_save_folder)
         monkeypatch.setattr(app_main, "load_database", mocked_load_database)
         monkeypatch.setattr(app_main, "run_main_menu", mocked_run_main_menu)
         monkeypatch.setattr(app_main, "quit_app", mocked_quit_app)
