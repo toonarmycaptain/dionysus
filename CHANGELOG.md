@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - Add ruff pre-commit. Thanks @elliotwutingfeng!
-## Changed
+### Changed
 - Support for python 3.13, 3.14 in rolling version support cadence.
+### Removed
+- Remove AppVeyor, consolodate CI on github actions. 
 
 ## [0.9.0-alpha] - 2025-10-08
 ### Added
