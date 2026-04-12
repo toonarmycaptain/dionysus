@@ -60,6 +60,7 @@ class TestNewChart:
         test_chart_data_dict = {
             "class_id": test_class.id,
             "class_name": test_class.name,
+            "class_path_safe_name": test_class.path_safe_name,
             "chart_name": test_chart_name,
             "chart_default_filename": test_chart_default_filename,
             "chart_params": test_chart_params,
@@ -226,14 +227,14 @@ class TestUserSaveChartImage:
     )
     def test_user_save_chart_image(self, monkeypatch, user_supplied_location):
         test_chart_data_dict = {
-            "class_name": "my_test_class",
+            "class_path_safe_name": "my_test_class",
             "chart_default_filename": "my_test_default_chart_filename",
         }
         test_image_location = Path("my/test/image/location")
 
         def mocked_get_user_save_chart_pathname(class_name, default_chart_name):
             assert (class_name, default_chart_name) == (
-                test_chart_data_dict["class_name"],
+                "my_test_class",
                 test_chart_data_dict["chart_default_filename"],
             )
             return user_supplied_location
