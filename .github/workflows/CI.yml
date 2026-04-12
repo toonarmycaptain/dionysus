@@ -24,7 +24,7 @@ jobs:
 
 
     steps:
-    - uses: actions/checkout@v3  # Checkout repo.
+    - uses: actions/checkout@v4  # Checkout repo.
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -54,13 +54,13 @@ jobs:
 
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@v1
-      if: matrix.os == 'ubuntu_latest'
+      if: matrix.os == 'ubuntu-latest'
       with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage.xml
 
     - name: Codecov  # upload
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./coverage.xml
         name: codecov-umbrella # Optional.
