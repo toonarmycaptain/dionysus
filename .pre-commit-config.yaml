@@ -4,8 +4,16 @@ repos:
     hooks:
     -   id: check-yaml
         always_run: true
+    -   id: check-toml
+        always_run: true
+    -   id: trailing-whitespace
+        always_run: true
+    -   id: end-of-file-fixer
+        always_run: true
+    -   id: check-added-large-files
+        always_run: true
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.13.3
+  rev: v0.15.10
   hooks:
     - id: ruff-check
       always_run: true

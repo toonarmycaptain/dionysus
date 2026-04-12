@@ -2,19 +2,19 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-[![Coverage Status](https://coveralls.io/repos/github/toonarmycaptain/dionysus/badge.svg)](https://coveralls.io/github/toonarmycaptain/dionysus) 
+[![Coverage Status](https://coveralls.io/repos/github/toonarmycaptain/dionysus/badge.svg)](https://coveralls.io/github/toonarmycaptain/dionysus)
 [![codecov](https://codecov.io/gh/toonarmycaptain/dionysus/branch/master/graph/badge.svg)](https://codecov.io/gh/toonarmycaptain/dionysus)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d24e9508258849c2b40760fce3448c6b)](https://www.codacy.com/app/toonarmycaptain/dionysus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toonarmycaptain/dionysus&amp;utm_campaign=Badge_Grade) 
-[![CodeFactor](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/badge/master)](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/overview/master) 
-[![Updates](https://pyup.io/repos/github/toonarmycaptain/dionysus/shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/) 
-[![Python 3](https://pyup.io/repos/github/toonarmycaptain/dionysus/python-3-shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d24e9508258849c2b40760fce3448c6b)](https://www.codacy.com/app/toonarmycaptain/dionysus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=toonarmycaptain/dionysus&amp;utm_campaign=Badge_Grade)
+[![CodeFactor](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/badge/master)](https://www.codefactor.io/repository/github/toonarmycaptain/dionysus/overview/master)
+[![Updates](https://pyup.io/repos/github/toonarmycaptain/dionysus/shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/)
+[![Python 3](https://pyup.io/repos/github/toonarmycaptain/dionysus/python-3-shield.svg)](https://pyup.io/repos/github/toonarmycaptain/dionysus/)
 
-**dionysus** is an open source CLI app primarily aimed at teachers that charts student results for display using avatars, nicknames, or student names. 
+**dionysus** is an open source CLI app primarily aimed at teachers that charts student results for display using avatars, nicknames, or student names.
 
 Currently in alpha release, fuller features, automated install/packaging, and a full GUI/webapp are future goals.
 Supports latest two python minor versions - currently 3.13 and 3.14.
 
-Excitedly welcoming contributors! 
+Excitedly welcoming contributors!
 
 ### Contact/feedback
 Any comments or feedback are welcome and desired! I would love to know if you are using this project, if it has been useful, and any problems or suggestions for improvements.
@@ -24,15 +24,26 @@ Leave a comment or [raise an issue](https://github.com/toonarmycaptain/dionysus/
 
 Currently to use the application, you must clone or download the project from here on github. See [releases](https://github.com/toonarmycaptain/dionysus/releases) for a `zip` or `tar.gz`.
 You will need Python 3.10+ and [uv](https://docs.astral.sh/uv/). Unzip the project if necessary, navigate to the project directory and run `uv sync` to install dependencies.
-For development you will also need `uv sync --all-extras`.
 
 ### Running the application
 
 Click on `app_main.py` in the project folder, or navigate to the folder and run `python -m app_main`/`python3 app_main.py` in terminal (depending on OS).
 
+### Development setup
+
+```bash
+uv sync --all-groups          # Install all deps (prod + testing)
+uv run pre-commit install     # Activate git pre-commit hooks
+```
+
+```bash
+uv run pytest --cov=./ --mypy -vv      # Run tests with coverage + type checking
+uv run pre-commit run --all-files      # Run linting/formatting checks
+```
+
 #### Versioning
 As much as possible this project will follow [Semantic Versioning](https://semver.org/).
-   
+
 
 ## Contributors ✨
 

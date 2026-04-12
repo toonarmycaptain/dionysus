@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Support for python 3.13, 3.14 in rolling version support cadence.
 - Switch deprecated pillow ANTIALIAS for LANCZOS
+- Add ruff configuration to `pyproject.toml`, expand pre-commit hooks.
 ### Removed
-- Remove AppVeyor, consolidate CI on github actions. 
+- Remove AppVeyor, consolidate CI on github actions.
 
 ## [0.9.0-alpha] - 2025-10-08
 ### Added
@@ -37,22 +38,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove CircleCI/TravisCI testing.
 - Remove sqlalchemy stubs, functionality now bundled with sqlalchemy
 - Rm codecov in favour of github-action
-- Remove Coveralls from CI and dependencies. Uploads were constantly causing problems. 
+- Remove Coveralls from CI and dependencies. Uploads were constantly causing problems.
 
 
 ## [0.8.1-alpha] - 2020-08-29
 ### Changed
-- Better optimised `SQLiteDatabase` queries. 
+- Better optimised `SQLiteDatabase` queries.
 ### Removed
-- Remove 32-bit python testing on appveyor. 
-- `data_version_conversion.py` is removed. NB Still available on GitHub.  
+- Remove 32-bit python testing on appveyor.
+- `data_version_conversion.py` is removed. NB Still available on GitHub.
   - No intention to maintain interoperability of very old data formats going forward.
-  - Similar functionality may return in future releases, for conversion between backends. 
+  - Similar functionality may return in future releases, for conversion between backends.
 
 ## [0.8.0-alpha] - 2020-08-20
 ### Added
 - `SQLiteDatabase` - using python's builtin `sqlite3` module.
-- `test_database.py` - common tests run on every backend to ensure uniform API. 
+- `test_database.py` - common tests run on every backend to ensure uniform API.
 - Add `.dcignore` omitting test code from deepcode.ai analysis.
 ### Changed
 - `SQLiteDatabase` is now the default backend.
@@ -71,10 +72,10 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 
 ## [0.7.0-alpha] - 2020-06-27
 ### Added
-- `Database` ABC, establishing API for database objects.  
+- `Database` ABC, establishing API for database objects.
     - Subclasses cannot instantiate without implementing methods defined in `Database`.
-    - Class attr `required_attributes: List[str]` is a list of string attr names that subclasses must in implement (such as `default_avatar_path`).. 
-    - Uses `ABCMetaEnforcedAttrs` metaclass to enforce existence of attrs in `required_attributes` in `Database` subclasses. 
+    - Class attr `required_attributes: List[str]` is a list of string attr names that subclasses must in implement (such as `default_avatar_path`)..
+    - Uses `ABCMetaEnforcedAttrs` metaclass to enforce existence of attrs in `required_attributes` in `Database` subclasses.
 - `JSONDatabase(Database)` class implementing this API, apart from `get_avatar_path` which is incompatible: this method is implemented as `get_avatar_path_class_filename`, since it needs the class' name as well as the avatar's filename. This is clearly documented, and only used in one instance inside `take_chart_data_UI.py`.
     - `Registry` object managing `JSONDatabase`'s registry.
 - `ClassIdentifier` - NamedTuple with attrs `id`, `name` for a class - allowing the `id` to be anything the database backend needs to use, with the human-readable/string name of the class. This avoids difficulty with supporting existing JSON database, as well as a uniform API between backends.
@@ -91,7 +92,7 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 - Increased test coverage, more tests converted to Pytest style tests.
 - Stricter `Path` object passing and usage.
 - Instances of 'folder' changed to 'dir' or 'directory' in vars/docstrings, apart from data_folder.py/`DataFolder`.
-- When clicking 'x' instead of 'save as' when a chart is displayed, UI no longer freezes, nor pops up a 'save chart as' file dialogue. 
+- When clicking 'x' instead of 'save as' when a chart is displayed, UI no longer freezes, nor pops up a 'save chart as' file dialogue.
 ### Removed
 - `class_registry_functions.py`, `test_class_registry_functions.py`: functionality moved to `Registry` object in `persistence/databases/json_registry.py`.
 ### Depreciated
@@ -102,15 +103,15 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 
 ## [0.6.0-alpha] - 2020-04-01
 ### Added
-- Implemented `temp` directory created in `APP_DATA` by `data_folder_check` on app start and removed on app exit (if it contains files). 
+- Implemented `temp` directory created in `APP_DATA` by `data_folder_check` on app start and removed on app exit (if it contains files).
 - `NewClass` subclass of `Class` using `temp` directory to hold files before writing to database.
-    - Initially holds avatars as user enters during class creation. 
-- Add [AllContributors](https://allcontributors.org/) badge to `README.md`, recognising project contributors, `.all-contributorsrc` with contributor data. 
+    - Initially holds avatars as user enters during class creation.
+- Add [AllContributors](https://allcontributors.org/) badge to `README.md`, recognising project contributors, `.all-contributorsrc` with contributor data.
 ### Changed
-- Separate UI/logic/persistence concerns in `create_classlist`. 
+- Separate UI/logic/persistence concerns in `create_classlist`.
     - New functions `move_avatars_to_class_data`, `move_avatar_to_class_data` utilise `NewClass` to move avatars from `temp` to database.
     - `write_classlist_to_file` now returns `None` instead of the path written to. Future persistence layer may be a Database rather than a path.
-- `create_classlist_data` takes a `NewClass` object. 
+- `create_classlist_data` takes a `NewClass` object.
 - Refactor `new_chart`/`assemble_chart_data` to take `Class`/`NewClass` object instead of a class name.
     - Supports passing in class directly from `create_class` without reloading class from database.
     - Move logic prompting user to choose a class from `assemble_chart_data` to `new_chart`.
@@ -119,7 +120,7 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 
 ## [0.5.0-alpha] - 2020-01-23
 ### Added
-- Improved test coverage, type hinting across application. 
+- Improved test coverage, type hinting across application.
 - mypy check to added to CI.
 - Python 3.8 compatibility and CI integration.
 - Runtime guards raising a meaningful `ValueError` on uninitialised `definitions.REGISTRY`, `definitions.DEFAULT_CHART_SAVE_FOLDER`. NB this should only happen when tests are run without config.
@@ -129,7 +130,7 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 - `select_student` now uses Class object, returns Student object.
 - `file_functions` tests now all use new-style class data.
 ### Depreciated
-- Use of old-style data format in `testing_class_data` 
+- Use of old-style data format in `testing_class_data`
 ### Removed
 - `class_functions.create_student_list_dict`
 - defunct `test_create_classlist.py`, dependency on `pexpect`.
@@ -144,7 +145,7 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 - Improved test coverage.
 ### Changed
 - Changed data file data format reflecting serialised objects rather than dictionaries.
-    - Core differences: 
+    - Core differences:
         - the class' `name` is a key in the json dict
         - `students` is a key with a list of json-ified student objects
         - data (eg avatars) that is `None` is not saved to disk, but inferred on instantiation.
@@ -170,7 +171,7 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 - Refactored `settings_menu` to match `main_menu` with a view to a future factoring out similar/common logic.
 - Refactored settings_functions:
     - Factor out UI elements into `settings_functions_UI`.
-    - Refactor folder move out of `create_chart_save_folder`. 
+    - Refactor folder move out of `create_chart_save_folder`.
 - `copy_file`, `move_file` now check to see if origin path exists, doing nothing if it does not.
 - Update dependencies.
 
@@ -184,10 +185,10 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 - Chart generation test scripts moved to dedicated folder in `test_suite`.
 - Refactor application exit, `main_menu`:
     - Move `quit_app` to `app_main`, have `quit_app` call `check_registry_on_exit` before call to `sys.exit`.
-    - Refactor `main_menu` and `take_main_menu_input` to use flag for exit call. `take_main_menu_input` returns `True` instead of `None` if use chooses to quit. 
+    - Refactor `main_menu` and `take_main_menu_input` to use flag for exit call. `take_main_menu_input` returns `True` instead of `None` if use chooses to quit.
 - Simplify loop in `take_main_menu_input` preferring `if; if` over `if elif else`.
 ### Fixed
-- `check_registry_on_exit` is now called on exit. Previously was called after `sys.exit` and not run. 
+- `check_registry_on_exit` is now called on exit. Previously was called after `sys.exit` and not run.
 
 ## [0.3.1-alpha] - 2019-02-06
 ### Added
@@ -208,12 +209,12 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
 - Improved test coverage.
 - Add Contact note, saythanks.io badge to README.
 - Add currently unimplemented select_student/take_student_selection functions mirroring similar class selection functionality.
-- Select class/student dialogues will now take exact name of class/student (as well as integer per user direction), note this is to be considered an implementation detail, since a class with an integer name will only be selectable by entering that name if the integer is not displayed/larger that the number of options. 
+- Select class/student dialogues will now take exact name of class/student (as well as integer per user direction), note this is to be considered an implementation detail, since a class with an integer name will only be selectable by entering that name if the integer is not displayed/larger that the number of options.
 ### Changed
 - Bugfixes
     - Fix path for default_avatar.
     - Fix cwd set in TestDataFolder.test_generate_data_path_defaults to draw from ROOT_DIR.
-    - Fix bug - essentially blank (eg '_') chart name caused infinite loop. 
+    - Fix bug - essentially blank (eg '_') chart name caused infinite loop.
     - Add '.png' to save filename, as it is not otherwise appended.
 - Major refactor of chart display and saving code.
     - Fixes major bugs where blank image would be saved, app would hang indefinitely.
@@ -231,27 +232,27 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
     - Starting default folder to class folder in dionysus charts ie dionysus_charts/class_name.
     - Default filename provided is sanitised user supplied chart name.
     - User can save chart in user selected location with user supplied filename.
-    - Copy of image also saved in app_data/class_data/class_name/chart_data along with the chart data. 
-- User defined location for dionysus_charts folder.  
+    - Copy of image also saved in app_data/class_data/class_name/chart_data along with the chart data.
+- User defined location for dionysus_charts folder.
     - Prompt to set location on startup, default location in application parent directory if user declines to set location.
     - Charts for each class will by default save in sub-folders for each class in dionysus_charts folder.
-    - OS native prompt for location selection. 
+    - OS native prompt for location selection.
 - Add user settings, settings menu.
-    - User can configure, reconfigure dionysus_charts save folder location.  
+    - User can configure, reconfigure dionysus_charts save folder location.
       Changing location moves current folder and contents.
-- Add "not implemented" message when "Edit a classlist" is selected from main menu.    
+- Add "not implemented" message when "Edit a classlist" is selected from main menu.
 - CI/Testing
     - Travis CI
         - Use Xenial distribution for Python 3.7 to build on Travis.
     - circleci
-        - Add Python 3.7 testing via [circleci](https://codeclimate.com/github/toonarmycaptain/dionysus). 
+        - Add Python 3.7 testing via [circleci](https://codeclimate.com/github/toonarmycaptain/dionysus).
         - circleci badge added to README.
     - Code Climate
         - Connect dionysus to [Code Climate](https://codeclimate.com/github/toonarmycaptain/dionysus)
         - Add Code Climate Maintainability badge to README.
     - Codebeat
         - Add [Codebeat](https://codebeat.co/projects/github-com-toonarmycaptain-dionysus-master) code quality checker.
-        - Add .codebeatignore to ignore test code from code quality metrics    
+        - Add .codebeatignore to ignore test code from code quality metrics
     - Codeship
         - Add [Codeship CI](https://app.codeship.com/projects/320107), badge to README.
 ### Changed
@@ -265,24 +266,24 @@ parameter to facilitate getting avatar paths from `JSONDatabase`.
     - Coveralls
         - Correct coverage calculation to only include project code (not testing or python env code).
     - Travis CI
-        - Install testing dependencies from requirements_dev.txt rather than manually. 
+        - Install testing dependencies from requirements_dev.txt rather than manually.
         - Require passing tests Python 3.7 on Linux for successful build.
  ### Removed
-- app_data/image_data folder. 
-    - Unnecessary as saving images to external folder, and to class_data/*/chart_data folder. 
+- app_data/image_data folder.
+    - Unnecessary as saving images to external folder, and to class_data/*/chart_data folder.
 - class_registry.py.
     - REGISTRY variable moved to definitions.py.
 
-    
+
 ## [0.1.1-alpha] - 2018-12-12
 ### Added
-- OS native file select dialogue 
+- OS native file select dialogue
     - Add `select_file_dialogue` GUI using Tkinter.
     - Implement GUI dialogue for avatar selection. Resolves #79.
-    - Add this [CHANGELOG.md](https://github.com/toonarmycaptain/dionysus/blob/master/CHANGELOG.md).     
+    - Add this [CHANGELOG.md](https://github.com/toonarmycaptain/dionysus/blob/master/CHANGELOG.md).
 ### Changed
 - Avatar image file now copied to app-data folder.
-    - Add `file_copy` function. 
+    - Add `file_copy` function.
     - Implement in `copy_avatar_to_app_data` func. Resolves #67.
 ### Fixed
 - Fix bug student with no score passed to chart generator, causing error.
