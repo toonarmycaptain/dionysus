@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ruff pre-commit. Thanks @elliotwutingfeng!
 ### Changed
 - Support for python 3.13, 3.14 in rolling version support cadence.
+- Switch deprecated pillow ANTIALIAS for LANCZOS
 ### Removed
-- Remove AppVeyor, consolodate CI on github actions. 
+- Remove AppVeyor, consolidate CI on github actions. 
 
 ## [0.9.0-alpha] - 2025-10-08
 ### Added

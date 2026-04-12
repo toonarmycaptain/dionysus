@@ -93,7 +93,7 @@ class ImageDisplay(tk.Frame):
         self.full_chart_image = Image.open(self.image_path)
         self.display_sized_image = self.full_chart_image.resize(
             (960, 540),
-            Image.ANTIALIAS,  # type: ignore[attr-defined]
+            Image.Resampling.LANCZOS,
         )
 
         self.display_image = ImageTk.PhotoImage(
