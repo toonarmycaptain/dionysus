@@ -1,16 +1,14 @@
 """Tests for class.py"""
 
 import os
+from pathlib import Path
 
 import pytest
-
-from pathlib import Path
 
 from dionysus_app import class_
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.file_functions import convert_to_json
 from dionysus_app.student import Student
-
 from test_suite.test_student import test_student_name_only, test_student_with_avatar
 from test_suite.testing_class_data import (
     test_class_name_only_data_set,
@@ -51,17 +49,11 @@ def test_full_class() -> Class:
 @pytest.fixture()
 def test_new_class_name_only():
     """Returns empty NewClass instantiated with name only."""
-    test_new_class_name_only = NewClass(
-        test_class_name_only_data_set["json_dict_rep"]["name"]
-    )
+    test_new_class_name_only = NewClass(test_class_name_only_data_set["json_dict_rep"]["name"])
 
     # Add attributes to test expected output.
-    test_new_class_name_only.json_str_rep = test_class_name_only_data_set[
-        "json_str_rep"
-    ]
-    test_new_class_name_only.json_dict_rep = test_class_name_only_data_set[
-        "json_dict_rep"
-    ]
+    test_new_class_name_only.json_str_rep = test_class_name_only_data_set["json_str_rep"]
+    test_new_class_name_only.json_dict_rep = test_class_name_only_data_set["json_dict_rep"]
 
     return test_new_class_name_only
 
@@ -133,9 +125,7 @@ class TestClassNamePathSafeName:
         test_name = "The Knights of the Round-table: we don't say 'Ni!'"
 
         test_changed_name = "Adaptable Knights: We now say Ni!, but we dont have to."
-        test_changed_path_safe_name = (
-            "Adaptable_Knights__We_now_say_Ni___but_we_dont_have_to_"
-        )
+        test_changed_path_safe_name = "Adaptable_Knights__We_now_say_Ni___but_we_dont_have_to_"
 
         test_class = Class(test_name)
 
@@ -157,9 +147,7 @@ class TestClassNamePathSafeName:
         test_name = "The Knights of the Round-table: we don't say 'Ni!'"
 
         test_changed_name = "Adaptable Knights: We now say Ni!, but we dont have to."
-        mock_changed_path_safe_name = (
-            "Adaptable_Knights: We're Niiiearly completely un!safe?!$"
-        )
+        mock_changed_path_safe_name = "Adaptable_Knights: We're Niiiearly completely un!safe?!$"
 
         test_class = Class(test_name)
 
@@ -204,9 +192,7 @@ class TestClassId:
 
 
 class TestContainsMethod:
-    def test__contains__student_obj_in_class(
-        self, test_student_name_only, test_class_name_only
-    ):
+    def test__contains__student_obj_in_class(self, test_student_name_only, test_class_name_only):
         """Test that student object from class compares as `in` class."""
         assert test_class_name_only.students == []  # No students in class
         test_class_name_only.add_student(test_student_name_only)
@@ -327,9 +313,7 @@ class TestAddStudent:
             test_student_with_avatar,
         ]
 
-    def test_add_student_with_kwargs(
-        self, test_class_name_only, test_student_with_avatar
-    ):
+    def test_add_student_with_kwargs(self, test_class_name_only, test_student_with_avatar):
         # Ensure class initially empty.
         assert test_class_name_only.students == []
 
@@ -341,10 +325,7 @@ class TestAddStudent:
         assert len(test_class_name_only.students) == 1
         # Test student attributes are as expected
         assert test_class_name_only.students[0].name == test_student_with_avatar.name
-        assert (
-            test_class_name_only.students[0].avatar_id
-            == test_student_with_avatar.avatar_id
-        )
+        assert test_class_name_only.students[0].avatar_id == test_student_with_avatar.avatar_id
 
     @pytest.mark.parametrize(
         "student_arg",
@@ -432,9 +413,7 @@ class TestToJsonStr:
         assert test_class.to_json_str() == test_class.json_str_rep
 
     @pytest.mark.parametrize("test_class", ("test_class_name_only", "test_full_class"))
-    def test_to_json_str_is_equivalent_to_converting_dict_directly(
-        self, request, test_class
-    ):
+    def test_to_json_str_is_equivalent_to_converting_dict_directly(self, request, test_class):
         test_class = request.getfixturevalue(test_class)
         assert convert_to_json(test_class.json_dict()) == test_class.to_json_str()
 
@@ -444,16 +423,11 @@ class TestFromDict:
     @pytest.mark.parametrize("test_class", ("test_class_name_only", "test_full_class"))
     def test_from_dict_instantiation(self, request, class_def, test_class):
         test_class = request.getfixturevalue(test_class)
-        assert (
-            class_def.from_dict(test_class.json_dict_rep).json_dict()
-            == test_class.json_dict()
-        )
+        assert class_def.from_dict(test_class.json_dict_rep).json_dict() == test_class.json_dict()
 
     @pytest.mark.parametrize("class_def", [Class, NewClass])
     @pytest.mark.parametrize("test_class", ("test_class_name_only", "test_full_class"))
-    def test_from_dict_instantiation_class_is_correct_type(
-        self, request, class_def, test_class
-    ):
+    def test_from_dict_instantiation_class_is_correct_type(self, request, class_def, test_class):
         """Method should return instance of calling class/subclass."""
         test_class = request.getfixturevalue(test_class)
         assert isinstance(class_def.from_dict(test_class.json_dict_rep), class_def)
@@ -464,16 +438,11 @@ class TestFromJson:
     @pytest.mark.parametrize("test_class", ("test_class_name_only", "test_full_class"))
     def test_from_json_instantiation(self, request, class_def, test_class):
         test_class = request.getfixturevalue(test_class)
-        assert (
-            class_def.from_json(test_class.json_str_rep).json_dict()
-            == test_class.json_dict()
-        )
+        assert class_def.from_json(test_class.json_str_rep).json_dict() == test_class.json_dict()
 
     @pytest.mark.parametrize("class_def", [Class, NewClass])
     @pytest.mark.parametrize("test_class", ("test_class_name_only", "test_full_class"))
-    def test_from_json_instantiation_class_is_correct_type(
-        self, request, class_def, test_class
-    ):
+    def test_from_json_instantiation_class_is_correct_type(self, request, class_def, test_class):
         """Method should return instance of calling class/subclass."""
         test_class = request.getfixturevalue(test_class)
         assert isinstance(class_def.from_json(test_class.json_str_rep), class_def)
@@ -491,10 +460,7 @@ class TestFromFile:
         with open(class_data_file_path, "w+") as class_data_file:
             class_data_file.write(test_class.json_str_rep)
 
-        assert (
-            class_def.from_file(class_data_file_path).json_dict()
-            == test_class.json_dict()
-        )
+        assert class_def.from_file(class_data_file_path).json_dict() == test_class.json_dict()
 
     @pytest.mark.parametrize("class_def", [Class, NewClass])
     @pytest.mark.parametrize("test_class", ("test_class_name_only", "test_full_class"))
@@ -533,6 +499,10 @@ class TestClassRepr:
         )
 
 
+_full_class = Class.from_dict(test_full_class_data_set["json_dict_rep"])
+_full_class_student_names = ", ".join([student.name for student in _full_class.students])
+
+
 class TestClassStr:
     @pytest.mark.parametrize(
         "class_object,expected_str",
@@ -543,14 +513,16 @@ class TestClassStr:
             ),
             (
                 Class(class_id="some class id", name="name_only_class with id"),
-                f"Class {'name_only_class with id'}, with id={'some class id'}, containing 0 students.",
+                f"Class {'name_only_class with id'}, "
+                f"with id={'some class id'}, containing 0 students.",
             ),
             (
-                Class.from_dict(test_full_class_data_set["json_dict_rep"]),
-                f"Class {Class.from_dict(test_full_class_data_set['json_dict_rep']).name}, "
-                f"with id={Class.from_dict(test_full_class_data_set['json_dict_rep']).id}, "
-                f"containing {len(Class.from_dict(test_full_class_data_set['json_dict_rep']).students)} students, "
-                f"with names: {', '.join([student.name for student in Class.from_dict(test_full_class_data_set['json_dict_rep']).students])}.",
+                _full_class,
+                f"Class {_full_class.name}, "
+                f"with id={_full_class.id}, "
+                f"containing {len(_full_class.students)}"
+                f" students, "
+                f"with names: {_full_class_student_names}.",
             ),
             (
                 Class(
@@ -597,7 +569,9 @@ class TestNewClass:
         assert test_class.temp_dir.exists() and os.listdir(
             test_temp_dir
         )  # Class temp dir in test_temp_dir.
-        del test_class  # NB May throw an (ignored) Exception because the class is garbage collected before this line.
+        # NB May throw an (ignored) Exception because the class
+        # is garbage collected before this line.
+        del test_class
         # No class temp dir in test_temp_dir:
         assert not os.listdir(test_temp_dir)
 

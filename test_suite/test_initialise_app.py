@@ -1,8 +1,7 @@
 import os
+from pathlib import Path
 
 import pytest
-
-from pathlib import Path
 
 from dionysus_app import data_folder, initialise_app
 from dionysus_app.initialise_app import (
@@ -32,12 +31,8 @@ class TestAppConfig:
             app_start_set_default_chart_save_location_mock["called"] = True
 
         monkeypatch.setattr(initialise_app.Path, "exists", mocked_path_exists)
-        monkeypatch.setattr(
-            initialise_app, "welcome_to_program", mocked_welcome_to_program
-        )
-        monkeypatch.setattr(
-            initialise_app, "app_start_set_database", mocked_app_start_set_database
-        )
+        monkeypatch.setattr(initialise_app, "welcome_to_program", mocked_welcome_to_program)
+        monkeypatch.setattr(initialise_app, "app_start_set_database", mocked_app_start_set_database)
         monkeypatch.setattr(
             initialise_app,
             "app_start_set_default_chart_save_location",
@@ -75,12 +70,8 @@ class TestAppConfig:
             raise ValueError("Should not be called if settings file exists.")
 
         monkeypatch.setattr(initialise_app.Path, "exists", mocked_path_exists)
-        monkeypatch.setattr(
-            initialise_app, "welcome_to_program", mocked_welcome_to_program
-        )
-        monkeypatch.setattr(
-            initialise_app, "app_start_set_database", mocked_app_start_set_database
-        )
+        monkeypatch.setattr(initialise_app, "welcome_to_program", mocked_welcome_to_program)
+        monkeypatch.setattr(initialise_app, "app_start_set_database", mocked_app_start_set_database)
         monkeypatch.setattr(
             initialise_app,
             "app_start_set_default_chart_save_location",
@@ -112,9 +103,7 @@ class TestClearTemp:
     def test_clear_temp_files_cleared(self, monkeypatch, tmpdir):
         test_temp_dir = Path(tmpdir, "temp_dir")
         test_temp_dir.mkdir(parents=True)  # Make temp_dir.
-        Path(test_temp_dir, "some_dir").mkdir(
-            parents=True
-        )  # Make file in test_temp_dir.
+        Path(test_temp_dir, "some_dir").mkdir(parents=True)  # Make file in test_temp_dir.
         assert os.listdir(test_temp_dir)  # File in test_temp_dir.
 
         monkeypatch.setattr(initialise_app, "TEMP_DIR", test_temp_dir)
@@ -127,9 +116,7 @@ class TestClearTemp:
         assert not test_temp_dir.exists()  # No temp dir.
 
         def mocked_rmtree(path):
-            raise ValueError(
-                "rmtree should not be called temp directory doesn't exist."
-            )
+            raise ValueError("rmtree should not be called temp directory doesn't exist.")
 
         monkeypatch.setattr(initialise_app, "TEMP_DIR", test_temp_dir)
         monkeypatch.setattr(initialise_app.shutil, "rmtree", mocked_rmtree)
@@ -143,9 +130,7 @@ class TestClearTemp:
         assert not os.listdir(test_temp_dir)  # No files in test_temp_dir.
 
         def mocked_rmtree(path):
-            raise ValueError(
-                "rmtree should not be called when no files in temp directory."
-            )
+            raise ValueError("rmtree should not be called when no files in temp directory.")
 
         monkeypatch.setattr(initialise_app, "TEMP_DIR", test_temp_dir)
         monkeypatch.setattr(initialise_app.shutil, "rmtree", mocked_rmtree)
@@ -165,9 +150,7 @@ class TestAppInit:
             app_config_mock["called"] = True
 
         monkeypatch.setattr(initialise_app, "app_config", mocked_app_config)
-        monkeypatch.setattr(
-            initialise_app, "data_folder_check", mocked_data_folder_check
-        )
+        monkeypatch.setattr(initialise_app, "data_folder_check", mocked_data_folder_check)
 
         assert app_init() is None
         assert data_folder_check_mock["called"] and app_config_mock["called"]

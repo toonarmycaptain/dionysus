@@ -8,10 +8,8 @@ Settings dict keys:
 """
 
 from pathlib import Path
-from typing import Union
 
 import definitions
-
 from dionysus_app.data_folder import DataFolder
 from dionysus_app.file_functions import move_file
 from dionysus_app.UI_menus.settings_functions_UI import (
@@ -96,7 +94,7 @@ def set_database_backend(user_set: bool) -> None:
     :param user_set: Path or str
     :return: None
     """
-    database_backend: Union[str, bool] = definitions.DEFAULT_DATABASE_BACKEND
+    database_backend: str | bool = definitions.DEFAULT_DATABASE_BACKEND
     # Database choice selection
     if user_set:
         user_chosen_database = user_set_database_backend()
@@ -143,7 +141,7 @@ def move_chart_save_folder(original_location: Path, new_location: Path) -> None:
 
 
 def save_new_default_chart_save_location_setting(
-    new_location: Union[Path, str],
+    new_location: Path | str,
 ) -> None:
     """
     Save new default chart save location to settings.

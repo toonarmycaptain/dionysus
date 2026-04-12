@@ -13,9 +13,8 @@ dot access to use the object:
 """
 
 import os
-
 from pathlib import Path
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 # Import to get around circular import caused by type checking. Type as string.
 if TYPE_CHECKING:
@@ -30,4 +29,4 @@ DEFAULT_DATABASE_BACKEND = "SQLite"
 DATABASE: "Database" = None  # type: ignore
 
 
-DEFAULT_CHART_SAVE_DIR: Optional[Path] = None  # Path object.
+DEFAULT_CHART_SAVE_DIR: Path | None = None  # Path object.

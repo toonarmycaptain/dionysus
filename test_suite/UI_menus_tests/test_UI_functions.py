@@ -1,10 +1,10 @@
 """ "Test UI Functions"""
 
-import pytest
-
 from pathlib import Path
 from unittest import mock
 from unittest.mock import patch
+
+import pytest
 
 from dionysus_app.UI_menus import UI_functions
 from dionysus_app.UI_menus.UI_functions import (
@@ -127,9 +127,7 @@ class TestInputIsEssentiallyBlank:
     ],
 )
 class TestCleanForFilename:
-    def test_clean_for_filename_mocking_call(
-        self, monkeypatch, test_input, expected_return_value
-    ):
+    def test_clean_for_filename_mocking_call(self, monkeypatch, test_input, expected_return_value):
         """
         Mock call to scrub_candidate_filename.
         Essentially an input .replace(' ', '_') operation, unless behaviour changes.
@@ -182,7 +180,8 @@ class TestCleanForFilename:
             " because nobody_expects_the !@#$%ing _spanish_ inquisition the 2nd ?~)*% time",
             " because nobody_expects_the _____ing _spanish_ inquisition the 2nd _____ time",
         ),
-        # d'Artagnan's memoirs: preserving accented é, replacing apostrophe, period with underscores.
+        # d'Artagnan's memoirs: preserving accented é,
+        # replacing apostrophe, period with underscores.
         ("Les mémoires de M. d'Artagnan", "Les mémoires de M_ d_Artagnan"),
         # Test prohibited chars FAT32
         (
@@ -245,10 +244,7 @@ valid_inputs = [
 class TestAskUserBool:
     @pytest.mark.parametrize(
         "test_inputs, return_value",
-        [
-            [blank_junk_inputs + [valid_input[0]], valid_input[1]]
-            for valid_input in valid_inputs
-        ],
+        [[blank_junk_inputs + [valid_input[0]], valid_input[1]] for valid_input in valid_inputs],
     )
     def test_ask_user_bool(self, test_inputs, return_value):
         with mock.patch("builtins.input", side_effect=test_inputs):
@@ -281,9 +277,7 @@ class TestSaveAsDialogue:
                     "suggested_filename": None,
                     "start_dir": None,
                 },
-                {
-                    "initialdir": None
-                },  # None dir passed on, default_filetypes subst by func.
+                {"initialdir": None},  # None dir passed on, default_filetypes subst by func.
                 "my_save_file",
                 Path("my_save_file"),
             ),
@@ -447,26 +441,19 @@ class TestSaveAsDialogue:
             initialdir,
         ):
             """
-            Test arguments passed to filedialog are as expected, subbing with defaults save_as_dialogue
-            will supply if no value is passed (equivalent to expecting the default).
+            Test arguments passed to filedialog are as expected,
+            subbing with defaults save_as_dialogue will supply if
+            no value is passed (equivalent to expecting the default).
             """
             assert title == expected_filedialog_args.get("title", None)
-            assert defaultextension == expected_filedialog_args.get(
-                "defaultextension", None
-            )
-            assert filetypes == expected_filedialog_args.get(
-                "filetypes", default_filetypes
-            )
+            assert defaultextension == expected_filedialog_args.get("defaultextension", None)
+            assert filetypes == expected_filedialog_args.get("filetypes", default_filetypes)
             assert initialfile == expected_filedialog_args.get("initialfile", None)
-            assert initialdir == expected_filedialog_args.get(
-                "initialdir", default_start_dir
-            )
+            assert initialdir == expected_filedialog_args.get("initialdir", default_start_dir)
             # Return null test_filename value or filename + extension if present.
             if not test_filename:
                 return test_filename
-            return test_filename + (
-                expected_filedialog_args.get("defaultextension", "") or ""
-            )
+            return test_filename + (expected_filedialog_args.get("defaultextension", "") or "")
 
         monkeypatch.setattr(
             UI_functions.filedialog,
@@ -482,7 +469,8 @@ class TestSaveAsDialogue:
 @patch("dionysus_app.UI_menus.UI_functions.tk.Tk")
 class TestSelectFileDialogue:
     @pytest.mark.parametrize(
-        "select_file_dialogue_args, expected_askopenfilename_args, test_filename, returned_filepath",
+        "select_file_dialogue_args, expected_askopenfilename_args, "
+        "test_filename, returned_filepath",
         [
             ({}, {}, "my save file", Path("my save file")),  # No args.
             pytest.param(
@@ -501,9 +489,7 @@ class TestSelectFileDialogue:
                     "filetypes": None,
                     "start_dir": None,
                 },
-                {
-                    "initialdir": None
-                },  # None dir passed on, default_filetypes subst by func.
+                {"initialdir": None},  # None dir passed on, default_filetypes subst by func.
                 "my_save_file",
                 Path("my_save_file"),
             ),
@@ -545,22 +531,17 @@ class TestSelectFileDialogue:
             initialdir,
         ):
             """
-            Test arguments passed to filedialog are as expected, subbing with defaults save_as_dialogue
-            will supply if no value is passed (equivalent to expecting the default).
+            Test arguments passed to filedialog are as expected,
+            subbing with defaults save_as_dialogue will supply if
+            no value is passed (equivalent to expecting the default).
             """
             assert title == expected_askopenfilename_args.get("title", None)
-            assert filetypes == expected_askopenfilename_args.get(
-                "filetypes", default_filetypes
-            )
-            assert initialdir == expected_askopenfilename_args.get(
-                "initialdir", default_start_dir
-            )
+            assert filetypes == expected_askopenfilename_args.get("filetypes", default_filetypes)
+            assert initialdir == expected_askopenfilename_args.get("initialdir", default_start_dir)
             # Return null test_filename value or filename + extension if present.
             if not test_filename:
                 return test_filename
-            return test_filename + (
-                expected_askopenfilename_args.get("defaultextension", "") or ""
-            )
+            return test_filename + (expected_askopenfilename_args.get("defaultextension", "") or "")
 
         monkeypatch.setattr(
             UI_functions.filedialog,
@@ -628,19 +609,16 @@ class TestSelectFolderDialogue:
             initialdir,
         ):
             """
-            Test arguments passed to filedialog are as expected, subbing with defaults save_as_dialogue
-            will supply if no value is passed (equivalent to expecting the default).
+            Test arguments passed to filedialog are as expected,
+            subbing with defaults save_as_dialogue will supply if
+            no value is passed (equivalent to expecting the default).
             """
             assert title == expected_askdirectory_args.get("title", None)
-            assert initialdir == expected_askdirectory_args.get(
-                "initialdir", default_start_dir
-            )
+            assert initialdir == expected_askdirectory_args.get("initialdir", default_start_dir)
 
             return test_path
 
-        monkeypatch.setattr(
-            UI_functions.filedialog, "askdirectory", mocked_filedialog_askdirectory
-        )
+        monkeypatch.setattr(UI_functions.filedialog, "askdirectory", mocked_filedialog_askdirectory)
 
         assert returned_path == select_folder_dialogue(**select_folder_dialogue_args)
 
@@ -687,9 +665,7 @@ class TestGetUserInput:
             ),  # func error message
             # Ensure no test for error message if good first attempt.
             ("prompt", lambda x: x == "ok", "Error!", ["ok"]),
-            pytest.param(
-                "prompt", lambda x: x == "ok", "", ["no", "no"], marks=pytest.mark.xfail
-            ),
+            pytest.param("prompt", lambda x: x == "ok", "", ["no", "no"], marks=pytest.mark.xfail),
             # Pass good input early (test validation)
             pytest.param(
                 "prompt",
@@ -700,21 +676,19 @@ class TestGetUserInput:
             ),
         ],
     )
-    def test_get_user_input(
-        self, capsys, prompt, validation_function, error_message, inputs
-    ):
+    def test_get_user_input(self, capsys, prompt, validation_function, error_message, inputs):
         with patch("builtins.input", side_effect=list(inputs)):
-            assert (
-                get_user_input(prompt, validation_function, error_message) == inputs[-1]
-            )
+            assert get_user_input(prompt, validation_function, error_message) == inputs[-1]
         captured = capsys.readouterr()
         print(captured)
-        # Check error message/s
+        # Check error message/s - one per invalid input (all but last)
+        bad_inputs = inputs[:-1]
         if isinstance(error_message, str):
-            for attempt in inputs[:-1]:
+            if bad_inputs:
                 assert f"{error_message}\n" in captured.out
+            assert captured.out.count(f"{error_message}\n") == len(bad_inputs)
         elif callable(error_message):
-            for attempt in inputs[:-1]:
+            for attempt in bad_inputs:
                 assert f"{error_message(attempt)}\n" in captured.out
 
         # NB checking for 'error_message\n' newlines for invalid inputs

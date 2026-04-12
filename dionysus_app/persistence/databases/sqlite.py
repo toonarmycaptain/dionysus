@@ -1,17 +1,15 @@
 """SQLite3 Database object."""
 
 import sqlite3
-
 from io import BytesIO
 from pathlib import Path
-from typing import Optional
 
 import matplotlib.pyplot as plt
 
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.student import Student
 from dionysus_app.persistence.database import ClassIdentifier, Database
+from dionysus_app.student import Student
 
 
 class SQLiteDatabase(Database):
@@ -55,9 +53,8 @@ class SQLiteDatabase(Database):
         self.database_path: Path = database_path or DataFolder.generate_rel_path(
             DataFolder.APP_DATA.value
         ).joinpath("dionysus.db")
-        self.default_avatar_path: Path = (
-            default_avatar_path
-            or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
+        self.default_avatar_path: Path = default_avatar_path or DataFolder.generate_rel_path(
+            DataFolder.DEFAULT_AVATAR.value
         )
         # check if db file exists/db has appropriate tables etc
         self._init_db()
@@ -231,7 +228,7 @@ class SQLiteDatabase(Database):
         """
         raise NotImplementedError  # type: ignore
 
-    def get_avatar_path(self, avatar_id: Optional[int]) -> Path:
+    def get_avatar_path(self, avatar_id: int | None) -> Path:
         """
         Return path to avatar from id.
 
@@ -290,9 +287,7 @@ class SQLiteDatabase(Database):
             # Create scores in score table
             student_scores_data = []
             for score, students in chart_data_dict["score-students_dict"].items():
-                student_scores_data += [
-                    (chart_id, student.id, score) for student in students
-                ]
+                student_scores_data += [(chart_id, student.id, score) for student in students]
             cursor.executemany(
                 """
                 INSERT INTO score(chart_id, student_id, value)
@@ -415,8 +410,9 @@ class SQLiteDatabase(Database):
         :return: str
         """
         return """CREATE TABLE IF NOT EXISTS student(
-                        -- primary key must be INTEGER not INT, NOT NULL is implicit, or error/autoincrement won't work.
-                        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        -- primary key must be INTEGER not INT,
+                        -- NOT NULL is implicit, or error/autoincrement won't work.
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
                                                  length("name") <= 255
                                                  ),
@@ -438,7 +434,8 @@ class SQLiteDatabase(Database):
                         name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
                                                  length("name") <= 255
                                                  ),
-                        image BLOB, -- NOT NULL, needs to be null, as chart data/image saved independently.
+                        image BLOB, -- needs to be nullable,
+                        -- chart data/image saved independently.
                         date TEXT -- For now can be NULL, will be implemented later.
                         );
                         """

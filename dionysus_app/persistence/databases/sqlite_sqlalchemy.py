@@ -1,37 +1,35 @@
 """SQLAlchemy SQLite3 Database object ."""
 
+from collections.abc import Iterator
 from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
 from typing import (
     Any,
-    Iterator,
-    Optional,
 )
 
 from matplotlib import pyplot as plt
 from sqlalchemy import (
     BLOB,
+    REAL,
     Column,
-    create_engine,
     ForeignKey,
     Integer,
-    REAL,
     String,
+    create_engine,
 )
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import (
-    sessionmaker,
     Session,
+    sessionmaker,
 )
+from sqlalchemy.orm.decl_api import DeclarativeMeta
 
 from dionysus_app.class_ import Class, NewClass
 from dionysus_app.data_folder import DataFolder
-from dionysus_app.student import Student
 from dionysus_app.persistence.database import ClassIdentifier, Database
-
-from sqlalchemy.orm.decl_api import DeclarativeMeta
+from dionysus_app.student import Student
 
 Base: DeclarativeMeta = declarative_base()
 
@@ -74,14 +72,7 @@ class ChartTable(Base):
     date = Column(String)
 
     def __repr__(self):
-        return (
-            f"<Chart("
-            f"id={self.id}, "
-            f"name={self.name}, "
-            f"image={self.image}, "
-            f"date={self.date}"
-            f")>"
-        )
+        return f"<Chart(id={self.id}, name={self.name}, image={self.image}, date={self.date})>"
 
 
 class ScoreTable(Base):
@@ -154,9 +145,8 @@ class SQLiteSQLAlchemyDatabase(Database):
         self.database_path: Path = database_path or DataFolder.generate_rel_path(
             DataFolder.APP_DATA.value
         ).joinpath("dionysus.db")
-        self.default_avatar_path: Path = (
-            default_avatar_path
-            or DataFolder.generate_rel_path(DataFolder.DEFAULT_AVATAR.value)
+        self.default_avatar_path: Path = default_avatar_path or DataFolder.generate_rel_path(
+            DataFolder.DEFAULT_AVATAR.value
         )
         self.engine: Engine
         self.make_session: sessionmaker
@@ -183,8 +173,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         """
         with self.session_scope() as session:
             return (
-                session.query(self.Class).filter(self.Class.name == class_name).first()
-                is not None
+                session.query(self.Class).filter(self.Class.name == class_name).first() is not None
             )
             # return [class_name for class_name in session.query(self.Class.name)]
 
@@ -254,9 +243,7 @@ class SQLiteSQLAlchemyDatabase(Database):
                     for class_data, student in class_data
                 ]
             else:  # Empty class
-                empty_class = (
-                    session.query(self.Class).filter(self.Class.id == class_id).one()
-                )
+                empty_class = session.query(self.Class).filter(self.Class.id == class_id).one()
                 students_list = []
                 class_id, class_name = empty_class.id, empty_class.name
 
@@ -271,7 +258,7 @@ class SQLiteSQLAlchemyDatabase(Database):
         """
         raise NotImplementedError  # type: ignore
 
-    def get_avatar_path(self, avatar_id: Optional[int]) -> Path:
+    def get_avatar_path(self, avatar_id: int | None) -> Path:
         """
         Return path to avatar from id.
 
@@ -292,9 +279,7 @@ class SQLiteSQLAlchemyDatabase(Database):
             DataFolder.generate_rel_path(DataFolder.TEMP_DIR.value), str(avatar_id)
         )
         with self.session_scope() as session:
-            image_record = (
-                session.query(self.Avatar).filter(self.Avatar.id == avatar_id).one()
-            )
+            image_record = session.query(self.Avatar).filter(self.Avatar.id == avatar_id).one()
             temp_image_path.write_bytes(image_record.image)  # type: ignore[arg-type]  # image column is not nullable
         return temp_image_path
 
@@ -315,9 +300,7 @@ class SQLiteSQLAlchemyDatabase(Database):
             student_scores_data = []
             for score, students in chart_data_dict["score-students_dict"].items():
                 student_scores_data += [
-                    self.Score(
-                        chart_id=new_chart.id, student_id=student.id, value=score
-                    )
+                    self.Score(chart_id=new_chart.id, student_id=student.id, value=score)
                     for student in students
                 ]
 
@@ -346,11 +329,7 @@ class SQLiteSQLAlchemyDatabase(Database):
 
         # Save image in db
         with self.session_scope() as session:
-            chart = (
-                session.query(self.Chart)
-                .filter_by(id=chart_data_dict["chart_id"])
-                .one()
-            )
+            chart = session.query(self.Chart).filter_by(id=chart_data_dict["chart_id"]).one()
             chart.image = image.read()
 
             session.commit()

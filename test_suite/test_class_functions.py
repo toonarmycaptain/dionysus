@@ -1,7 +1,7 @@
 """Test functions in class_functions.py"""
 
 from pathlib import Path
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 
 import pytest
 
@@ -12,8 +12,8 @@ from dionysus_app.class_functions import (
     avatar_file_exists,
     compose_classlist_dialogue,
     create_chart_with_new_class,
-    create_classlist,
     create_class_list_dict,
+    create_classlist,
     edit_classlist,
     load_chart_data,
     select_classlist,
@@ -24,14 +24,18 @@ from dionysus_app.class_functions import (
 from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.student import Student
 from dionysus_app.UI_menus.UI_functions import clean_for_filename
-from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
 from test_suite.test_class import (
     test_class_name_only,  # noqa: F401
     test_full_class,  # noqa: F401
 )
+from test_suite.test_persistence.test_database import (
+    empty_generic_database,  # noqa: F401 | Fixture.
+)
+from test_suite.testing_class_data import (
+    test_full_class_data_set,
+)
 from test_suite.testing_class_data import (
     testing_registry_data_set as test_registry_data_set,
-    test_full_class_data_set,
 )
 
 
@@ -105,9 +109,7 @@ class TestComposeClasslistDialogue:
             (
                 [
                     Class(
-                        name=Class.from_dict(
-                            test_full_class_data_set["json_dict_rep"]
-                        ).name
+                        name=Class.from_dict(test_full_class_data_set["json_dict_rep"]).name
                     ),  # Empty class, then full class.
                     Class.from_dict(test_full_class_data_set["json_dict_rep"]),
                 ],
@@ -143,18 +145,11 @@ class TestComposeClasslistDialogue:
             if test_class not in class_data:
                 raise ValueError
 
-        monkeypatch.setattr(
-            class_functions, "take_class_data_input", mocked_take_class_data_input
-        )
-        monkeypatch.setattr(
-            class_functions, "blank_class_dialogue", mocked_blank_class_dialogue
-        )
-        monkeypatch.setattr(
-            class_functions, "class_data_feedback", mocked_class_data_feedback
-        )
+        monkeypatch.setattr(class_functions, "take_class_data_input", mocked_take_class_data_input)
+        monkeypatch.setattr(class_functions, "blank_class_dialogue", mocked_blank_class_dialogue)
+        monkeypatch.setattr(class_functions, "class_data_feedback", mocked_class_data_feedback)
         assert (
-            compose_classlist_dialogue(class_data[0].name).json_dict()
-            == class_data[-1].json_dict()
+            compose_classlist_dialogue(class_data[0].name).json_dict() == class_data[-1].json_dict()
         )
 
 
@@ -189,16 +184,12 @@ class TestTakeClassDataInput:
                 raise ValueError
             return take_student_avatar_return
 
-        monkeypatch.setattr(
-            class_functions, "take_student_avatar", mocked_take_student_avatar
-        )
+        monkeypatch.setattr(class_functions, "take_student_avatar", mocked_take_student_avatar)
         monkeypatch.setattr(
             class_functions, "take_student_name_input", mocked_take_student_name_input
         )
 
-        assert (
-            take_class_data_input(test_class_name).json_dict() == test_class.json_dict()
-        )
+        assert take_class_data_input(test_class_name).json_dict() == test_class.json_dict()
 
 
 class TestTakeStudentAvatar:
@@ -248,9 +239,7 @@ class TestTakeStudentAvatar:
             "select_avatar_file_dialogue",
             mocked_select_avatar_file_dialogue,
         )
-        monkeypatch.setattr(
-            class_functions, "clean_for_filename", mocked_clean_for_filename
-        )
+        monkeypatch.setattr(class_functions, "clean_for_filename", mocked_clean_for_filename)
         monkeypatch.setattr(class_functions, "copy_file", mocked_copy_file)
 
         assert take_student_avatar(test_class, test_student_name) == returned_filename
@@ -317,9 +306,7 @@ class TestCreateChartWithNewClass:
             if test_class_name != test_classname:
                 raise ValueError
             if not chose_to_create_chart_from_class:
-                raise ValueError(
-                    f"create_chart wrongly called for class {test_class_name}"
-                )
+                raise ValueError(f"create_chart wrongly called for class {test_class_name}")
 
         # Mock create_chart_with_new_class_dialogue in original location, due to import at runtime
         # rather than at top of class_functions module.
@@ -363,9 +350,7 @@ class TestSelectClasslist:
             "display_class_selection_menu",
             mocked_display_class_selection_menu,
         )
-        monkeypatch.setattr(
-            class_functions, "take_class_selection", mocked_take_class_selection
-        )
+        monkeypatch.setattr(class_functions, "take_class_selection", mocked_take_class_selection)
 
         assert select_classlist() == selected_class.id
 
@@ -442,10 +427,7 @@ class TestSelectStudent:
             class_functions, "take_student_selection", mocked_take_student_selection
         )
 
-        assert (
-            select_student(test_class)
-            == test_class_students[selected_student_students_index]
-        )
+        assert select_student(test_class) == test_class_students[selected_student_students_index]
 
 
 class TestLoadChartData:
@@ -457,17 +439,12 @@ class TestLoadChartData:
             "load_from_json_file",
             lambda path: mock_load_from_json_file_return_data,
         )
-        assert (
-            load_chart_data(Path("some chart datafile"))
-            == mock_load_from_json_file_return_data
-        )
+        assert load_chart_data(Path("some chart datafile")) == mock_load_from_json_file_return_data
 
 
 class TestEditClasslist:
     def test_edit_classlist(self, monkeypatch):
-        monkeypatch.setattr(
-            class_functions, "take_classlist_name_input", lambda: "some class name"
-        )
+        monkeypatch.setattr(class_functions, "take_classlist_name_input", lambda: "some class name")
         mocked_open = mock_open()
         with patch("dionysus_app.class_functions.open", mocked_open):
             assert edit_classlist() is None

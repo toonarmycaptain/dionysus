@@ -14,18 +14,14 @@ class TestSaveChartDialogue:
         test_default_chart_name = "test_chart_name"
         test_class_save_folder_path = Path("test_path")
 
-        def mocked_save_as_dialogue(
-            title_str, filetypes, suggested_filename, start_dir
-        ):
+        def mocked_save_as_dialogue(title_str, filetypes, suggested_filename, start_dir):
             assert title_str == "Save chart image as:"
             assert filetypes == [(".png", "*.png"), ("all files", "*.*")]
             assert suggested_filename == test_default_chart_name
             assert start_dir == str(test_class_save_folder_path)
             return test_user_selected_path
 
-        monkeypatch.setattr(
-            create_chart_UI, "save_as_dialogue", mocked_save_as_dialogue
-        )
+        monkeypatch.setattr(create_chart_UI, "save_as_dialogue", mocked_save_as_dialogue)
 
         assert (
             save_chart_dialogue(test_default_chart_name, test_class_save_folder_path)

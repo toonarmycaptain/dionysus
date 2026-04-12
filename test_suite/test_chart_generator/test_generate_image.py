@@ -10,7 +10,9 @@ from dionysus_app.chart_generator.generate_image import (
     set_axis,
     validate_avatar,
 )
-from test_suite.test_persistence.test_database import empty_generic_database  # noqa: F401 | Fixture.
+from test_suite.test_persistence.test_database import (
+    empty_generic_database,  # noqa: F401 | Fixture.
+)
 
 
 class TestGenerateChartImage:
@@ -90,12 +92,8 @@ class TestGenerateChartImage:
         monkeypatch.setattr(generate_image.definitions, "DATABASE", test_database)
         monkeypatch.setattr(generate_image, "plt", mocked_plt)
         monkeypatch.setattr(generate_image, "set_axis", mocked_set_axis)
-        monkeypatch.setattr(
-            generate_image, "generate_avatar_coords", mocked_generate_avatar_coords
-        )
-        monkeypatch.setattr(
-            generate_image, "add_avatars_to_plot", mocked_add_avatars_to_plot
-        )
+        monkeypatch.setattr(generate_image, "generate_avatar_coords", mocked_generate_avatar_coords)
+        monkeypatch.setattr(generate_image, "add_avatars_to_plot", mocked_add_avatars_to_plot)
 
         test_chart_data_dict = {
             "class_id": "some class",
@@ -112,16 +110,9 @@ class TestGenerateChartImage:
 
         assert generate_chart_image(test_chart_data_dict) == test_image_location
 
-        assert all([called[func] for func in called])
-        assert all(
-            [
-                mocked_plt.calls_to_mock_plt[func]
-                for func in mocked_plt.calls_to_mock_plt
-            ]
-        )
-        assert all(
-            [mocked_plt.calls_to_mock_ax[func] for func in mocked_plt.calls_to_mock_ax]
-        )
+        assert all(called[func] for func in called)
+        assert all(mocked_plt.calls_to_mock_plt[func] for func in mocked_plt.calls_to_mock_plt)
+        assert all(mocked_plt.calls_to_mock_ax[func] for func in mocked_plt.calls_to_mock_ax)
 
 
 class TestSetAxis:
@@ -132,10 +123,8 @@ class TestSetAxis:
             (7, 343, 49, [7, 56, 105, 154, 203, 252, 301]),
         ],
     )
-    def test_set_axis(
-        self, monkeypatch, test_x_min, test_x_max, test_x_step, xticks_arg
-    ):
-        test_xticks = [tick for tick in range(test_x_min, test_x_max + 1, test_x_step)]
+    def test_set_axis(self, monkeypatch, test_x_min, test_x_max, test_x_step, xticks_arg):
+        test_xticks = list(range(test_x_min, test_x_max + 1, test_x_step))
         test_yticks = []
 
         class MockPlt:
@@ -158,12 +147,7 @@ class TestSetAxis:
         monkeypatch.setattr(generate_image, "plt", mocked_plt)
 
         assert set_axis(test_x_min, test_x_max, test_x_step) is None
-        assert all(
-            [
-                mocked_plt.calls_to_mock_plt[func]
-                for func in mocked_plt.calls_to_mock_plt
-            ]
-        )
+        assert all(mocked_plt.calls_to_mock_plt[func] for func in mocked_plt.calls_to_mock_plt)
 
 
 class TestAddAvatarToPlot:
@@ -227,16 +211,9 @@ class TestAddAvatarToPlot:
 
         assert [image.xy for image in test_ax.abs] == test_xy_coords
 
-        assert all([called[func] for func in called])
-        assert all(
-            [
-                mocked_plt.calls_to_mock_plt[func]
-                for func in mocked_plt.calls_to_mock_plt
-            ]
-        )
-        assert all(
-            [test_ax.calls_to_mock_ax[func] for func in test_ax.calls_to_mock_ax]
-        )
+        assert all(called[func] for func in called)
+        assert all(mocked_plt.calls_to_mock_plt[func] for func in mocked_plt.calls_to_mock_plt)
+        assert all(test_ax.calls_to_mock_ax[func] for func in test_ax.calls_to_mock_ax)
 
 
 class TestValidateAvatar:
@@ -259,9 +236,7 @@ class TestValidateAvatar:
         monkeypatch.setattr(generate_image.definitions, "DATABASE", test_database)
 
         assert validate_avatar(test_avatar_path) == (
-            test_avatar_path
-            if avatar_path_exists
-            else test_database.default_avatar_path
+            test_avatar_path if avatar_path_exists else test_database.default_avatar_path
         )
 
 
@@ -276,9 +251,7 @@ class TestAddAvatarsToPlot:
             assert test_avatar_coord_dict[avatar_path] == xy_coords  # coorect args.
             called_args[avatar_path] = xy_coords
 
-        monkeypatch.setattr(
-            generate_image, "add_avatar_to_plot", mocked_add_avatar_to_plot
-        )
+        monkeypatch.setattr(generate_image, "add_avatar_to_plot", mocked_add_avatar_to_plot)
 
         assert add_avatars_to_plot(test_ax, test_avatar_coord_dict) is None
         assert called_args == test_avatar_coord_dict

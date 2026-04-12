@@ -1,8 +1,7 @@
 import os
+from pathlib import Path
 
 import pytest
-
-from pathlib import Path
 
 from definitions import ROOT_DIR
 from dionysus_app.data_folder import DataFolder
@@ -29,7 +28,8 @@ class TestDataFolder:
         # Assert relative app paths in generated absolute paths:
         assert relative_path_str in path_result.as_uri()
         # Assert cwd in generated absolute paths:
-        # Use .lower() to avoid casing issue (eg Windows user capitalised in cwd_path but not path_result).
+        # Use .lower() to avoid casing issue
+        # (eg Windows user capitalised in cwd_path but not path_result).
         assert cwd_path.as_uri().lower() in path_result.as_uri().lower()
 
     @pytest.mark.parametrize(
@@ -46,9 +46,7 @@ class TestDataFolder:
             ),
         ],
     )
-    def test_generate_data_path_defaults_dot_value(
-        self, DataFolder_attr, relative_path_str
-    ):
+    def test_generate_data_path_defaults_dot_value(self, DataFolder_attr, relative_path_str):
         """DataFolder attrs generate full paths."""
         os.chdir(ROOT_DIR)
         cwd_path = Path.cwd()
@@ -61,7 +59,8 @@ class TestDataFolder:
         # Assert relative app paths in generated absolute paths:
         assert relative_path_str in path_result.as_uri()
         # Assert cwd in generated absolute paths:
-        # Use .lower() to avoid casing issue (eg Windows user capitalised in cwd_path but not path_result).
+        # Use .lower() to avoid casing issue
+        # (eg Windows user capitalised in cwd_path but not path_result).
         assert cwd_path.as_uri().lower() in path_result.as_uri().lower()
 
     def test_generate_data_path_None(self):

@@ -2,7 +2,7 @@
 Application main menu.
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from dionysus_app.chart_generator.create_chart import new_chart
 from dionysus_app.class_functions import create_classlist
@@ -27,9 +27,7 @@ def main_menu_options() -> None:
     :return: None
     """
     print("Dionysus - Main menu\n")
-    print(
-        "Please select an option by entering the corresponding number, and press return:\n"
-    )
+    print("Please select an option by entering the corresponding number, and press return:\n")
     print(
         "     1. Create a classlist\n"
         "     2. Edit a classlist\n"
@@ -40,7 +38,7 @@ def main_menu_options() -> None:
     )
 
 
-def take_main_menu_input() -> Optional[bool]:
+def take_main_menu_input() -> bool | None:
     """
     Takes input and runs chosen action.
 

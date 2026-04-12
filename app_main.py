@@ -6,7 +6,6 @@ import os
 import sys
 
 import definitions
-
 from dionysus_app.initialise_app import app_init, clear_temp
 from dionysus_app.persistence.database_functions import load_database
 from dionysus_app.settings_functions import load_chart_save_folder

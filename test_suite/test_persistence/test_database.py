@@ -1,14 +1,13 @@
 """Test Database abstract base class"""
 
-# Subclass and test that class errors when trying to instantiate subclass without implementing each function.
+# Subclass and test that class errors when trying to instantiate
+# subclass without implementing each function.
 import abc
 import io
-
-import pytest
-
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import pytest
 from matplotlib.testing.compare import compare_images
 
 from dionysus_app.class_ import Class, NewClass
@@ -23,7 +22,9 @@ from dionysus_app.student import Student
 # Import test database fixtures:
 from test_suite.test_class import test_class_name_only, test_full_class  # noqa: F401
 from test_suite.test_persistence.test_databases.test_json import empty_json_database  # noqa: F401
-from test_suite.test_persistence.test_databases.test_sqlite import empty_sqlite_database  # noqa: F401
+from test_suite.test_persistence.test_databases.test_sqlite import (
+    empty_sqlite_database,  # noqa: F401
+)
 from test_suite.test_persistence.test_databases.test_sqlite_sqlalchemy import (
     empty_sqlite_sqlalchemy_database,  # noqa: F401
 )
@@ -118,31 +119,23 @@ class TestGetClasses:
             pytest.param(
                 ["one class", "another", "so many"],
                 ["one class", "another", "so many", "wrong"],
-                marks=pytest.mark.xfail(
-                    reason="Inconsistent class list - extra class."
-                ),
+                marks=pytest.mark.xfail(reason="Inconsistent class list - extra class."),
             ),
             pytest.param(
                 ["one class", "another", "so many"],
                 ["one class", "another"],
-                marks=pytest.mark.xfail(
-                    reason="Inconsistent class list - missing class."
-                ),
+                marks=pytest.mark.xfail(reason="Inconsistent class list - missing class."),
             ),
         ],
     )
-    def test_get_classes(
-        self, request, database_backend, existing_class_names, returned_id_names
-    ):
+    def test_get_classes(self, request, database_backend, existing_class_names, returned_id_names):
         test_database = request.getfixturevalue(database_backend)
         for class_name in existing_class_names:
             test_database.create_class(NewClass(name=class_name))
 
         retrieved_class_identifiers = test_database.get_classes()
         # class_identifier.id will be different for each backend, but the names will be the same.
-        assert [
-            class_id.name for class_id in retrieved_class_identifiers
-        ] == returned_id_names
+        assert [class_id.name for class_id in retrieved_class_identifiers] == returned_id_names
 
 
 class TestClassNameExists:
@@ -203,9 +196,7 @@ class TestCreateClass:
         test_class = NewClass.from_dict(test_class.json_dict())
         for student in test_class:
             if student.avatar_id:
-                Path(test_class.temp_avatars_dir, student.avatar_id).write_text(
-                    student.avatar_id
-                )
+                Path(test_class.temp_avatars_dir, student.avatar_id).write_text(student.avatar_id)
 
         # Assure no classes in db:
         assert not test_database.get_classes()
@@ -223,9 +214,7 @@ class TestCreateClass:
             for student in test_saved_class_with_student_ids.students:
                 student.id = student.name
         if not isinstance(test_database, JSONDatabase):
-            for test_id, student in enumerate(
-                test_saved_class_with_student_ids.students, start=1
-            ):
+            for test_id, student in enumerate(test_saved_class_with_student_ids.students, start=1):
                 student.id = test_id
 
         assert (
@@ -256,17 +245,13 @@ class TestLoadClass:
         test_full_class_id = classes[0].id  # As the only class will be first item.
 
         # Loaded class will have ids:
-        test_loaded_class_with_student_ids = Class.from_dict(
-            preexisting_class.json_dict()
-        )
+        test_loaded_class_with_student_ids = Class.from_dict(preexisting_class.json_dict())
         if isinstance(test_database, JSONDatabase):
             for student in test_loaded_class_with_student_ids.students:
                 student.id = student.name
         if not isinstance(test_database, JSONDatabase):
             # This should be accurate for most sql databases.
-            for test_id, student in enumerate(
-                test_loaded_class_with_student_ids.students, start=1
-            ):
+            for test_id, student in enumerate(test_loaded_class_with_student_ids.students, start=1):
                 student.id = test_id
 
         assert (
@@ -281,11 +266,7 @@ class TestUpdateClass:
     @pytest.mark.parametrize(
         "database_backend",
         [
-            *[
-                backend
-                for backend in DATABASE_BACKENDS
-                if backend != "empty_json_database"
-            ],
+            *[backend for backend in DATABASE_BACKENDS if backend != "empty_json_database"],
             pytest.param(
                 "empty_json_database",
                 marks=pytest.mark.xfail(
@@ -304,11 +285,7 @@ class TestGetAvatarPath:
     @pytest.mark.parametrize(
         "database_backend",
         [
-            *[
-                backend
-                for backend in DATABASE_BACKENDS
-                if backend != "empty_json_database"
-            ],
+            *[backend for backend in DATABASE_BACKENDS if backend != "empty_json_database"],
             pytest.param(
                 "empty_json_database",
                 marks=pytest.mark.xfail(reason="JSON db does not implement method."),
@@ -350,9 +327,7 @@ class TestGetAvatarPath:
 
         # Path may be different/random - test data:
         assert test_database.get_avatar_path(test_avatar_id).read_bytes() == (
-            test_avatar_data
-            if avatar_provided
-            else test_database.default_avatar_path.read_bytes()
+            test_avatar_data if avatar_provided else test_database.default_avatar_path.read_bytes()
         )
 
 
@@ -406,9 +381,9 @@ class TestSaveChartImage:
         test_existing_class = NewClass.from_dict(test_full_class.json_dict())
         for student in test_existing_class:
             if student.avatar_id:
-                Path(
-                    test_existing_class.temp_avatars_dir, student.avatar_id
-                ).write_text(student.avatar_id)
+                Path(test_existing_class.temp_avatars_dir, student.avatar_id).write_text(
+                    student.avatar_id
+                )
         # Create class in db:
         test_database.create_class(test_existing_class)
 

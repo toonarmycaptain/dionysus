@@ -4,10 +4,9 @@ File functions - functions for dealing with files and the filesystem.
 """
 
 import json
-
 from pathlib import Path
 from shutil import copyfile, move
-from typing import Union, Any
+from typing import Any
 
 
 def convert_to_json(data_to_convert: dict) -> str:
@@ -37,7 +36,7 @@ def load_from_json(data_to_convert: str) -> Any:
     return json.loads(data_to_convert)
 
 
-def load_from_json_file(json_file_path: Union[Path, str]) -> Any:
+def load_from_json_file(json_file_path: Path | str) -> Any:
     """
     Take a filepath and load json from that file.
 
@@ -49,9 +48,7 @@ def load_from_json_file(json_file_path: Union[Path, str]) -> Any:
         return load_from_json(json_data)
 
 
-def copy_file(
-    origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]
-) -> None:
+def copy_file(origin_fullpath: Path | str, destination_fullpath: Path | str) -> None:
     """
     Copy file from origin to destination.
 
@@ -73,9 +70,7 @@ def copy_file(
         copyfile(origin_fullpath, destination_fullpath)
 
 
-def move_file(
-    origin_fullpath: Union[Path, str], destination_fullpath: Union[Path, str]
-) -> None:
+def move_file(origin_fullpath: Path | str, destination_fullpath: Path | str) -> None:
     """
     Move origin file to destination, do nothing if origin nonexistent.
 

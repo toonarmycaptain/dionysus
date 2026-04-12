@@ -60,7 +60,8 @@ class TestGetUserChoiceToSetLocation:
         self, monkeypatch, mocked_input, expected_return_value
     ):
         with patch("builtins.input", side_effect=[mocked_input]):
-            # Mocked input string placed inside a list because otherwise it is read one char at a time.
+            # Mocked input string placed inside a list because
+            # otherwise it is read one char at a time.
             assert get_user_choice_to_set_location() is expected_return_value
 
 
@@ -112,9 +113,7 @@ class TestUserSetChartSaveFolder:
 class TestUserDecidesToSetDatabaseBackend:
     @pytest.mark.parametrize("user_input", [True, False])
     def test_user_decides_to_set_database_backend(self, monkeypatch, user_input):
-        monkeypatch.setattr(
-            settings_functions_UI, "ask_user_bool", lambda **args: user_input
-        )
+        monkeypatch.setattr(settings_functions_UI, "ask_user_bool", lambda **args: user_input)
 
         assert user_decides_to_set_database_backend() is user_input
 
@@ -122,9 +121,7 @@ class TestUserDecidesToSetDatabaseBackend:
 class TestUserSetDatabaseBackend:
     @pytest.mark.parametrize("user_input", ["database chosen", False])
     def test_user_set_database_backend(self, monkeypatch, user_input):
-        monkeypatch.setattr(
-            settings_functions_UI, "take_database_choice_input", lambda: user_input
-        )
+        monkeypatch.setattr(settings_functions_UI, "take_database_choice_input", lambda: user_input)
 
         assert user_set_database_backend() is user_input
 

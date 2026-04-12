@@ -3,10 +3,9 @@ UI functions: user interface functions used throughout the application.
 """
 
 import tkinter as tk
-
+from collections.abc import Callable
 from pathlib import Path
 from tkinter import filedialog
-from typing import Optional, Union, Callable
 
 
 def clear_screen(num_lines: int = 50) -> None:
@@ -76,10 +75,7 @@ def scrub_candidate_filename(dirty_string: str) -> str:
         "-",
     ]
     return "".join(
-        [
-            c if c.isalnum() or c in allowed_special_characters else "_"
-            for c in dirty_string
-        ]
+        [c if c.isalnum() or c in allowed_special_characters else "_" for c in dirty_string]
     ).rstrip()
 
 
@@ -111,8 +107,8 @@ def save_as_dialogue(
     default_file_extension: str | None = None,
     filetypes: list[tuple[str, str]] | None = None,
     suggested_filename: str | None = None,
-    start_dir: Union[Path, str] = "..",
-) -> Optional[Path]:
+    start_dir: Path | str = "..",
+) -> Path | None:
     """
     Prompts user to select a directory and filename to save a file to.
     Calls tkinter filedialog.asksaveasfilename with title (if provided), and
@@ -186,8 +182,8 @@ def save_as_dialogue(
 def select_file_dialogue(
     title_str: str | None = None,
     filetypes: list[tuple[str, str]] | None = None,
-    start_dir: Union[Path, str] = "..",
-) -> Optional[Path]:
+    start_dir: Path | str = "..",
+) -> Path | None:
     """
     Prompt user to select a file.
 
@@ -231,8 +227,8 @@ def select_file_dialogue(
 
 
 def select_folder_dialogue(
-    title_str: str | None = None, start_dir: Union[Path, str] = ".."
-) -> Optional[Path]:
+    title_str: str | None = None, start_dir: Path | str = ".."
+) -> Path | None:
     """
     Prompt user to select a directory.
 
@@ -265,7 +261,7 @@ def select_folder_dialogue(
 def get_user_input(
     prompt: str,
     validation: Callable,
-    validation_error_msg: Union[str, Callable] | None = None,
+    validation_error_msg: str | Callable | None = None,
 ):
     """
     Generic function for getting user input.

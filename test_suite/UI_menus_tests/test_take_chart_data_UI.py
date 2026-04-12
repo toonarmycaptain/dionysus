@@ -1,6 +1,6 @@
-import pytest
-
 from unittest.mock import patch
+
+import pytest
 
 from dionysus_app.class_ import Class
 from dionysus_app.UI_menus.chart_generator import take_chart_data_UI
@@ -24,9 +24,7 @@ class TestTakeScoreData:
             assert scored_class == test_class
             return mock_score_avatar_dict
 
-        monkeypatch.setattr(
-            take_chart_data_UI, "take_student_scores", mocked_take_student_scores
-        )
+        monkeypatch.setattr(take_chart_data_UI, "take_student_scores", mocked_take_student_scores)
 
         assert take_score_data(test_class) == mock_score_avatar_dict
 
@@ -87,9 +85,7 @@ class TestTakeStudentScores:
         def mocked_take_score_entry(student_name):
             return next(score)
 
-        monkeypatch.setattr(
-            take_chart_data_UI, "take_score_entry", mocked_take_score_entry
-        )
+        monkeypatch.setattr(take_chart_data_UI, "take_score_entry", mocked_take_score_entry)
 
         assert take_student_scores(test_class) == test_take_student_scores_return_value
 
@@ -149,9 +145,7 @@ class TestTakeScoreEntry:
             (["100.0"], 100.0),
         ],
     )
-    def test_take_score_entry_good_input_default_range(
-        self, mocked_inputs, expected_return
-    ):
+    def test_take_score_entry_good_input_default_range(self, mocked_inputs, expected_return):
         """Test for regular parameters (ie default 0-100 range)."""
         with patch("builtins.input", side_effect=mocked_inputs):
             assert take_score_entry("some student name") == expected_return
@@ -171,15 +165,10 @@ class TestTakeScoreEntry:
             (["107.60"], 107.6),
         ],
     )
-    def test_take_score_entry_good_input_custom_range(
-        self, mocked_inputs, expected_return
-    ):
+    def test_take_score_entry_good_input_custom_range(self, mocked_inputs, expected_return):
         """Test for good input in with custom range parameters."""
         with patch("builtins.input", side_effect=mocked_inputs):
-            assert (
-                take_score_entry("some student name", minimum=3, maximum=110)
-                == expected_return
-            )
+            assert take_score_entry("some student name", minimum=3, maximum=110) == expected_return
 
     @pytest.mark.parametrize(
         "mocked_inputs, expected_return",
@@ -191,9 +180,7 @@ class TestTakeScoreEntry:
             (["107.60", "50"], 50.0),
         ],
     )
-    def test_take_score_entry_input_outside_default_range(
-        self, mocked_inputs, expected_return
-    ):
+    def test_take_score_entry_input_outside_default_range(self, mocked_inputs, expected_return):
         """
         Test for good input outside default range parameters.
         Default range minimum=0, maximum=100.
@@ -218,16 +205,12 @@ class TestTakeScoreEntry:
             (["107.60", "50"], 50.0),
         ],
     )
-    def test_take_score_entry_input_outside_custom_range(
-        self, mocked_inputs, expected_return
-    ):
+    def test_take_score_entry_input_outside_custom_range(self, mocked_inputs, expected_return):
         """Test for good input outside custom range parameters."""
         min_range, max_range = 49, 51
         with patch("builtins.input", side_effect=mocked_inputs):
             assert (
-                take_score_entry(
-                    "some student name", minimum=min_range, maximum=max_range
-                )
+                take_score_entry("some student name", minimum=min_range, maximum=max_range)
                 == expected_return
             )
 
@@ -270,9 +253,7 @@ class TestTakeChartName:
             (["correct chart name first time"], "correct chart name first time"),
         ],
     )
-    def test_take_chart_name_unmocked_validation(
-        self, monkeypatch, mocked_inputs, expected_return
-    ):
+    def test_take_chart_name_unmocked_validation(self, monkeypatch, mocked_inputs, expected_return):
         """Test valid input returned, without mocking validation."""
         with patch("builtins.input", side_effect=mocked_inputs):
             assert take_chart_name() == expected_return

@@ -1,6 +1,5 @@
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 from definitions import ROOT_DIR
 
@@ -19,7 +18,7 @@ class DataFolder(Enum):
     DEFAULT_AVATAR = CHART_GENERATOR + "default_avatar.png"
 
     @staticmethod
-    def generate_rel_path(path: Optional[str]) -> Path:
+    def generate_rel_path(path: str | None) -> Path:
         """
         Returns a abs path from relative path.
         eg for APP_DATA use:

@@ -1,16 +1,12 @@
 import tkinter as tk
-
 from pathlib import Path
-from typing import Optional
 
 from PIL import Image, ImageTk
 
 from dionysus_app.UI_menus.UI_functions import save_as_dialogue
 
 
-def save_chart_dialogue(
-    default_chart_name: str, class_save_folder_path: Path
-) -> Optional[Path]:
+def save_chart_dialogue(default_chart_name: str, class_save_folder_path: Path) -> Path | None:
     """
     Calls save as dialogue to get user input for chart image file save
     name and location. Supplies defaults, returns user chosen path, or
@@ -96,9 +92,7 @@ class ImageDisplay(tk.Frame):
             Image.Resampling.LANCZOS,
         )
 
-        self.display_image = ImageTk.PhotoImage(
-            self.display_sized_image, master=self.master
-        )
+        self.display_image = ImageTk.PhotoImage(self.display_sized_image, master=self.master)
         self.image_panel = tk.Label(self, image=self.display_image)  # type: ignore[arg-type]
         self.image_panel.pack(side="top", fill="both", expand=True)
 

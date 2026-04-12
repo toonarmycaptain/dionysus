@@ -2,7 +2,6 @@
 
 import io
 import sqlite3
-
 from pathlib import Path
 from random import randint
 
@@ -13,8 +12,10 @@ from dionysus_app.class_ import Class, NewClass
 from dionysus_app.persistence.database import ClassIdentifier
 from dionysus_app.persistence.databases.sqlite import SQLiteDatabase
 from dionysus_app.student import Student
-
-from test_suite.test_class import test_class_name_only, test_full_class  # noqa: F401 | Fixture imports.
+from test_suite.test_class import (  # noqa: F401 | Fixture imports.
+    test_class_name_only,
+    test_full_class,
+)
 
 
 def empty_sqlite_test_db(db_path) -> SQLiteDatabase:
@@ -125,9 +126,7 @@ class TestGetClasses:
                     ClassIdentifier(id=3, name="so many"),
                     ClassIdentifier(id=4, name="wrong"),
                 ],
-                marks=pytest.mark.xfail(
-                    reason="Inconsistent class list - extra class."
-                ),
+                marks=pytest.mark.xfail(reason="Inconsistent class list - extra class."),
             ),
             pytest.param(
                 ["one class", "another", "so many"],
@@ -135,15 +134,11 @@ class TestGetClasses:
                     ClassIdentifier(id=1, name="one class"),
                     ClassIdentifier(id=2, name="another"),
                 ],
-                marks=pytest.mark.xfail(
-                    reason="Inconsistent class list - missing class."
-                ),
+                marks=pytest.mark.xfail(reason="Inconsistent class list - missing class."),
             ),
         ],
     )
-    def test_get_classes(
-        self, empty_sqlite_database, existing_class_names, returned_value
-    ):
+    def test_get_classes(self, empty_sqlite_database, existing_class_names, returned_value):
         test_sqlite_database = empty_sqlite_database
         for class_name in existing_class_names:
             empty_sqlite_database.create_class(NewClass(name=class_name))
@@ -205,22 +200,14 @@ class TestCreateClass:
         test_class = NewClass.from_dict(test_class_data.json_dict())
         for student in test_class:
             if student.avatar_id:
-                Path(test_class.temp_avatars_dir, student.avatar_id).write_text(
-                    student.avatar_id
-                )
+                Path(test_class.temp_avatars_dir, student.avatar_id).write_text(student.avatar_id)
 
         # no students or class in empty db:
         assert (
-            not test_database._connection()
-            .cursor()
-            .execute("""SELECT * FROM class""")
-            .fetchall()
+            not test_database._connection().cursor().execute("""SELECT * FROM class""").fetchall()
         )
         assert (
-            not test_database._connection()
-            .cursor()
-            .execute("""SELECT * FROM student""")
-            .fetchall()
+            not test_database._connection().cursor().execute("""SELECT * FROM student""").fetchall()
         )
 
         # Create class in db:
@@ -231,12 +218,8 @@ class TestCreateClass:
         test_class_id = classes[0].id
 
         # Class will have ids:
-        test_loaded_class_with_student_ids = Class.from_dict(
-            test_class.json_dict()
-        ).json_dict()
-        for test_id, student in enumerate(
-            test_loaded_class_with_student_ids["students"], start=1
-        ):
+        test_loaded_class_with_student_ids = Class.from_dict(test_class.json_dict()).json_dict()
+        for test_id, student in enumerate(test_loaded_class_with_student_ids["students"], start=1):
             student["id"] = test_id
 
         assert (
@@ -256,9 +239,9 @@ class TestLoadClass:
         test_existing_class = NewClass.from_dict(test_existing_class_data.json_dict())
         for student in test_existing_class:
             if student.avatar_id:
-                Path(
-                    test_existing_class.temp_avatars_dir, student.avatar_id
-                ).write_text(student.avatar_id)
+                Path(test_existing_class.temp_avatars_dir, student.avatar_id).write_text(
+                    student.avatar_id
+                )
         # Create class in db:
         test_database.create_class(test_existing_class)
 
@@ -270,9 +253,7 @@ class TestLoadClass:
         test_loaded_class_with_student_ids = Class.from_dict(
             test_existing_class.json_dict()
         ).json_dict()
-        for test_id, student in enumerate(
-            test_loaded_class_with_student_ids["students"], start=1
-        ):
+        for test_id, student in enumerate(test_loaded_class_with_student_ids["students"], start=1):
             student["id"] = test_id
 
         # Load class, verify data.
@@ -283,18 +264,10 @@ class TestLoadClass:
             == test_loaded_class_with_student_ids
         )
 
-        assert (
-            test_database._connection()
-            .cursor()
-            .execute("""SELECT * FROM class""")
-            .fetchall()
-        )
+        assert test_database._connection().cursor().execute("""SELECT * FROM class""").fetchall()
         if test_existing_class.students:
             assert (
-                test_database._connection()
-                .cursor()
-                .execute("""SELECT * FROM student""")
-                .fetchall()
+                test_database._connection().cursor().execute("""SELECT * FROM student""").fetchall()
             )
             # Ensure students are given non null id:
             assert test_database.load_class(test_full_class_id).students[0]
@@ -317,9 +290,7 @@ class TestGetAvatarPath:
 
         # Add avatar to db:
         with test_database._connection() as conn:
-            conn.cursor().execute(
-                """INSERT INTO avatar(image) VALUES(?)""", (test_avatar_data,)
-            )
+            conn.cursor().execute("""INSERT INTO avatar(image) VALUES(?)""", (test_avatar_data,))
             conn.commit()
 
         # Path may be different/random - test data:
@@ -404,9 +375,9 @@ class TestSaveChartImage:
         test_existing_class = NewClass.from_dict(test_full_class.json_dict())
         for student in test_existing_class:
             if student.avatar_id:
-                Path(
-                    test_existing_class.temp_avatars_dir, student.avatar_id
-                ).write_text(student.avatar_id)
+                Path(test_existing_class.temp_avatars_dir, student.avatar_id).write_text(
+                    student.avatar_id
+                )
         # Create class in db:
         test_database.create_class(test_existing_class)
 
@@ -459,9 +430,7 @@ class TestSaveChartImage:
         test_image.seek(0)  # Return pointer to start of binary stream.
         # Path exists ad image at path is expected data:
         assert save_chart_path.exists()
-        assert (
-            save_chart_path.read_bytes() == test_image.read1()
-        )  # size arg can be omitted on 3.7+
+        assert save_chart_path.read_bytes() == test_image.read1()  # size arg can be omitted on 3.7+
 
 
 class TestClose:
