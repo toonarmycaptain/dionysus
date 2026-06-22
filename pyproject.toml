@@ -5,7 +5,7 @@ description = "Student avatar chart generator"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "matplotlib==3.10.8",
+    "matplotlib==3.10.9",
     "pillow==12.2.0",
     "sqlalchemy==2.0.49",
 ]
