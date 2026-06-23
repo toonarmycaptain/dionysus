@@ -175,7 +175,7 @@ class TestClassId:
     """Test Class Id"""
 
     @pytest.mark.parametrize(
-        "id_arg,",
+        "id_arg",
         [
             17,  # Integer eg sql db id
             "some student_name",  # JSON db id

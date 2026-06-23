@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for python 3.13, 3.14 in rolling version support cadence.
 - Switch deprecated pillow ANTIALIAS for LANCZOS
 - Add ruff configuration to `pyproject.toml`, expand pre-commit hooks.
+### Fixed
+- Remove trailing commas in single-name `parametrize` argname strings in `test_class.py`/`test_student.py`. pytest 9.1 treats a trailing comma (e.g. `"id_arg,"`) as tuple-style declaration, breaking collection of these tests with `TypeError: object of type 'int' has no len()`.
 ### Removed
 - Remove AppVeyor, consolidate CI on github actions.
 
