@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "matplotlib==3.10.9",
     "pillow==12.2.0",
-    "sqlalchemy==2.0.51",
+    "sqlalchemy==2.0.52",
 ]
 
 [dependency-groups]
